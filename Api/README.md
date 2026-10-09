@@ -59,3 +59,34 @@ python tools/validate_library.py .
 ## Stage 4: OpenAPI access-control coverage generator
 
 See `docs/COVERAGE_GENERATOR_STAGE4.md`. Run `python tools/generate_coverage.py --openapi examples/openapi.sample.yaml --access-model examples/access-model.sample.yaml --out build/coverage` to generate candidate security checks and coverage reports. Generated candidates require review and should be validated before merging.
+
+## Документация проекта и отчёты
+
+- `docs/PROJECT_ORIGIN.md` — исходная идея и принципы.
+- `docs/IMPLEMENTATION_PLAN.md` — этапы реализации и следующие шаги.
+- `docs/STAGE_REPORTS.md` — отчёты по этапам и зафиксированные результаты валидации.
+- `docs/PROJECT_OVERVIEW.md` — итоговое описание архитектуры, процесса и ограничений.
+- `docs/TEST_SELECTION_AND_COMMANDS.md` — команды проверки схемы, генерации покрытия и подбора проверок.
+- `build/real-contract-coverage/REAL_CONTRACT_COVERAGE_REPORT.md` — подробный отчёт по анализу контрактов, включая вопросы и противоречия.
+
+## Быстрые команды
+
+Из корня `Api/`:
+
+```bash
+# Проверка структуры каталога и JSON Schema
+python tools/validate_library.py .
+
+# Выборка по профилям
+python tools/select_checks.py . Smoke
+python tools/select_checks.py . CI
+python tools/select_checks.py . Regression
+
+# Генерация кандидатов и матрицы покрытия для примера
+python tools/generate_coverage.py --openapi examples/openapi.sample.yaml --access-model examples/access-model.sample.yaml --out build/coverage
+
+# Пересборка анализа контрактов в examples/real-contracts/
+python tools/generate_real_contract_coverage.py
+```
+
+Валидация схемы подтверждает структурную совместимость, но не означает, что кандидат соответствует реальному поведению API или готов к запуску. Все неопределённости из отчётов должны быть разрешены до фиксации окончательных ожиданий теста.
