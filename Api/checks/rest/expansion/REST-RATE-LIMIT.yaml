@@ -1,0 +1,38 @@
+checks:
+- id: REST-RATE-LIMIT
+  title: Ограничение частоты запросов
+  description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
+  category: security
+  protocols:
+  - rest
+  kind: negative
+  priority: P1
+  tags:
+  - security
+  - resilience
+  - negative
+  - rest
+  preconditions:
+  - Подготовить тестовые данные и credentials согласно сценарию.
+  steps:
+  - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  expected:
+  - лимит и заголовки соответствуют политике, доступ восстанавливается по окончании
+    окна
+  applicability:
+    when:
+    - настроен rate limit
+    skip_when:
+    - operation is not supported by the API
+    - expected behavior is not specified and requires review
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: medium
+    likelihood: medium
+  references: []

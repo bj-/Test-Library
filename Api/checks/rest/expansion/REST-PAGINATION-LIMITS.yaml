@@ -1,0 +1,36 @@
+checks:
+- id: REST-PAGINATION-LIMITS
+  title: Границы размера страницы
+  description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
+  category: pagination
+  protocols:
+  - rest
+  kind: boundary
+  priority: P1
+  tags:
+  - boundary
+  - pagination
+  - negative
+  - rest
+  preconditions:
+  - Подготовить тестовые данные и credentials согласно сценарию.
+  steps:
+  - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  expected:
+  - 0/negative/1/max/max+1 обрабатываются по контракту без неограниченной выдачи
+  applicability:
+    when:
+    - операция поддерживает pagination
+    skip_when:
+    - operation is not supported by the API
+    - expected behavior is not specified and requires review
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references: []

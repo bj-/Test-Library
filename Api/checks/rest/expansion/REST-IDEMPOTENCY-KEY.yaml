@@ -1,0 +1,36 @@
+checks:
+- id: REST-IDEMPOTENCY-KEY
+  title: Повтор с Idempotency-Key
+  description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
+  category: contract
+  protocols:
+  - rest
+  kind: boundary
+  priority: P1
+  tags:
+  - idempotency
+  - reliability
+  - rest
+  preconditions:
+  - Подготовить тестовые данные и credentials согласно сценарию.
+  steps:
+  - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  expected:
+  - повтор с тем же ключом не дублирует эффект; другой payload обрабатывается по контракту
+  applicability:
+    when:
+    - операция поддерживает Idempotency-Key
+    skip_when:
+    - operation is not supported by the API
+    - expected behavior is not specified and requires review
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: medium
+    likelihood: medium
+  references: []

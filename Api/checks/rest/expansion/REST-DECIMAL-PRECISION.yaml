@@ -1,0 +1,35 @@
+checks:
+- id: REST-DECIMAL-PRECISION
+  title: Точность decimal
+  description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
+  category: resources
+  protocols:
+  - rest
+  kind: boundary
+  priority: P1
+  tags:
+  - boundary
+  - contract
+  - rest
+  preconditions:
+  - Подготовить тестовые данные и credentials согласно сценарию.
+  steps:
+  - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  expected:
+  - округление и точность соответствуют правилам; нет неожиданных потерь
+  applicability:
+    when:
+    - есть денежные/точные decimal поля
+    skip_when:
+    - operation is not supported by the API
+    - expected behavior is not specified and requires review
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references: []

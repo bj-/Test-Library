@@ -1,0 +1,35 @@
+checks:
+- id: REST-STRING-LENGTH-BOUNDARIES
+  title: Границы длины строки
+  description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
+  category: validation
+  protocols:
+  - rest
+  kind: boundary
+  priority: P1
+  tags:
+  - boundary
+  - validation
+  - rest
+  preconditions:
+  - Подготовить тестовые данные и credentials согласно сценарию.
+  steps:
+  - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  expected:
+  - min-1/min/max/max+1 проверяются относительно ограничений
+  applicability:
+    when:
+    - есть minLength/maxLength
+    skip_when:
+    - operation is not supported by the API
+    - expected behavior is not specified and requires review
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references: []

@@ -1,0 +1,38 @@
+checks:
+- id: REST-AUTH-ERROR-NO-LEAK
+  title: Ошибки аутентификации без утечки
+  description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
+  category: security
+  protocols:
+  - rest
+  kind: negative
+  priority: P0
+  tags:
+  - security
+  - authn
+  - negative
+  - rest
+  preconditions:
+  - Подготовить тестовые данные и credentials согласно сценарию.
+  steps:
+  - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  expected:
+  - нет credentials/invalid/expired token обрабатываются по контракту без утечки
+  applicability:
+    when:
+    - операция защищена аутентификацией
+    skip_when:
+    - operation is not supported by the API
+    - expected behavior is not specified and requires review
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Smoke
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: medium
+    likelihood: medium
+  references: []

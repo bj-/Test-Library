@@ -1,0 +1,36 @@
+checks:
+- id: REST-REQUEST-SIZE-LIMIT
+  title: Лимит размера тела
+  description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
+  category: validation
+  protocols:
+  - rest
+  kind: boundary
+  priority: P1
+  tags:
+  - boundary
+  - negative
+  - reliability
+  - rest
+  preconditions:
+  - Подготовить тестовые данные и credentials согласно сценарию.
+  steps:
+  - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  expected:
+  - размеры около границы обрабатываются корректно; превышение безопасно отклоняется
+  applicability:
+    when:
+    - задан лимит тела запроса
+    skip_when:
+    - operation is not supported by the API
+    - expected behavior is not specified and requires review
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references: []

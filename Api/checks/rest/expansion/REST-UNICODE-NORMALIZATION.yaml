@@ -1,0 +1,34 @@
+checks:
+- id: REST-UNICODE-NORMALIZATION
+  title: Unicode и нормализация
+  description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
+  category: validation
+  protocols:
+  - rest
+  kind: boundary
+  priority: P2
+  tags:
+  - boundary
+  - validation
+  - rest
+  preconditions:
+  - Подготовить тестовые данные и credentials согласно сценарию.
+  steps:
+  - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  expected:
+  - нет потери символов и обхода уникальности из-за неожиданной нормализации
+  applicability:
+    when:
+    - API принимает Unicode строки
+    skip_when:
+    - operation is not supported by the API
+    - expected behavior is not specified and requires review
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references: []

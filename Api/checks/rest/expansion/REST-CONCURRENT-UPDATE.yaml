@@ -1,0 +1,36 @@
+checks:
+- id: REST-CONCURRENT-UPDATE
+  title: Конкурентное обновление
+  description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
+  category: resilience
+  protocols:
+  - rest
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - resilience
+  - contract
+  - rest
+  preconditions:
+  - Подготовить тестовые данные и credentials согласно сценарию.
+  steps:
+  - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  expected:
+  - результат соответствует контракту; lost update не происходит при обещанной защите
+  applicability:
+    when:
+    - определена модель конкурентных изменений
+    skip_when:
+    - operation is not supported by the API
+    - expected behavior is not specified and requires review
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Nightly
+  - Release
+  risk:
+    impact: medium
+    likelihood: medium
+  references: []

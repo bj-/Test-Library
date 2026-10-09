@@ -1,0 +1,36 @@
+checks:
+- id: REST-READONLY-WRITEONLY
+  title: Поля readOnly/writeOnly
+  description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
+  category: contract
+  protocols:
+  - rest
+  kind: negative
+  priority: P1
+  tags:
+  - contract
+  - validation
+  - rest
+  preconditions:
+  - Подготовить тестовые данные и credentials согласно сценарию.
+  steps:
+  - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  expected:
+  - защищённые поля не принимаются/не раскрываются вопреки контракту
+  applicability:
+    when:
+    - схема содержит readOnly/writeOnly
+    skip_when:
+    - operation is not supported by the API
+    - expected behavior is not specified and requires review
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: medium
+    likelihood: medium
+  references: []

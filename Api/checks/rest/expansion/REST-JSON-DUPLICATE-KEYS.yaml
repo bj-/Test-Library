@@ -1,0 +1,34 @@
+checks:
+- id: REST-JSON-DUPLICATE-KEYS
+  title: Дублирующиеся ключи JSON
+  description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
+  category: validation
+  protocols:
+  - rest
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - validation
+  - rest
+  preconditions:
+  - Подготовить тестовые данные и credentials согласно сценарию.
+  steps:
+  - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  expected:
+  - обработка duplicate keys детерминирована и не обходит validation/authz
+  applicability:
+    when:
+    - определена политика JSON parser
+    skip_when:
+    - operation is not supported by the API
+    - expected behavior is not specified and requires review
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references: []

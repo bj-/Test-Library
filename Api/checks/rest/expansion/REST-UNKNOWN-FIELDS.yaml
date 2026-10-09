@@ -1,0 +1,36 @@
+checks:
+- id: REST-UNKNOWN-FIELDS
+  title: Политика неизвестных полей
+  description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
+  category: contract
+  protocols:
+  - rest
+  kind: negative
+  priority: P2
+  tags:
+  - contract
+  - negative
+  - validation
+  - rest
+  preconditions:
+  - Подготовить тестовые данные и credentials согласно сценарию.
+  steps:
+  - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  expected:
+  - reject/ignore/preserve соответствует контракту; нет mass assignment
+  applicability:
+    when:
+    - известна политика additionalProperties
+    skip_when:
+    - operation is not supported by the API
+    - expected behavior is not specified and requires review
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references: []

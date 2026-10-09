@@ -1,0 +1,37 @@
+checks:
+- id: REST-VALIDATION-ATOMICITY
+  title: Атомарность ошибки валидации
+  description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
+  category: contract
+  protocols:
+  - rest
+  kind: negative
+  priority: P0
+  tags:
+  - negative
+  - reliability
+  - contract
+  - rest
+  preconditions:
+  - Подготовить тестовые данные и credentials согласно сценарию.
+  steps:
+  - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  expected:
+  - при ошибке не сохраняются частичные изменения, если контракт обещает атомарность
+  applicability:
+    when:
+    - операция изменяет состояние; ожидается атомарность
+    skip_when:
+    - operation is not supported by the API
+    - expected behavior is not specified and requires review
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: medium
+    likelihood: medium
+  references: []

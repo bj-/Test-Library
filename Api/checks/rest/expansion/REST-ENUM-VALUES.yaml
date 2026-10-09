@@ -1,0 +1,36 @@
+checks:
+- id: REST-ENUM-VALUES
+  title: Допустимые и неизвестные enum
+  description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
+  category: validation
+  protocols:
+  - rest
+  kind: negative
+  priority: P1
+  tags:
+  - contract
+  - negative
+  - boundary
+  - rest
+  preconditions:
+  - Подготовить тестовые данные и credentials согласно сценарию.
+  steps:
+  - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  expected:
+  - допустимые значения принимаются, неизвестные обрабатываются по контракту
+  applicability:
+    when:
+    - есть enum
+    skip_when:
+    - operation is not supported by the API
+    - expected behavior is not specified and requires review
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references: []
