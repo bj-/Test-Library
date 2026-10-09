@@ -1,49 +1,58 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "API Test Execution Profile",
+  "title": "Execution profile",
   "type": "object",
   "required": [
+    "id",
     "description",
-    "include_suites",
+    "include_tags",
+    "exclude_tags",
+    "max_priority",
     "selection"
   ],
   "properties": {
+    "id": {
+      "type": "string"
+    },
     "description": {
       "type": "string"
     },
-    "include_suites": {
+    "include_tags": {
       "type": "array",
       "items": {
         "type": "string"
       }
     },
+    "exclude_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "max_priority": {
+      "enum": [
+        "P0",
+        "P1",
+        "P2",
+        "P3"
+      ]
+    },
     "selection": {
       "type": "object",
       "required": [
-        "max_priority",
-        "changed_area_only"
+        "deterministic_only",
+        "max_checks"
       ],
       "properties": {
-        "max_priority": {
-          "enum": [
-            "P0",
-            "P1",
-            "P2",
-            "P3"
-          ]
-        },
-        "changed_area_only": {
+        "deterministic_only": {
           "type": "boolean"
         },
-        "max_duration_minutes": {
-          "type": "integer",
+        "max_checks": {
+          "type": [
+            "integer",
+            "null"
+          ],
           "minimum": 1
-        },
-        "include_security": {
-          "type": "boolean"
-        },
-        "include_flaky": {
-          "type": "boolean"
         }
       },
       "additionalProperties": false

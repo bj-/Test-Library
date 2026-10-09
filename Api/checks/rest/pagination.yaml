@@ -1,0 +1,27 @@
+checks:
+  - id: REST-PAGINATION-BOUNDARIES
+    title: Pagination handles boundary values correctly
+    category: pagination
+    protocols: [rest, graphql]
+    kind: boundary
+    priority: P1
+    tags: [boundary, validation, pagination, regression]
+    preconditions: [Endpoint is paginated and dataset size is known.]
+    steps: [{action: "Check minimum, default, maximum, and over-limit page sizes."}]
+    expected: [Values are accepted, clamped, or rejected as documented., No gaps or duplicates occur across pages when dataset is unchanged.]
+    applicability: {when: [Operation returns a paginated collection.], skip_when: [Pagination is not implemented.]}
+    automation: {level: full, deterministic: true}
+    profiles: [CI, Regression, Nightly]
+  - id: REST-FILTER-SORT-COMPOSITION
+    title: Filtering and sorting compose correctly
+    category: pagination
+    protocols: [rest, graphql]
+    kind: positive
+    priority: P2
+    tags: [positive, filtering, sorting, regression]
+    preconditions: [Dataset can verify filters and sort order.]
+    steps: [{action: Request a collection with two filters and a supported sort field.}]
+    expected: [Every returned item satisfies all filters., Ordering matches requested field and direction.]
+    applicability: {when: [Endpoint supports filtering and sorting.], skip_when: [The requested combination is forbidden by contract.]}
+    automation: {level: full, deterministic: true}
+    profiles: [CI, Regression]

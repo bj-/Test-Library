@@ -1,13 +1,13 @@
-description: Быстрый блокирующий набор для pull request; область определяется impact
-  analysis.
-include_suites:
-- Smoke
-- Contract
-- Regression
-- Security
+id: PR
+description: Fast pull-request checks
+include_tags:
+- smoke
+- contract
+- security
+- positive
+exclude_tags:
+- nightly
+max_priority: P1
 selection:
-  max_priority: P1
-  changed_area_only: true
-  max_duration_minutes: 10
-  include_security: true
-  include_flaky: false
+  deterministic_only: true
+  max_checks: 80

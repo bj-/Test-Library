@@ -1,35 +1,11 @@
-polarity:
-  - Positive
-  - Negative
-
-suites:
-  Smoke: "Короткий набор критических проверок доступности и основного пути."
-  Regression: "Проверки известных функций и рисков после изменений."
-  Contract: "Соответствие схемам, типам, обязательности и семантике контракта."
-  Security: "Аутентификация, авторизация, изоляция и безопасная обработка входных данных."
-  Performance: "Задержки, пропускная способность, лимиты и деградация под нагрузкой."
-  Reliability: "Таймауты, повторы, восстановление и частичные отказы."
-  Compatibility: "Совместимость клиентов, версий и эволюции контрактов."
-  Integration: "Взаимодействие с зависимостями и сквозные сценарии."
-  Exploratory: "Исследовательские проверки с не полностью формализованными ожиданиями."
-
-priority:
-  P0: "Блокирующий риск: критическая функция, безопасность или потеря/порча данных."
-  P1: "Высокий риск: основной контракт, права, бизнес-инварианты, важные ошибки."
-  P2: "Средний риск: дополнительные комбинации, редкие границы, менее критичные пути."
-  P3: "Низкий риск: редкие/дорогие вариации, оптимизация покрытия."
-
-risk:
-  Critical: "Может привести к компрометации, потере данных или отказу критического сервиса."
-  High: "Существенное нарушение функций, доступа или целостности."
-  Medium: "Ограниченное нарушение функции или совместимости."
-  Low: "Незначительное нарушение с простым обходным путём."
-
-execution_profiles:
-  PR: "Быстрые проверки затронутой области; блокируют merge при P0/P1."
-  Smoke: "Критические позитивные и базовые негативные сценарии после развёртывания."
-  CI: "Стабильный автоматизированный набор на каждом CI запуске."
-  Regression: "Расширенное покрытие функций и ранее найденных дефектов."
-  Nightly: "Полное покрытие комбинаций, конкурентности, устойчивости и дорогих сценариев."
-  Release: "Релизный набор: контракт, безопасность, совместимость и критические интеграции."
-  OnDemand: "Ручной запуск по запросу или при расследовании."
+tag_groups:
+  behavior: [positive, negative, boundary]
+  run: [smoke, regression, nightly, release, pr, ci]
+  domain: [contract, security, authn, authz, validation, error-handling, pagination, filtering, sorting, idempotency, compatibility]
+  quality: [performance, reliability, observability, resilience]
+  protocol: [rest, grpc, graphql, websocket, generic]
+rules:
+  - "kind describes behavior; run tags describe where a check is selected."
+  - "Smoke requires critical-path relevance, low cost, and determinism."
+  - "Negative means invalid input, identity, state, or dependency should be rejected."
+  - "Boundary covers limits, empty values, maximum sizes, and edge transitions."

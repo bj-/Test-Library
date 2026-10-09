@@ -1,31 +1,7 @@
-priority_order: [P0, P1, P2, P3]
-
-baseline:
-  P0:
-    - "Критическая уязвимость, межпользовательская/межтенантная утечка, потеря или порча данных."
-    - "Нарушение критического бизнес-инварианта."
-  P1:
-    - "Основной путь, обязательный контракт, права доступа, целостность изменяющей операции."
-    - "Часто используемый сценарий или известная регрессия."
-  P2:
-    - "Обычные границы, дополнительные комбинации, неосновные ошибки."
-  P3:
-    - "Редкие сочетания, дорогостоящие сценарии с низким риском."
-
-dynamic_adjustments:
-  - condition: "operation_is_in_changed_area"
-    action: "raise_execution_precedence"
-  - condition: "historical_defect_in_same_category"
-    action: "raise_priority_one_level_max_P0"
-  - condition: "critical_security_or_data_integrity_risk"
-    action: "set_priority_P0"
-  - condition: "non_deterministic_and_not_quarantined"
-    action: "do_not_block_PR"
-  - condition: "high_cost_and_low_risk"
-    action: "prefer_Nightly_or_OnDemand"
-
-constraints:
-  - "Не менять базовый priority_default молча; сохранять effective_priority и reasons."
-  - "Приоритет и частота запуска — разные поля."
-  - "P0/P1 не означают автоматическое включение во все профили: учитываются applicability, зависимости и безопасность среды."
-  - "Если профиль не может выполнить prerequisite, показать blocked, а не silently skip."
+rules:
+  - {id: PRIORITY-01, rule: Include applicable deterministic P0 checks in PR/Smoke/CI.}
+  - {id: PRIORITY-02, rule: Smoke contains only fast deterministic critical paths and critical security guards.}
+  - {id: PRIORITY-03, rule: Regression includes functional, negative, boundary, and contract checks.}
+  - {id: PRIORITY-04, rule: Nightly includes costly combinations, broad compatibility, and long-running reliability checks.}
+  - {id: PRIORITY-05, rule: Release emphasizes P0/P1 security, contract, migration, compatibility, and critical business paths.}
+  - {id: PRIORITY-06, rule: Do not put nondeterministic checks in PR unless explicitly permitted.}

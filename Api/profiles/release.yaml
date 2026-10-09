@@ -1,15 +1,12 @@
-description: Релизная проверка контрактов, критических рисков, безопасности и совместимости.
-include_suites:
-- Smoke
-- Contract
-- Regression
-- Security
-- Compatibility
-- Integration
-- Reliability
+id: Release
+description: Critical pre-release checks
+include_tags:
+- release
+- security
+- contract
+- smoke
+exclude_tags: []
+max_priority: P1
 selection:
-  max_priority: P3
-  changed_area_only: false
-  max_duration_minutes: 180
-  include_security: true
-  include_flaky: false
+  deterministic_only: true
+  max_checks: 200

@@ -1,226 +1,40 @@
 checks:
-- id: GRPC-PROTO-001
-  version: '1.0'
-  title: Сериализация и совместимость protobuf-сообщений
-  category:
-    domain: contract
-    group: serialization
-    subcategory: protobuf
-  objective: Обнаружить несовместимость сериализации, неверную обработку полей и нарушение правил эволюции
-    protobuf-схемы.
-  applies_to:
-    protocols:
-    - GRPC
-    capabilities:
-    - protobuf_messages
-    - schema_evolution
-  preconditions:
-  - Метод использует protobuf request/response messages.
-  test_variants:
-  - optional_field_absent_vs_default
-  - enum_unknown_or_unrecognized_value
-  - unknown_field_compatibility
-  - oneof_alternative_semantics
-  - old_client_new_server_if_supported
-  polarity:
-  - Positive
-  - Negative
-  suites:
-  - Contract
-  - Compatibility
-  - Regression
-  priority_default: P1
-  risk_default: High
-  include_if:
-  - grpc_method_uses_protobuf
-  exclude_if:
-  - message_type_has_no_relevant_fields
-  requires:
-  - compiled_descriptors
-  - supported_client_server_version_matrix
-  expected_behavior:
-    source: standard
-    rules:
-    - Сериализация и десериализация соответствуют protobuf semantics.
-    - Отсутствующее поле и значение по умолчанию различаются только в соответствии с моделью поля и контрактом.
-    - Совместимость старых и новых клиентов проверяется в поддерживаемой матрице версий.
-  oracle:
-    type: round_trip_and_schema_compatibility
-    verify:
-    - decoded_values
-    - field_presence_semantics
-    - cross_version_interop
-  execution_profiles:
-    PR:
-      enabled: true
-      max_variants: 2
-      blocking: true
-    Smoke:
-      enabled: false
-    CI:
-      enabled: true
-    Regression:
-      enabled: true
-    Nightly:
-      enabled: true
-  cleanup:
-    strategy: not_required_for_pure_serialization
-  automation:
-    mode: Automated
-    deterministic: true
-  generation:
-    data_strategy:
-    - descriptor_derived_cases
-    - version_matrix
-    preserve_seed: true
-    deduplicate: true
-- id: GRPC-STATUS-001
-  version: '1.0'
-  title: Корректное отображение ошибок в gRPC status
-  category:
-    domain: protocol_semantics
-    group: grpc_status
-    subcategory: error_mapping
-  objective: Обнаружить неверный gRPC status, потерю деталей ошибки или раскрытие внутренних подробностей.
-  applies_to:
-    protocols:
-    - GRPC
-    capabilities:
-    - grpc_status_errors
-  preconditions:
-  - Метод имеет документированные ошибочные условия.
-  test_variants:
-  - invalid_argument
-  - unauthenticated
-  - permission_denied
-  - not_found
-  - already_exists_or_conflict
-  - deadline_exceeded_if_applicable
-  - internal_error_does_not_leak_details
-  polarity:
-  - Negative
-  suites:
-  - Contract
-  - Security
-  - Regression
-  priority_default: P1
-  risk_default: High
-  include_if:
-  - grpc_method_can_return_documented_errors
-  exclude_if:
-  - no_error_contract_available
-  requires:
-  - error_mapping_specification
-  expected_behavior:
-    source: contract
-    rules:
-    - Каждое известное ошибочное условие отображается в предусмотренный gRPC status.
-    - Структурированные детали ошибки соответствуют контракту.
-    - Внутренние stack traces, секреты и чувствительные детали не возвращаются клиенту.
-  oracle:
-    type: status_and_trailers
-    verify:
-    - grpc_status_code
-    - status_details
-    - trailers
-    - sensitive_data_not_exposed
-  execution_profiles:
-    PR:
-      enabled: true
-      max_variants: 3
-      blocking: true
-    Smoke:
-      enabled: false
-    CI:
-      enabled: true
-    Regression:
-      enabled: true
-    Nightly:
-      enabled: true
-  cleanup:
-    strategy: verify_no_side_effects_for_rejected_requests
-  automation:
-    mode: Automated
-    deterministic: true
-  generation:
-    data_strategy:
-    - documented_error_partitioning
-    preserve_seed: true
-    deduplicate: true
-- id: GRPC-STREAM-001
-  version: '1.0'
-  title: Завершение и ошибки streaming RPC
-  category:
-    domain: reliability
-    group: streaming
-    subcategory: stream_lifecycle
-  objective: Обнаружить зависание, потерю сообщений, некорректное завершение и утечки ресурсов в streaming
-    RPC.
-  applies_to:
-    protocols:
-    - GRPC
-    capabilities:
-    - streaming
-  preconditions:
-  - Метод использует client, server или bidirectional streaming.
-  test_variants:
-  - normal_stream_completion
-  - client_half_close
-  - cancel_stream
-  - deadline_during_stream
-  - invalid_message_mid_stream
-  - large_but_bounded_stream
-  - backpressure_if_supported
-  polarity:
-  - Positive
-  - Negative
-  suites:
-  - Regression
-  - Reliability
-  - Integration
-  priority_default: P1
-  risk_default: High
-  include_if:
-  - grpc_method_streaming_type_is_not_unary
-  exclude_if:
-  - grpc_method_is_unary
-  requires:
-  - streaming_client
-  - bounded_test_deadlines
-  - resource_observation_if_available
-  expected_behavior:
-    source: contract
-    rules:
-    - Поток завершается или отменяется согласно контракту.
-    - Ошибки и отмена корректно освобождают ресурсы.
-    - Порядок сообщений и гарантии доставки проверяются только в объёме, обещанном контрактом.
-  oracle:
-    type: stream_lifecycle
-    verify:
-    - message_sequence
-    - terminal_status
-    - completion_time_bound
-    - resource_cleanup
-  execution_profiles:
-    PR:
-      enabled: false
-    Smoke:
-      enabled: false
-    CI:
-      enabled: true
-    Regression:
-      enabled: true
-    Nightly:
-      enabled: true
-  cleanup:
-    strategy: cancel_remaining_streams_and_close_channels
-  automation:
-    mode: Automated
-    deterministic: false
-  generation:
-    data_strategy:
-    - bounded_message_sequences
-    - controlled_cancellation
-    preserve_seed: true
-    deduplicate: true
-    max_generated_cases: 30
+  - id: GRPC-REQUEST-VALIDATION
+    title: Invalid gRPC request is rejected predictably
+    category: grpc-contract
+    protocols: [grpc]
+    kind: negative
+    priority: P1
+    tags: [negative, contract, validation, regression]
+    preconditions: [Request constraints and error policy are known.]
+    steps: [{action: "Call RPC with invalid enum, invalid business value, or missing semantic requirement."}]
+    expected: [A consistent status is returned, commonly INVALID_ARGUMENT for invalid arguments., No stack trace, secrets, or internal details are exposed.]
+    applicability: {when: [RPC has validated business fields.], skip_when: [All possible values are valid by contract.]}
+    automation: {level: full, deterministic: true}
+    profiles: [CI, Regression]
+  - id: GRPC-STATUS-MAPPING
+    title: RPC errors use documented gRPC status codes
+    category: grpc-errors
+    protocols: [grpc]
+    kind: contract
+    priority: P1
+    tags: [contract, error-handling, regression]
+    preconditions: [Error scenarios exist for the RPC.]
+    steps: [{action: "Trigger missing-resource, permission, invalid-argument, and state-conflict errors."}]
+    expected: [Documented status codes are used, such as NOT_FOUND, PERMISSION_DENIED, INVALID_ARGUMENT, or FAILED_PRECONDITION., Error details are stable within the contract.]
+    applicability: {when: [RPC documents errors or uses a standard error mapping.], skip_when: [No error scenario can be triggered.]}
+    automation: {level: full, deterministic: true}
+    profiles: [CI, Regression]
+  - id: GRPC-STREAM-TERMINATION
+    title: Streaming RPC terminates correctly
+    category: grpc-contract
+    protocols: [grpc]
+    kind: reliability
+    priority: P1
+    tags: [positive, reliability, regression, nightly]
+    preconditions: [RPC uses server, client, or bidirectional streaming.]
+    steps: [{action: "Open stream, exchange expected messages, and close according to contract."}]
+    expected: [Messages follow documented ordering and delivery guarantees., Stream ends with expected status and releases resources.]
+    applicability: {when: [RPC is streaming.], skip_when: [RPC is unary.]}
+    automation: {level: partial, deterministic: false, notes: Streaming timing and external events may need specialized harnesses.}
+    profiles: [Regression, Nightly]

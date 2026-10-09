@@ -1,16 +1,6 @@
-inputs:
-  - changed_api_operations
-  - changed_schema_fields
-  - changed_auth_policy
-  - changed_shared_library
-  - changed_dependencies
-  - changed_persistence_model
-  - changed_transport_or_gateway
-
 rules:
-  - "Изменение поля включает проверки сериализации, requiredness, типов, границ и совместимости для связанных операций."
-  - "Изменение authn/authz включает проверки аутентификации, ролей, владения ресурсом и tenant isolation."
-  - "Изменение хранилища включает проверки persistence, read-after-write, целостности, конкурентности и миграций."
-  - "Изменение retry/timeout/deadline включает идемпотентность, повтор, отмену и частичные отказы."
-  - "Изменение общих middleware/interceptors включает все операции, использующие соответствующий компонент."
-  - "Если граф зависимостей неполон, расширять выбор до ближайшего безопасного профиля Regression."
+  - {id: IMPACT-01, rule: Schema changes select contract, validation, compatibility, and resource-flow checks.}
+  - {id: IMPACT-02, rule: Auth changes select security checks for affected operations and roles.}
+  - {id: IMPACT-03, rule: Collection changes select pagination, filtering, sorting, and boundary checks.}
+  - {id: IMPACT-04, rule: Retry/timeout/dependency changes select idempotency, resilience, and reliability checks.}
+  - {id: IMPACT-05, rule: Unknown impact does not imply irrelevance; keep checks in broad regression.}

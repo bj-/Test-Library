@@ -1,11 +1,9 @@
-description: Проверка жизнеспособности сервиса и основных пользовательских/API-путей
-  после развёртывания.
-include_suites:
-- Smoke
-- Contract
+id: Smoke
+description: Critical-path minimal set
+include_tags:
+- smoke
+exclude_tags: []
+max_priority: P1
 selection:
-  max_priority: P1
-  changed_area_only: false
-  max_duration_minutes: 5
-  include_security: false
-  include_flaky: false
+  deterministic_only: true
+  max_checks: 40

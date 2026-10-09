@@ -1,18 +1,12 @@
-description: Полный набор, включая дорогие комбинации, нагрузку, конкурентность и
-  устойчивость.
-include_suites:
-- Smoke
-- Contract
-- Regression
-- Security
-- Performance
-- Reliability
-- Compatibility
-- Integration
-- Exploratory
+id: Nightly
+description: Extended nightly suite
+include_tags:
+- nightly
+- regression
+- compatibility
+- resilience
+exclude_tags: []
+max_priority: P3
 selection:
-  max_priority: P3
-  changed_area_only: false
-  max_duration_minutes: 360
-  include_security: true
-  include_flaky: true
+  deterministic_only: false
+  max_checks: null
