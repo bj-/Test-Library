@@ -1,0 +1,14 @@
+description: Расширенное функциональное покрытие после значимых изменений.
+include_suites:
+- Smoke
+- Contract
+- Regression
+- Security
+- Compatibility
+- Integration
+selection:
+  max_priority: P3
+  changed_area_only: false
+  max_duration_minutes: 120
+  include_security: true
+  include_flaky: false

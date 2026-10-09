@@ -1,0 +1,289 @@
+checks:
+- id: API-CONTRACT-001
+  version: '1.0'
+  title: Обязательные поля запроса
+  category:
+    domain: contract
+    group: requiredness
+    subcategory: request_fields
+  objective: Обнаружить принятие запроса без поля, которое контракт определяет как обязательное.
+  applies_to:
+    protocols:
+    - REST
+    - GRPC
+    capabilities:
+    - request_schema
+  preconditions:
+  - Операция имеет одно или несколько обязательных полей.
+  test_variants:
+  - omit_each_required_field
+  - omit_multiple_required_fields
+  - omit_required_nested_field
+  polarity:
+  - Negative
+  suites:
+  - Contract
+  - Regression
+  priority_default: P1
+  risk_default: High
+  include_if:
+  - request_schema_has_required_fields
+  exclude_if:
+  - request_has_no_required_fields
+  requires:
+  - valid_baseline_request
+  expected_behavior:
+    source: contract
+    rules:
+    - Запрос отклоняется согласно контракту.
+    - Формат ошибки соответствует принятой модели ошибок.
+    - Операция не оставляет нежелательных побочных эффектов.
+  oracle:
+    type: contract_and_state
+    verify:
+    - response_or_rpc_status
+    - error_shape
+    - post_operation_state
+  execution_profiles:
+    PR:
+      enabled: true
+      max_variants: 3
+      blocking: true
+    Smoke:
+      enabled: false
+    CI:
+      enabled: true
+    Regression:
+      enabled: true
+    Nightly:
+      enabled: true
+  cleanup:
+    strategy: restore_fixture_or_delete_created_resource
+  automation:
+    mode: Automated
+    deterministic: true
+  generation:
+    data_strategy:
+    - field_omission
+    - equivalence_partitioning
+    preserve_seed: true
+    deduplicate: true
+- id: API-CONTRACT-002
+  version: '1.0'
+  title: Типы и форматы полей
+  category:
+    domain: contract
+    group: serialization
+    subcategory: field_types
+  objective: Обнаружить несоответствие типов, форматов и правил сериализации контракту.
+  applies_to:
+    protocols:
+    - REST
+    - GRPC
+    capabilities:
+    - typed_schema
+  preconditions:
+  - Контракт задаёт типы, форматы или ограничения полей.
+  test_variants:
+  - valid_value_per_type
+  - wrong_primitive_type
+  - invalid_enum_value
+  - invalid_format
+  - unknown_field_if_defined
+  polarity:
+  - Positive
+  - Negative
+  suites:
+  - Contract
+  - Regression
+  priority_default: P1
+  risk_default: High
+  include_if:
+  - operation_has_typed_fields
+  exclude_if:
+  - operation_has_no_input_fields
+  requires:
+  - schema_derived_test_data
+  expected_behavior:
+    source: contract
+    rules:
+    - Допустимые значения принимаются и корректно сериализуются.
+    - Недопустимые значения обрабатываются согласно контракту.
+    - Неизвестные поля обрабатываются только согласно явно заданной политике.
+  oracle:
+    type: schema_validation
+    verify:
+    - request_acceptance
+    - response_schema
+    - error_mapping
+  execution_profiles:
+    PR:
+      enabled: true
+      max_variants: 4
+      blocking: true
+    Smoke:
+      enabled: true
+      max_variants: 1
+    CI:
+      enabled: true
+    Regression:
+      enabled: true
+    Nightly:
+      enabled: true
+  cleanup:
+    strategy: not_required_for_read_only_or_invalid_requests
+  automation:
+    mode: Automated
+    deterministic: true
+  generation:
+    data_strategy:
+    - equivalence_partitioning
+    - boundary_value_analysis
+    preserve_seed: true
+    deduplicate: true
+- id: API-CONTRACT-003
+  version: '1.0'
+  title: Граничные значения полей
+  category:
+    domain: data
+    group: boundaries
+    subcategory: scalar_and_collection_limits
+  objective: Обнаружить ошибки на минимальных, максимальных и соседних значениях ограничений.
+  applies_to:
+    protocols:
+    - REST
+    - GRPC
+    capabilities:
+    - field_constraints
+  preconditions:
+  - Для поля определены границы, длина, диапазон, размер или количество элементов.
+  test_variants:
+  - minimum_valid
+  - below_minimum
+  - maximum_valid
+  - above_maximum
+  - empty_value
+  - large_but_bounded_value
+  polarity:
+  - Positive
+  - Negative
+  suites:
+  - Contract
+  - Regression
+  priority_default: P1
+  risk_default: High
+  include_if:
+  - schema_or_business_rules_define_boundaries
+  exclude_if:
+  - no_discoverable_constraints
+  requires:
+  - contract_limits_or_explicit_business_rules
+  expected_behavior:
+    source: contract
+    rules:
+    - Граничные допустимые значения принимаются.
+    - Значения за границами обрабатываются согласно контракту.
+    - Ограничения ресурсов не обходятся чрезмерно большими входными данными.
+  oracle:
+    type: contract_and_invariant
+    verify:
+    - acceptance_or_rejection
+    - persisted_value_if_mutating
+    - resource_usage_guardrails
+  execution_profiles:
+    PR:
+      enabled: true
+      max_variants: 2
+      blocking: true
+    Smoke:
+      enabled: false
+    CI:
+      enabled: true
+    Regression:
+      enabled: true
+    Nightly:
+      enabled: true
+  cleanup:
+    strategy: restore_fixture_or_delete_created_resource
+  automation:
+    mode: Automated
+    deterministic: true
+  generation:
+    data_strategy:
+    - boundary_value_analysis
+    - equivalence_partitioning
+    preserve_seed: true
+    deduplicate: true
+    max_generated_cases: 20
+- id: API-CONTRACT-004
+  version: '1.0'
+  title: Схема ответа и обязательные поля
+  category:
+    domain: contract
+    group: response_schema
+    subcategory: response_fields
+  objective: Обнаружить отсутствие обязательных полей ответа, неверные типы и утечку непредусмотренных
+    полей.
+  applies_to:
+    protocols:
+    - REST
+    - GRPC
+    capabilities:
+    - response_schema
+  preconditions:
+  - Контракт определяет структуру ответа.
+  test_variants:
+  - validate_required_response_fields
+  - validate_field_types
+  - validate_enum_values
+  - check_sensitive_fields_not_exposed
+  polarity:
+  - Positive
+  suites:
+  - Contract
+  - Regression
+  - Security
+  priority_default: P1
+  risk_default: High
+  include_if:
+  - operation_returns_structured_response
+  exclude_if:
+  - operation_has_no_response_payload
+  requires:
+  - response_schema
+  expected_behavior:
+    source: contract
+    rules:
+    - Ответ соответствует схеме и семантическим ограничениям.
+    - Отсутствуют незадокументированные чувствительные данные.
+    - Пустой ответ используется только там, где это предусмотрено контрактом.
+  oracle:
+    type: schema_and_security_assertions
+    verify:
+    - response_schema
+    - required_fields
+    - sensitive_data_allowlist
+  execution_profiles:
+    PR:
+      enabled: true
+      max_variants: 2
+      blocking: true
+    Smoke:
+      enabled: true
+      max_variants: 1
+    CI:
+      enabled: true
+    Regression:
+      enabled: true
+    Nightly:
+      enabled: true
+  cleanup:
+    strategy: not_required_for_read_only
+  automation:
+    mode: Automated
+    deterministic: true
+  generation:
+    data_strategy:
+    - schema_validation
+    preserve_seed: true
+    deduplicate: true

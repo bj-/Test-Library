@@ -1,0 +1,16 @@
+inputs:
+  - changed_api_operations
+  - changed_schema_fields
+  - changed_auth_policy
+  - changed_shared_library
+  - changed_dependencies
+  - changed_persistence_model
+  - changed_transport_or_gateway
+
+rules:
+  - "Изменение поля включает проверки сериализации, requiredness, типов, границ и совместимости для связанных операций."
+  - "Изменение authn/authz включает проверки аутентификации, ролей, владения ресурсом и tenant isolation."
+  - "Изменение хранилища включает проверки persistence, read-after-write, целостности, конкурентности и миграций."
+  - "Изменение retry/timeout/deadline включает идемпотентность, повтор, отмену и частичные отказы."
+  - "Изменение общих middleware/interceptors включает все операции, использующие соответствующий компонент."
+  - "Если граф зависимостей неполон, расширять выбор до ближайшего безопасного профиля Regression."

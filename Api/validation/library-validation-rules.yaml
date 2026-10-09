@@ -1,0 +1,51 @@
+library_quality_gates:
+  - id: LIB-001
+    rule: "Все id уникальны глобально."
+    severity: error
+  - id: LIB-002
+    rule: "Каждая запись проходит schema/check.schema.json."
+    severity: error
+  - id: LIB-003
+    rule: "Каждая категория, метка, приоритет и профиль входят в контролируемый словарь."
+    severity: error
+  - id: LIB-004
+    rule: "У каждой записи есть хотя бы одно условие включения либо явно указано, что применимость общая."
+    severity: warning
+  - id: LIB-005
+    rule: "Негативная проверка имеет oracle отказа и проверку отсутствия запрещённых побочных эффектов для stateful операций."
+    severity: warning
+  - id: LIB-006
+    rule: "Stateful тест имеет стратегию очистки."
+    severity: error
+  - id: LIB-007
+    rule: "Ожидаемое поведение имеет источник: contract, business_rule, standard или needs_clarification."
+    severity: error
+  - id: LIB-008
+    rule: "Для каждой записи описано, когда она неприменима."
+    severity: warning
+  - id: LIB-009
+    rule: "У каждой записи есть suites, priority_default и automation."
+    severity: error
+  - id: LIB-010
+    rule: "Проверки, зависящие от недетерминированных таймингов, не блокируют PR без стабилизации."
+    severity: warning
+
+coverage_dimensions:
+  - protocol_and_rpc_or_http_operation_type
+  - request_and_response_fields
+  - requiredness_types_formats_nullability_boundaries
+  - documented_success_and_error_conditions
+  - authn_authz_ownership_tenant_isolation
+  - state_transitions_and_side_effects
+  - retries_idempotency_concurrency
+  - pagination_filtering_sorting_if_supported
+  - deadlines_timeouts_cancellation_streaming_if_supported
+  - compatibility_and_version_evolution
+  - operational_limits_and_observability
+
+coverage_status:
+  covered: "Есть сгенерированный тест с oracle."
+  not_applicable: "Возможность отсутствует, указана причина."
+  uncovered: "Возможность применима, но подходящей проверки нет."
+  needs_clarification: "Невозможно безопасно определить ожидаемое поведение."
+  blocked: "Проверка применима, но окружение/данные/права отсутствуют."

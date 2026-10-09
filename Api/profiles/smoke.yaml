@@ -1,0 +1,11 @@
+description: Проверка жизнеспособности сервиса и основных пользовательских/API-путей
+  после развёртывания.
+include_suites:
+- Smoke
+- Contract
+selection:
+  max_priority: P1
+  changed_area_only: false
+  max_duration_minutes: 5
+  include_security: false
+  include_flaky: false

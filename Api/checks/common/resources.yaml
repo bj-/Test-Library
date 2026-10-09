@@ -1,0 +1,235 @@
+checks:
+- id: API-RESOURCE-001
+  version: '1.0'
+  title: Создание ресурса и проверка сохранённого состояния
+  category:
+    domain: resources
+    group: create
+    subcategory: persistence
+  objective: Обнаружить успешный ответ без корректного создания ресурса или с неверным сохранённым состоянием.
+  applies_to:
+    protocols:
+    - REST
+    - GRPC
+    capabilities:
+    - create_resource
+    operation_kinds:
+    - create
+  preconditions:
+  - Есть валидные данные для создания и способ проверить результат.
+  test_variants:
+  - create_minimal_valid_resource
+  - create_full_valid_resource
+  - read_after_create
+  - verify_server_generated_fields
+  polarity:
+  - Positive
+  suites:
+  - Smoke
+  - Regression
+  - Integration
+  priority_default: P1
+  risk_default: High
+  include_if:
+  - operation_creates_persistent_resource
+  exclude_if:
+  - operation_is_purely_transient
+  requires:
+  - isolated_test_namespace
+  - cleanup_capability
+  expected_behavior:
+    source: contract
+    rules:
+    - Результат соответствует контракту создания.
+    - Созданное состояние доступно предусмотренным способом чтения.
+    - Серверные поля и значения по умолчанию соответствуют контракту.
+  oracle:
+    type: response_and_state_comparison
+    verify:
+    - response_schema
+    - resource_exists
+    - persisted_fields
+    - generated_identifiers
+  execution_profiles:
+    PR:
+      enabled: true
+      max_variants: 1
+      blocking: true
+    Smoke:
+      enabled: true
+      max_variants: 1
+    CI:
+      enabled: true
+    Regression:
+      enabled: true
+    Nightly:
+      enabled: true
+  cleanup:
+    strategy: delete_created_resource
+    notes: Очистка должна выполняться и после падения проверки.
+  automation:
+    mode: Automated
+    deterministic: true
+  generation:
+    data_strategy:
+    - minimal_valid_data
+    - schema_derived_data
+    preserve_seed: true
+    deduplicate: true
+- id: API-RESOURCE-002
+  version: '1.0'
+  title: Частичное обновление сохраняет неуказанные поля
+  category:
+    domain: resources
+    group: update
+    subcategory: partial_update
+  objective: Обнаружить потерю или нежелательное изменение полей, которые не были переданы при частичном
+    обновлении.
+  applies_to:
+    protocols:
+    - REST
+    - GRPC
+    capabilities:
+    - partial_update
+    - mutable_resource
+    operation_kinds:
+    - update
+  preconditions:
+  - Существует ресурс с несколькими полями.
+  - Контракт определяет семантику частичного обновления.
+  test_variants:
+  - update_one_field
+  - update_multiple_fields
+  - omit_optional_fields
+  - explicit_null_semantics
+  - preserve_unrelated_fields
+  polarity:
+  - Positive
+  - Negative
+  suites:
+  - Regression
+  - Contract
+  priority_default: P1
+  risk_default: High
+  include_if:
+  - operation_supports_partial_update
+  exclude_if:
+  - operation_replaces_entire_resource
+  requires:
+  - existing_resource
+  - read_permission
+  - update_permission
+  expected_behavior:
+    source: contract
+    rules:
+    - Переданные валидные поля обновлены.
+    - Неуказанные поля ведут себя согласно контрактной семантике.
+    - Не связанные с обновлением поля не меняются, если контракт не предписывает иное.
+    - Недопустимое обновление не оставляет запрещённого частичного состояния.
+  oracle:
+    type: state_diff
+    verify:
+    - response_contract
+    - persisted_resource
+    - unchanged_unrelated_fields
+  execution_profiles:
+    PR:
+      enabled: true
+      max_variants: 2
+      blocking: true
+    Smoke:
+      enabled: false
+    CI:
+      enabled: true
+    Regression:
+      enabled: true
+    Nightly:
+      enabled: true
+  cleanup:
+    strategy: restore_fixture_or_delete_resource
+  automation:
+    mode: Automated
+    deterministic: true
+  generation:
+    data_strategy:
+    - state_snapshot
+    - field_partitioning
+    preserve_seed: true
+    deduplicate: true
+- id: API-RESOURCE-003
+  version: '1.0'
+  title: Идемпотентность повторного выполнения
+  category:
+    domain: reliability
+    group: idempotency
+    subcategory: repeated_request
+  objective: Обнаружить дублирование побочных эффектов при повторе запроса там, где операция обязана быть
+    идемпотентной.
+  applies_to:
+    protocols:
+    - REST
+    - GRPC
+    capabilities:
+    - idempotent_operation
+    operation_kinds:
+    - create
+    - update
+    - delete
+    - command
+  preconditions:
+  - Контракт или бизнес-правило определяет операцию как идемпотентную.
+  test_variants:
+  - repeat_identical_request
+  - retry_after_response_timeout
+  - same_idempotency_key_same_payload
+  - same_key_different_payload_if_supported
+  polarity:
+  - Positive
+  - Negative
+  suites:
+  - Regression
+  - Reliability
+  priority_default: P1
+  risk_default: High
+  include_if:
+  - operation_is_declared_idempotent_or_supports_idempotency_key
+  exclude_if:
+  - operation_is_explicitly_non_idempotent
+  requires:
+  - isolated_test_data
+  - observable_side_effects
+  expected_behavior:
+    source: business_rule
+    rules:
+    - Повтор не создаёт дополнительных запрещённых побочных эффектов.
+    - Повторный результат и состояние соответствуют контракту идемпотентности.
+    - Правила конфликтов ключа идемпотентности проверяются только если они определены.
+  oracle:
+    type: state_and_side_effect_count
+    verify:
+    - resource_count
+    - business_effect_count
+    - final_state
+    - response_semantics
+  execution_profiles:
+    PR:
+      enabled: false
+    Smoke:
+      enabled: false
+    CI:
+      enabled: true
+    Regression:
+      enabled: true
+    Nightly:
+      enabled: true
+  cleanup:
+    strategy: delete_all_test_resources_and_side_effects
+  automation:
+    mode: Automated
+    deterministic: true
+  generation:
+    data_strategy:
+    - request_replay
+    - controlled_timeout
+    preserve_seed: true
+    deduplicate: true

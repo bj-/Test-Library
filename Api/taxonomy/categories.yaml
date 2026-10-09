@@ -1,0 +1,23 @@
+domains:
+  - availability
+  - contract
+  - data
+  - business_rules
+  - resources
+  - security
+  - reliability
+  - performance
+  - errors
+  - compatibility
+  - async
+  - consistency
+  - observability
+  - protocol_semantics
+
+groups:
+  contract: [request_schema, response_schema, requiredness, serialization, versioning]
+  data: [types, boundaries, formats, nullability, collections, nested_objects]
+  resources: [create, read, update, delete, lifecycle, relationships]
+  security: [authentication, authorization, ownership, tenant_isolation, injection, data_exposure]
+  reliability: [timeouts, retries, idempotency, partial_failure, recovery]
+  protocol_semantics: [http_methods, headers, status_codes, grpc_status, metadata, deadlines, streaming]

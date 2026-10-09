@@ -1,0 +1,13 @@
+description: Стабильный автоматизированный набор для регулярного CI.
+include_suites:
+- Smoke
+- Contract
+- Regression
+- Security
+- Integration
+selection:
+  max_priority: P2
+  changed_area_only: false
+  max_duration_minutes: 30
+  include_security: true
+  include_flaky: false

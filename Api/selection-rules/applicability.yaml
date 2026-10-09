@@ -1,0 +1,29 @@
+# Условия являются декларативными предикатами над нормализованной моделью API.
+# Реализация агента должна документировать поддерживаемые предикаты.
+selection_order:
+  - match_protocol
+  - evaluate_include_if
+  - evaluate_exclude_if
+  - verify_preconditions
+  - verify_oracle_available
+  - assign_polarity_and_suites
+  - assign_priority
+  - apply_execution_profile
+  - deduplicate_semantically
+  - report_coverage
+
+outcomes:
+  include: "Все обязательные условия выполнены; тест можно сгенерировать."
+  exclude: "Проверка неприменима; сохранить машинно-читаемую причину."
+  needs_clarification: "Не хватает контракта, бизнес-правила или oracle; не придумывать expected result."
+  blocked: "Проверка применима, но отсутствуют права, фикстуры, среда или наблюдаемость."
+  generated: "Сценарий сформирован и связан с check.id."
+
+rules:
+  - "Пустой include_if означает отсутствие дополнительных ограничений, но не отменяет проверку preconditions."
+  - "Если срабатывает хотя бы одно условие exclude_if, проверка исключается с указанием причины."
+  - "Неизвестный предикат не считать истинным; вернуть needs_clarification или validation_error."
+  - "Отсутствие oracle означает blocked или needs_clarification, а не успешный тест."
+  - "Не выводить ожидаемый статус HTTP/gRPC из одного только названия ошибки, если нет правила отображения."
+  - "При генерации негативного теста менять одну причину невалидности за сценарий, если цель не требует комбинированного отказа."
+  - "Для stateful операций формировать cleanup в finally/teardown, включая случай падения assertion."

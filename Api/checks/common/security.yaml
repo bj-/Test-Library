@@ -1,0 +1,148 @@
+checks:
+- id: API-SECURITY-001
+  version: '1.0'
+  title: Отказ без аутентификации
+  category:
+    domain: security
+    group: authentication
+    subcategory: missing_credentials
+  objective: Обнаружить доступ к защищённой операции без действительных учётных данных.
+  applies_to:
+    protocols:
+    - REST
+    - GRPC
+    capabilities:
+    - authentication
+  preconditions:
+  - Операция требует аутентификации.
+  test_variants:
+  - no_credentials
+  - malformed_credentials
+  - expired_credentials
+  - revoked_credentials_if_supported
+  polarity:
+  - Negative
+  suites:
+  - Smoke
+  - Security
+  - Regression
+  priority_default: P0
+  risk_default: Critical
+  include_if:
+  - operation_requires_authentication
+  exclude_if:
+  - operation_is_explicitly_public
+  requires:
+  - anonymous_client
+  - safe_test_environment
+  expected_behavior:
+    source: contract
+    rules:
+    - Доступ не предоставляется без действительных учётных данных.
+    - Ошибка соответствует принятой модели протокола и безопасности.
+    - Защищённые данные и побочные эффекты не раскрываются.
+  oracle:
+    type: access_control
+    verify:
+    - authorization_decision
+    - sensitive_data_not_returned
+    - no_state_change
+  execution_profiles:
+    PR:
+      enabled: true
+      max_variants: 2
+      blocking: true
+    Smoke:
+      enabled: true
+      max_variants: 1
+    CI:
+      enabled: true
+    Regression:
+      enabled: true
+    Nightly:
+      enabled: true
+  cleanup:
+    strategy: not_required_if_request_is_rejected
+  automation:
+    mode: Automated
+    deterministic: true
+  generation:
+    data_strategy:
+    - credential_state_partitioning
+    preserve_seed: true
+    deduplicate: true
+- id: API-SECURITY-002
+  version: '1.0'
+  title: Проверка объектных прав и владения ресурсом
+  category:
+    domain: security
+    group: ownership
+    subcategory: object_level_authorization
+  objective: Обнаружить доступ к объекту другого пользователя или tenant при недостаточных правах.
+  applies_to:
+    protocols:
+    - REST
+    - GRPC
+    capabilities:
+    - authorization
+    - resource_ownership
+    - multi_tenancy
+  preconditions:
+  - Есть как минимум два субъекта с различными правами или областями владения.
+  - Существует объект, принадлежащий другому субъекту.
+  test_variants:
+  - read_other_users_resource
+  - update_other_users_resource
+  - delete_other_users_resource
+  - enumerate_foreign_resource_ids
+  polarity:
+  - Negative
+  suites:
+  - Security
+  - Regression
+  priority_default: P0
+  risk_default: Critical
+  include_if:
+  - operation_accesses_user_or_tenant_scoped_resource
+  exclude_if:
+  - resource_is_intentionally_public_and_unscoped
+  requires:
+  - two_test_principals
+  - isolated_tenant_fixtures
+  expected_behavior:
+    source: business_rule
+    rules:
+    - Субъект не читает и не изменяет чужой объект без разрешения.
+    - Ответ не раскрывает запрещённые сведения об объекте.
+    - Запрещённая операция не меняет состояние.
+  oracle:
+    type: cross_principal_state_comparison
+    verify:
+    - access_decision
+    - response_data
+    - resource_state
+    - side_effects
+  execution_profiles:
+    PR:
+      enabled: true
+      max_variants: 2
+      blocking: true
+    Smoke:
+      enabled: false
+    CI:
+      enabled: true
+    Regression:
+      enabled: true
+    Nightly:
+      enabled: true
+  cleanup:
+    strategy: delete_test_tenants_and_resources
+  automation:
+    mode: Automated
+    deterministic: true
+  generation:
+    data_strategy:
+    - principal_matrix
+    - ownership_partitioning
+    preserve_seed: true
+    deduplicate: true

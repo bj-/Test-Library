@@ -1,0 +1,145 @@
+checks:
+- id: REST-HTTP-001
+  version: '1.0'
+  title: Соответствие HTTP-метода семантике операции
+  category:
+    domain: protocol_semantics
+    group: http_methods
+    subcategory: method_semantics
+  objective: Обнаружить несоответствие метода HTTP заявленной семантике чтения, создания, изменения или
+    удаления.
+  applies_to:
+    protocols:
+    - REST
+    capabilities:
+    - http_method_semantics
+  preconditions:
+  - Операция опубликована через HTTP.
+  test_variants:
+  - read_method_has_no_unintended_mutation
+  - unsupported_method_behavior
+  - safe_method_semantics
+  - method_contract_consistency
+  polarity:
+  - Positive
+  - Negative
+  suites:
+  - Contract
+  - Regression
+  priority_default: P1
+  risk_default: High
+  include_if:
+  - operation_uses_http
+  exclude_if:
+  - not_applicable
+  requires:
+  - operation_contract
+  - state_observation_for_mutating_side_effects
+  expected_behavior:
+    source: standard
+    rules:
+    - Метод и семантика операции соответствуют HTTP-контракту и принятому API-дизайну.
+    - Безопасные методы не вызывают непредусмотренных изменений состояния.
+    - Ответ на неподдерживаемый метод соответствует контракту сервиса.
+  oracle:
+    type: protocol_and_state
+    verify:
+    - method_response
+    - state_before_after
+    - headers_if_defined
+  execution_profiles:
+    PR:
+      enabled: true
+      max_variants: 2
+      blocking: true
+    Smoke:
+      enabled: false
+    CI:
+      enabled: true
+    Regression:
+      enabled: true
+    Nightly:
+      enabled: true
+  cleanup:
+    strategy: restore_fixture_if_state_changed
+  automation:
+    mode: Automated
+    deterministic: true
+  generation:
+    data_strategy:
+    - method_matrix
+    preserve_seed: true
+    deduplicate: true
+- id: REST-HTTP-002
+  version: '1.0'
+  title: Пагинация и границы страниц
+  category:
+    domain: resources
+    group: read
+    subcategory: pagination
+  objective: Обнаружить пропуски, дубли, нестабильный порядок и ошибки обработки параметров пагинации.
+  applies_to:
+    protocols:
+    - REST
+    capabilities:
+    - pagination
+    - list_operation
+  preconditions:
+  - Операция возвращает коллекцию и поддерживает пагинацию.
+  test_variants:
+  - first_page
+  - last_page
+  - empty_page
+  - page_size_min_max
+  - invalid_page_token
+  - no_duplicates_or_gaps_across_pages
+  - stable_order_if_contract_requires
+  polarity:
+  - Positive
+  - Negative
+  suites:
+  - Regression
+  - Contract
+  priority_default: P2
+  risk_default: Medium
+  include_if:
+  - operation_supports_pagination
+  exclude_if:
+  - operation_returns_no_collection
+  requires:
+  - dataset_larger_than_one_page
+  expected_behavior:
+    source: contract
+    rules:
+    - Параметры пагинации обрабатываются согласно контракту.
+    - При последовательном обходе нет пропусков или дублей, если контракт обещает стабильный обход.
+    - Порядок элементов проверяется только если он гарантирован контрактом.
+  oracle:
+    type: collection_reconciliation
+    verify:
+    - item_count
+    - unique_ids
+    - page_tokens
+    - ordering_if_guaranteed
+  execution_profiles:
+    PR:
+      enabled: false
+    Smoke:
+      enabled: false
+    CI:
+      enabled: true
+    Regression:
+      enabled: true
+    Nightly:
+      enabled: true
+  cleanup:
+    strategy: delete_seeded_collection
+  automation:
+    mode: Automated
+    deterministic: true
+  generation:
+    data_strategy:
+    - collection_size_partitioning
+    - token_mutation
+    preserve_seed: true
+    deduplicate: true

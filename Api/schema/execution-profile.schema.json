@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "API Test Execution Profile",
+  "type": "object",
+  "required": [
+    "description",
+    "include_suites",
+    "selection"
+  ],
+  "properties": {
+    "description": {
+      "type": "string"
+    },
+    "include_suites": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "selection": {
+      "type": "object",
+      "required": [
+        "max_priority",
+        "changed_area_only"
+      ],
+      "properties": {
+        "max_priority": {
+          "enum": [
+            "P0",
+            "P1",
+            "P2",
+            "P3"
+          ]
+        },
+        "changed_area_only": {
+          "type": "boolean"
+        },
+        "max_duration_minutes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "include_security": {
+          "type": "boolean"
+        },
+        "include_flaky": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
