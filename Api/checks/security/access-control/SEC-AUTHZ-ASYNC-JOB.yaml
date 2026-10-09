@@ -1,0 +1,42 @@
+checks:
+- id: SEC-AUTHZ-ASYNC-JOB
+  title: Authorization is rechecked for asynchronous job access
+  category: security
+  protocols:
+  - rest
+  - graphql
+  - generic
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - security
+  - authz
+  - regression
+  - release
+  - nightly
+  preconditions: &id001
+  - API exposes asynchronous jobs or operation handles.
+  steps:
+  - action: Create or discover a job as user A and attempt to poll, cancel, or fetch its result as user B.
+    notes: 'Matrix axis: Authorization; scenario: Async job ownership. Use isolated synthetic identities and data.'
+  expected:
+  - Job metadata and results are restricted to authorized principals; ownership is enforced at every job operation.
+  - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
+    contract specifies it.
+  applicability:
+    when: *id001
+    skip_when:
+    - No asynchronous operations exist.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model

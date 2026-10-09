@@ -1,0 +1,42 @@
+checks:
+- id: SEC-TOKEN-REVOKED
+  title: Revoked token cannot be reused
+  category: security
+  protocols:
+  - rest
+  - graphql
+  - generic
+  kind: negative
+  priority: P0
+  tags:
+  - negative
+  - security
+  - authn
+  - ci
+  - regression
+  - release
+  preconditions: &id001
+  - The system supports token revocation, logout invalidation, or session termination.
+  steps:
+  - action: Obtain a valid token, revoke it or log out using the supported mechanism, then reuse it.
+    notes: 'Matrix axis: Authentication; scenario: Revoked token. Use isolated synthetic identities and data.'
+  expected:
+  - Revoked credentials are rejected within the documented revocation propagation window; no protected side effect occurs.
+  - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
+    contract specifies it.
+  applicability:
+    when: *id001
+    skip_when:
+    - Tokens are intentionally non-revocable and the risk is explicitly accepted.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+  references:
+  - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model

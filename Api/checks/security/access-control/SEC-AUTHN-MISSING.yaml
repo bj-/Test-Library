@@ -1,0 +1,44 @@
+checks:
+- id: SEC-AUTHN-MISSING
+  title: Protected operation rejects missing credentials
+  category: security
+  protocols:
+  - rest
+  - graphql
+  - generic
+  kind: negative
+  priority: P0
+  tags:
+  - negative
+  - security
+  - authn
+  - ci
+  - regression
+  - release
+  - smoke
+  preconditions: &id001
+  - Operation requires authentication.
+  steps:
+  - action: Request protected operation without Authorization credentials.
+    notes: 'Matrix axis: Authentication; scenario: No credentials. Use isolated synthetic identities and data.'
+  expected:
+  - Reject according to documented auth policy; no protected data or internal details are returned.
+  - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
+    contract specifies it.
+  applicability:
+    when: *id001
+    skip_when:
+    - Operation is public or anonymous access is explicitly documented.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Smoke
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: critical
+    likelihood: high
+  references:
+  - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model

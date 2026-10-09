@@ -1,11 +1,45 @@
 tag_groups:
-  behavior: [positive, negative, boundary]
-  run: [smoke, regression, nightly, release, pr, ci]
-  domain: [contract, security, authn, authz, validation, error-handling, pagination, filtering, sorting, idempotency, compatibility]
-  quality: [performance, reliability, observability, resilience]
-  protocol: [rest, grpc, graphql, websocket, generic]
+  behavior:
+  - positive
+  - negative
+  - boundary
+  run:
+  - smoke
+  - regression
+  - nightly
+  - release
+  - pr
+  - ci
+  domain:
+  - contract
+  - security
+  - authn
+  - authz
+  - validation
+  - error-handling
+  - pagination
+  - filtering
+  - sorting
+  - idempotency
+  - compatibility
+  - ownership
+  - tenant-isolation
+  - roles-scopes
+  - token-lifecycle
+  - privilege-escalation
+  quality:
+  - performance
+  - reliability
+  - observability
+  - resilience
+  protocol:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  - generic
 rules:
-  - "kind describes behavior; run tags describe where a check is selected."
-  - "Smoke requires critical-path relevance, low cost, and determinism."
-  - "Negative means invalid input, identity, state, or dependency should be rejected."
-  - "Boundary covers limits, empty values, maximum sizes, and edge transitions."
+- kind describes behavior; run tags describe where a check is selected.
+- Smoke requires critical-path relevance, low cost, and determinism.
+- Negative means invalid input, identity, state, or dependency should be rejected.
+- Boundary covers limits, empty values, maximum sizes, and edge transitions.

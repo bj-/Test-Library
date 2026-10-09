@@ -1,0 +1,42 @@
+checks:
+- id: SEC-AUTHN-MALFORMED
+  title: Malformed credential is rejected
+  category: security
+  protocols:
+  - rest
+  - graphql
+  - generic
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - security
+  - authn
+  - ci
+  - regression
+  - release
+  preconditions: &id001
+  - Operation requires authentication and accepts a token or credential.
+  steps:
+  - action: Send an invalidly formatted, truncated, or syntactically malformed credential.
+    notes: 'Matrix axis: Authentication; scenario: Malformed credential. Use isolated synthetic identities and data.'
+  expected:
+  - Reject according to authentication policy; do not fall back to anonymous or weaker authentication.
+  - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
+    contract specifies it.
+  applicability:
+    when: *id001
+    skip_when:
+    - Malformed credentials are explicitly supported by a documented compatibility mode.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: high
+    likelihood: high
+  references:
+  - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model

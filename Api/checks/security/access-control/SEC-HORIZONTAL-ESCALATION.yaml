@@ -1,0 +1,43 @@
+checks:
+- id: SEC-HORIZONTAL-ESCALATION
+  title: Peer user cannot access peer-only protected action
+  category: security
+  protocols:
+  - rest
+  - graphql
+  - generic
+  kind: negative
+  priority: P0
+  tags:
+  - negative
+  - security
+  - authz
+  - ci
+  - regression
+  - release
+  preconditions: &id001
+  - Two peer users with same role but distinct ownership exist.
+  steps:
+  - action: Use user A’s identifier or resource reference while authenticated as peer user B with the same role.
+    notes: 'Matrix axis: Resource ownership; scenario: Horizontal privilege escalation. Use isolated synthetic identities
+      and data.'
+  expected:
+  - User B cannot access or mutate A-only data unless an explicit sharing grant exists.
+  - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
+    contract specifies it.
+  applicability:
+    when: *id001
+    skip_when:
+    - Data is intentionally shared between all users in the role.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: critical
+    likelihood: high
+  references:
+  - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model

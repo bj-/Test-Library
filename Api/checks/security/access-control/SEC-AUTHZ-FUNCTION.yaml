@@ -1,0 +1,42 @@
+checks:
+- id: SEC-AUTHZ-FUNCTION
+  title: User without required permission cannot invoke operation
+  category: security
+  protocols:
+  - rest
+  - graphql
+  - generic
+  kind: negative
+  priority: P0
+  tags:
+  - negative
+  - security
+  - authz
+  - ci
+  - regression
+  - release
+  preconditions: &id001
+  - Operation has a permission/authorization rule.
+  steps:
+  - action: Authenticate as a user lacking the permission and call the protected operation.
+    notes: 'Matrix axis: Authorization; scenario: Missing permission. Use isolated synthetic identities and data.'
+  expected:
+  - Access is denied according to policy; no protected side effect occurs.
+  - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
+    contract specifies it.
+  applicability:
+    when: *id001
+    skip_when:
+    - Operation is intentionally available to all authenticated users.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: critical
+    likelihood: high
+  references:
+  - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model

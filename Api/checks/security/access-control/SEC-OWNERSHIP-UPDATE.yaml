@@ -1,0 +1,42 @@
+checks:
+- id: SEC-OWNERSHIP-UPDATE
+  title: User cannot modify another owner’s resource
+  category: security
+  protocols:
+  - rest
+  - graphql
+  - generic
+  kind: negative
+  priority: P0
+  tags:
+  - negative
+  - security
+  - authz
+  - ci
+  - regression
+  - release
+  preconditions: &id001
+  - Resource is mutable and owner-restricted; users A and B and resource A exist.
+  steps:
+  - action: As user B, attempt to update a field on user A’s resource by changing the resource identifier.
+    notes: 'Matrix axis: Resource ownership; scenario: Cross-owner update. Use isolated synthetic identities and data.'
+  expected:
+  - Deny the operation; persisted state of resource A remains unchanged.
+  - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
+    contract specifies it.
+  applicability:
+    when: *id001
+    skip_when:
+    - Resource is shared with user B with write permission.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: critical
+    likelihood: high
+  references:
+  - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model

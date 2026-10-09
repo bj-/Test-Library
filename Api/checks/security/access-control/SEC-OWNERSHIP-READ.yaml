@@ -1,0 +1,44 @@
+checks:
+- id: SEC-OWNERSHIP-READ
+  title: User cannot read another owner’s resource
+  category: security
+  protocols:
+  - rest
+  - graphql
+  - generic
+  kind: negative
+  priority: P0
+  tags:
+  - negative
+  - security
+  - authz
+  - ci
+  - regression
+  - release
+  - smoke
+  preconditions: &id001
+  - Resource has owner-level access restrictions; users A and B and resource A exist.
+  steps:
+  - action: As user B, read a resource owned by user A by substituting its identifier.
+    notes: 'Matrix axis: Resource ownership; scenario: Cross-owner read. Use isolated synthetic identities and data.'
+  expected:
+  - Deny or conceal the resource according to policy; response contains no owner data and no side effect occurs.
+  - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
+    contract specifies it.
+  applicability:
+    when: *id001
+    skip_when:
+    - Resource is public or shared with user B by an explicit grant.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Smoke
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: critical
+    likelihood: high
+  references:
+  - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model

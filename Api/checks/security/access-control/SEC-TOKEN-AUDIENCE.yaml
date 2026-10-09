@@ -1,0 +1,42 @@
+checks:
+- id: SEC-TOKEN-AUDIENCE
+  title: Token for another audience is rejected
+  category: security
+  protocols:
+  - rest
+  - graphql
+  - generic
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - security
+  - authn
+  - ci
+  - regression
+  - release
+  preconditions: &id001
+  - Token validation uses issuer/audience claims.
+  steps:
+  - action: Present a correctly signed token issued for a different service or audience.
+    notes: 'Matrix axis: Authentication; scenario: Wrong audience. Use isolated synthetic identities and data.'
+  expected:
+  - Token is rejected unless its audience is explicitly accepted by policy.
+  - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
+    contract specifies it.
+  applicability:
+    when: *id001
+    skip_when:
+    - Credential scheme has no audience concept.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model

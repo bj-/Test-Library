@@ -1,0 +1,43 @@
+checks:
+- id: SEC-BOLA-BULK
+  title: Bulk endpoint enforces ownership per item
+  category: security
+  protocols:
+  - rest
+  - graphql
+  - generic
+  kind: negative
+  priority: P0
+  tags:
+  - negative
+  - security
+  - authz
+  - regression
+  - release
+  - nightly
+  preconditions: &id001
+  - Bulk/batch endpoint processes multiple resources with ownership restrictions.
+  steps:
+  - action: Submit a bulk request containing resources owned by the caller and by another user.
+    notes: 'Matrix axis: Resource ownership; scenario: Mixed-owner batch. Use isolated synthetic identities and data.'
+  expected:
+  - Each item is authorized independently or the whole batch fails atomically as documented; unauthorized items are not read
+    or mutated.
+  - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
+    contract specifies it.
+  applicability:
+    when: *id001
+    skip_when:
+    - No bulk operation exists.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+  references:
+  - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model

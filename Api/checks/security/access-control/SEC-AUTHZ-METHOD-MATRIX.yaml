@@ -1,0 +1,42 @@
+checks:
+- id: SEC-AUTHZ-METHOD-MATRIX
+  title: Authorization is enforced for every method
+  category: security
+  protocols:
+  - rest
+  - graphql
+  - generic
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - security
+  - authz
+  - ci
+  - regression
+  - release
+  preconditions: &id001
+  - Resource exposes multiple methods with potentially different permissions.
+  steps:
+  - action: For the same resource, test each supported method as an unauthorized principal.
+    notes: 'Matrix axis: Authorization; scenario: Method bypass. Use isolated synthetic identities and data.'
+  expected:
+  - GET/POST/PUT/PATCH/DELETE and other supported methods each enforce their declared permissions.
+  - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
+    contract specifies it.
+  applicability:
+    when: *id001
+    skip_when:
+    - Only one method is supported.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model

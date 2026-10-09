@@ -1,0 +1,42 @@
+checks:
+- id: SEC-AUTHZ-REVOKE-ROLE
+  title: Role revocation takes effect within policy window
+  category: security
+  protocols:
+  - rest
+  - graphql
+  - generic
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - security
+  - authz
+  - regression
+  - release
+  - nightly
+  preconditions: &id001
+  - Roles can be revoked while a session or token remains active.
+  steps:
+  - action: Authenticate with a privileged role, revoke that role, then retry privileged operations with existing sessions/tokens.
+    notes: 'Matrix axis: Roles/Scopes; scenario: Role revoked. Use isolated synthetic identities and data.'
+  expected:
+  - Access reflects role revocation within the documented propagation/cache window.
+  - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
+    contract specifies it.
+  applicability:
+    when: *id001
+    skip_when:
+    - Roles are immutable for the lifetime of the identity.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model

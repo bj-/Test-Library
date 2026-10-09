@@ -1,0 +1,40 @@
+checks:
+- id: SEC-VERTICAL-ESCALATION
+  title: Lower role cannot invoke higher-role route via alternate method
+  category: security
+  protocols:
+  - rest
+  - graphql
+  - generic
+  kind: negative
+  priority: P0
+  tags:
+  - negative
+  - security
+  - authz
+  - regression
+  - release
+  preconditions: &id001
+  - Operation has aliases, multiple methods, or supported API versions.
+  steps:
+  - action: Try the privileged operation via alternate HTTP method, API version, alias, or route if supported.
+    notes: 'Matrix axis: Roles/Scopes; scenario: Alternate route escalation. Use isolated synthetic identities and data.'
+  expected:
+  - Every route/method/version enforces equivalent authorization policy.
+  - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
+    contract specifies it.
+  applicability:
+    when: *id001
+    skip_when:
+    - No alternate route or method exists.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+  references:
+  - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model
