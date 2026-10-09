@@ -1,0 +1,64 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Virtual environments and local Python tooling
+.venv/
+venv/
+env/
+ENV/
+.python-version.local
+
+# Secrets and local environment configuration
+.env
+.env.*
+!.env.example
+!.env.template
+*.pem
+*.key
+secrets.*
+
+# Logs, temporary files and editor backups
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# IDE / editor metadata
+.vscode/
+.idea/
+*.code-workspace
+
+# Build/test artifacts that can be regenerated
+.pytest_cache/
+.tox/
+.nox/
+dist/
+wheelhouse/
+*.egg-info/
+
+# Generated coverage candidates and machine-readable reports
+# Keep Markdown reports in build/ for review and versioning.
+build/coverage/generated_checks/
+build/coverage/coverage_matrix.json
+build/coverage/coverage_report.json
+build/real-contract-coverage/*.json
+build/real-contract-coverage/*.txt
+
+# Local test outputs
+artifacts/
+test-results/
+allure-results/
+allure-report/
