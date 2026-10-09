@@ -1,0 +1,55 @@
+checks:
+- id: REAL-MOBILE-CLIENT-API-REFRESH-EXPIRED-OR-INVALID-REFRESH-TOKEN
+  title: Authentication endpoint rejects invalid credentials
+  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить
+    перед исполнением.
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - token-lifecycle
+  - smoke
+  - ci
+  - regression
+  - release
+  preconditions:
+  - Изолированное тестовое окружение и синтетические учётные записи доступны
+  - Ожидаемая политика доступа подтверждена
+  steps:
+  - action: 'Подготовить тестовые данные для POST /auth/refresh; сценарий: expired-or-invalid-refresh-token.'
+    data:
+      operationId: refresh
+      method: POST
+      path: /auth/refresh
+      dimension: authentication
+  - action: Отправить POST запрос на /auth/refresh с заданными credentials/ролью/ресурсом.
+    notes: Не использовать production credentials или реальные пользовательские данные.
+  expected:
+  - Expired, malformed, invalid-signature, or wrong-type refresh token is rejected and no new token pair is issued.
+  - При отказе защищённые данные не раскрываются, а запрещённая мутация не меняет состояние.
+  applicability:
+    when:
+    - 'Операция присутствует в OpenAPI: POST /auth/refresh'
+    - Политика для измерения authentication подтверждена
+    skip_when:
+    - Политика явно помечена как неприменимая к операции
+  automation:
+    level: partial
+    deterministic: true
+    notes: Требуется привязка fixtures и фактического transport/client.
+  profiles:
+  - Smoke
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: high
+    likelihood: high
+  references:
+  - OpenAPI operationId=refresh
+  - 'Contract: mobile-client-api'

@@ -1,0 +1,58 @@
+id: GEN-UPDATEPROJECT-AUTHORIZATION-DISALLOWED-ACTION
+title: 'Generated authorization check: disallowed action for PATCH /projects/{projectId}'
+description: Generated candidate from OpenAPI operation metadata and access model.
+  Review before execution.
+category: security
+protocols:
+- rest
+kind: security
+priority: P1
+tags:
+- security
+- negative
+- authz
+- ci
+- regression
+- release
+preconditions:
+- Test environment and synthetic principals are available
+- Expected access policy has been confirmed
+steps:
+- action: Prepare principal and resource fixtures for the selected access-control
+    case
+  data:
+    operation: PATCH /projects/{projectId}
+    dimension: authorization
+    case: disallowed_action
+    resource: project
+    roles:
+    - project-admin
+    scopes:
+    - projects:write
+- action: Send PATCH request to /projects/{projectId} with the negative access-control
+    fixture
+  notes: Use isolated test identities and synthetic data; do not use production credentials
+    or data.
+expected:
+- Reject action not granted by policy
+- No protected data is disclosed and no unauthorized state change occurs.
+applicability:
+  when:
+  - 'OpenAPI operation exists: PATCH /projects/{projectId}'
+  - Access-control dimension authorization is applicable
+  skip_when:
+  - Operation is explicitly marked not applicable for this dimension
+automation:
+  level: partial
+  deterministic: true
+  notes: Candidate requires fixture binding and policy-specific expected status configuration.
+profiles:
+- CI
+- Regression
+- Release
+risk:
+  impact: high
+  likelihood: high
+references:
+- OpenAPI operation metadata
+- x-access-control access model

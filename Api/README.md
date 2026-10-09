@@ -55,3 +55,7 @@ python tools/repair_profiles.py
 python tools/validate_library.py .
 ```
 Файл `tools/repair_profiles.py` приводит имена профилей к `PR.yaml`, `Smoke.yaml`, `CI.yaml`, `Regression.yaml`, `Nightly.yaml`, `Release.yaml` и устанавливает совпадающие `id`.
+
+## Stage 4: OpenAPI access-control coverage generator
+
+See `docs/COVERAGE_GENERATOR_STAGE4.md`. Run `python tools/generate_coverage.py --openapi examples/openapi.sample.yaml --access-model examples/access-model.sample.yaml --out build/coverage` to generate candidate security checks and coverage reports. Generated candidates require review and should be validated before merging.

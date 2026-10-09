@@ -1,0 +1,55 @@
+checks:
+- id: REAL-BFF-ADMIN-API-AUTHCONTROLLER-LOGOUT-MISSING-OR-INVALID-COOKI
+  title: Cookie-authenticated endpoint rejects missing/invalid session
+  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить
+    перед исполнением.
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - token-lifecycle
+  - smoke
+  - ci
+  - regression
+  - release
+  preconditions:
+  - Изолированное тестовое окружение и синтетические учётные записи доступны
+  - Ожидаемая политика доступа подтверждена
+  steps:
+  - action: 'Подготовить тестовые данные для POST /api/auth/logout; сценарий: missing-or-invalid-cookie.'
+    data:
+      operationId: AuthController_logout
+      method: POST
+      path: /api/auth/logout
+      dimension: authentication
+  - action: Отправить POST запрос на /api/auth/logout с заданными credentials/ролью/ресурсом.
+    notes: Не использовать production credentials или реальные пользовательские данные.
+  expected:
+  - Request without a valid session cookie is rejected and no protected data/state is exposed.
+  - При отказе защищённые данные не раскрываются, а запрещённая мутация не меняет состояние.
+  applicability:
+    when:
+    - 'Операция присутствует в OpenAPI: POST /api/auth/logout'
+    - Политика для измерения authentication подтверждена
+    skip_when:
+    - Политика явно помечена как неприменимая к операции
+  automation:
+    level: partial
+    deterministic: true
+    notes: Требуется привязка fixtures и фактического transport/client.
+  profiles:
+  - Smoke
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: high
+    likelihood: high
+  references:
+  - OpenAPI operationId=AuthController_logout
+  - 'Contract: bff-admin-api'

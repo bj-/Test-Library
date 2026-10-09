@@ -1,0 +1,684 @@
+[
+  {
+    "id": "REAL-BFF-ADMIN-API-AUTHCONTROLLER-LOGIN-INVALID-CREDENTIALS",
+    "title": "Login rejects invalid credentials",
+    "profiles": [
+      "Smoke",
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=AuthController_login",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-AUTHCONTROLLER-LOGOUT-MISSING-OR-INVALID-COOKI",
+    "title": "Cookie-authenticated endpoint rejects missing/invalid session",
+    "profiles": [
+      "Smoke",
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=AuthController_logout",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-AUTHCONTROLLER-LOGOUT-ROLE-MODEL-UNRESOLVED",
+    "title": "Confirm minimum privilege policy for sensitive operation",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=AuthController_logout",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-AUTHCONTROLLER-CHANGEPASSWORD-MISSING-OR-INVAL",
+    "title": "Cookie-authenticated endpoint rejects missing/invalid session",
+    "profiles": [
+      "Smoke",
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=AuthController_changePassword",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-AUTHCONTROLLER-CHANGEPASSWORD-WRONG-CURRENT-PA",
+    "title": "Password change verifies current password",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=AuthController_changePassword",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-AUTHCONTROLLER-CHANGEPASSWORD-ROLE-MODEL-UNRES",
+    "title": "Confirm minimum privilege policy for sensitive operation",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=AuthController_changePassword",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-AUTHCONTROLLER-GETSESSIONS-MISSING-OR-INVALID",
+    "title": "Cookie-authenticated endpoint rejects missing/invalid session",
+    "profiles": [
+      "Smoke",
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=AuthController_getSessions",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-AUTHCONTROLLER-GETSESSIONS-CROSS-ACCOUNT-SESSI",
+    "title": "Session endpoint enforces session ownership",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=AuthController_getSessions",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-AUTHCONTROLLER-DELETESESSION-MISSING-OR-INVALI",
+    "title": "Cookie-authenticated endpoint rejects missing/invalid session",
+    "profiles": [
+      "Smoke",
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=AuthController_deleteSession",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-AUTHCONTROLLER-DELETESESSION-CROSS-ACCOUNT-SES",
+    "title": "Session endpoint enforces session ownership",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=AuthController_deleteSession",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-AUTHCONTROLLER-DELETESESSION-ROLE-MODEL-UNRESO",
+    "title": "Confirm minimum privilege policy for sensitive operation",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=AuthController_deleteSession",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-COMPONENTTYPESCONTROLLER-GETTYPES-OPERATION-AC",
+    "title": "Confirm operation-specific authentication and authorization policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=ComponentTypesController_getTypes",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-GETSCREENS-OPERATION-ACCESS",
+    "title": "Confirm operation-specific authentication and authorization policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=LayoutsController_getScreens",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-GETCURRENTVERSIONS-OPERATION",
+    "title": "Confirm operation-specific authentication and authorization policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=LayoutsController_getCurrentVersions",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-GETVERSIONS-OPERATION-ACCESS",
+    "title": "Confirm operation-specific authentication and authorization policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=LayoutsController_getVersions",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-GETSCREEN-OPERATION-ACCESS-P",
+    "title": "Confirm operation-specific authentication and authorization policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=LayoutsController_getScreen",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-GETNODES-OPERATION-ACCESS-PO",
+    "title": "Confirm operation-specific authentication and authorization policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=LayoutsController_getNodes",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-GETLANGUAGES-OPERATION-ACCES",
+    "title": "Confirm operation-specific authentication and authorization policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=LayoutsController_getLanguages",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-TOGGLELANGUAGE-OPERATION-ACC",
+    "title": "Confirm operation-specific authentication and authorization policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=LayoutsController_toggleLanguage",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-TOGGLELANGUAGE-ROLE-MODEL-UN",
+    "title": "Confirm minimum privilege policy for sensitive operation",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=LayoutsController_toggleLanguage",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-UPDATECOMPONENT-OPERATION-AC",
+    "title": "Confirm operation-specific authentication and authorization policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=LayoutsController_updateComponent",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-UPDATECOMPONENT-ROLE-MODEL-U",
+    "title": "Confirm minimum privilege policy for sensitive operation",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=LayoutsController_updateComponent",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-SAVETRANSLATION-OPERATION-AC",
+    "title": "Confirm operation-specific authentication and authorization policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=LayoutsController_saveTranslation",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-SAVETRANSLATION-ROLE-MODEL-U",
+    "title": "Confirm minimum privilege policy for sensitive operation",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=LayoutsController_saveTranslation",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-VALIDATE-OPERATION-ACCESS-PO",
+    "title": "Confirm operation-specific authentication and authorization policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=LayoutsController_validate",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-VALIDATE-ROLE-MODEL-UNRESOLV",
+    "title": "Confirm minimum privilege policy for sensitive operation",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=LayoutsController_validate",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-PUBLISH-OPERATION-ACCESS-POL",
+    "title": "Confirm operation-specific authentication and authorization policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=LayoutsController_publish",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-PUBLISH-ROLE-MODEL-UNRESOLVE",
+    "title": "Confirm minimum privilege policy for sensitive operation",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=LayoutsController_publish",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-ARCHIVE-OPERATION-ACCESS-POL",
+    "title": "Confirm operation-specific authentication and authorization policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=LayoutsController_archive",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-ARCHIVE-ROLE-MODEL-UNRESOLVE",
+    "title": "Confirm minimum privilege policy for sensitive operation",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=LayoutsController_archive",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-CONTENTCONTROLLER-GETSOURCES-OPERATION-ACCESS",
+    "title": "Confirm operation-specific authentication and authorization policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=ContentController_getSources",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-CONTENTCONTROLLER-GETITEMS-OPERATION-ACCESS-PO",
+    "title": "Confirm operation-specific authentication and authorization policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=ContentController_getItems",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-CONTENTCONTROLLER-CREATEITEM-OPERATION-ACCESS",
+    "title": "Confirm operation-specific authentication and authorization policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=ContentController_createItem",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-CONTENTCONTROLLER-CREATEITEM-ROLE-MODEL-UNRESO",
+    "title": "Confirm minimum privilege policy for sensitive operation",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=ContentController_createItem",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-CONTENTCONTROLLER-UPDATEITEM-OPERATION-ACCESS",
+    "title": "Confirm operation-specific authentication and authorization policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=ContentController_updateItem",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-CONTENTCONTROLLER-UPDATEITEM-ROLE-MODEL-UNRESO",
+    "title": "Confirm minimum privilege policy for sensitive operation",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=ContentController_updateItem",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-CONTENTCONTROLLER-REMOVEITEM-OPERATION-ACCESS",
+    "title": "Confirm operation-specific authentication and authorization policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=ContentController_removeItem",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-CONTENTCONTROLLER-REMOVEITEM-ROLE-MODEL-UNRESO",
+    "title": "Confirm minimum privilege policy for sensitive operation",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=ContentController_removeItem",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-BFF-ADMIN-API-AUDITCONTROLLER-GETENTRIES-OPERATION-ACCESS-PO",
+    "title": "Confirm operation-specific authentication and authorization policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=AuditController_getEntries",
+      "Contract: bff-admin-api"
+    ]
+  },
+  {
+    "id": "REAL-MOBILE-CLIENT-API-ONSTART-ANONYMOUS-VS-API-KEY",
+    "title": "Startup endpoint matches the documented API-key policy",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=onStart",
+      "Contract: mobile-client-api"
+    ]
+  },
+  {
+    "id": "REAL-MOBILE-CLIENT-API-SENDCODE-INVALID-API-KEY",
+    "title": "Authentication endpoint rejects invalid credentials",
+    "profiles": [
+      "Smoke",
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=sendCode",
+      "Contract: mobile-client-api"
+    ]
+  },
+  {
+    "id": "REAL-MOBILE-CLIENT-API-VERIFYCODE-INVALID-API-KEY",
+    "title": "Authentication endpoint rejects invalid credentials",
+    "profiles": [
+      "Smoke",
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=verifyCode",
+      "Contract: mobile-client-api"
+    ]
+  },
+  {
+    "id": "REAL-MOBILE-CLIENT-API-REFRESH-EXPIRED-OR-INVALID-REFRESH-TOKEN",
+    "title": "Authentication endpoint rejects invalid credentials",
+    "profiles": [
+      "Smoke",
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=refresh",
+      "Contract: mobile-client-api"
+    ]
+  },
+  {
+    "id": "REAL-MOBILE-CLIENT-API-LOGOUT-MISSING-EXPIRED-OR-REFRESH-TOKEN",
+    "title": "Logout requires a valid access token",
+    "profiles": [
+      "Smoke",
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=logout",
+      "Contract: mobile-client-api"
+    ]
+  },
+  {
+    "id": "REAL-MOBILE-CLIENT-API-GETUNSIGNEDDOCUMENTS-GUEST-VS-AUTHENTICATE",
+    "title": "Guest and authenticated document access follow distinct policies",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=getUnsignedDocuments",
+      "Contract: mobile-client-api"
+    ]
+  },
+  {
+    "id": "REAL-MOBILE-CLIENT-API-ACCEPTDOCUMENTS-GUEST-VS-AUTHENTICATED",
+    "title": "Guest and authenticated document access follow distinct policies",
+    "profiles": [
+      "Smoke",
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=acceptDocuments",
+      "Contract: mobile-client-api"
+    ]
+  },
+  {
+    "id": "REAL-MOBILE-CLIENT-API-ACCEPTDOCUMENTS-CROSS-PRINCIPAL-OR-STALE-R",
+    "title": "Document acceptance is bound to the correct principal and revision",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=acceptDocuments",
+      "Contract: mobile-client-api"
+    ]
+  },
+  {
+    "id": "REAL-MOBILE-CLIENT-API-GETDOCUMENTSHISTORY-GUEST-VS-AUTHENTICATED",
+    "title": "Guest and authenticated document access follow distinct policies",
+    "profiles": [
+      "CI",
+      "Regression",
+      "Release"
+    ],
+    "priority": "P1",
+    "references": [
+      "OpenAPI operationId=getDocumentsHistory",
+      "Contract: mobile-client-api"
+    ]
+  }
+]

@@ -1,0 +1,464 @@
+[
+  {
+    "type": "contract_security_gap",
+    "operation": "POST /api/auth/login",
+    "operationId": "AuthController_login",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "medium"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "POST /api/auth/logout",
+    "operationId": "AuthController_logout",
+    "question": "Role/permission model is unknown. Confirm whether roles/scopes exist and specify the minimum privilege, or explicitly document that any authenticated principal may perform this action.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "POST /api/auth/change-password",
+    "operationId": "AuthController_changePassword",
+    "question": "Role/permission model is unknown. Confirm whether roles/scopes exist and specify the minimum privilege, or explicitly document that any authenticated principal may perform this action.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "DELETE /api/auth/sessions/{sessionId}",
+    "operationId": "AuthController_deleteSession",
+    "question": "Role/permission model is unknown. Confirm whether roles/scopes exist and specify the minimum privilege, or explicitly document that any authenticated principal may perform this action.",
+    "risk": "high"
+  },
+  {
+    "type": "contract_security_gap",
+    "operation": "GET /api/component-types",
+    "operationId": "ComponentTypesController_getTypes",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "medium"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /api/component-types",
+    "operationId": "ComponentTypesController_getTypes",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "medium"
+  },
+  {
+    "type": "contract_security_gap",
+    "operation": "GET /api/layouts",
+    "operationId": "LayoutsController_getScreens",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "medium"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /api/layouts",
+    "operationId": "LayoutsController_getScreens",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "medium"
+  },
+  {
+    "type": "contract_security_gap",
+    "operation": "GET /api/layouts/current-versions",
+    "operationId": "LayoutsController_getCurrentVersions",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "medium"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /api/layouts/current-versions",
+    "operationId": "LayoutsController_getCurrentVersions",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "medium"
+  },
+  {
+    "type": "contract_security_gap",
+    "operation": "GET /api/layouts/{key}/versions",
+    "operationId": "LayoutsController_getVersions",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "medium"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /api/layouts/{key}/versions",
+    "operationId": "LayoutsController_getVersions",
+    "question": "Confirm whether resource ownership applies and how the principal/installation_id is bound to the resource.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /api/layouts/{key}/versions",
+    "operationId": "LayoutsController_getVersions",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "medium"
+  },
+  {
+    "type": "contract_security_gap",
+    "operation": "GET /api/layouts/{id}",
+    "operationId": "LayoutsController_getScreen",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "medium"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /api/layouts/{id}",
+    "operationId": "LayoutsController_getScreen",
+    "question": "Confirm whether resource ownership applies and how the principal/installation_id is bound to the resource.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /api/layouts/{id}",
+    "operationId": "LayoutsController_getScreen",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "medium"
+  },
+  {
+    "type": "contract_security_gap",
+    "operation": "GET /api/layouts/{id}/nodes",
+    "operationId": "LayoutsController_getNodes",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "medium"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /api/layouts/{id}/nodes",
+    "operationId": "LayoutsController_getNodes",
+    "question": "Confirm whether resource ownership applies and how the principal/installation_id is bound to the resource.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /api/layouts/{id}/nodes",
+    "operationId": "LayoutsController_getNodes",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "medium"
+  },
+  {
+    "type": "contract_security_gap",
+    "operation": "GET /api/layouts/{id}/languages",
+    "operationId": "LayoutsController_getLanguages",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "medium"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /api/layouts/{id}/languages",
+    "operationId": "LayoutsController_getLanguages",
+    "question": "Confirm whether resource ownership applies and how the principal/installation_id is bound to the resource.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /api/layouts/{id}/languages",
+    "operationId": "LayoutsController_getLanguages",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "medium"
+  },
+  {
+    "type": "contract_security_gap",
+    "operation": "PATCH /api/layouts/{id}/languages/{lang}",
+    "operationId": "LayoutsController_toggleLanguage",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "PATCH /api/layouts/{id}/languages/{lang}",
+    "operationId": "LayoutsController_toggleLanguage",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "PATCH /api/layouts/{id}/languages/{lang}",
+    "operationId": "LayoutsController_toggleLanguage",
+    "question": "Role/permission model is unknown. Confirm whether roles/scopes exist and specify the minimum privilege, or explicitly document that any authenticated principal may perform this action.",
+    "risk": "high"
+  },
+  {
+    "type": "contract_security_gap",
+    "operation": "PATCH /api/layouts/{id}/components/{componentId}",
+    "operationId": "LayoutsController_updateComponent",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "PATCH /api/layouts/{id}/components/{componentId}",
+    "operationId": "LayoutsController_updateComponent",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "PATCH /api/layouts/{id}/components/{componentId}",
+    "operationId": "LayoutsController_updateComponent",
+    "question": "Role/permission model is unknown. Confirm whether roles/scopes exist and specify the minimum privilege, or explicitly document that any authenticated principal may perform this action.",
+    "risk": "high"
+  },
+  {
+    "type": "contract_security_gap",
+    "operation": "PUT /api/layouts/{id}/components/{componentId}/translations/{lang}",
+    "operationId": "LayoutsController_saveTranslation",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "PUT /api/layouts/{id}/components/{componentId}/translations/{lang}",
+    "operationId": "LayoutsController_saveTranslation",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "PUT /api/layouts/{id}/components/{componentId}/translations/{lang}",
+    "operationId": "LayoutsController_saveTranslation",
+    "question": "Role/permission model is unknown. Confirm whether roles/scopes exist and specify the minimum privilege, or explicitly document that any authenticated principal may perform this action.",
+    "risk": "high"
+  },
+  {
+    "type": "contract_security_gap",
+    "operation": "POST /api/layouts/{id}/validate",
+    "operationId": "LayoutsController_validate",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "POST /api/layouts/{id}/validate",
+    "operationId": "LayoutsController_validate",
+    "question": "Confirm whether resource ownership applies and how the principal/installation_id is bound to the resource.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "POST /api/layouts/{id}/validate",
+    "operationId": "LayoutsController_validate",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "POST /api/layouts/{id}/validate",
+    "operationId": "LayoutsController_validate",
+    "question": "Role/permission model is unknown. Confirm whether roles/scopes exist and specify the minimum privilege, or explicitly document that any authenticated principal may perform this action.",
+    "risk": "high"
+  },
+  {
+    "type": "contract_security_gap",
+    "operation": "POST /api/layouts/{id}/publish",
+    "operationId": "LayoutsController_publish",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "POST /api/layouts/{id}/publish",
+    "operationId": "LayoutsController_publish",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "POST /api/layouts/{id}/publish",
+    "operationId": "LayoutsController_publish",
+    "question": "Role/permission model is unknown. Confirm whether roles/scopes exist and specify the minimum privilege, or explicitly document that any authenticated principal may perform this action.",
+    "risk": "high"
+  },
+  {
+    "type": "contract_security_gap",
+    "operation": "POST /api/layouts/{id}/archive",
+    "operationId": "LayoutsController_archive",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "POST /api/layouts/{id}/archive",
+    "operationId": "LayoutsController_archive",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "POST /api/layouts/{id}/archive",
+    "operationId": "LayoutsController_archive",
+    "question": "Role/permission model is unknown. Confirm whether roles/scopes exist and specify the minimum privilege, or explicitly document that any authenticated principal may perform this action.",
+    "risk": "high"
+  },
+  {
+    "type": "contract_security_gap",
+    "operation": "GET /api/content/sources",
+    "operationId": "ContentController_getSources",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "medium"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /api/content/sources",
+    "operationId": "ContentController_getSources",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "medium"
+  },
+  {
+    "type": "contract_security_gap",
+    "operation": "GET /api/content/{sourceKey}/items",
+    "operationId": "ContentController_getItems",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "medium"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /api/content/{sourceKey}/items",
+    "operationId": "ContentController_getItems",
+    "question": "Confirm whether resource ownership applies and how the principal/installation_id is bound to the resource.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /api/content/{sourceKey}/items",
+    "operationId": "ContentController_getItems",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "medium"
+  },
+  {
+    "type": "contract_security_gap",
+    "operation": "POST /api/content/{sourceKey}/items",
+    "operationId": "ContentController_createItem",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "POST /api/content/{sourceKey}/items",
+    "operationId": "ContentController_createItem",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "POST /api/content/{sourceKey}/items",
+    "operationId": "ContentController_createItem",
+    "question": "Role/permission model is unknown. Confirm whether roles/scopes exist and specify the minimum privilege, or explicitly document that any authenticated principal may perform this action.",
+    "risk": "high"
+  },
+  {
+    "type": "contract_security_gap",
+    "operation": "PATCH /api/content/{sourceKey}/items/{id}",
+    "operationId": "ContentController_updateItem",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "PATCH /api/content/{sourceKey}/items/{id}",
+    "operationId": "ContentController_updateItem",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "PATCH /api/content/{sourceKey}/items/{id}",
+    "operationId": "ContentController_updateItem",
+    "question": "Role/permission model is unknown. Confirm whether roles/scopes exist and specify the minimum privilege, or explicitly document that any authenticated principal may perform this action.",
+    "risk": "high"
+  },
+  {
+    "type": "contract_security_gap",
+    "operation": "DELETE /api/content/{sourceKey}/items/{id}",
+    "operationId": "ContentController_removeItem",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "DELETE /api/content/{sourceKey}/items/{id}",
+    "operationId": "ContentController_removeItem",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "DELETE /api/content/{sourceKey}/items/{id}",
+    "operationId": "ContentController_removeItem",
+    "question": "Role/permission model is unknown. Confirm whether roles/scopes exist and specify the minimum privilege, or explicitly document that any authenticated principal may perform this action.",
+    "risk": "high"
+  },
+  {
+    "type": "contract_security_gap",
+    "operation": "GET /api/audit",
+    "operationId": "AuditController_getEntries",
+    "question": "OpenAPI does not declare a security requirement. Confirm this endpoint is intentionally public or add the actual cookie/Bearer/API-key security requirement.",
+    "risk": "medium"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /api/audit",
+    "operationId": "AuditController_getEntries",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "medium"
+  },
+  {
+    "type": "contract_contradiction",
+    "operation": "POST /onStart",
+    "operationId": "onStart",
+    "question": "OpenAPI security includes an empty alternative {}, which permits anonymous access, while description says missing/invalid api-key returns 403. Confirm intended behavior and fix either security declaration or description.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "POST /onStart",
+    "operationId": "onStart",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "high"
+  },
+  {
+    "type": "owner_confirmation_required",
+    "operation": "POST /onStart",
+    "operationId": "onStart",
+    "question": "API owner must resolve whether api-key is mandatory. OpenAPI permits anonymous access via security alternative {}, while the description says missing/invalid api-key returns 403. Keep the definitive expected result blocked until confirmed.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /documents/unsigned",
+    "operationId": "getUnsignedDocuments",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "medium"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "POST /documents/accept",
+    "operationId": "acceptDocuments",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "high"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /documents/history",
+    "operationId": "getDocumentsHistory",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "medium"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /stories/onboarding",
+    "operationId": "getOnboardingStory",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "medium"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /stories/widgets",
+    "operationId": "getWidgetStories",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "medium"
+  },
+  {
+    "type": "needs_clarification",
+    "operation": "GET /stories/faq",
+    "operationId": "getFaqStories",
+    "question": "Confirm whether regional/tenant isolation applies and identify the trusted tenant/region context. Do not assume installation_id or locale is a tenant boundary.",
+    "risk": "medium"
+  }
+]

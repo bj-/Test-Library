@@ -1,0 +1,53 @@
+checks:
+- id: REAL-MOBILE-CLIENT-API-ONSTART-ANONYMOUS-VS-API-KEY
+  title: Startup endpoint matches the documented API-key policy
+  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить
+    перед исполнением.
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - ci
+  - regression
+  - release
+  preconditions:
+  - Изолированное тестовое окружение и синтетические учётные записи доступны
+  - Ожидаемая политика доступа подтверждена
+  steps:
+  - action: 'Подготовить тестовые данные для POST /onStart; сценарий: anonymous-vs-api-key.'
+    data:
+      operationId: onStart
+      method: POST
+      path: /onStart
+      dimension: authentication
+  - action: Отправить POST запрос на /onStart с заданными credentials/ролью/ресурсом.
+    notes: Не использовать production credentials или реальные пользовательские данные.
+  expected:
+  - Behavior for missing/invalid api-key matches the resolved contract policy; this test remains blocked until the
+    security-description contradiction is resolved.
+  - При отказе защищённые данные не раскрываются, а запрещённая мутация не меняет состояние.
+  applicability:
+    when:
+    - 'Операция присутствует в OpenAPI: POST /onStart'
+    - Политика для измерения authentication подтверждена
+    skip_when:
+    - Политика явно помечена как неприменимая к операции
+  automation:
+    level: partial
+    deterministic: true
+    notes: Требуется привязка fixtures и фактического transport/client.
+  profiles:
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: high
+    likelihood: high
+  references:
+  - OpenAPI operationId=onStart
+  - 'Contract: mobile-client-api'

@@ -1,0 +1,56 @@
+checks:
+- id: REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-UPDATECOMPONENT-ROLE-MODEL-U
+  title: Confirm minimum privilege policy for sensitive operation
+  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить
+    перед исполнением.
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authz
+  - roles-scopes
+  - privilege-escalation
+  - ci
+  - regression
+  - release
+  preconditions:
+  - Изолированное тестовое окружение и синтетические учётные записи доступны
+  - Ожидаемая политика доступа подтверждена
+  steps:
+  - action: 'Подготовить тестовые данные для PATCH /api/layouts/{id}/components/{componentId}; сценарий: role-model-unresolved.'
+    data:
+      operationId: LayoutsController_updateComponent
+      method: PATCH
+      path: /api/layouts/{id}/components/{componentId}
+      dimension: roles_scopes
+  - action: Отправить PATCH запрос на /api/layouts/{id}/components/{componentId} с заданными credentials/ролью/ресурсом.
+    notes: 'Blocked candidate: role model is unknown; do not assume the role names or privileges from earlier draft
+      models.'
+  expected:
+  - The operation must reject callers lacking the confirmed minimum role/scope; exact expected status and role fixture
+    remain blocked until the API owner defines the authorization model.
+  - При отказе защищённые данные не раскрываются, а запрещённая мутация не меняет состояние.
+  applicability:
+    when:
+    - 'Операция присутствует в OpenAPI: PATCH /api/layouts/{id}/components/{componentId}'
+    - Политика для измерения roles_scopes подтверждена
+    skip_when:
+    - Политика явно помечена как неприменимая к операции
+  automation:
+    level: partial
+    deterministic: true
+    notes: Требуется привязка fixtures и фактического transport/client.
+  profiles:
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: high
+    likelihood: high
+  references:
+  - OpenAPI operationId=LayoutsController_updateComponent
+  - 'Contract: bff-admin-api'

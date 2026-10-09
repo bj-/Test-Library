@@ -1,0 +1,62 @@
+id: GEN-GETPROJECT-AUTHENTICATION-MISSING-OR-INVALID-CRE
+title: 'Generated authentication check: missing or invalid credentials for GET /projects/{projectId}'
+description: Generated candidate from OpenAPI operation metadata and access model.
+  Review before execution.
+category: security
+protocols:
+- rest
+kind: security
+priority: P1
+tags:
+- security
+- negative
+- authn
+- token-lifecycle
+- ci
+- regression
+- release
+- smoke
+preconditions:
+- Test environment and synthetic principals are available
+- Expected access policy has been confirmed
+steps:
+- action: Prepare principal and resource fixtures for the selected access-control
+    case
+  data:
+    operation: GET /projects/{projectId}
+    dimension: authentication
+    case: missing_or_invalid_credentials
+    resource: project
+    roles:
+    - reader
+    - project-admin
+    scopes:
+    - projects:read
+- action: Send GET request to /projects/{projectId} with the negative access-control
+    fixture
+  notes: Use isolated test identities and synthetic data; do not use production credentials
+    or data.
+expected:
+- Reject absent or invalid credentials
+- No protected data is disclosed and no unauthorized state change occurs.
+applicability:
+  when:
+  - 'OpenAPI operation exists: GET /projects/{projectId}'
+  - Access-control dimension authentication is applicable
+  skip_when:
+  - Operation is explicitly marked not applicable for this dimension
+automation:
+  level: partial
+  deterministic: true
+  notes: Candidate requires fixture binding and policy-specific expected status configuration.
+profiles:
+- CI
+- Regression
+- Release
+- Smoke
+risk:
+  impact: high
+  likelihood: high
+references:
+- OpenAPI operation metadata
+- x-access-control access model

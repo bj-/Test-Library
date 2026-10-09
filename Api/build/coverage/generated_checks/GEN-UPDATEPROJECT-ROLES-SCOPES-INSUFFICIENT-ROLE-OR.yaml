@@ -1,0 +1,59 @@
+id: GEN-UPDATEPROJECT-ROLES-SCOPES-INSUFFICIENT-ROLE-OR
+title: 'Generated roles scopes check: insufficient role or scope for PATCH /projects/{projectId}'
+description: Generated candidate from OpenAPI operation metadata and access model.
+  Review before execution.
+category: security
+protocols:
+- rest
+kind: security
+priority: P1
+tags:
+- security
+- negative
+- roles-scopes
+- privilege-escalation
+- ci
+- regression
+- release
+preconditions:
+- Test environment and synthetic principals are available
+- Expected access policy has been confirmed
+steps:
+- action: Prepare principal and resource fixtures for the selected access-control
+    case
+  data:
+    operation: PATCH /projects/{projectId}
+    dimension: roles_scopes
+    case: insufficient_role_or_scope
+    resource: project
+    roles:
+    - project-admin
+    scopes:
+    - projects:write
+- action: Send PATCH request to /projects/{projectId} with the negative access-control
+    fixture
+  notes: Use isolated test identities and synthetic data; do not use production credentials
+    or data.
+expected:
+- Reject caller lacking the required role/scope
+- No protected data is disclosed and no unauthorized state change occurs.
+applicability:
+  when:
+  - 'OpenAPI operation exists: PATCH /projects/{projectId}'
+  - Access-control dimension roles_scopes is applicable
+  skip_when:
+  - Operation is explicitly marked not applicable for this dimension
+automation:
+  level: partial
+  deterministic: true
+  notes: Candidate requires fixture binding and policy-specific expected status configuration.
+profiles:
+- CI
+- Regression
+- Release
+risk:
+  impact: high
+  likelihood: high
+references:
+- OpenAPI operation metadata
+- x-access-control access model

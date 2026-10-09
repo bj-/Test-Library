@@ -1,0 +1,93 @@
+version: 2
+api: API мобильного клиента
+defaults:
+  ownership: unknown
+  tenant_isolation: unknown
+  resource: mobile-resource
+  roles: []
+  scopes: []
+  roles_model: unknown
+policy:
+  deny_by_default: true
+  mutation_must_leave_state_unchanged: true
+  isolation_model: unknown_until_owner_confirmation
+operations:
+  onStart:
+    public: null
+    access_policy_status: needs_owner_confirmation
+    ownership: not_applicable
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: app-start
+  sendCode:
+    public: true
+    ownership: not_applicable
+    tenant_isolation: not_applicable
+    roles: []
+    scopes: []
+    resource: authentication-challenge
+  verifyCode:
+    public: true
+    ownership: not_applicable
+    tenant_isolation: not_applicable
+    roles: []
+    scopes: []
+    resource: authentication-challenge
+  refresh:
+    public: true
+    ownership: not_applicable
+    tenant_isolation: not_applicable
+    roles: []
+    scopes: []
+    resource: token-session
+  logout:
+    public: false
+    ownership: required
+    tenant_isolation: not_applicable
+    roles: []
+    scopes: []
+    resource: token-session
+  getUnsignedDocuments:
+    public: true
+    ownership: required
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: document-acceptance
+  acceptDocuments:
+    public: true
+    ownership: required
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: document-acceptance
+    action: accept
+  getDocumentsHistory:
+    public: true
+    ownership: required
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: document-acceptance
+  getOnboardingStory:
+    public: true
+    ownership: not_applicable
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: regional-content
+  getWidgetStories:
+    public: true
+    ownership: not_applicable
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: regional-content
+  getFaqStories:
+    public: true
+    ownership: not_applicable
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: regional-content

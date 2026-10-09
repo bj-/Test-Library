@@ -1,0 +1,1195 @@
+openapi: 3.0.0
+info:
+  title: API мобильного клиента
+  description: >
+    Единая спецификация мобильного клиента. Версия набора контрактов -
+    `info.version` этого файла;
+
+    автор MR в main поднимает её при любой правке контрактов.
+  version: 0.0.3
+servers:
+  - url: /api
+tags:
+  - name: bff
+    x-displayName: Старт приложения
+    description: Данные для запуска приложения одним запросом
+  - name: auth
+    x-displayName: Аутентификация
+    description: Вход по одноразовому коду на телефон или почту и работа с парой токенов
+  - name: documents
+    x-displayName: Документы
+    description: Неподписанные юридически значимые документы, их принятие и история принятия
+  - name: stories
+    x-displayName: Истории
+    description: Истории онбординга, виджетов и FAQ на языке локали клиента
+paths:
+  /onStart:
+    post:
+      operationId: onStart
+      summary: Get the data for the app start
+      tags:
+        - bff
+      description: |
+        На запуске приложения.
+
+        **Ошибки**
+
+        - `400` - запрос не соответствует схеме контракта
+        - `403` - заголовка `api-key` нет или ключ неверен
+        - `406` - для тега из `Accept-Language` нет региона в настройках
+        - `502` - вышестоящая система ответила ошибкой
+        - `504` - вышестоящая система не ответила вовремя
+      parameters:
+        - name: installation_id
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: "#/components/parameters/Locale"
+      responses:
+        "200":
+          description: Content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OnStartResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "406":
+          $ref: "#/components/responses/NotAcceptable"
+        "502":
+          $ref: "#/components/responses/BadGateway"
+        "504":
+          $ref: "#/components/responses/GatewayTimeout"
+      security:
+        - Api-Key: []
+        - {}
+  /auth/send-code:
+    post:
+      operationId: sendCode
+      summary: Send a one-time code to a phone or email
+      tags:
+        - auth
+      description: >
+        Первый шаг входа - отправка одноразового кода на контакт. Ответ не
+        зависит от того, есть ли
+
+        учётная запись с этим контактом.
+
+
+        **Ошибки**
+
+
+        - `400` - запрос не соответствует схеме контракта
+
+        - `403` - заголовка `api-key` нет или ключ неверен
+
+        - `406` - для тега из `Accept-Language` нет региона в настройках
+
+        - `502` - вышестоящая система ответила ошибкой
+
+        - `504` - вышестоящая система не ответила вовремя
+      parameters:
+        - $ref: "#/components/parameters/Locale"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendCodeRequest"
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "406":
+          $ref: "#/components/responses/NotAcceptable"
+        "502":
+          $ref: "#/components/responses/BadGateway"
+        "504":
+          $ref: "#/components/responses/GatewayTimeout"
+      security:
+        - Api-Key: []
+  /auth/verify-code:
+    post:
+      operationId: verifyCode
+      summary: Verify the code and issue tokens
+      tags:
+        - auth
+      description: >
+        Второй шаг входа - проверка кода и выдача пары токенов новой сессии.
+        Ответ одинаков для первого
+
+        и повторного входа.
+
+
+        **Ошибки**
+
+
+        - `400` - запрос не соответствует схеме контракта
+
+        - `401` - код не принят
+
+        - `403` - заголовка `api-key` нет или ключ неверен
+
+        - `406` - для тега из `Accept-Language` нет региона в настройках
+
+        - `502` - вышестоящая система ответила ошибкой
+
+        - `504` - вышестоящая система не ответила вовремя
+      parameters:
+        - $ref: "#/components/parameters/Locale"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyCodeRequest"
+      responses:
+        "200":
+          description: Content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthTokens"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "406":
+          $ref: "#/components/responses/NotAcceptable"
+        "502":
+          $ref: "#/components/responses/BadGateway"
+        "504":
+          $ref: "#/components/responses/GatewayTimeout"
+      security:
+        - Api-Key: []
+  /auth/refresh:
+    post:
+      operationId: refresh
+      summary: Exchange a refresh token for a new pair
+      tags:
+        - auth
+      description: >
+        Обмен refresh-токена на новую пару токенов той же сессии.
+
+
+        **Ошибки**
+
+
+        - `400` - запрос не соответствует схеме контракта
+
+        - `401` - подпись refresh-токена не проверяется; срок истёк; в токене
+        нет обязательных полей; передан access-токен
+
+        - `403` - заголовка `api-key` нет или ключ неверен
+
+        - `406` - для тега из `Accept-Language` нет региона в настройках
+
+        - `502` - вышестоящая система ответила ошибкой
+
+        - `504` - вышестоящая система не ответила вовремя
+      parameters:
+        - $ref: "#/components/parameters/Locale"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshRequest"
+      responses:
+        "200":
+          description: Content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthTokens"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "406":
+          $ref: "#/components/responses/NotAcceptable"
+        "502":
+          $ref: "#/components/responses/BadGateway"
+        "504":
+          $ref: "#/components/responses/GatewayTimeout"
+      security:
+        - Api-Key: []
+  /auth/logout:
+    post:
+      operationId: logout
+      summary: Sign out the session of the access token
+      tags:
+        - auth
+      description: >
+        Выход из сессии access-токена.
+
+
+        **Ошибки**
+
+
+        - `400` - запрос не соответствует схеме контракта
+
+        - `401` - заголовка `Authorization` нет; `Authorization` передан без
+        схемы `Bearer`; подпись токена не проверяется; срок истёк; в токене нет
+        обязательных полей; передан refresh-токен
+
+        - `403` - заголовка `api-key` нет или ключ неверен
+
+        - `406` - для тега из `Accept-Language` нет региона в настройках
+
+        - `502` - вышестоящая система ответила ошибкой
+
+        - `504` - вышестоящая система не ответила вовремя
+      parameters:
+        - $ref: "#/components/parameters/Locale"
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "406":
+          $ref: "#/components/responses/NotAcceptable"
+        "502":
+          $ref: "#/components/responses/BadGateway"
+        "504":
+          $ref: "#/components/responses/GatewayTimeout"
+      security:
+        - Api-Key: []
+          Bearer: []
+  /documents/unsigned:
+    get:
+      operationId: getUnsignedDocuments
+      summary: Get unsigned documents of a category
+      tags:
+        - documents
+      description: >
+        Неподписанные документы категории `category`. Гость опознаётся по
+        `installation_id`, пользователь - по access-токену. Приложение вызывает
+
+        ручку для синхронизации в любой момент.
+
+
+        **Ошибки**
+
+
+        - `400` - запрос не соответствует схеме контракта
+
+        - `401` - `Authorization` передан без схемы `Bearer`; подпись токена не
+        проверяется; срок истёк; в токене нет обязательных полей; передан
+        refresh-токен
+
+        - `403` - заголовка `api-key` нет или ключ неверен
+
+        - `406` - для тега из `Accept-Language` нет региона в настройках
+
+        - `502` - вышестоящая система ответила ошибкой
+
+        - `504` - вышестоящая система не ответила вовремя
+      parameters:
+        - $ref: "#/components/parameters/InstallationId"
+        - $ref: "#/components/parameters/Locale"
+        - $ref: "#/components/parameters/Category"
+      responses:
+        "200":
+          description: Content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnsignedDocumentsResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "406":
+          $ref: "#/components/responses/NotAcceptable"
+        "502":
+          $ref: "#/components/responses/BadGateway"
+        "504":
+          $ref: "#/components/responses/GatewayTimeout"
+      security:
+        - Api-Key: []
+          Bearer: []
+        - Api-Key: []
+  /documents/accept:
+    post:
+      operationId: acceptDocuments
+      summary: Accept revisions of documents
+      tags:
+        - documents
+      description: >
+        Фиксация принятия ревизий документов. Гость опознаётся по
+        `installation_id`, пользователь - по access-токену.
+
+
+        **Ошибки**
+
+
+        - `400` - запрос не соответствует схеме контракта
+
+        - `401` - `Authorization` передан без схемы `Bearer`; подпись токена не
+        проверяется; срок истёк; в токене нет обязательных полей; передан
+        refresh-токен
+
+        - `403` - заголовка `api-key` нет или ключ неверен
+
+        - `406` - для тега из `Accept-Language` нет региона в настройках
+
+        - `409` - документ `documentId` больше не действующий - выведен в архив
+
+        - `422` - нет документа `documentId`; `revision` не совпадает с ревизией
+        документа `documentId`; у документа нет содержимого на `lang`
+
+        - `502` - вышестоящая система ответила ошибкой
+
+        - `504` - вышестоящая система не ответила вовремя
+      parameters:
+        - $ref: "#/components/parameters/InstallationId"
+        - $ref: "#/components/parameters/Locale"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AcceptDocumentsRequest"
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "406":
+          $ref: "#/components/responses/NotAcceptable"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "502":
+          $ref: "#/components/responses/BadGateway"
+        "504":
+          $ref: "#/components/responses/GatewayTimeout"
+      security:
+        - Api-Key: []
+          Bearer: []
+        - Api-Key: []
+  /documents/history:
+    get:
+      operationId: getDocumentsHistory
+      summary: Get the history of accepted documents
+      tags:
+        - documents
+      description: >
+        История принятых документов. Гость опознаётся по `installation_id`,
+        пользователь - по access-токену.
+
+
+        **Ошибки**
+
+
+        - `400` - запрос не соответствует схеме контракта
+
+        - `401` - `Authorization` передан без схемы `Bearer`; подпись токена не
+        проверяется; срок истёк; в токене нет обязательных полей; передан
+        refresh-токен
+
+        - `403` - заголовка `api-key` нет или ключ неверен
+
+        - `406` - для тега из `Accept-Language` нет региона в настройках
+
+        - `502` - вышестоящая система ответила ошибкой
+
+        - `504` - вышестоящая система не ответила вовремя
+      parameters:
+        - $ref: "#/components/parameters/InstallationId"
+        - $ref: "#/components/parameters/Locale"
+      responses:
+        "200":
+          description: Content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentsHistoryResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "406":
+          $ref: "#/components/responses/NotAcceptable"
+        "502":
+          $ref: "#/components/responses/BadGateway"
+        "504":
+          $ref: "#/components/responses/GatewayTimeout"
+      security:
+        - Api-Key: []
+          Bearer: []
+        - Api-Key: []
+  /stories/onboarding:
+    get:
+      operationId: getOnboardingStory
+      summary: Get the onboarding story
+      tags:
+        - stories
+      description: >
+        История онбординга региона - в регионе опубликовано не больше одной. Нет
+        опубликованной -
+
+        `200` со `story: null`. Новая публикация - история с новым `id`.
+
+
+        **Ошибки**
+
+
+        - `400` - запрос не соответствует схеме контракта
+
+        - `403` - заголовка `api-key` нет или ключ неверен
+
+        - `406` - для тега из `Accept-Language` нет региона в настройках
+
+        - `502` - вышестоящая система ответила ошибкой
+
+        - `504` - вышестоящая система не ответила вовремя
+      parameters:
+        - $ref: "#/components/parameters/Locale"
+      responses:
+        "200":
+          description: Content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OnboardingStoryResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "406":
+          $ref: "#/components/responses/NotAcceptable"
+        "502":
+          $ref: "#/components/responses/BadGateway"
+        "504":
+          $ref: "#/components/responses/GatewayTimeout"
+      security:
+        - Api-Key: []
+  /stories/widgets:
+    get:
+      operationId: getWidgetStories
+      summary: Get widget stories
+      tags:
+        - stories
+      description: >
+        Истории виджетов региона с превью и слайдами. Нет опубликованных - `200`
+        с пустым
+
+        `stories`.
+
+
+        **Ошибки**
+
+
+        - `400` - запрос не соответствует схеме контракта
+
+        - `403` - заголовка `api-key` нет или ключ неверен
+
+        - `406` - для тега из `Accept-Language` нет региона в настройках
+
+        - `502` - вышестоящая система ответила ошибкой
+
+        - `504` - вышестоящая система не ответила вовремя
+      parameters:
+        - $ref: "#/components/parameters/Locale"
+      responses:
+        "200":
+          description: Content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WidgetStoriesResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "406":
+          $ref: "#/components/responses/NotAcceptable"
+        "502":
+          $ref: "#/components/responses/BadGateway"
+        "504":
+          $ref: "#/components/responses/GatewayTimeout"
+      security:
+        - Api-Key: []
+  /stories/faq:
+    get:
+      operationId: getFaqStories
+      summary: Get FAQ stories
+      tags:
+        - stories
+      description: >
+        Истории FAQ региона со слайдами. Нет опубликованных - `200` с пустым
+        `stories`.
+
+
+        **Ошибки**
+
+
+        - `400` - запрос не соответствует схеме контракта
+
+        - `403` - заголовка `api-key` нет или ключ неверен
+
+        - `406` - для тега из `Accept-Language` нет региона в настройках
+
+        - `502` - вышестоящая система ответила ошибкой
+
+        - `504` - вышестоящая система не ответила вовремя
+      parameters:
+        - $ref: "#/components/parameters/Locale"
+      responses:
+        "200":
+          description: Content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FaqStoriesResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "406":
+          $ref: "#/components/responses/NotAcceptable"
+        "502":
+          $ref: "#/components/responses/BadGateway"
+        "504":
+          $ref: "#/components/responses/GatewayTimeout"
+      security:
+        - Api-Key: []
+components:
+  securitySchemes:
+    Api-Key:
+      type: apiKey
+      in: header
+      name: api-key
+    Bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    Locale:
+      name: Accept-Language
+      in: header
+      required: true
+      description: Стандартный заголовок HTTP (RFC 9110, раздел 12.5.4) с одним
+        языковым тегом BCP 47 (RFC 5646) вида язык-регион - язык по ISO 639-1,
+        регион по ISO 3166-1 alpha-2, например ru-ru или en-us; регистр не
+        учитывается, en-US и en-us равнозначны. Список из нескольких тегов и
+        веса q не поддерживаются. Передаётся в каждом запросе мобильного
+        клиента; по тегу сервер определяет регион и язык ответа
+      schema:
+        type: string
+        pattern: ^[a-zA-Z]{2}-[a-zA-Z]{2}$
+      examples:
+        ru-ru:
+          value: ru-ru
+        en-us:
+          value: en-us
+    InstallationId:
+      name: installation_id
+      in: header
+      required: true
+      schema:
+        type: string
+        format: uuid
+    Category:
+      name: category
+      in: query
+      required: true
+      description: Категория документов выдачи
+      schema:
+        $ref: "#/components/schemas/DocumentCategory"
+  schemas:
+    DocumentCategory:
+      description: Ключ категории документа - pre-registration (Предрегистрационные),
+        registration (Регистрационные)
+      type: string
+      enum:
+        - pre-registration
+        - registration
+      example: pre-registration
+    Language:
+      description: Ключ языка - код ISO 639-1, две строчные латинские буквы без дефиса
+        и региона, например en; значение из справочника языков, который ведётся
+        в настройках админки (БД)
+      type: string
+      pattern: ^[a-z]{2}$
+      example: en
+    DocumentContent:
+      description: Содержимое редакции документа на одном языке
+      type: object
+      required:
+        - lang
+        - title
+        - url
+      properties:
+        lang:
+          $ref: "#/components/schemas/Language"
+        title:
+          type: string
+        url:
+          format: uri
+          type: string
+    Document:
+      description: Редакция юридически значимого документа
+      type: object
+      required:
+        - id
+        - category
+        - revision
+        - publishedAt
+        - fallbackDocumentContent
+        - documentContents
+      properties:
+        id:
+          description: Идентификатор ревизии документа
+          type: string
+          format: uuid
+        category:
+          $ref: "#/components/schemas/DocumentCategory"
+        revision:
+          description: Идентификатор редакции документа
+          type: string
+          example: 1.2.0
+        publishedAt:
+          description: Дата и время публикации редакции
+          type: string
+          format: date-time
+        fallbackDocumentContent:
+          description: Содержимое редакции на альтернативном языке региона
+          allOf:
+            - $ref: "#/components/schemas/DocumentContent"
+        documentContents:
+          description: Содержимое редакции на всех языках региона, на которых
+            администратор заполнил документ - обязательных и необязательных
+          type: array
+          items:
+            $ref: "#/components/schemas/DocumentContent"
+    AuthProvider:
+      description: Поддерживаемые методы аутентификации
+      type: string
+      enum:
+        - email
+        - phone
+        - apple
+        - google
+        - yandex
+        - vk
+    SlideDurationSec:
+      description: Время показа одного слайда истории, секунды
+      type: integer
+      minimum: 1
+      maximum: 60
+    Slide:
+      description: Слайд без кнопок
+      type: object
+      required:
+        - id
+        - imageUrl
+      properties:
+        id:
+          type: string
+          format: uuid
+        imageUrl:
+          description: Картинка слайда 9:16 на языке слайда
+          type: string
+          format: uri
+    OnboardingStory:
+      description: История онбординга
+      type: object
+      required:
+        - id
+        - slideDurationSec
+        - slides
+      properties:
+        id:
+          type: string
+          format: uuid
+        slideDurationSec:
+          $ref: "#/components/schemas/SlideDurationSec"
+        slides:
+          description: Слайды в порядке показа, хотя бы один
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/Slide"
+    OnStartResponse:
+      type: object
+      required:
+        - unsignedPreRegistrationDocs
+        - authProviders
+        - alternativeLanguage
+        - onboardingStory
+      properties:
+        unsignedPreRegistrationDocs:
+          description: Не подписанные Предрегистрационные документы
+          type: array
+          items:
+            $ref: "#/components/schemas/Document"
+        authProviders:
+          description: Список доступных способов аутентификации.
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/AuthProvider"
+        alternativeLanguage:
+          $ref: "#/components/schemas/Language"
+        onboardingStory:
+          description: История онбординга, как в GET /stories/onboarding; null - в регионе
+            нет опубликованной
+          type: object
+          allOf:
+            - $ref: "#/components/schemas/OnboardingStory"
+          nullable: true
+    BadRequestResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 400
+        message:
+          type: array
+          items:
+            type: string
+          example:
+            - error message
+        error:
+          type: string
+          example: Bad Request
+    ForbiddenResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 403
+        message:
+          type: string
+          example: Forbidden
+        error:
+          type: string
+          example: Forbidden
+    NotAcceptableResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 406
+        message:
+          type: string
+          example: Not Acceptable
+        error:
+          type: string
+          example: Not Acceptable
+    BadGatewayResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 502
+        message:
+          type: string
+          example: Bad Gateway
+        error:
+          type: string
+          example: Bad Gateway
+    GatewayTimeoutResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 504
+        message:
+          type: string
+          example: Gateway Timeout
+        error:
+          type: string
+          example: Gateway Timeout
+    SendCodeRequest:
+      description: Контакт - ровно одно из полей phone или email
+      type: object
+      oneOf:
+        - required:
+            - phone
+        - required:
+            - email
+      properties:
+        phone:
+          description: Номер телефона в формате E.164
+          type: string
+          pattern: ^\+[1-9]\d{1,14}$
+          example: "+79990000000"
+        email:
+          description: Адрес почты; приводится к нижнему регистру, краевые пробелы
+            обрезаются
+          type: string
+          format: email
+          maxLength: 254
+          example: user@example.com
+    VerifyCodeRequest:
+      description: Контакт по правилам send-code и код
+      type: object
+      oneOf:
+        - required:
+            - phone
+        - required:
+            - email
+      required:
+        - code
+      properties:
+        phone:
+          description: Номер телефона в формате E.164
+          type: string
+          pattern: ^\+[1-9]\d{1,14}$
+          example: "+79990000000"
+        email:
+          description: Адрес почты
+          type: string
+          format: email
+          maxLength: 254
+          example: user@example.com
+        code:
+          description: Код из шести цифр, отправленный на контакт
+          type: string
+          pattern: ^\d{6}$
+          example: "123456"
+    AuthTokens:
+      description: Пара токенов сессии
+      type: object
+      required:
+        - accessToken
+        - refreshToken
+      properties:
+        accessToken:
+          description: Передаётся в заголовке Authorization со схемой Bearer
+          type: string
+        refreshToken:
+          description: Обменивается на новую пару в refresh
+          type: string
+    UnauthorizedResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 401
+        message:
+          type: string
+          example: Unauthorized
+        error:
+          type: string
+          example: Unauthorized
+    RefreshRequest:
+      type: object
+      required:
+        - refreshToken
+      properties:
+        refreshToken:
+          description: Refresh-токен из пары, выданной verify-code или refresh
+          type: string
+          minLength: 1
+    UnsignedDocumentsResponse:
+      type: object
+      required:
+        - unsignedDocs
+      properties:
+        unsignedDocs:
+          description: Неподписанные документы; пустой массив - подписывать нечего
+          type: array
+          items:
+            $ref: "#/components/schemas/Document"
+    DocumentAcceptance:
+      description: Факт принятия одной редакции документа
+      type: object
+      required:
+        - documentId
+        - revision
+        - lang
+      properties:
+        documentId:
+          type: string
+          format: uuid
+        revision:
+          type: string
+          example: 1.2.0
+        lang:
+          $ref: "#/components/schemas/Language"
+    AcceptDocumentsRequest:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/DocumentAcceptance"
+    ConflictResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 409
+        message:
+          type: string
+          example: Conflict
+        error:
+          type: string
+          example: Conflict
+    UnprocessableEntityResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 422
+        message:
+          type: string
+          example: Unprocessable Entity
+        error:
+          type: string
+          example: Unprocessable Entity
+    AcceptedDocument:
+      description: Запись истории принятия; заголовок и ссылка - на языке принятия
+      type: object
+      required:
+        - documentId
+        - category
+        - revision
+        - lang
+        - acceptedAt
+        - title
+        - url
+      properties:
+        documentId:
+          type: string
+          format: uuid
+        category:
+          $ref: "#/components/schemas/DocumentCategory"
+        revision:
+          type: string
+          example: 1.2.0
+        lang:
+          $ref: "#/components/schemas/Language"
+        acceptedAt:
+          type: string
+          format: date-time
+        title:
+          type: string
+        url:
+          type: string
+          format: uri
+    DocumentsHistoryResponse:
+      type: object
+      required:
+        - documents
+      properties:
+        documents:
+          type: array
+          items:
+            $ref: "#/components/schemas/AcceptedDocument"
+    OnboardingStoryResponse:
+      type: object
+      required:
+        - story
+      properties:
+        story:
+          description: История онбординга; null - в регионе нет опубликованной
+          type: object
+          allOf:
+            - $ref: "#/components/schemas/OnboardingStory"
+          nullable: true
+    SlideButtonPosition:
+      description: Место кнопки на экране
+      type: string
+      enum:
+        - bottom
+        - center
+    SlideButton:
+      description: Кнопка слайда на языке слайда
+      type: object
+      required:
+        - label
+        - url
+        - position
+      properties:
+        label:
+          description: Подпись кнопки
+          type: string
+        url:
+          description: Ссылка, которую кнопка открывает во внешнем браузере
+          type: string
+          format: uri
+        position:
+          $ref: "#/components/schemas/SlideButtonPosition"
+    SlideButtons:
+      description: Кнопки слайда; null - кнопки нет. secondary - только вместе с primary
+      type: object
+      required:
+        - primary
+        - secondary
+      properties:
+        primary:
+          description: Основная кнопка
+          type: object
+          allOf:
+            - $ref: "#/components/schemas/SlideButton"
+          nullable: true
+        secondary:
+          description: Дополнительная кнопка
+          type: object
+          allOf:
+            - $ref: "#/components/schemas/SlideButton"
+          nullable: true
+    SlideWithButtons:
+      description: Слайд с кнопками
+      allOf:
+        - $ref: "#/components/schemas/Slide"
+        - type: object
+          required:
+            - buttons
+          properties:
+            buttons:
+              $ref: "#/components/schemas/SlideButtons"
+    WidgetStory:
+      description: История виджета
+      type: object
+      required:
+        - id
+        - previewUrl
+        - slideDurationSec
+        - slides
+      properties:
+        id:
+          type: string
+          format: uuid
+        previewUrl:
+          description: Круглое превью истории 1:1
+          type: string
+          format: uri
+        slideDurationSec:
+          $ref: "#/components/schemas/SlideDurationSec"
+        slides:
+          description: Слайды в порядке показа, хотя бы один
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/SlideWithButtons"
+    WidgetStoriesResponse:
+      type: object
+      required:
+        - stories
+      properties:
+        stories:
+          description: Истории в порядке показа
+          type: array
+          items:
+            $ref: "#/components/schemas/WidgetStory"
+    FaqStory:
+      description: История FAQ
+      type: object
+      required:
+        - id
+        - slideDurationSec
+        - slides
+      properties:
+        id:
+          type: string
+          format: uuid
+        slideDurationSec:
+          $ref: "#/components/schemas/SlideDurationSec"
+        slides:
+          description: Слайды в порядке показа, хотя бы один
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/SlideWithButtons"
+    FaqStoriesResponse:
+      type: object
+      required:
+        - stories
+      properties:
+        stories:
+          description: Истории в порядке показа
+          type: array
+          items:
+            $ref: "#/components/schemas/FaqStory"
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BadRequestResponse"
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ForbiddenResponse"
+    NotAcceptable:
+      description: Not Acceptable
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/NotAcceptableResponse"
+    BadGateway:
+      description: Bad Gateway
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BadGatewayResponse"
+    GatewayTimeout:
+      description: Gateway Timeout
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GatewayTimeoutResponse"
+    NoContent:
+      description: No Content
+    Unauthorized:
+      description: Unauthorized
+      headers:
+        WWW-Authenticate:
+          description: Схема аутентификации - access-токен в заголовке Authorization (RFC
+            6750)
+          schema:
+            type: string
+            example: Bearer
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UnauthorizedResponse"
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ConflictResponse"
+    UnprocessableEntity:
+      description: Unprocessable Entity
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UnprocessableEntityResponse"

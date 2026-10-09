@@ -1,0 +1,1786 @@
+openapi: 3.0.0
+paths:
+  /api/auth/login:
+    post:
+      description: >
+        Принимает почту и пароль и выпускает сессию администратора.
+
+
+        Тело — `{ "email": "…", "password": "…" }`. Ответ `200` — учётка без
+        пароля:
+
+        `id`, `email`, `role`, `createdAt`, `updatedAt`.
+
+
+        - `400` — тело запроса не соответствует схеме.
+
+        - `409` — сессия, указанная в cookie на момент запроса, принадлежит
+        другой
+          учётке; она закрывается, а новая сессия не выпускается.
+      operationId: AuthController_login
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequestDto"
+      responses:
+        "200":
+          description: "`OK`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponseDto"
+        "400":
+          description: "`Bad Request`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "409":
+          description: "`Conflict`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConflictResponse"
+      summary: Sign in
+      tags:
+        - " Auth"
+  /api/auth/logout:
+    post:
+      description: >
+        Завершает сессию, из которой пришёл запрос. Прочие сессии учётки
+        продолжают
+
+        действовать.
+
+
+        Тела запроса нет. Ответ `204` без тела.
+      operationId: AuthController_logout
+      parameters: []
+      responses:
+        "204":
+          description: "`No Content`"
+      security:
+        - cookie: []
+      summary: Sign out the current session
+      tags:
+        - " Auth"
+  /api/auth/change-password:
+    post:
+      description: >
+        Меняет пароль текущей учётки.
+
+
+        Тело — `{ "currentPassword": "…", "newPassword": "…" }`, новый пароль —
+        от 8 до
+
+        128 символов. Ответ `204` без тела.
+
+
+        - `400` — тело запроса не соответствует схеме либо `newPassword`
+        совпадает с
+          `currentPassword`.
+      operationId: AuthController_changePassword
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordRequestDto"
+      responses:
+        "204":
+          description: "`No Content`"
+        "400":
+          description: "`Bad Request`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+      security:
+        - cookie: []
+      summary: Change own password
+      tags:
+        - " Auth"
+  /api/auth/sessions:
+    get:
+      description: >
+        Отдаёт список открытых сессий страницей.
+
+
+        Параметры `userId` и `email` сужают выборку по владельцу, `page` и
+        `limit`
+
+        задают страницу; все необязательны. Ответ `200`: `items` — сессии с
+        адресом
+
+        источника, User-Agent, моментами входа и продления и признаком
+        `current`;
+
+        `total`, `page`, `limit`.
+
+
+        - `400` — параметры запроса не соответствуют схеме.
+      operationId: AuthController_getSessions
+      parameters:
+        - name: userId
+          required: false
+          in: query
+          description: Идентификатор учётки-владельца.
+          schema:
+            format: uuid
+            type: string
+        - name: email
+          required: false
+          in: query
+          description: Адрес почты владельца.
+          schema:
+            maxLength: 254
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: Номер страницы.
+          schema:
+            minimum: 1
+            default: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: Размер страницы.
+          schema:
+            minimum: 1
+            maximum: 200
+            default: 50
+            type: number
+      responses:
+        "200":
+          description: "`OK`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionsResponseDto"
+        "400":
+          description: "`Bad Request`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+      security:
+        - cookie: []
+      summary: List open sessions
+      tags:
+        - " Auth"
+  /api/auth/sessions/{sessionId}:
+    delete:
+      description: >
+        Завершает сессию по идентификатору. Завершение сессии, из которой пришёл
+
+        запрос, снимает cookie: дальнейшая работа требует нового входа.
+
+
+        `sessionId` — UUID из списка сессий. Ответ `204` без тела.
+
+
+        - `400` — неверный формат `sessionId`.
+
+        - `404` — сессии с этим `sessionId` нет среди сессий, доступных
+        вызывающей
+          учётке.
+      operationId: AuthController_deleteSession
+      parameters:
+        - name: sessionId
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+          description: UUID сессии.
+      responses:
+        "204":
+          description: "`No Content`"
+        "400":
+          description: "`Bad Request`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "404":
+          description: "`Not Found`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+      security:
+        - cookie: []
+      summary: Terminate a session by id
+      tags:
+        - " Auth"
+  /api/component-types:
+    get:
+      description: >
+        Отдаёт реестр типов блоков: по `dataSchema` админ-панель строит форму
+
+        редактирования блока, по `slots` — карточки вложенных областей.
+
+
+        Ответ `200` со списком типов, отсортированным по `key`. Тип со статусом
+
+        `deprecated` остаётся в списке: он используется опубликованными
+        версиями, но
+
+        блокирует публикацию новой.
+      operationId: ComponentTypesController_getTypes
+      parameters: []
+      responses:
+        "200":
+          description: "`OK`"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ComponentTypeResponseDto"
+      summary: List block types
+      tags:
+        - " Component-types"
+  /api/layouts:
+    get:
+      description: >
+        Отдаёт все экраны со всеми версиями — список, из которого редактор
+        выбирает,
+
+        что открыть. Порядок: по ключу экрана, внутри — по номеру версии.
+
+
+        Ответ `200` со списком версий: ключ, номер, статус, даты публикации и
+
+        архивации.
+      operationId: LayoutsController_getScreens
+      parameters: []
+      responses:
+        "200":
+          description: "`OK`"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LayoutResponseDto"
+      summary: List screens with their versions
+      tags:
+        - " Layouts"
+  /api/layouts/current-versions:
+    get:
+      description: >
+        Отдаёт по каждому экрану версию с максимальным номером среди
+        опубликованных.
+
+        Служебная выдача для мобильной разработки: номер из неё зашивают в
+        сборку.
+
+
+        Ответ `200` со списком версий, отсортированным по ключу экрана.
+      operationId: LayoutsController_getCurrentVersions
+      parameters: []
+      responses:
+        "200":
+          description: "`OK`"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LayoutResponseDto"
+      summary: List the latest published version of every screen
+      tags:
+        - " Layouts"
+  /api/layouts/{key}/versions:
+    get:
+      description: >
+        Отдаёт версии одного экрана со статусами — история ревизий структуры:
+        какие
+
+        номера обслуживаются, какой черновик готовится.
+
+
+        `key` — ключ экрана. Ответ `200` со списком, упорядоченным по номеру
+        версии.
+
+
+        - `404` — экрана с таким ключом нет.
+      operationId: LayoutsController_getVersions
+      parameters:
+        - name: key
+          required: true
+          in: path
+          description: Непустая строка без символа NUL (U+0000).
+          schema:
+            minLength: 1
+            type: string
+      responses:
+        "200":
+          description: "`OK`"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LayoutResponseDto"
+        "400":
+          description: "`Bad Request`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "404":
+          description: "`Not Found`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+      summary: List versions of one screen
+      tags:
+        - " Layouts"
+  /api/layouts/{id}:
+    get:
+      description: >
+        Отдаёт одну версию экрана: ключ, номер, статус, описание, даты
+        публикации и
+
+        архивации.
+
+
+        `id` — идентификатор версии. Ответ `200`.
+
+
+        - `404` — версии не существует.
+      operationId: LayoutsController_getScreen
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: "`OK`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LayoutResponseDto"
+        "400":
+          description: "`Bad Request`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "404":
+          description: "`Not Found`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+      summary: Get one screen version
+      tags:
+        - " Layouts"
+  /api/layouts/{id}/nodes:
+    get:
+      description: >
+        Отдаёт дерево версии: узлы с их местом (`parentId`, `slot`, `position`),
+        тип и
+
+        настройки блока, привязку к источнику независимого контента.
+
+
+        `id` — идентификатор версии. Ответ `200` со списком узлов, упорядоченным
+        по
+
+        слоту и позиции; вложенность восстанавливается по `parentId`.
+
+
+        Дерево заводит миграция: перестроить его через админку нельзя.
+
+
+        - `404` — версии не существует.
+      operationId: LayoutsController_getNodes
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: "`OK`"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LayoutNodeResponseDto"
+        "400":
+          description: "`Bad Request`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "404":
+          description: "`Not Found`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+      summary: Get the node tree of a version
+      tags:
+        - " Layouts"
+  /api/layouts/{id}/languages:
+    get:
+      description: >
+        Отдаёт языки версии и их состояние. Состав языков ведётся отдельно для
+        каждой
+
+        версии: включённый в одной не появляется в другой сам собой.
+
+
+        `id` — идентификатор версии. Ответ `200` со списком, упорядоченным по
+        коду
+
+        языка.
+
+
+        - `404` — версии не существует.
+      operationId: LayoutsController_getLanguages
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: "`OK`"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LayoutLanguageResponseDto"
+        "400":
+          description: "`Bad Request`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "404":
+          description: "`Not Found`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+      summary: List languages of a version
+      tags:
+        - " Layouts"
+  /api/layouts/{id}/languages/{lang}:
+    patch:
+      description: >
+        Включает или выключает язык версии: выключенный язык приложению не
+        отдаётся —
+
+        вместо него идёт язык по умолчанию. Так перевод готовят заранее и
+        показывают,
+
+        когда он заполнен.
+
+
+        Тело — `{ "isEnabled": true }`. Ответ `200` с состоянием языка. Действие
+
+        доступно в черновике и в опубликованной версии.
+
+
+        - `400` — версия архивная.
+
+        - `404` — версии нет либо язык не заведён у неё.
+      operationId: LayoutsController_toggleLanguage
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+        - name: lang
+          required: true
+          in: path
+          description: Непустая строка без символа NUL (U+0000).
+          schema:
+            minLength: 1
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ToggleLanguageRequestDto"
+      responses:
+        "200":
+          description: "`OK`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LayoutLanguageResponseDto"
+        "400":
+          description: "`Bad Request`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "404":
+          description: "`Not Found`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+      summary: Enable or disable a language of a version
+      tags:
+        - " Layouts"
+  /api/layouts/{id}/components/{componentId}:
+    patch:
+      description: >
+        Меняет настройки блока — медиа, ссылки, числа, флаги. Это часть
+        структуры,
+
+        поэтому правка допустима только в черновике: опубликованная версия
+        неизменна.
+
+
+        Тело — `{ "data": { … } }`, настройки целиком. Ответ `200` с деревом
+        версии
+
+        после правки.
+
+
+        - `400` — версия не является черновиком.
+
+        - `404` — версии нет либо блок принадлежит другой версии.
+      operationId: LayoutsController_updateComponent
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+        - name: componentId
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateComponentRequestDto"
+      responses:
+        "200":
+          description: "`OK`"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LayoutNodeResponseDto"
+        "400":
+          description: "`Bad Request`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "404":
+          description: "`Not Found`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+      summary: Update component settings in a draft
+      tags:
+        - " Layouts"
+  /api/layouts/{id}/components/{componentId}/translations/{lang}:
+    put:
+      description: >
+        Сохраняет тексты блока на одном языке. Тексты не входят в снапшот,
+        поэтому
+
+        правятся в любой неархивной версии и доходят до приложения без
+        публикации.
+
+
+        `lang` — код языка, тело — `{ "data": { … } }` с текстами блока целиком.
+        Ответ
+
+        `200` с сохранённой записью. Перевода на этот язык ещё не было — он
+        создаётся.
+
+
+        - `400` — версия архивная.
+
+        - `404` — версии нет либо блок принадлежит другой версии.
+      operationId: LayoutsController_saveTranslation
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+        - name: componentId
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+        - name: lang
+          required: true
+          in: path
+          description: Непустая строка без символа NUL (U+0000).
+          schema:
+            minLength: 1
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ComponentTranslationRequestDto"
+      responses:
+        "200":
+          description: "`OK`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ComponentTranslationResponseDto"
+        "400":
+          description: "`Bad Request`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "404":
+          description: "`Not Found`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+      summary: Save component texts of one language
+      tags:
+        - " Layouts"
+  /api/layouts/{id}/validate:
+    post:
+      description: >
+        Проверяет черновик по тому же списку правил, что и публикация, но ничего
+        не
+
+        меняет: редактор видит ошибки до нажатия кнопки публикации.
+
+
+        `id` — идентификатор версии. Ответ `200` с полями `ok` и `errors`:
+        возвращаются
+
+        все нарушения сразу, а не первое найденное.
+
+
+        - `400` — версия не является черновиком.
+
+        - `404` — версии не существует.
+      operationId: LayoutsController_validate
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: "`OK`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponseDto"
+        "400":
+          description: "`Bad Request`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "404":
+          description: "`Not Found`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+      summary: Validate a draft without publishing
+      tags:
+        - " Layouts"
+  /api/layouts/{id}/publish:
+    post:
+      description: >
+        Публикует черновик: проверяет дерево, собирает снапшот версии, переводит
+        её в
+
+        `published`, пишет журнал и прогревает кеш. После публикации структура
+        версии
+
+        неизменна — правятся только тексты и языки.
+
+
+        `id` — идентификатор версии. Ответ `200` с версией в новом статусе.
+        Снапшот
+
+        несёт структуру и настройки блоков; тексты в него не входят и
+        накладываются при
+
+        чтении.
+
+
+        - `400` — версия не является черновиком либо проверки не пройдены; в
+        `message`
+          список нарушенных правил.
+        - `404` — версии не существует.
+      operationId: LayoutsController_publish
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: "`OK`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LayoutResponseDto"
+        "400":
+          description: "`Bad Request`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "404":
+          description: "`Not Found`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+      summary: Publish a draft
+      tags:
+        - " Layouts"
+  /api/layouts/{id}/archive:
+    post:
+      description: >
+        Снимает версию (черновик или опубликованную) с обслуживания: для
+        опубликованной
+
+        версии приложение перестаёт её получать, для черновика — прекращает быть
+
+        доступной для правки (мобильному приложению черновик и так никогда не
+
+        отдаётся). Строка и снапшот, если был, остаются в базе, тексты и языки
+        больше
+
+        не редактируются.
+
+
+        `id` — идентификатор версии.
+
+
+        - `501` — снятие с обслуживания ещё не реализовано.
+      operationId: LayoutsController_archive
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "400":
+          description: "`Bad Request`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "501":
+          description: "`Not Implemented`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotImplementedResponse"
+      summary: Take a draft or published version out of service
+      tags:
+        - " Layouts"
+  /api/content/sources:
+    get:
+      description: >
+        Отдаёт реестр источников независимого контента: по `itemSchema`
+        админ-панель
+
+        строит форму редактирования записи, `kind` показывает, коллекция это или
+
+        одиночная запись.
+
+
+        Ответ `200` со списком, отсортированным по ключу. Выключенный источник
+
+        остаётся в списке: он не привязывается к блокам и не отдаётся
+        приложению.
+      operationId: ContentController_getSources
+      parameters: []
+      responses:
+        "200":
+          description: "`OK`"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ContentSourceResponseDto"
+      summary: List independent content sources
+      tags:
+        - " Content"
+  /api/content/{sourceKey}/items:
+    get:
+      description: >
+        Отдаёт записи коллекции для админ-панели — список, в котором редактор
+
+        находит нужную запись.
+
+
+        `sourceKey` — ключ источника. Параметры `limit` и `offset` задают
+        страницу,
+
+        `context` фильтрует документы по месту показа, `lang` задаёт язык записи
+        и по
+
+        умолчанию равен `en`. Поля записи, для которых нет перевода на этот
+        язык,
+
+        приходят на `en`. Ответ `200` с полями `items` и `total`.
+
+
+        - `400` — `limit` не целое число или меньше `1`; `offset` не целое число
+        или
+          меньше `0`; `context` передан списком вместо строки.
+        - `404` — источник не зарегистрирован.
+
+        - `501` — чтение этого источника ещё не реализовано.
+      operationId: ContentController_getItems
+      parameters:
+        - name: sourceKey
+          required: true
+          in: path
+          description: Непустая строка без символа NUL (U+0000).
+          schema:
+            minLength: 1
+            type: string
+        - name: limit
+          required: false
+          in: query
+          description: Размер страницы.
+          schema:
+            example: 20
+            type: number
+        - name: offset
+          required: false
+          in: query
+          description: Сколько записей пропустить.
+          schema:
+            example: 0
+            type: number
+        - name: context
+          required: false
+          in: query
+          description: Значение поля `context` для коллекции документов.
+          schema:
+            example: usage
+            type: string
+        - name: lang
+          required: false
+          in: query
+          description: Код языка записи. По умолчанию — `en`.
+          schema:
+            example: ru
+            type: string
+      responses:
+        "200":
+          description: "`OK`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContentItemsResponseDto"
+        "400":
+          description: "`Bad Request`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "404":
+          description: "`Not Found`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResponse"
+        "501":
+          description: "`Not Implemented`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotImplementedResponse"
+      summary: List items of a collection source
+      tags:
+        - " Content"
+    post:
+      description: >
+        Создаёт запись коллекции — например, новый слайд онбординга или
+        документ.
+
+        Запись становится видна приложению сразу, без публикации версии экрана.
+
+
+        `sourceKey` — ключ источника, тело — поля записи по `itemSchema`
+        источника.
+
+
+        - `501` — создание записей ещё не реализовано.
+      operationId: ContentController_createItem
+      parameters:
+        - name: sourceKey
+          required: true
+          in: path
+          description: Непустая строка без символа NUL (U+0000).
+          schema:
+            minLength: 1
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Object"
+      responses:
+        "400":
+          description: "`Bad Request`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "501":
+          description: "`Not Implemented`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotImplementedResponse"
+      summary: Create an item of a collection source
+      tags:
+        - " Content"
+  /api/content/{sourceKey}/items/{id}:
+    patch:
+      description: >
+        Меняет поля записи коллекции. Правка видна приложению сразу во всех
+        местах,
+
+        где привязана эта коллекция.
+
+
+        `sourceKey` — ключ источника, `id` — запись, тело — изменяемые поля.
+
+
+        - `501` — правка записей ещё не реализована.
+      operationId: ContentController_updateItem
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+        - name: sourceKey
+          required: true
+          in: path
+          description: Непустая строка без символа NUL (U+0000).
+          schema:
+            minLength: 1
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Object"
+      responses:
+        "400":
+          description: "`Bad Request`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "501":
+          description: "`Not Implemented`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotImplementedResponse"
+      summary: Update an item of a collection source
+      tags:
+        - " Content"
+    delete:
+      description: |
+        Удаляет запись коллекции мягко: она перестаёт участвовать в выдаче, но
+        остаётся в базе.
+
+        `sourceKey` — ключ источника, `id` — запись.
+
+        - `501` — удаление записей ещё не реализовано.
+      operationId: ContentController_removeItem
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+            format: uuid
+        - name: sourceKey
+          required: true
+          in: path
+          description: Непустая строка без символа NUL (U+0000).
+          schema:
+            minLength: 1
+            type: string
+      responses:
+        "400":
+          description: "`Bad Request`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+        "501":
+          description: "`Not Implemented`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotImplementedResponse"
+      summary: Delete an item of a collection source
+      tags:
+        - " Content"
+  /api/audit:
+    get:
+      description: >
+        Отдаёт журнал изменений контента: история версии экрана в её карточке и
+        общая
+
+        лента действий редакторов.
+
+
+        Параметры `layoutId` и `actorId` сужают выборку, `limit` и `offset`
+        задают
+
+        страницу. Ответ `200` со списком записей от новых к старым: автор,
+        действие,
+
+        объект, изменённые поля и комментарий.
+
+
+        - `400` — `limit` не целое число или меньше `1`; `offset` не целое число
+        или
+          меньше `0`; `layoutId` или `actorId` передан списком вместо строки.
+      operationId: AuditController_getEntries
+      parameters:
+        - name: layoutId
+          required: false
+          in: query
+          description: Версия экрана, действия по которой нужны.
+          schema:
+            type: string
+        - name: actorId
+          required: false
+          in: query
+          description: Автор действия.
+          schema:
+            type: string
+        - name: limit
+          required: false
+          in: query
+          description: Размер страницы.
+          schema:
+            example: 50
+            type: number
+        - name: offset
+          required: false
+          in: query
+          description: Сколько записей пропустить.
+          schema:
+            example: 0
+            type: number
+      responses:
+        "200":
+          description: "`OK`"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AuditEntryResponseDto"
+        "400":
+          description: "`Bad Request`"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestResponse"
+      summary: Read the content change log
+      tags:
+        - " Audit"
+info:
+  title: Bff Admin API documentation
+  description: >-
+    API админки: экраны и их версии, содержимое блоков, языки, независимый
+    контент
+
+    и журнал действий.
+
+
+    - **Базовый путь** — `/api` (значение `GLOBAL_CONTROLLER_PREFIX`). Путь со
+    слешем
+      на конце ведёт на ту же ручку, что и без него.
+    - **Доступ** — сессия администратора, выпущенная `POST /auth/login`, cookie
+      `__Host-sid`.
+    - **Параметры пути** — проверяются по схемам параметров ручки; неверный
+      формат или выход за допустимый диапазон возвращает `400`.
+    - **Тело запроса** — JSON. Поля, которых нет в схеме, до контроллера не
+    доходят;
+      при нарушении правил валидации ответ `400`, в нём `message` — массив строк, по
+      одной на каждое нарушение.
+    - **Форма ошибки** — `{ "statusCode": number, "message": string | string[],
+      "error": string }`. `message` содержит описание ошибки строкой или список
+      нарушений валидации массивом строк.
+    - **Структура экранов** — экраны, узлы дерева, блоки и типы блоков заводит
+      миграция данных: ручек, создающих их, здесь нет. Редактор наполняет
+      существующие узлы, управляет языками и публикует версии.
+    - **`501`** — операция описана контрактом, но её логика ещё не реализована.
+
+
+    `GET /` отвечает `Bff Admin - OK!` — это проверка живости, она вне префикса
+    и вне
+
+    этой спеки. Страница документации отдаётся, когда `NODE_ENV` не равен
+
+    `production`.
+
+
+
+    Spec: [yaml](/api/doc-yaml), [json](/api/doc-json)
+  version: 0.0.1
+  contact: {}
+tags:
+  - name: " Audit"
+    description: >
+      Журнал действий: кто, что и когда изменил в контенте.
+
+
+      1. `GET /audit` — записи журнала от новых к старым, с фильтрами по версии
+         экрана и автору.
+
+      - Записи создаются автоматически при каждом изменяющем действии админки и
+      не
+        редактируются.
+  - name: " Auth"
+    description: >
+      Вход в админку, выход, смена собственного пароля и управление списком
+      сессий.
+
+
+      1. `POST /auth/login` — почта и пароль, в ответе учётка без пароля.
+
+      2. `POST /auth/logout` — завершение текущей сессии.
+
+      3. `POST /auth/change-password` — смена пароля текущей учётки.
+
+      4. `GET /auth/sessions` — список открытых сессий с фильтрами и страницей.
+
+      5. `DELETE /auth/sessions/{sessionId}` — завершение сессии по
+      идентификатору.
+
+
+      - Сессия передаётся cookie `__Host-sid`. Ручка `login` её не требует,
+      остальные
+        четыре — требуют.
+      - Сессия завершается по бездействию, а не по возрасту: обращение к любой
+      из
+        четырёх ручек, требующих сессию, продлевает её.
+      - `400` — тело или параметры запроса не соответствуют схеме; при смене
+        пароля — также когда новый пароль совпадает с текущим.
+      - `404` — при завершении сессии `sessionId` не входит в сессии, доступные
+        вызывающей учётке.
+      - `409` — вход выполняется с cookie, указывающей на сессию другой учётки.
+  - name: " Component-types"
+    description: >
+      Реестр типов блоков — только чтение: типы заводит миграция данных.
+
+
+      1. `GET /component-types` — все типы с описанием полей и областей
+      вложенности.
+
+
+      - Тип определяет, какие поля заполняет редактор (`dataSchema`), какие
+      области
+        вложенности есть у блока (`slots`) и нужна ли ему привязка к независимому
+        контенту (`dataSource`).
+  - name: " Content"
+    description: >
+      Независимый контент: реестр источников и записи коллекций. Этот контент
+      живёт
+
+      отдельно от экранов и виден приложению сразу, без публикации версии.
+
+
+      1. `GET /content/sources` — реестр источников с описанием полей.
+
+      2. `GET /content/{sourceKey}/items` — записи коллекции с постраничным
+      чтением.
+
+      3. `POST /content/{sourceKey}/items`, `PATCH
+      /content/{sourceKey}/items/{id}`,
+         `DELETE /content/{sourceKey}/items/{id}` — создание, правка и мягкое
+         удаление записи.
+
+      - Новый источник вида коллекция заводится миграцией; вида запись — строкой
+      в
+        реестре.
+      - `400` — параметры пути или выборки не соответствуют схемам.
+
+      - `404` — источник не зарегистрирован.
+
+      - `501` — источник зарегистрирован, но операция для него ещё не
+      реализована.
+  - name: " Layouts"
+    description: >
+      Экраны и их версии: чтение структуры, правка содержимого, управление
+      языками и
+
+      жизненный цикл версии.
+
+
+      1. `GET /layouts` — все экраны со всеми версиями; `GET
+      /layouts/current-versions`
+         — по каждому ключу версия с максимальным номером среди опубликованных;
+         `GET /layouts/{key}/versions` — версии одного экрана.
+      2. `GET /layouts/{id}` и `GET /layouts/{id}/nodes` — версия и её дерево.
+
+      3. `PATCH /layouts/{id}/components/{componentId}` — настройки блока,
+      только в
+         черновике; `PUT /layouts/{id}/components/{componentId}/translations/{lang}` —
+         тексты блока, в любой неархивной версии.
+      4. `GET /layouts/{id}/languages` и `PATCH /layouts/{id}/languages/{lang}`
+      —
+         языки версии и их включённость.
+      5. `POST /layouts/{id}/validate`, `POST /layouts/{id}/publish`,
+         `POST /layouts/{id}/archive` — жизненный цикл версии.
+
+      - Черновик экрана целиком (версия, дерево узлов, блоки) заводит только
+        миграция данных: ручки, создающей новую версию, здесь нет. Черновиков одного
+        экрана может быть сколько угодно одновременно, у каждого свой номер версии.
+        Типы блоков (`layout_component_types`) тоже заводятся только миграцией, но
+        не версионируются — они общие на все версии экрана по ключу, а не часть
+        конкретного черновика.
+      - `400` — параметры пути или тело запроса не соответствуют схемам, версия
+        архивная либо опубликованная там, где допустим только черновик.
+      - `404` — версия, блок или язык не существует.
+
+      - `501` — `POST /layouts/{id}/archive` ещё не реализован; остальные ручки
+        выше работают.
+servers: []
+components:
+  securitySchemes:
+    cookie:
+      type: apiKey
+      in: cookie
+      name: __Host-sid
+  schemas:
+    LoginRequestDto:
+      type: object
+      properties:
+        email:
+          type: string
+          example: admin@example.com
+          maxLength: 254
+        password:
+          type: string
+          example: password
+          maxLength: 128
+      required:
+        - email
+        - password
+    LoginResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        role:
+          type: string
+          enum:
+            - root
+            - admin
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - email
+        - role
+        - createdAt
+        - updatedAt
+    BadRequestResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 400
+        message:
+          example:
+            - error message
+          type: array
+          items:
+            type: string
+        error:
+          type: string
+          example: Bad Request
+    ConflictResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 409
+        message:
+          type: string
+          example: Conflict
+        error:
+          type: string
+          example: Conflict
+    ChangePasswordRequestDto:
+      type: object
+      properties:
+        currentPassword:
+          type: string
+          description: Текущий пароль.
+        newPassword:
+          type: string
+          description: Новый пароль.
+          minLength: 8
+          maxLength: 128
+      required:
+        - currentPassword
+        - newPassword
+    SessionResponseDto:
+      type: object
+      properties:
+        sessionId:
+          type: string
+          format: uuid
+          description: UUID v4 сессии.
+        userId:
+          type: string
+          format: uuid
+        email:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        renewedAt:
+          format: date-time
+          type: string
+        ip:
+          type: string
+        userAgent:
+          type: string
+        current:
+          type: boolean
+          description: Сессия, из которой пришёл запрос.
+      required:
+        - sessionId
+        - userId
+        - email
+        - createdAt
+        - renewedAt
+        - ip
+        - userAgent
+        - current
+    SessionsResponseDto:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/SessionResponseDto"
+        total:
+          type: number
+          description: Число строк всей выборки после фильтров.
+        page:
+          type: number
+        limit:
+          type: number
+      required:
+        - items
+        - total
+        - page
+        - limit
+    NotFoundResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 404
+        message:
+          type: string
+          example: Not Found
+        error:
+          type: string
+          example: Not Found
+    ComponentTypeResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+        key:
+          type: string
+          description: Ключ типа, попадает в ответ приложения как `type`.
+          example: welcome_step
+        name:
+          type: string
+          description: Название для админ-панели.
+          example: "Шаг: приветствие"
+        dataSchema:
+          type: object
+          description: "Описание полей блока: по нему строится форма редактирования."
+        slots:
+          description: "Области вложенности: ключ, границы количества, допустимые типы."
+          type: array
+          items:
+            type: object
+        dataSource:
+          type: string
+          enum:
+            - none
+            - collection
+            - single
+          description: Нужна ли блоку привязка к независимому контенту.
+        status:
+          type: string
+          enum:
+            - active
+            - deprecated
+      required:
+        - id
+        - key
+        - name
+        - dataSchema
+        - slots
+        - dataSource
+        - status
+    LayoutResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+        key:
+          type: string
+          description: Ключ экрана.
+          example: auth
+        name:
+          type: string
+          description: Название для админ-панели.
+        status:
+          type: string
+          enum:
+            - draft
+            - published
+            - archived
+        version:
+          type: number
+          description: "Номер версии: его запрашивает сборка приложения."
+        description:
+          type: string
+          nullable: true
+        publishedAt:
+          type: string
+          nullable: true
+          format: date-time
+        archivedAt:
+          type: string
+          nullable: true
+          format: date-time
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - key
+        - name
+        - status
+        - version
+        - updatedAt
+    LayoutNodeResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+        parentId:
+          type: string
+          nullable: true
+          description: Родительский узел, `null` — верхний уровень.
+        slot:
+          type: string
+          description: Слот родителя.
+          example: steps
+        position:
+          type: number
+          description: Порядок внутри пары «родитель + слот».
+        componentId:
+          type: string
+          description: Блок, который стоит в этом месте.
+        componentType:
+          type: string
+          description: Ключ типа блока.
+          example: welcome_step
+        componentName:
+          type: string
+          description: Название блока для админ-панели.
+        data:
+          type: object
+          description: "Настройки компонента: медиа, ссылки, числа, флаги."
+        sourceKey:
+          type: string
+          nullable: true
+          description: Источник независимого контента.
+        sourceQuery:
+          type: object
+          nullable: true
+          description: Параметры выборки источника.
+        props:
+          type: object
+          description: "Параметры размещения: переходы шага, кнопки, оформление."
+      required:
+        - id
+        - slot
+        - position
+        - componentId
+        - componentType
+        - componentName
+        - data
+        - props
+    LayoutLanguageResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+        lang:
+          type: string
+          description: Код языка.
+          example: ru
+        isEnabled:
+          type: boolean
+          description: Выключенный язык приложению не отдаётся.
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - lang
+        - isEnabled
+        - updatedAt
+    ToggleLanguageRequestDto:
+      type: object
+      properties:
+        isEnabled:
+          type: boolean
+          description: Включить язык для этой версии экрана.
+      required:
+        - isEnabled
+    UpdateComponentRequestDto:
+      type: object
+      properties:
+        data:
+          type: object
+          description: "Настройки компонента целиком: медиа, ссылки, числа, флаги."
+      required:
+        - data
+    ComponentTranslationRequestDto:
+      type: object
+      properties:
+        data:
+          type: object
+          description: Тексты блока на этом языке целиком.
+      required:
+        - data
+    ComponentTranslationResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+        componentId:
+          type: string
+        lang:
+          type: string
+          example: ru
+        data:
+          type: object
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - componentId
+        - lang
+        - data
+        - updatedAt
+    ValidationResponseDto:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          description: Черновик проходит все проверки публикации.
+        errors:
+          description: "Нарушенные правила: все сразу, а не первое найденное."
+          type: array
+          items:
+            type: string
+      required:
+        - ok
+        - errors
+    NotImplementedResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 501
+        message:
+          type: string
+          example: Not Implemented
+        error:
+          type: string
+          example: Not Implemented
+    ContentSourceResponseDto:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Ключ источника.
+          example: onboarding_stories
+        name:
+          type: string
+          description: Название для админ-панели.
+        kind:
+          type: string
+          enum:
+            - collection
+            - single
+        itemSchema:
+          type: object
+          description: "Описание полей записи: по нему строится форма редактирования."
+        isEnabled:
+          type: boolean
+          description: Выключенный источник не привязывается и не отдаётся.
+      required:
+        - key
+        - name
+        - kind
+        - itemSchema
+        - isEnabled
+    ContentItemsResponseDto:
+      type: object
+      properties:
+        items:
+          description: Форма элементов задаётся описанием полей источника.
+          type: array
+          items:
+            type: object
+        total:
+          type: number
+          description: Сколько записей всего в источнике.
+      required:
+        - items
+        - total
+    Object:
+      type: object
+      properties: {}
+    AuditEntryResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+        actorId:
+          type: string
+          nullable: true
+        actorName:
+          type: string
+          nullable: true
+        action:
+          type: string
+          enum:
+            - create
+            - update
+            - delete
+            - reorder
+            - publish
+            - archive
+            - restore
+        entityType:
+          type: string
+          enum:
+            - layout
+            - component
+            - translation
+            - content_item
+        entityId:
+          type: string
+        entityTitle:
+          type: string
+          nullable: true
+          description: "Название на момент действия: журнал читается и после удаления
+            записи."
+        layoutId:
+          type: string
+          nullable: true
+        sourceKey:
+          type: string
+          nullable: true
+        changes:
+          type: object
+          description: Изменённые поля в виде «было / стало».
+        comment:
+          type: string
+          nullable: true
+        createdAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - action
+        - entityType
+        - entityId
+        - changes
+        - createdAt

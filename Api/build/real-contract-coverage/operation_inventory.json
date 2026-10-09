@@ -1,0 +1,845 @@
+[
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "AuthController_login",
+    "method": "POST",
+    "path": "/api/auth/login",
+    "tags": [
+      " Auth"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "not_applicable",
+    "roles": [],
+    "scopes": [],
+    "public_policy": true,
+    "access_policy_status": "as_declared_or_unknown",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "AuthController_logout",
+    "method": "POST",
+    "path": "/api/auth/logout",
+    "tags": [
+      " Auth"
+    ],
+    "security_declared": true,
+    "security_alternatives": [
+      {
+        "cookie": []
+      }
+    ],
+    "security_schemes": [
+      "cookie"
+    ],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "required",
+    "tenant_isolation": "not_applicable",
+    "roles": [],
+    "scopes": [],
+    "public_policy": false,
+    "access_policy_status": "as_declared_or_unknown",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "AuthController_changePassword",
+    "method": "POST",
+    "path": "/api/auth/change-password",
+    "tags": [
+      " Auth"
+    ],
+    "security_declared": true,
+    "security_alternatives": [
+      {
+        "cookie": []
+      }
+    ],
+    "security_schemes": [
+      "cookie"
+    ],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "required",
+    "tenant_isolation": "not_applicable",
+    "roles": [],
+    "scopes": [],
+    "public_policy": false,
+    "access_policy_status": "as_declared_or_unknown",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "AuthController_getSessions",
+    "method": "GET",
+    "path": "/api/auth/sessions",
+    "tags": [
+      " Auth"
+    ],
+    "security_declared": true,
+    "security_alternatives": [
+      {
+        "cookie": []
+      }
+    ],
+    "security_schemes": [
+      "cookie"
+    ],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "unknown",
+    "tenant_isolation": "not_applicable",
+    "roles": [],
+    "scopes": [],
+    "public_policy": false,
+    "access_policy_status": "as_declared_or_unknown",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "AuthController_deleteSession",
+    "method": "DELETE",
+    "path": "/api/auth/sessions/{sessionId}",
+    "tags": [
+      " Auth"
+    ],
+    "security_declared": true,
+    "security_alternatives": [
+      {
+        "cookie": []
+      }
+    ],
+    "security_schemes": [
+      "cookie"
+    ],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "required",
+    "tenant_isolation": "not_applicable",
+    "roles": [],
+    "scopes": [],
+    "public_policy": false,
+    "access_policy_status": "as_declared_or_unknown",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "ComponentTypesController_getTypes",
+    "method": "GET",
+    "path": "/api/component-types",
+    "tags": [
+      " Component-types"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_operation_review",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "LayoutsController_getScreens",
+    "method": "GET",
+    "path": "/api/layouts",
+    "tags": [
+      " Layouts"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_operation_review",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "LayoutsController_getCurrentVersions",
+    "method": "GET",
+    "path": "/api/layouts/current-versions",
+    "tags": [
+      " Layouts"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_operation_review",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "LayoutsController_getVersions",
+    "method": "GET",
+    "path": "/api/layouts/{key}/versions",
+    "tags": [
+      " Layouts"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "unknown",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_operation_review",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "LayoutsController_getScreen",
+    "method": "GET",
+    "path": "/api/layouts/{id}",
+    "tags": [
+      " Layouts"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "unknown",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_operation_review",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "LayoutsController_getNodes",
+    "method": "GET",
+    "path": "/api/layouts/{id}/nodes",
+    "tags": [
+      " Layouts"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "unknown",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_operation_review",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "LayoutsController_getLanguages",
+    "method": "GET",
+    "path": "/api/layouts/{id}/languages",
+    "tags": [
+      " Layouts"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "unknown",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_operation_review",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "LayoutsController_toggleLanguage",
+    "method": "PATCH",
+    "path": "/api/layouts/{id}/languages/{lang}",
+    "tags": [
+      " Layouts"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_operation_review",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "LayoutsController_updateComponent",
+    "method": "PATCH",
+    "path": "/api/layouts/{id}/components/{componentId}",
+    "tags": [
+      " Layouts"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_operation_review",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "LayoutsController_saveTranslation",
+    "method": "PUT",
+    "path": "/api/layouts/{id}/components/{componentId}/translations/{lang}",
+    "tags": [
+      " Layouts"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_operation_review",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "LayoutsController_validate",
+    "method": "POST",
+    "path": "/api/layouts/{id}/validate",
+    "tags": [
+      " Layouts"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "unknown",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_operation_review",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "LayoutsController_publish",
+    "method": "POST",
+    "path": "/api/layouts/{id}/publish",
+    "tags": [
+      " Layouts"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_operation_review",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "LayoutsController_archive",
+    "method": "POST",
+    "path": "/api/layouts/{id}/archive",
+    "tags": [
+      " Layouts"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_operation_review",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "ContentController_getSources",
+    "method": "GET",
+    "path": "/api/content/sources",
+    "tags": [
+      " Content"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_operation_review",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "ContentController_getItems",
+    "method": "GET",
+    "path": "/api/content/{sourceKey}/items",
+    "tags": [
+      " Content"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "unknown",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_operation_review",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "ContentController_createItem",
+    "method": "POST",
+    "path": "/api/content/{sourceKey}/items",
+    "tags": [
+      " Content"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_operation_review",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "ContentController_updateItem",
+    "method": "PATCH",
+    "path": "/api/content/{sourceKey}/items/{id}",
+    "tags": [
+      " Content"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_operation_review",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "ContentController_removeItem",
+    "method": "DELETE",
+    "path": "/api/content/{sourceKey}/items/{id}",
+    "tags": [
+      " Content"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_operation_review",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "Bff Admin API documentation",
+    "operationId": "AuditController_getEntries",
+    "method": "GET",
+    "path": "/api/audit",
+    "tags": [
+      " Audit"
+    ],
+    "security_declared": false,
+    "security_alternatives": [],
+    "security_schemes": [],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_operation_review",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "API мобильного клиента",
+    "operationId": "onStart",
+    "method": "POST",
+    "path": "/onStart",
+    "tags": [
+      "bff"
+    ],
+    "security_declared": true,
+    "security_alternatives": [
+      {
+        "Api-Key": []
+      },
+      {}
+    ],
+    "security_schemes": [
+      "Api-Key"
+    ],
+    "public_anonymous_alternative": true,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": null,
+    "access_policy_status": "needs_owner_confirmation",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "API мобильного клиента",
+    "operationId": "sendCode",
+    "method": "POST",
+    "path": "/auth/send-code",
+    "tags": [
+      "auth"
+    ],
+    "security_declared": true,
+    "security_alternatives": [
+      {
+        "Api-Key": []
+      }
+    ],
+    "security_schemes": [
+      "Api-Key"
+    ],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "not_applicable",
+    "roles": [],
+    "scopes": [],
+    "public_policy": true,
+    "access_policy_status": "as_declared_or_unknown",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "API мобильного клиента",
+    "operationId": "verifyCode",
+    "method": "POST",
+    "path": "/auth/verify-code",
+    "tags": [
+      "auth"
+    ],
+    "security_declared": true,
+    "security_alternatives": [
+      {
+        "Api-Key": []
+      }
+    ],
+    "security_schemes": [
+      "Api-Key"
+    ],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "not_applicable",
+    "roles": [],
+    "scopes": [],
+    "public_policy": true,
+    "access_policy_status": "as_declared_or_unknown",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "API мобильного клиента",
+    "operationId": "refresh",
+    "method": "POST",
+    "path": "/auth/refresh",
+    "tags": [
+      "auth"
+    ],
+    "security_declared": true,
+    "security_alternatives": [
+      {
+        "Api-Key": []
+      }
+    ],
+    "security_schemes": [
+      "Api-Key"
+    ],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "not_applicable",
+    "roles": [],
+    "scopes": [],
+    "public_policy": true,
+    "access_policy_status": "as_declared_or_unknown",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "API мобильного клиента",
+    "operationId": "logout",
+    "method": "POST",
+    "path": "/auth/logout",
+    "tags": [
+      "auth"
+    ],
+    "security_declared": true,
+    "security_alternatives": [
+      {
+        "Api-Key": [],
+        "Bearer": []
+      }
+    ],
+    "security_schemes": [
+      "Api-Key",
+      "Bearer"
+    ],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "required",
+    "tenant_isolation": "not_applicable",
+    "roles": [],
+    "scopes": [],
+    "public_policy": false,
+    "access_policy_status": "as_declared_or_unknown",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "API мобильного клиента",
+    "operationId": "getUnsignedDocuments",
+    "method": "GET",
+    "path": "/documents/unsigned",
+    "tags": [
+      "documents"
+    ],
+    "security_declared": true,
+    "security_alternatives": [
+      {
+        "Api-Key": [],
+        "Bearer": []
+      },
+      {
+        "Api-Key": []
+      }
+    ],
+    "security_schemes": [
+      "Api-Key",
+      "Bearer"
+    ],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "required",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": true,
+    "access_policy_status": "as_declared_or_unknown",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "API мобильного клиента",
+    "operationId": "acceptDocuments",
+    "method": "POST",
+    "path": "/documents/accept",
+    "tags": [
+      "documents"
+    ],
+    "security_declared": true,
+    "security_alternatives": [
+      {
+        "Api-Key": [],
+        "Bearer": []
+      },
+      {
+        "Api-Key": []
+      }
+    ],
+    "security_schemes": [
+      "Api-Key",
+      "Bearer"
+    ],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "required",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": true,
+    "access_policy_status": "as_declared_or_unknown",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "API мобильного клиента",
+    "operationId": "getDocumentsHistory",
+    "method": "GET",
+    "path": "/documents/history",
+    "tags": [
+      "documents"
+    ],
+    "security_declared": true,
+    "security_alternatives": [
+      {
+        "Api-Key": [],
+        "Bearer": []
+      },
+      {
+        "Api-Key": []
+      }
+    ],
+    "security_schemes": [
+      "Api-Key",
+      "Bearer"
+    ],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "required",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": true,
+    "access_policy_status": "as_declared_or_unknown",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "API мобильного клиента",
+    "operationId": "getOnboardingStory",
+    "method": "GET",
+    "path": "/stories/onboarding",
+    "tags": [
+      "stories"
+    ],
+    "security_declared": true,
+    "security_alternatives": [
+      {
+        "Api-Key": []
+      }
+    ],
+    "security_schemes": [
+      "Api-Key"
+    ],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": true,
+    "access_policy_status": "as_declared_or_unknown",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "API мобильного клиента",
+    "operationId": "getWidgetStories",
+    "method": "GET",
+    "path": "/stories/widgets",
+    "tags": [
+      "stories"
+    ],
+    "security_declared": true,
+    "security_alternatives": [
+      {
+        "Api-Key": []
+      }
+    ],
+    "security_schemes": [
+      "Api-Key"
+    ],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": true,
+    "access_policy_status": "as_declared_or_unknown",
+    "roles_model": "unknown"
+  },
+  {
+    "api": "API мобильного клиента",
+    "operationId": "getFaqStories",
+    "method": "GET",
+    "path": "/stories/faq",
+    "tags": [
+      "stories"
+    ],
+    "security_declared": true,
+    "security_alternatives": [
+      {
+        "Api-Key": []
+      }
+    ],
+    "security_schemes": [
+      "Api-Key"
+    ],
+    "public_anonymous_alternative": false,
+    "access_model_entry": true,
+    "ownership": "not_applicable",
+    "tenant_isolation": "unknown",
+    "roles": [],
+    "scopes": [],
+    "public_policy": true,
+    "access_policy_status": "as_declared_or_unknown",
+    "roles_model": "unknown"
+  }
+]

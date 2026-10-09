@@ -1,0 +1,56 @@
+checks:
+- id: REAL-MOBILE-CLIENT-API-LOGOUT-MISSING-EXPIRED-OR-REFRESH-TOKEN
+  title: Logout requires a valid access token
+  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить
+    перед исполнением.
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - token-lifecycle
+  - ownership
+  - smoke
+  - ci
+  - regression
+  - release
+  preconditions:
+  - Изолированное тестовое окружение и синтетические учётные записи доступны
+  - Ожидаемая политика доступа подтверждена
+  steps:
+  - action: 'Подготовить тестовые данные для POST /auth/logout; сценарий: missing-expired-or-refresh-token.'
+    data:
+      operationId: logout
+      method: POST
+      path: /auth/logout
+      dimension: authentication
+  - action: Отправить POST запрос на /auth/logout с заданными credentials/ролью/ресурсом.
+    notes: Не использовать production credentials или реальные пользовательские данные.
+  expected:
+  - Missing, expired, malformed, or refresh token is rejected; valid access token logs out only its own session.
+  - При отказе защищённые данные не раскрываются, а запрещённая мутация не меняет состояние.
+  applicability:
+    when:
+    - 'Операция присутствует в OpenAPI: POST /auth/logout'
+    - Политика для измерения authentication подтверждена
+    skip_when:
+    - Политика явно помечена как неприменимая к операции
+  automation:
+    level: partial
+    deterministic: true
+    notes: Требуется привязка fixtures и фактического transport/client.
+  profiles:
+  - Smoke
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: high
+    likelihood: high
+  references:
+  - OpenAPI operationId=logout
+  - 'Contract: mobile-client-api'

@@ -1,0 +1,53 @@
+checks:
+- id: REAL-BFF-ADMIN-API-AUTHCONTROLLER-DELETESESSION-CROSS-ACCOUNT-SES
+  title: Session endpoint enforces session ownership
+  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить
+    перед исполнением.
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authz
+  - ownership
+  - ci
+  - regression
+  - release
+  preconditions:
+  - Изолированное тестовое окружение и синтетические учётные записи доступны
+  - Ожидаемая политика доступа подтверждена
+  steps:
+  - action: 'Подготовить тестовые данные для DELETE /api/auth/sessions/{sessionId}; сценарий: cross-account-session.'
+    data:
+      operationId: AuthController_deleteSession
+      method: DELETE
+      path: /api/auth/sessions/{sessionId}
+      dimension: resource_ownership
+  - action: Отправить DELETE запрос на /api/auth/sessions/{sessionId} с заданными credentials/ролью/ресурсом.
+    notes: Не использовать production credentials или реальные пользовательские данные.
+  expected:
+  - A principal cannot enumerate or terminate another account’s session unless explicitly authorized.
+  - При отказе защищённые данные не раскрываются, а запрещённая мутация не меняет состояние.
+  applicability:
+    when:
+    - 'Операция присутствует в OpenAPI: DELETE /api/auth/sessions/{sessionId}'
+    - Политика для измерения resource_ownership подтверждена
+    skip_when:
+    - Политика явно помечена как неприменимая к операции
+  automation:
+    level: partial
+    deterministic: true
+    notes: Требуется привязка fixtures и фактического transport/client.
+  profiles:
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: high
+    likelihood: high
+  references:
+  - OpenAPI operationId=AuthController_deleteSession
+  - 'Contract: bff-admin-api'

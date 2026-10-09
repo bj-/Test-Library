@@ -1,0 +1,210 @@
+version: 2
+api: Bff Admin API documentation
+defaults:
+  ownership: unknown
+  tenant_isolation: unknown
+  resource: admin-managed-resource
+  roles: []
+  scopes: []
+  roles_model: unknown
+policy:
+  deny_by_default: true
+  mutation_must_leave_state_unchanged: true
+  access_for_operations_without_security: unknown_until_operation_review
+operations:
+  AuthController_login:
+    public: true
+    ownership: not_applicable
+    tenant_isolation: not_applicable
+    roles: []
+    scopes: []
+    resource: admin-session
+  AuthController_logout:
+    public: false
+    ownership: required
+    tenant_isolation: not_applicable
+    roles: []
+    scopes: []
+    resource: admin-session
+  AuthController_changePassword:
+    public: false
+    ownership: required
+    tenant_isolation: not_applicable
+    roles: []
+    scopes: []
+    resource: account
+  AuthController_getSessions:
+    public: false
+    ownership: unknown
+    tenant_isolation: not_applicable
+    roles: []
+    scopes: []
+    resource: admin-session
+  AuthController_deleteSession:
+    public: false
+    ownership: required
+    tenant_isolation: not_applicable
+    roles: []
+    scopes: []
+    resource: admin-session
+  LayoutsController_publish:
+    public: null
+    access_policy_status: needs_operation_review
+    ownership: not_applicable
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: layout
+    action: publish
+  LayoutsController_archive:
+    public: null
+    access_policy_status: needs_operation_review
+    ownership: not_applicable
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: layout
+    action: archive
+  LayoutsController_toggleLanguage:
+    public: null
+    access_policy_status: needs_operation_review
+    ownership: not_applicable
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: layout
+    action: update
+  LayoutsController_updateComponent:
+    public: null
+    access_policy_status: needs_operation_review
+    ownership: not_applicable
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: layout
+    action: update
+  LayoutsController_saveTranslation:
+    public: null
+    access_policy_status: needs_operation_review
+    ownership: not_applicable
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: layout
+    action: update
+  ContentController_createItem:
+    public: null
+    access_policy_status: needs_operation_review
+    ownership: not_applicable
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: content-item
+    action: create
+  ContentController_updateItem:
+    public: null
+    access_policy_status: needs_operation_review
+    ownership: not_applicable
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: content-item
+    action: update
+  ContentController_removeItem:
+    public: null
+    access_policy_status: needs_operation_review
+    ownership: not_applicable
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: content-item
+    action: delete
+  AuditController_getEntries:
+    public: null
+    access_policy_status: needs_operation_review
+    ownership: not_applicable
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: audit-log
+    action: read
+  ComponentTypesController_getTypes:
+    public: null
+    access_policy_status: needs_operation_review
+    ownership: not_applicable
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: admin-managed-resource
+  LayoutsController_getScreens:
+    public: null
+    access_policy_status: needs_operation_review
+    ownership: not_applicable
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: admin-managed-resource
+  LayoutsController_getCurrentVersions:
+    public: null
+    access_policy_status: needs_operation_review
+    ownership: not_applicable
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: admin-managed-resource
+  LayoutsController_getVersions:
+    public: null
+    access_policy_status: needs_operation_review
+    ownership: unknown
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: admin-managed-resource
+  LayoutsController_getScreen:
+    public: null
+    access_policy_status: needs_operation_review
+    ownership: unknown
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: admin-managed-resource
+  LayoutsController_getNodes:
+    public: null
+    access_policy_status: needs_operation_review
+    ownership: unknown
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: admin-managed-resource
+  LayoutsController_getLanguages:
+    public: null
+    access_policy_status: needs_operation_review
+    ownership: unknown
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: admin-managed-resource
+  LayoutsController_validate:
+    public: null
+    access_policy_status: needs_operation_review
+    ownership: unknown
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: admin-managed-resource
+  ContentController_getSources:
+    public: null
+    access_policy_status: needs_operation_review
+    ownership: not_applicable
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: admin-managed-resource
+  ContentController_getItems:
+    public: null
+    access_policy_status: needs_operation_review
+    ownership: unknown
+    tenant_isolation: unknown
+    roles: []
+    scopes: []
+    resource: admin-managed-resource

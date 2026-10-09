@@ -1,0 +1,173 @@
+{
+  "summary": {
+    "openapi_title": "Sample Tenant API",
+    "openapi_version": "3.0.3",
+    "operations_discovered": 3,
+    "candidate_checks": 17,
+    "coverage_candidates_by_dimension": {
+      "authentication": 6,
+      "authorization": 3,
+      "tenant_isolation": 3,
+      "roles_scopes": 3,
+      "resource_ownership": 2
+    },
+    "candidate_risks_by_priority": {
+      "P1": 14,
+      "P0": 3
+    },
+    "needs_clarification": 0,
+    "contradictions": 0,
+    "profiles": {
+      "Smoke": 11,
+      "CI": 17,
+      "Regression": 17,
+      "Release": 17,
+      "PR": 0,
+      "Nightly": 0
+    },
+    "limitations": [
+      "Candidate generation is not proof that policy is correct or complete.",
+      "Unknown policy is reported for clarification, not silently inferred.",
+      "Coverage counts are candidate counts, not execution/pass coverage."
+    ]
+  },
+  "questions": [],
+  "cells": [
+    {
+      "operation": "GET /projects",
+      "dimension": "authentication",
+      "case": "missing_or_invalid_credentials",
+      "priority": "P1",
+      "status": "candidate",
+      "check_id": "GEN-LISTPROJECTS-AUTHENTICATION-MISSING-OR-INVALID-C"
+    },
+    {
+      "operation": "GET /projects",
+      "dimension": "authentication",
+      "case": "expired_or_revoked_token",
+      "priority": "P1",
+      "status": "candidate",
+      "check_id": "GEN-LISTPROJECTS-AUTHENTICATION-EXPIRED-OR-REVOKED-T"
+    },
+    {
+      "operation": "GET /projects",
+      "dimension": "authorization",
+      "case": "disallowed_action",
+      "priority": "P1",
+      "status": "candidate",
+      "check_id": "GEN-LISTPROJECTS-AUTHORIZATION-DISALLOWED-ACTION"
+    },
+    {
+      "operation": "GET /projects",
+      "dimension": "tenant_isolation",
+      "case": "cross_tenant_resource",
+      "priority": "P0",
+      "status": "candidate",
+      "check_id": "GEN-LISTPROJECTS-TENANT-ISOLATION-CROSS-TENANT-RESOU"
+    },
+    {
+      "operation": "GET /projects",
+      "dimension": "roles_scopes",
+      "case": "insufficient_role_or_scope",
+      "priority": "P1",
+      "status": "candidate",
+      "check_id": "GEN-LISTPROJECTS-ROLES-SCOPES-INSUFFICIENT-ROLE-OR-S"
+    },
+    {
+      "operation": "GET /projects/{projectId}",
+      "dimension": "authentication",
+      "case": "missing_or_invalid_credentials",
+      "priority": "P1",
+      "status": "candidate",
+      "check_id": "GEN-GETPROJECT-AUTHENTICATION-MISSING-OR-INVALID-CRE"
+    },
+    {
+      "operation": "GET /projects/{projectId}",
+      "dimension": "authentication",
+      "case": "expired_or_revoked_token",
+      "priority": "P1",
+      "status": "candidate",
+      "check_id": "GEN-GETPROJECT-AUTHENTICATION-EXPIRED-OR-REVOKED-TOK"
+    },
+    {
+      "operation": "GET /projects/{projectId}",
+      "dimension": "authorization",
+      "case": "disallowed_action",
+      "priority": "P1",
+      "status": "candidate",
+      "check_id": "GEN-GETPROJECT-AUTHORIZATION-DISALLOWED-ACTION"
+    },
+    {
+      "operation": "GET /projects/{projectId}",
+      "dimension": "resource_ownership",
+      "case": "other_users_resource",
+      "priority": "P1",
+      "status": "candidate",
+      "check_id": "GEN-GETPROJECT-RESOURCE-OWNERSHIP-OTHER-USERS-RESOUR"
+    },
+    {
+      "operation": "GET /projects/{projectId}",
+      "dimension": "tenant_isolation",
+      "case": "cross_tenant_resource",
+      "priority": "P0",
+      "status": "candidate",
+      "check_id": "GEN-GETPROJECT-TENANT-ISOLATION-CROSS-TENANT-RESOURC"
+    },
+    {
+      "operation": "GET /projects/{projectId}",
+      "dimension": "roles_scopes",
+      "case": "insufficient_role_or_scope",
+      "priority": "P1",
+      "status": "candidate",
+      "check_id": "GEN-GETPROJECT-ROLES-SCOPES-INSUFFICIENT-ROLE-OR-SCO"
+    },
+    {
+      "operation": "PATCH /projects/{projectId}",
+      "dimension": "authentication",
+      "case": "missing_or_invalid_credentials",
+      "priority": "P1",
+      "status": "candidate",
+      "check_id": "GEN-UPDATEPROJECT-AUTHENTICATION-MISSING-OR-INVALID"
+    },
+    {
+      "operation": "PATCH /projects/{projectId}",
+      "dimension": "authentication",
+      "case": "expired_or_revoked_token",
+      "priority": "P1",
+      "status": "candidate",
+      "check_id": "GEN-UPDATEPROJECT-AUTHENTICATION-EXPIRED-OR-REVOKED"
+    },
+    {
+      "operation": "PATCH /projects/{projectId}",
+      "dimension": "authorization",
+      "case": "disallowed_action",
+      "priority": "P1",
+      "status": "candidate",
+      "check_id": "GEN-UPDATEPROJECT-AUTHORIZATION-DISALLOWED-ACTION"
+    },
+    {
+      "operation": "PATCH /projects/{projectId}",
+      "dimension": "resource_ownership",
+      "case": "other_users_resource",
+      "priority": "P1",
+      "status": "candidate",
+      "check_id": "GEN-UPDATEPROJECT-RESOURCE-OWNERSHIP-OTHER-USERS-RES"
+    },
+    {
+      "operation": "PATCH /projects/{projectId}",
+      "dimension": "tenant_isolation",
+      "case": "cross_tenant_resource",
+      "priority": "P0",
+      "status": "candidate",
+      "check_id": "GEN-UPDATEPROJECT-TENANT-ISOLATION-CROSS-TENANT-RESO"
+    },
+    {
+      "operation": "PATCH /projects/{projectId}",
+      "dimension": "roles_scopes",
+      "case": "insufficient_role_or_scope",
+      "priority": "P1",
+      "status": "candidate",
+      "check_id": "GEN-UPDATEPROJECT-ROLES-SCOPES-INSUFFICIENT-ROLE-OR"
+    }
+  ]
+}

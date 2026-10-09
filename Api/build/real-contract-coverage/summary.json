@@ -1,0 +1,26 @@
+{
+  "contracts": [
+    {
+      "title": "Bff Admin API documentation",
+      "operations": 24,
+      "security_declared": 4,
+      "security_missing": 20,
+      "anonymous_alternative": 0,
+      "generated_checks": 39
+    },
+    {
+      "title": "API мобильного клиента",
+      "operations": 11,
+      "security_declared": 11,
+      "security_missing": 0,
+      "anonymous_alternative": 1,
+      "generated_checks": 9
+    }
+  ],
+  "operations_total": 35,
+  "generated_checks": 48,
+  "unique_check_ids": 48,
+  "clarification_items": 66,
+  "security_gap_operations": 20,
+  "contract_contradictions": 1
+}

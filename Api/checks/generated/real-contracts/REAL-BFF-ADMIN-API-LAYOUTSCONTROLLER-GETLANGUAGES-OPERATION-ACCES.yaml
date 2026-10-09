@@ -1,0 +1,55 @@
+checks:
+- id: REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-GETLANGUAGES-OPERATION-ACCES
+  title: Confirm operation-specific authentication and authorization policy
+  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить
+    перед исполнением.
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authz
+  - roles-scopes
+  - ci
+  - regression
+  - release
+  preconditions:
+  - Изолированное тестовое окружение и синтетические учётные записи доступны
+  - Ожидаемая политика доступа подтверждена
+  steps:
+  - action: 'Подготовить тестовые данные для GET /api/layouts/{id}/languages; сценарий: operation-access-policy-unresolved.'
+    data:
+      operationId: LayoutsController_getLanguages
+      method: GET
+      path: /api/layouts/{id}/languages
+      dimension: authorization
+  - action: Отправить GET запрос на /api/layouts/{id}/languages с заданными credentials/ролью/ресурсом.
+    notes: 'Blocked candidate: OpenAPI has no effective security requirement and policy is intentionally unresolved
+      pending operation-by-operation review.'
+  expected:
+  - Expected authentication, authorization, and minimum privilege must be confirmed for this exact operation before
+    converting this candidate into an executable assertion.
+  - При отказе защищённые данные не раскрываются, а запрещённая мутация не меняет состояние.
+  applicability:
+    when:
+    - 'Операция присутствует в OpenAPI: GET /api/layouts/{id}/languages'
+    - Политика для измерения authorization подтверждена
+    skip_when:
+    - Политика явно помечена как неприменимая к операции
+  automation:
+    level: partial
+    deterministic: true
+    notes: Требуется привязка fixtures и фактического transport/client.
+  profiles:
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: high
+    likelihood: high
+  references:
+  - OpenAPI operationId=LayoutsController_getLanguages
+  - 'Contract: bff-admin-api'

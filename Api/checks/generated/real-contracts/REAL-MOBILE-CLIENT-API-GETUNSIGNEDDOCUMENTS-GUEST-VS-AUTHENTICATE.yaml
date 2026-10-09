@@ -1,0 +1,54 @@
+checks:
+- id: REAL-MOBILE-CLIENT-API-GETUNSIGNEDDOCUMENTS-GUEST-VS-AUTHENTICATE
+  title: Guest and authenticated document access follow distinct policies
+  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить
+    перед исполнением.
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authz
+  - ownership
+  - ci
+  - regression
+  - release
+  preconditions:
+  - Изолированное тестовое окружение и синтетические учётные записи доступны
+  - Ожидаемая политика доступа подтверждена
+  steps:
+  - action: 'Подготовить тестовые данные для GET /documents/unsigned; сценарий: guest-vs-authenticated.'
+    data:
+      operationId: getUnsignedDocuments
+      method: GET
+      path: /documents/unsigned
+      dimension: authorization
+  - action: Отправить GET запрос на /documents/unsigned с заданными credentials/ролью/ресурсом.
+    notes: Не использовать production credentials или реальные пользовательские данные.
+  expected:
+  - Guest context is bound to installation_id; authenticated context is bound to the user, and one principal cannot
+    read or mutate another principal’s acceptance/history.
+  - При отказе защищённые данные не раскрываются, а запрещённая мутация не меняет состояние.
+  applicability:
+    when:
+    - 'Операция присутствует в OpenAPI: GET /documents/unsigned'
+    - Политика для измерения authorization подтверждена
+    skip_when:
+    - Политика явно помечена как неприменимая к операции
+  automation:
+    level: partial
+    deterministic: true
+    notes: Требуется привязка fixtures и фактического transport/client.
+  profiles:
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: high
+    likelihood: high
+  references:
+  - OpenAPI operationId=getUnsignedDocuments
+  - 'Contract: mobile-client-api'

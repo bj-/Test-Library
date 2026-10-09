@@ -1,0 +1,56 @@
+checks:
+- id: REAL-MOBILE-CLIENT-API-ACCEPTDOCUMENTS-GUEST-VS-AUTHENTICATED
+  title: Guest and authenticated document access follow distinct policies
+  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить
+    перед исполнением.
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authz
+  - ownership
+  - smoke
+  - ci
+  - regression
+  - release
+  preconditions:
+  - Изолированное тестовое окружение и синтетические учётные записи доступны
+  - Ожидаемая политика доступа подтверждена
+  steps:
+  - action: 'Подготовить тестовые данные для POST /documents/accept; сценарий: guest-vs-authenticated.'
+    data:
+      operationId: acceptDocuments
+      method: POST
+      path: /documents/accept
+      dimension: authorization
+  - action: Отправить POST запрос на /documents/accept с заданными credentials/ролью/ресурсом.
+    notes: Не использовать production credentials или реальные пользовательские данные.
+  expected:
+  - Guest context is bound to installation_id; authenticated context is bound to the user, and one principal cannot
+    read or mutate another principal’s acceptance/history.
+  - При отказе защищённые данные не раскрываются, а запрещённая мутация не меняет состояние.
+  applicability:
+    when:
+    - 'Операция присутствует в OpenAPI: POST /documents/accept'
+    - Политика для измерения authorization подтверждена
+    skip_when:
+    - Политика явно помечена как неприменимая к операции
+  automation:
+    level: partial
+    deterministic: true
+    notes: Требуется привязка fixtures и фактического transport/client.
+  profiles:
+  - Smoke
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: high
+    likelihood: high
+  references:
+  - OpenAPI operationId=acceptDocuments
+  - 'Contract: mobile-client-api'

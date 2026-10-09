@@ -1,0 +1,60 @@
+openapi: 3.0.3
+info:
+  title: Sample Tenant API
+  version: 1.0.0
+servers:
+  - url: https://api.example.test
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - bearerAuth: []
+paths:
+  /projects:
+    get:
+      operationId: listProjects
+      summary: List projects
+      x-access-control:
+        resource: project
+        ownership: required
+        tenant_isolation: required
+        roles: [reader, project-admin]
+        scopes: [projects:read]
+        action: list
+      responses:
+        '200': {description: OK}
+  /projects/{projectId}:
+    get:
+      operationId: getProject
+      x-access-control:
+        resource: project
+        ownership: required
+        tenant_isolation: required
+        roles: [reader, project-admin]
+        scopes: [projects:read]
+        action: read
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        '200': {description: OK}
+    patch:
+      operationId: updateProject
+      x-access-control:
+        resource: project
+        ownership: required
+        tenant_isolation: required
+        roles: [project-admin]
+        scopes: [projects:write]
+        action: update
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        '200': {description: Updated}

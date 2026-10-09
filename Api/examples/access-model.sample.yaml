@@ -1,0 +1,16 @@
+version: 1
+defaults:
+  # Use required / not_applicable / unknown for ownership and tenant isolation.
+  ownership: unknown
+  tenant_isolation: unknown
+  resource: unknown
+policy:
+  deny_by_default: true
+  unauthenticated_status: 401
+  forbidden_status: 403
+  cross_tenant_status: 404 # Set according to the actual API contract.
+  mutation_must_leave_state_unchanged: true
+notes:
+  - Add x-access-control per operation in OpenAPI where policy differs.
+  - ownership and tenant_isolation must be explicit to avoid false assumptions.
+  - roles/scopes should list the minimum required permissions for the operation.

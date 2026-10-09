@@ -1,0 +1,54 @@
+checks:
+- id: REAL-MOBILE-CLIENT-API-VERIFYCODE-INVALID-API-KEY
+  title: Authentication endpoint rejects invalid credentials
+  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить
+    перед исполнением.
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - smoke
+  - ci
+  - regression
+  - release
+  preconditions:
+  - Изолированное тестовое окружение и синтетические учётные записи доступны
+  - Ожидаемая политика доступа подтверждена
+  steps:
+  - action: 'Подготовить тестовые данные для POST /auth/verify-code; сценарий: invalid-api-key.'
+    data:
+      operationId: verifyCode
+      method: POST
+      path: /auth/verify-code
+      dimension: authentication
+  - action: Отправить POST запрос на /auth/verify-code с заданными credentials/ролью/ресурсом.
+    notes: Не использовать production credentials или реальные пользовательские данные.
+  expected:
+  - Missing/invalid API key is rejected; invalid/expired one-time code does not issue tokens.
+  - При отказе защищённые данные не раскрываются, а запрещённая мутация не меняет состояние.
+  applicability:
+    when:
+    - 'Операция присутствует в OpenAPI: POST /auth/verify-code'
+    - Политика для измерения authentication подтверждена
+    skip_when:
+    - Политика явно помечена как неприменимая к операции
+  automation:
+    level: partial
+    deterministic: true
+    notes: Требуется привязка fixtures и фактического transport/client.
+  profiles:
+  - Smoke
+  - CI
+  - Regression
+  - Release
+  risk:
+    impact: high
+    likelihood: high
+  references:
+  - OpenAPI operationId=verifyCode
+  - 'Contract: mobile-client-api'
