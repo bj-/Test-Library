@@ -1,5 +1,6 @@
 checks:
 - id: SEC-HORIZONTAL-ESCALATION
+  status: approved
   title: Peer user cannot access peer-only protected action
   category: security
   protocols:
@@ -12,10 +13,12 @@ checks:
   - negative
   - security
   - authz
+  - pr
   - ci
   - regression
+  - nightly
   - release
-  preconditions: &id001
+  preconditions:
   - Two peer users with same role but distinct ownership exist.
   steps:
   - action: Use user A’s identifier or resource reference while authenticated as peer user B with the same role.
@@ -26,15 +29,18 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - Two peer users with same role but distinct ownership exist.
     skip_when:
     - Data is intentionally shared between all users in the role.
   automation:
     level: full
     deterministic: true
   profiles:
+  - PR
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: critical

@@ -1,0 +1,374 @@
+checks:
+- id: FILE-UPLOAD-SIZE-LIMIT
+  status: approved
+  title: Лимит размера загружаемого файла соблюдается
+  category: files
+  protocols:
+  - rest
+  kind: boundary
+  priority: P1
+  tags:
+  - boundary
+  - files
+  - validation
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть загрузка файлов.
+  steps:
+  - action: Загрузить файлы размером max-1, max, max+1 байт и значительно больше.
+  expected:
+  - За лимитом ответ 413 или задокументированная ошибка без полной буферизации и 5xx.
+  applicability:
+    when:
+    - Есть загрузка.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: FILE-UPLOAD-TYPE-VALIDATION
+  status: approved
+  title: Тип файла проверяется по содержимому, а не только по расширению
+  category: files
+  protocols:
+  - rest
+  kind: negative
+  priority: P0
+  tags:
+  - negative
+  - files
+  - security
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Разрешён ограниченный набор типов.
+  steps:
+  - action: Загрузить исполняемый файл с расширением .jpg, корректный файл с неверным Content-Type, polyglot-файл, HTML и
+      SVG вместо изображения.
+  expected:
+  - Запрещённые типы отклоняются; сохранённый файл отдаётся с безопасным Content-Type.
+  applicability:
+    when:
+    - Есть загрузка.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: FILE-FILENAME-SANITIZATION
+  status: approved
+  title: Имя загружаемого файла санитизируется
+  category: files
+  protocols:
+  - rest
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - files
+  - security
+  - injection
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Сервер использует или возвращает имя файла.
+  steps:
+  - action: Загрузить файлы с именами ../../x, CON, имя длиной 1000, unicode, управляющие символы, двойное расширение .php.jpg.
+  expected:
+  - Имя нормализуется или заменяется; файл не выходит за каталог хранения.
+  applicability:
+    when:
+    - Есть загрузка.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: FILE-MALICIOUS-CONTENT
+  status: approved
+  title: Вредоносное содержимое обнаруживается или изолируется
+  category: files
+  protocols:
+  - rest
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - files
+  - security
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Файлы доступны другим пользователям.
+  steps:
+  - action: Загрузить тестовый EICAR, SVG со скриптом, PDF с JavaScript, документ с макросами.
+  expected:
+  - Файл блокируется, помещается в карантин или отдаётся только как attachment по политике.
+  applicability:
+    when:
+    - Файлы распространяются.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: FILE-ARCHIVE-BOMB
+  status: approved
+  title: Архивные и графические бомбы не исчерпывают ресурсы
+  category: files
+  protocols:
+  - rest
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - files
+  - security
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Сервер распаковывает архивы или обрабатывает изображения.
+  steps:
+  - action: Загрузить zip-бомбу, архив с path traversal в именах, изображение 50000x50000 пикселей.
+  expected:
+  - Обработка ограничена по размеру и времени; файлы не пишутся вне каталога.
+  applicability:
+    when:
+    - Есть распаковка или обработка изображений.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+- id: FILE-EMPTY-AND-MALFORMED-MULTIPART
+  status: approved
+  title: Пустой файл и некорректный multipart обрабатываются корректно
+  category: files
+  protocols:
+  - rest
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - files
+  - validation
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть multipart загрузка.
+  steps:
+  - action: Отправить файл 0 байт, multipart без boundary, с неверным boundary, без части file, с несколькими файлами вместо
+      одного.
+  expected:
+  - Ошибки 4xx по контракту без 5xx.
+  applicability:
+    when:
+    - Есть multipart.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: FILE-DOWNLOAD-AUTHZ
+  status: approved
+  title: Скачивание файлов проверяет права и срок действия ссылок
+  category: files
+  protocols:
+  - rest
+  kind: negative
+  priority: P0
+  tags:
+  - negative
+  - files
+  - security
+  - authz
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Файлы приватны.
+  steps:
+  - action: Скачать чужой файл по id, по прямому URL хранилища, по истёкшей подписанной ссылке, по подписанной ссылке с изменёнными
+      параметрами.
+  expected:
+  - Доступ отклоняется во всех случаях.
+  applicability:
+    when:
+    - Есть приватные файлы.
+    skip_when:
+    - Все файлы публичны.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: FILE-DOWNLOAD-HEADERS
+  status: approved
+  title: Скачивание отдаёт корректные Content-Type, Content-Disposition и nosniff
+  category: files
+  protocols:
+  - rest
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - files
+  - security
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть скачивание.
+  steps:
+  - action: Скачать файлы разных типов, включая имена с unicode и кавычками.
+  expected:
+  - 'Content-Disposition с корректным кодированием имени; X-Content-Type-Options: nosniff; нет inline для опасных типов.'
+  applicability:
+    when:
+    - Есть скачивание.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: FILE-RANGE-REQUESTS
+  status: approved
+  title: Частичное скачивание через Range работает по контракту
+  category: files
+  protocols:
+  - rest
+  kind: boundary
+  priority: P3
+  tags:
+  - boundary
+  - files
+  - regression
+  - nightly
+  preconditions:
+  - Поддерживается Range.
+  steps:
+  - action: Запросить bytes=0-99, bytes=-100, диапазон за концом файла, множественные диапазоны.
+  expected:
+  - 206 с корректным Content-Range; некорректный диапазон — 416.
+  applicability:
+    when:
+    - Поддерживается Range.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: FILE-METADATA-STRIP
+  status: approved
+  title: Метаданные изображений с ПДн удаляются
+  category: files
+  protocols:
+  - rest
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - files
+  - privacy
+  - regression
+  - nightly
+  preconditions:
+  - Пользовательские изображения публикуются.
+  steps:
+  - action: Загрузить фото с EXIF-геолокацией и скачать обратно.
+  expected:
+  - Геолокация и идентификаторы устройства удалены по политике.
+  applicability:
+    when:
+    - Есть публикация изображений.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium

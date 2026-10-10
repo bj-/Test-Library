@@ -1,5 +1,6 @@
 checks:
 - id: SEC-OWNERSHIP-REFERENCE-INDIRECT
+  status: approved
   title: Indirect resource references preserve authorization
   category: security
   protocols:
@@ -12,9 +13,11 @@ checks:
   - negative
   - security
   - authz
+  - ci
   - regression
+  - nightly
   - release
-  preconditions: &id001
+  preconditions:
   - Nested resources or relationships are supported.
   steps:
   - action: Use a foreign resource identifier in nested paths, relationship fields, parent IDs, or linked-object references.
@@ -24,14 +27,17 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - Nested resources or relationships are supported.
     skip_when:
     - No nested or linked resources exist.
   automation:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: high

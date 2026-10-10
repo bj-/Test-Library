@@ -1,5 +1,6 @@
 checks:
 - id: SEC-ROLE-LOW-TO-HIGH
+  status: approved
   title: Low-privilege role cannot perform privileged action
   category: security
   protocols:
@@ -12,10 +13,12 @@ checks:
   - negative
   - security
   - authz
+  - pr
   - ci
   - regression
+  - nightly
   - release
-  preconditions: &id001
+  preconditions:
   - At least two roles with different permissions and a privileged operation exist.
   steps:
   - action: Authenticate as a low-privilege role and invoke an administrator-only operation.
@@ -25,15 +28,18 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - At least two roles with different permissions and a privileged operation exist.
     skip_when:
     - Operation is not role-restricted.
   automation:
     level: full
     deterministic: true
   profiles:
+  - PR
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: critical

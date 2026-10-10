@@ -1,30 +1,81 @@
 checks:
-  - id: RESOURCE-CREATE-READ
-    title: Created resource can be read back
-    category: resources
-    protocols: [rest, graphql, generic]
-    kind: positive
-    priority: P1
-    tags: [positive, smoke, regression, ci]
-    preconditions: [Test identity can create and read the resource.]
-    steps:
-      - {action: Create a resource with valid data and save its identifier.}
-      - {action: Read the resource by identifier.}
-    expected: [Create returns the documented success result., Read returns the created resource with expected values.]
-    applicability: {when: [API supports resource creation and read.], skip_when: [Asynchronous creation has not reached its documented consistency window.]}
-    automation: {level: full, deterministic: true}
-    profiles: [PR, Smoke, CI, Regression]
-    risk: {impact: high, likelihood: high}
-  - id: RESOURCE-READ-MISSING
-    title: Reading a missing resource returns a documented error
-    category: resources
-    protocols: [rest, graphql, generic]
-    kind: negative
-    priority: P1
-    tags: [negative, error-handling, regression, ci]
-    preconditions: [A guaranteed-absent identifier can be generated.]
-    steps: [{action: Request a resource that does not exist.}]
-    expected: [A documented error is returned without leaking internal details.]
-    applicability: {when: [API supports lookup by resource identifier.], skip_when: [A missing identifier cannot be reliably constructed.]}
-    automation: {level: full, deterministic: true}
-    profiles: [CI, Regression]
+- id: RESOURCE-CREATE-READ
+  status: approved
+  title: Created resource can be read back
+  category: resources
+  protocols:
+  - rest
+  - graphql
+  - generic
+  kind: positive
+  priority: P1
+  tags:
+  - positive
+  - smoke
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Test identity can create and read the resource.
+  steps:
+  - action: Create a resource with valid data and save its identifier.
+  - action: Read the resource by identifier.
+  expected:
+  - Create returns the documented success result.
+  - Read returns the created resource with expected values.
+  applicability:
+    when:
+    - API supports resource creation and read.
+    skip_when:
+    - Asynchronous creation has not reached its documented consistency window.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Smoke
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: high
+- id: RESOURCE-READ-MISSING
+  status: approved
+  title: Reading a missing resource returns a documented error
+  category: resources
+  protocols:
+  - rest
+  - graphql
+  - generic
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - error-handling
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - A guaranteed-absent identifier can be generated.
+  steps:
+  - action: Request a resource that does not exist.
+  expected:
+  - A documented error is returned without leaking internal details.
+  applicability:
+    when:
+    - API supports lookup by resource identifier.
+    skip_when:
+    - A missing identifier cannot be reliably constructed.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release

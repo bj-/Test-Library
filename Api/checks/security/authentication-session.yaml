@@ -1,0 +1,1018 @@
+checks:
+- id: AUTH-JWT-ALG-NONE
+  status: approved
+  title: JWT с alg=none отклоняется
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - negative
+  - authn
+  - token-lifecycle
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Используются JWT access-токены.
+  steps:
+  - action: 'Взять валидный токен, установить alg: none, удалить подпись, отправить запрос.'
+  expected:
+  - Запрос отклоняется как неаутентифицированный.
+  applicability:
+    when:
+    - JWT.
+    skip_when:
+    - Непрозрачные токены.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: AUTH-JWT-ALG-CONFUSION
+  status: approved
+  title: Подмена алгоритма RS256 на HS256 с публичным ключом не принимается
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - negative
+  - authn
+  - token-lifecycle
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - JWT подписываются асимметрично; публичный ключ доступен (JWKS).
+  steps:
+  - action: Подписать токен HMAC, используя публичный ключ как секрет, отправить запрос.
+  expected:
+  - Токен отклоняется.
+  applicability:
+    when:
+    - Асимметричные JWT.
+    skip_when:
+    - Симметричная подпись или непрозрачные токены.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: AUTH-JWT-HEADER-INJECTION
+  status: approved
+  title: Параметры kid, jku, x5u в заголовке JWT не позволяют подставить ключ
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - injection
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - JWT содержит kid или поддерживается JWKS.
+  steps:
+  - action: Указать kid с path traversal или SQL, jku/x5u на контролируемый сервер, встроенный jwk.
+  expected:
+  - Ключ выбирается только из доверенного набора, токен отклоняется.
+  applicability:
+    when:
+    - JWT с kid/JWKS.
+    skip_when:
+    - Непрозрачные токены.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: AUTH-JWT-TIME-CLAIMS
+  status: approved
+  title: Токены с nbf/iat в будущем и без exp обрабатываются по политике
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - boundary
+  - authn
+  - token-lifecycle
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - JWT.
+  steps:
+  - action: Сформировать токены с nbf в будущем, iat в будущем, без exp, с exp на границе допуска рассинхронизации часов.
+  expected:
+  - Недействительные по времени токены отклоняются; допуск часов соответствует политике.
+  applicability:
+    when:
+    - JWT.
+    skip_when:
+    - Непрозрачные токены.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: AUTH-TOKEN-TYPE-CONFUSION
+  status: approved
+  title: Refresh, ID или сервисный токен не принимается как access-токен
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - token-lifecycle
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Выдаются разные типы токенов.
+  steps:
+  - action: Вызвать защищённую операцию с refresh-токеном, id_token, токеном другого клиента и токеном сброса пароля.
+  expected:
+  - Все варианты отклоняются.
+  applicability:
+    when:
+    - Несколько типов токенов.
+    skip_when:
+    - Один тип токена.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: AUTH-TOKEN-IN-URL
+  status: approved
+  title: Учётные данные не передаются и не принимаются в URL
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - negative
+  - authn
+  - hardening
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Защищённые операции.
+  steps:
+  - action: Передать токен или api-key в query (?access_token=, ?api_key=).
+  expected:
+  - Сервер не принимает учётные данные из query, если контракт этого явно не требует.
+  - Ссылки в ответах не содержат токенов.
+  applicability:
+    when:
+    - Есть аутентификация.
+    skip_when:
+    - Контракт требует токен в URL (зафиксировать риск).
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: AUTH-LOGOUT-INVALIDATES
+  status: approved
+  title: После выхода токен и сессия недействительны
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - negative
+  - authn
+  - session
+  - token-lifecycle
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть операция logout.
+  steps:
+  - action: Войти, выполнить запрос, выйти, повторить запрос с тем же access и refresh токеном или cookie.
+  expected:
+  - Запросы после выхода отклоняются в пределах задокументированного окна.
+  applicability:
+    when:
+    - Есть logout.
+    skip_when:
+    - Stateless токены без отзыва (зафиксировать окно риска).
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: AUTH-PASSWORD-CHANGE-REVOKES
+  status: approved
+  title: Смена или сброс пароля завершает другие сессии
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - session
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Пользователь с двумя активными сессиями.
+  steps:
+  - action: Сменить пароль в сессии A, выполнить запрос в сессии B.
+  expected:
+  - Сессия B отклоняется или требует повторного входа по политике.
+  applicability:
+    when:
+    - Есть смена пароля.
+    skip_when:
+    - Парольной аутентификации нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: AUTH-BRUTE-FORCE-PROTECTION
+  status: approved
+  title: Перебор паролей ограничивается
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - rate-limiting
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Есть вход по паролю.
+  steps:
+  - action: Выполнить N неудачных попыток для одного аккаунта, с одного IP по разным аккаунтам, с ротацией заголовков X-Forwarded-For.
+  expected:
+  - Срабатывает блокировка, задержка или CAPTCHA по политике.
+  - Ротация X-Forwarded-For не обходит ограничение.
+  - Легитимный пользователь может восстановить доступ.
+  applicability:
+    when:
+    - Есть парольный вход.
+    skip_when:
+    - Нет парольного входа.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+- id: AUTH-USER-ENUMERATION
+  status: approved
+  title: Ответы входа, регистрации и восстановления не раскрывают существование аккаунта
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - enumeration
+  - regression
+  - nightly
+  preconditions:
+  - Есть вход, регистрация или сброс пароля.
+  steps:
+  - action: Сравнить ответы и время для существующего и несуществующего логина/email/телефона.
+  expected:
+  - Тела, статусы и время ответа неразличимы в пределах допуска.
+  applicability:
+    when:
+    - Есть публичные операции аутентификации.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+- id: AUTH-OTP-ATTEMPT-LIMIT
+  status: approved
+  title: Количество попыток ввода одноразового кода ограничено
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - negative
+  - authn
+  - otp
+  - rate-limiting
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Используется OTP (SMS, email, TOTP).
+  steps:
+  - action: Запросить код и отправить неверные коды до лимита, затем верный.
+  expected:
+  - После лимита код инвалидируется, верный код уже не принимается.
+  - Перебор 4-6-значного кода невозможен в пределах срока жизни.
+  applicability:
+    when:
+    - Есть OTP.
+    skip_when:
+    - OTP не используется.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: AUTH-OTP-EXPIRY
+  status: approved
+  title: Одноразовый код перестаёт действовать после истечения срока
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - otp
+  - costly
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть OTP и известен срок жизни.
+  steps:
+  - action: Запросить код, дождаться истечения срока (или сдвинуть время в тестовом окружении), отправить код.
+  expected:
+  - Код отклоняется.
+  applicability:
+    when:
+    - Есть OTP.
+    skip_when:
+    - OTP не используется.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: AUTH-OTP-REUSE
+  status: approved
+  title: Одноразовый код нельзя использовать повторно и после выдачи нового
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - otp
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть OTP.
+  steps:
+  - action: Успешно использовать код и повторить его.
+  - action: Запросить новый код и отправить предыдущий.
+  expected:
+  - Повторное и устаревшее использование отклоняется.
+  applicability:
+    when:
+    - Есть OTP.
+    skip_when:
+    - OTP не используется.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: AUTH-OTP-SEND-LIMIT
+  status: approved
+  title: Частота отправки кодов ограничена (SMS bombing)
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - otp
+  - rate-limiting
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть отправка SMS или email кода.
+  steps:
+  - action: Отправить много запросов кода на один номер, на разные номера с одного клиента.
+  expected:
+  - Срабатывает ограничение по номеру и по клиенту; ответ задокументирован.
+  applicability:
+    when:
+    - Есть отправка кода.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: AUTH-OTP-BINDING
+  status: approved
+  title: Одноразовый код привязан к получателю и операции
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - otp
+  - authz
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть OTP.
+  steps:
+  - action: Запросить код для номера A и подтвердить им номер B или другую операцию.
+  expected:
+  - Код отклоняется.
+  applicability:
+    when:
+    - Есть OTP.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: AUTH-PASSWORD-POLICY
+  status: approved
+  title: Политика паролей применяется на сервере
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: negative
+  priority: P2
+  tags:
+  - security
+  - negative
+  - authn
+  - validation
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть установка или смена пароля.
+  steps:
+  - action: Установить пароль короче минимума, из словаря утечек, совпадающий с логином, очень длинный (1000+ символов), с
+      unicode.
+  expected:
+  - Слабые пароли отклоняются сервером независимо от клиента.
+  - Очень длинный пароль не вызывает деградации (DoS хеширования).
+  applicability:
+    when:
+    - Есть пароли.
+    skip_when:
+    - Нет парольной аутентификации.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: AUTH-PASSWORD-RESET-TOKEN
+  status: approved
+  title: Токен сброса пароля одноразовый, ограничен по времени и привязан к пользователю
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - negative
+  - authn
+  - token-lifecycle
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть сброс пароля.
+  steps:
+  - action: Использовать токен дважды, после истечения, для другого пользователя; запросить два токена и использовать первый.
+  expected:
+  - Все варианты отклоняются.
+  - Токен не возвращается в ответе API и не попадает в Referer.
+  applicability:
+    when:
+    - Есть сброс пароля.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: AUTH-SESSION-FIXATION
+  status: approved
+  title: Идентификатор сессии меняется после входа
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - session
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Cookie-сессии.
+  steps:
+  - action: Получить сессию до входа, войти, сравнить идентификаторы; использовать старый идентификатор.
+  expected:
+  - После входа выдаётся новый идентификатор, старый не аутентифицирован.
+  applicability:
+    when:
+    - Cookie-сессии.
+    skip_when:
+    - Bearer-токены без сессий.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: AUTH-COOKIE-ATTRIBUTES
+  status: approved
+  title: Сессионные cookie имеют Secure, HttpOnly, SameSite и узкие Domain/Path
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - positive
+  - session
+  - hardening
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Аутентификация через cookie.
+  steps:
+  - action: Войти и проанализировать Set-Cookie.
+  expected:
+  - Secure и HttpOnly установлены, SameSite=Lax или Strict (или None с обоснованием), Domain не шире необходимого, срок жизни
+    по политике.
+  applicability:
+    when:
+    - Cookie-аутентификация.
+    skip_when:
+    - Cookie не используются.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: AUTH-CSRF
+  status: approved
+  title: Изменяющие операции с cookie-аутентификацией защищены от CSRF
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - negative
+  - session
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Аутентификация через cookie.
+  steps:
+  - action: Выполнить POST/PUT/DELETE с чужого Origin, без CSRF-токена, с Content-Type text/plain и form-urlencoded.
+  expected:
+  - Запросы отклоняются; состояние не меняется.
+  applicability:
+    when:
+    - Cookie-аутентификация.
+    skip_when:
+    - Только Bearer-токены в заголовке.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: AUTH-API-KEY-LIFECYCLE
+  status: approved
+  title: API-ключи ограничены по правам, отзываются и не раскрываются
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - token-lifecycle
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Используются API-ключи.
+  steps:
+  - action: Вызвать операцию вне прав ключа, отозвать ключ и повторить, проверить что ключ не возвращается в ответах повторно.
+  expected:
+  - Права ключа соблюдаются, отозванный ключ отклоняется, секрет виден только при создании.
+  applicability:
+    when:
+    - API-ключи.
+    skip_when:
+    - API-ключей нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: AUTH-SESSION-TIMEOUT
+  status: approved
+  title: Сессия истекает после простоя и абсолютного срока
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - negative
+  - session
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Политика тайм-аутов сессии известна.
+  steps:
+  - action: Не выполнять запросов дольше idle-тайм-аута; держать сессию дольше абсолютного срока с активностью.
+  expected:
+  - Сессия истекает по обоим правилам.
+  applicability:
+    when:
+    - Есть сессии.
+    skip_when:
+    - Политика не определена.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: AUTH-CONCURRENT-SESSIONS
+  status: approved
+  title: Лимит одновременных сессий и устройств соблюдается
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P3
+  tags:
+  - security
+  - boundary
+  - session
+  - regression
+  - nightly
+  preconditions:
+  - Политика ограничивает число сессий.
+  steps:
+  - action: Войти с N+1 устройств.
+  expected:
+  - Поведение соответствует политике (вытеснение старой сессии или отказ).
+  applicability:
+    when:
+    - Есть лимит.
+    skip_when:
+    - Лимита нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: AUTH-MFA-STEP-UP
+  status: approved
+  title: Операции, требующие второго фактора, недоступны без него
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - negative
+  - authn
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть MFA или step-up для чувствительных операций.
+  steps:
+  - action: Вызвать чувствительную операцию токеном после первого фактора; повторно использовать подтверждение для другой
+      операции.
+  expected:
+  - Операция отклоняется без второго фактора; подтверждение привязано к операции.
+  applicability:
+    when:
+    - Есть MFA.
+    skip_when:
+    - MFA нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: AUTH-OAUTH-REDIRECT-STATE
+  status: approved
+  title: OAuth/OIDC flow проверяет redirect_uri, state и PKCE
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - API выступает OAuth-сервером или клиентом.
+  steps:
+  - action: Подменить redirect_uri (поддомен, путь, параметры), опустить state, использовать чужой code, опустить code_verifier.
+  expected:
+  - redirect_uri сравнивается точно; без state и PKCE обмен отклоняется; code одноразовый.
+  applicability:
+    when:
+    - Есть OAuth flow.
+    skip_when:
+    - OAuth не используется.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - RFC 6749, RFC 7636, OAuth 2.0 Security BCP

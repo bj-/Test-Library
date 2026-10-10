@@ -1,0 +1,355 @@
+checks:
+- id: GRPC-SERVER-STREAM-COMPLETE
+  status: approved
+  title: Серверный стрим отдаёт все элементы по порядку и завершается OK
+  category: grpc-contract
+  protocols:
+  - grpc
+  kind: positive
+  priority: P1
+  tags:
+  - positive
+  - streaming
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть server streaming.
+  steps:
+  - action: Получить стрим с известным набором данных.
+  expected:
+  - Все элементы в задокументированном порядке; завершение со статусом OK и trailer.
+  applicability:
+    when:
+    - Есть server streaming.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: GRPC-CLIENT-STREAM-PARTIAL-FAILURE
+  status: approved
+  title: Ошибка в середине клиентского стрима обрабатывается по контракту
+  category: grpc-contract
+  protocols:
+  - grpc
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - streaming
+  - data-integrity
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть client streaming.
+  steps:
+  - action: Отправить стрим с невалидным n-м сообщением; оборвать стрим без half-close.
+  expected:
+  - Обработка до ошибки фиксируется или откатывается согласно контракту; статус ошибки корректен.
+  applicability:
+    when:
+    - Есть client streaming.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: GRPC-BIDI-FLOW-CONTROL
+  status: approved
+  title: Двунаправленный стрим соблюдает flow control при медленном клиенте
+  category: grpc-contract
+  protocols:
+  - grpc
+  kind: reliability
+  priority: P3
+  tags:
+  - streaming
+  - resilience
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Есть bidi streaming.
+  steps:
+  - action: Читать сообщения медленно при быстром производителе.
+  expected:
+  - Память сервера ограничена; нет потери сообщений сверх контракта.
+  applicability:
+    when:
+    - Есть bidi.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: GRPC-STREAM-AUTH-EXPIRY
+  status: approved
+  title: Длительный стрим учитывает истечение и отзыв токена
+  category: grpc-errors
+  protocols:
+  - grpc
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - streaming
+  - token-lifecycle
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Длительные стримы с аутентификацией.
+  steps:
+  - action: Открыть стрим, дождаться истечения токена или отозвать его, продолжить обмен.
+  expected:
+  - Стрим закрывается UNAUTHENTICATED или повторно авторизуется по политике.
+  applicability:
+    when:
+    - Есть долгие стримы.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: GRPC-STREAM-RESOURCE-LIMITS
+  status: approved
+  title: Число одновременных стримов и их длительность ограничены
+  category: grpc-errors
+  protocols:
+  - grpc
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - streaming
+  - rate-limiting
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Есть стримы.
+  steps:
+  - action: Открыть сотни параллельных стримов от одного клиента; держать стрим без активности.
+  expected:
+  - Действуют лимиты MAX_CONCURRENT_STREAMS и idle timeout; сервер доступен другим клиентам.
+  applicability:
+    when:
+    - Есть стримы.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: GRPC-REFLECTION-EXPOSURE
+  status: approved
+  title: Server reflection отключён или защищён в продуктиве
+  category: grpc-contract
+  protocols:
+  - grpc
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - hardening
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Нет.
+  steps:
+  - action: Выполнить grpcurl list без аутентификации.
+  expected:
+  - Reflection недоступен публично согласно политике окружения.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: GRPC-HEALTH-PROTOCOL
+  status: approved
+  title: Стандартный health-протокол gRPC реализован корректно
+  category: grpc-contract
+  protocols:
+  - grpc
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - observability
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Используется grpc.health.v1.
+  steps:
+  - action: Вызвать Check для сервиса и пустого имени; Watch при смене состояния.
+  expected:
+  - SERVING/NOT_SERVING отражают состояние; неизвестный сервис — NOT_FOUND.
+  applicability:
+    when:
+    - Есть health.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: GRPC-TLS-MTLS
+  status: approved
+  title: Транспорт защищён TLS, при mTLS клиентский сертификат обязателен
+  category: grpc-errors
+  protocols:
+  - grpc
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - transport-security
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Сетевой доступ к сервису.
+  steps:
+  - action: Подключиться без TLS, с недоверенным сертификатом, без клиентского сертификата при mTLS.
+  expected:
+  - Подключения отклоняются.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Тестовое окружение без TLS (зафиксировать).
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: GRPC-COMPRESSION
+  status: approved
+  title: Сжатие сообщений согласуется и неподдерживаемое отклоняется
+  category: grpc-contract
+  protocols:
+  - grpc
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - performance
+  - regression
+  - nightly
+  preconditions:
+  - Нет.
+  steps:
+  - action: Отправить сообщение с grpc-encoding gzip и неподдерживаемым алгоритмом.
+  expected:
+  - Поддерживаемое сжатие работает; неподдерживаемое — UNIMPLEMENTED.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: GRPC-KEEPALIVE-POLICY
+  status: approved
+  title: Агрессивные keepalive-пинги клиента ограничиваются
+  category: grpc-errors
+  protocols:
+  - grpc
+  kind: negative
+  priority: P3
+  tags:
+  - negative
+  - hardening
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Нет.
+  steps:
+  - action: Отправлять PING чаще разрешённой политики.
+  expected:
+  - Сервер отвечает GOAWAY ENHANCE_YOUR_CALM, не деградирует.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium

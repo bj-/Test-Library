@@ -1,8 +1,9 @@
 checks:
 - id: REAL-MOBILE-CLIENT-API-ONSTART-ANONYMOUS-VS-API-KEY
+  status: needs_clarification
   title: Startup endpoint matches the documented API-key policy
-  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить
-    перед исполнением.
+  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить перед
+    исполнением.
   category: security
   protocols:
   - rest
@@ -28,8 +29,8 @@ checks:
   - action: Отправить POST запрос на /onStart с заданными credentials/ролью/ресурсом.
     notes: Не использовать production credentials или реальные пользовательские данные.
   expected:
-  - Behavior for missing/invalid api-key matches the resolved contract policy; this test remains blocked until the
-    security-description contradiction is resolved.
+  - Behavior for missing/invalid api-key matches the resolved contract policy; this test remains blocked until the security-description
+    contradiction is resolved.
   - При отказе защищённые данные не раскрываются, а запрещённая мутация не меняет состояние.
   applicability:
     when:

@@ -1,0 +1,207 @@
+checks:
+- id: PERF-LATENCY-BASELINE
+  status: approved
+  title: Задержка ключевых операций в пределах SLO при обычной нагрузке
+  category: performance
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: performance
+  priority: P2
+  tags:
+  - performance
+  - costly
+  - nightly
+  preconditions:
+  - Определены SLO и тестовые данные реалистичного объёма.
+  steps:
+  - action: Измерить p50/p95/p99 для ключевых операций.
+  expected:
+  - Перцентили в пределах SLO; регрессия относительно базовой линии не выше порога.
+  applicability:
+    when:
+    - Есть SLO.
+    skip_when:
+    - SLO не определены.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: PERF-LOAD-THROUGHPUT
+  status: approved
+  title: Сервис выдерживает целевую нагрузку
+  category: performance
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: performance
+  priority: P2
+  tags:
+  - performance
+  - costly
+  - nightly
+  preconditions:
+  - Нагрузочное окружение.
+  steps:
+  - action: Плавно увеличить RPS до целевого и удерживать 15-30 минут.
+  expected:
+  - Ошибки и задержка в пределах SLO; нет утечек ресурсов.
+  applicability:
+    when:
+    - Есть целевая нагрузка.
+    skip_when:
+    - Нет нагрузочного окружения.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: PERF-SPIKE
+  status: approved
+  title: Резкий всплеск нагрузки обрабатывается деградацией, а не отказом
+  category: performance
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: performance
+  priority: P3
+  tags:
+  - performance
+  - resilience
+  - costly
+  - nightly
+  preconditions:
+  - Нагрузочное окружение.
+  steps:
+  - action: Увеличить нагрузку в 5-10 раз на короткое время.
+  expected:
+  - Сервис отвечает 429/503 контролируемо и восстанавливается без ручного вмешательства.
+  applicability:
+    when:
+    - Есть нагрузочное окружение.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: PERF-SOAK
+  status: approved
+  title: Длительная нагрузка не вызывает утечек и деградации
+  category: performance
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: performance
+  priority: P3
+  tags:
+  - performance
+  - reliability
+  - costly
+  - nightly
+  preconditions:
+  - Нагрузочное окружение.
+  steps:
+  - action: Держать среднюю нагрузку 4-24 часа.
+  expected:
+  - Память, соединения, дескрипторы и задержка стабильны.
+  applicability:
+    when:
+    - Есть окружение.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: PERF-DEEP-PAGINATION
+  status: approved
+  title: Глубокая пагинация и большие выборки не деградируют неприемлемо
+  category: performance
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: performance
+  priority: P2
+  tags:
+  - performance
+  - pagination
+  - costly
+  - nightly
+  preconditions:
+  - Коллекция большого объёма.
+  steps:
+  - action: Запросить первые и последние страницы большой коллекции, сложные фильтры.
+  expected:
+  - Время ответа в пределах SLO или действуют ограничения глубины.
+  applicability:
+    when:
+    - Большие коллекции.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: PERF-PAYLOAD-SIZE
+  status: approved
+  title: Размер ответов разумен и не растёт неограниченно
+  category: performance
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: performance
+  priority: P3
+  tags:
+  - performance
+  - costly
+  - nightly
+  preconditions:
+  - Нет.
+  steps:
+  - action: Измерить размер ответов основных операций при реалистичных данных.
+  expected:
+  - Ответы не содержат лишних вложенных данных; размер ограничен пагинацией или лимитами.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium

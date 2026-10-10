@@ -1,5 +1,6 @@
 checks:
 - id: SEC-AUTHN-MALFORMED
+  status: approved
   title: Malformed credential is rejected
   category: security
   protocols:
@@ -14,8 +15,9 @@ checks:
   - authn
   - ci
   - regression
+  - nightly
   - release
-  preconditions: &id001
+  preconditions:
   - Operation requires authentication and accepts a token or credential.
   steps:
   - action: Send an invalidly formatted, truncated, or syntactically malformed credential.
@@ -25,7 +27,8 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - Operation requires authentication and accepts a token or credential.
     skip_when:
     - Malformed credentials are explicitly supported by a documented compatibility mode.
   automation:
@@ -34,6 +37,7 @@ checks:
   profiles:
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: high

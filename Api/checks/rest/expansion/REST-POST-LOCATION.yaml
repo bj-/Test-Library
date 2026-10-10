@@ -1,5 +1,6 @@
 checks:
 - id: REST-POST-LOCATION
+  status: approved
   title: Location при создании
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: contract
@@ -10,6 +11,9 @@ checks:
   tags:
   - contract
   - rest
+  - ci
+  - regression
+  - nightly
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -26,7 +30,9 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium

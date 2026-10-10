@@ -1,5 +1,6 @@
 checks:
 - id: REST-204-NO-BODY
+  status: approved
   title: Ответ 204 без тела
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: contract
@@ -10,6 +11,9 @@ checks:
   tags:
   - contract
   - rest
+  - ci
+  - regression
+  - nightly
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -28,6 +32,7 @@ checks:
   profiles:
   - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium

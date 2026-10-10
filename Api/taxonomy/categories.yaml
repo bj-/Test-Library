@@ -10,3 +10,13 @@ categories:
   grpc-contract: Protobuf and RPC contract conformance
   grpc-errors: gRPC status and error details
   resilience: Timeouts, retries, dependency failures
+  business-logic: Domain rules, workflows, limits, and money
+  concurrency: Parallel requests, races, and lost updates
+  observability: Logs, audit trail, tracing, and health endpoints
+  performance: Latency, throughput, load, and resource usage
+  compatibility: Versioning, backward compatibility, and contract drift
+  files: File upload, download, and binary content
+  async: Webhooks, events, background jobs, and messaging
+  graphql: GraphQL-specific query, schema, and abuse controls
+  websocket: WebSocket connection, message, and subscription behavior
+  privacy: Personal data handling, masking, consent, and erasure

@@ -1,8 +1,9 @@
 checks:
 - id: REAL-MOBILE-CLIENT-API-SENDCODE-INVALID-API-KEY
+  status: draft
   title: Authentication endpoint rejects invalid credentials
-  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить
-    перед исполнением.
+  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить перед
+    исполнением.
   category: security
   protocols:
   - rest

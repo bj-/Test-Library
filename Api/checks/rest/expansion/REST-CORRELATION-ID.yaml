@@ -1,5 +1,6 @@
 checks:
 - id: REST-CORRELATION-ID
+  status: approved
   title: Correlation ID
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: errors
@@ -10,6 +11,8 @@ checks:
   tags:
   - observability
   - rest
+  - regression
+  - nightly
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:

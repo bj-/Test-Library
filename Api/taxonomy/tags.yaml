@@ -27,11 +27,34 @@ tag_groups:
   - roles-scopes
   - token-lifecycle
   - privilege-escalation
+  - injection
+  - session
+  - otp
+  - files
+  - concurrency
+  - caching
+  - i18n
+  - versioning
+  - business-logic
+  - money
+  - webhooks
+  - async-jobs
+  - streaming
+  - deadlines
+  - metadata
+  - transport-security
+  - rate-limiting
+  - enumeration
+  - data-integrity
+  - audit
+  - privacy
+  - hardening
   quality:
   - performance
   - reliability
   - observability
   - resilience
+  - costly
   protocol:
   - rest
   - grpc
@@ -40,6 +63,8 @@ tag_groups:
   - generic
 rules:
 - kind describes behavior; run tags describe where a check is selected.
+- Run tags must mirror check.profiles (lower-cased); tools/assign_profiles.py keeps them in sync.
+- costly marks checks that need load, fault injection, long waits, or special infrastructure; they are kept out of PR/CI/Smoke.
 - Smoke requires critical-path relevance, low cost, and determinism.
 - Negative means invalid input, identity, state, or dependency should be rejected.
 - Boundary covers limits, empty values, maximum sizes, and edge transitions.

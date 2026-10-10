@@ -1,5 +1,6 @@
 checks:
 - id: SEC-AUTHZ-FUNCTION
+  status: approved
   title: User without required permission cannot invoke operation
   category: security
   protocols:
@@ -12,10 +13,12 @@ checks:
   - negative
   - security
   - authz
+  - pr
   - ci
   - regression
+  - nightly
   - release
-  preconditions: &id001
+  preconditions:
   - Operation has a permission/authorization rule.
   steps:
   - action: Authenticate as a user lacking the permission and call the protected operation.
@@ -25,15 +28,18 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - Operation has a permission/authorization rule.
     skip_when:
     - Operation is intentionally available to all authenticated users.
   automation:
     level: full
     deterministic: true
   profiles:
+  - PR
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: critical

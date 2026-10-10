@@ -1,5 +1,6 @@
 checks:
 - id: SEC-TOKEN-REFRESH-REPLAY
+  status: approved
   title: Refresh-token replay is rejected or rotated
   category: security
   protocols:
@@ -12,10 +13,11 @@ checks:
   - negative
   - security
   - authn
+  - ci
   - regression
-  - release
   - nightly
-  preconditions: &id001
+  - release
+  preconditions:
   - Refresh tokens are supported.
   steps:
   - action: Use a refresh token successfully, then submit the same token again.
@@ -26,13 +28,15 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - Refresh tokens are supported.
     skip_when:
     - No refresh-token flow exists.
   automation:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   - Release

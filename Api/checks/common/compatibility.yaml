@@ -1,0 +1,233 @@
+checks:
+- id: COMPAT-BREAKING-CHANGE-DIFF
+  status: approved
+  title: Изменения контракта проверяются на обратную несовместимость
+  category: compatibility
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: compatibility
+  priority: P0
+  tags:
+  - compatibility
+  - contract
+  - versioning
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Контракт хранится в репозитории (OpenAPI, proto, GraphQL SDL).
+  steps:
+  - action: Сравнить контракт с предыдущим релизом инструментом diff (oasdiff, buf breaking, graphql-inspector).
+  expected:
+  - Ломающие изменения (удаление поля, смена типа, новое обязательное поле, удаление enum) отсутствуют или сопровождаются
+    новой версией.
+  applicability:
+    when:
+    - Контракт версионируется.
+    skip_when:
+    - Контракта нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: COMPAT-IMPLEMENTATION-MATCHES-CONTRACT
+  status: approved
+  title: Реализация соответствует опубликованному контракту
+  category: compatibility
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: contract
+  priority: P1
+  tags:
+  - contract
+  - compatibility
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Контракт опубликован.
+  steps:
+  - action: Для всех операций проверить существование, коды ответов и схемы (schemathesis, dredd, contract tests).
+  expected:
+  - Все задокументированные операции существуют; ответы соответствуют схемам; нет недокументированных операций.
+  applicability:
+    when:
+    - Есть контракт.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: COMPAT-ADDITIVE-CHANGE
+  status: approved
+  title: Добавление полей не ломает существующих клиентов
+  category: compatibility
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: compatibility
+  priority: P1
+  tags:
+  - compatibility
+  - versioning
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть клиенты предыдущей версии.
+  steps:
+  - action: Выполнить тесты старого клиента против новой версии API.
+  expected:
+  - Старые клиенты работают без изменений.
+  applicability:
+    when:
+    - Есть старые клиенты или их тесты.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: COMPAT-ENUM-EXTENSION
+  status: approved
+  title: Добавление значения enum не ломает клиентов
+  category: compatibility
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: compatibility
+  priority: P2
+  tags:
+  - compatibility
+  - versioning
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть enum в ответах.
+  steps:
+  - action: Вернуть новое значение enum клиенту предыдущей версии (через заглушку).
+  expected:
+  - Клиент обрабатывает неизвестное значение безопасно; сервер документирует политику расширения.
+  applicability:
+    when:
+    - Есть enum.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: COMPAT-DEPRECATION-SIGNALS
+  status: approved
+  title: Устаревающие операции помечены Deprecation и Sunset
+  category: compatibility
+  protocols:
+  - rest
+  - graphql
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - versioning
+  - regression
+  - nightly
+  preconditions:
+  - Есть устаревающие операции.
+  steps:
+  - action: Вызвать устаревшую операцию.
+  expected:
+  - Ответ содержит Deprecation/Sunset/Link или аналог; контракт помечает deprecated.
+  applicability:
+    when:
+    - Есть устаревающие операции.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: COMPAT-DEFAULT-VERSION
+  status: approved
+  title: Запрос без указания версии обслуживается задокументированной версией
+  category: compatibility
+  protocols:
+  - rest
+  - graphql
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - versioning
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Версия задаётся заголовком или параметром.
+  steps:
+  - action: Вызвать операцию без версии, с неизвестной и с устаревшей версией.
+  expected:
+  - Используется задокументированная версия; неизвестная отклоняется.
+  applicability:
+    when:
+    - Версионирование заголовком/параметром.
+    skip_when:
+    - Версия в пути.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium

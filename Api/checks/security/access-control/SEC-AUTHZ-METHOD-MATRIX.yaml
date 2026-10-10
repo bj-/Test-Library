@@ -1,5 +1,6 @@
 checks:
 - id: SEC-AUTHZ-METHOD-MATRIX
+  status: approved
   title: Authorization is enforced for every method
   category: security
   protocols:
@@ -14,8 +15,9 @@ checks:
   - authz
   - ci
   - regression
+  - nightly
   - release
-  preconditions: &id001
+  preconditions:
   - Resource exposes multiple methods with potentially different permissions.
   steps:
   - action: For the same resource, test each supported method as an unauthorized principal.
@@ -25,7 +27,8 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - Resource exposes multiple methods with potentially different permissions.
     skip_when:
     - Only one method is supported.
   automation:
@@ -34,6 +37,7 @@ checks:
   profiles:
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: high

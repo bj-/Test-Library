@@ -1,0 +1,894 @@
+checks:
+- id: VAL-STRING-FORMAT
+  status: approved
+  title: Форматы строк (email, uuid, uri, date, phone) проверяются
+  category: validation
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - validation
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Для поля в контракте задан format или pattern.
+  steps:
+  - action: Отправить значения корректного формата и граничные корректные варианты.
+  - action: 'Отправить значения неверного формата: без домена, лишние символы, неверная длина uuid, несуществующая дата 2023-02-30.'
+  expected:
+  - Корректные значения принимаются.
+  - Некорректные отклоняются задокументированной ошибкой валидации с указанием поля.
+  - Состояние не меняется при отказе.
+  applicability:
+    when:
+    - Поле имеет format/pattern в контракте.
+    skip_when:
+    - Ограничение не задокументировано в контракте и требует уточнения.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: VAL-REGEX-PATTERN
+  status: approved
+  title: Поле с pattern принимает только совпадающие значения
+  category: validation
+  protocols:
+  - rest
+  - graphql
+  kind: boundary
+  priority: P2
+  tags:
+  - boundary
+  - validation
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Для поля задан pattern.
+  steps:
+  - action: 'Построить значения на границе regex: минимальное совпадение, лишний символ в начале и конце, многострочное значение
+      с \n.'
+  expected:
+  - Сопоставление выполняется по всей строке, частичное совпадение не принимается.
+  - Перевод строки не обходит якоря ^ и $.
+  applicability:
+    when:
+    - Поле имеет pattern.
+    skip_when:
+    - Ограничение не задокументировано в контракте и требует уточнения.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: VAL-ARRAY-ITEMS-BOUNDARIES
+  status: approved
+  title: 'Границы массивов: minItems, maxItems, uniqueItems'
+  category: validation
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: boundary
+  priority: P1
+  tags:
+  - boundary
+  - validation
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Для массива заданы ограничения количества или уникальности.
+  steps:
+  - action: Отправить массивы длиной min-1, min, max, max+1.
+  - action: Отправить массив с дубликатами при uniqueItems.
+  expected:
+  - Значения в пределах принимаются, за пределами отклоняются с указанием поля.
+  - Дубликаты отклоняются или схлопываются строго по контракту.
+  applicability:
+    when:
+    - В контракте есть массив с ограничениями.
+    skip_when:
+    - Ограничения массива не определены.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: VAL-NESTED-OBJECT-ERRORS
+  status: approved
+  title: Ошибка во вложенном объекте указывает точный путь к полю
+  category: validation
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - validation
+  - error-handling
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Тело запроса содержит вложенные объекты или массивы объектов.
+  steps:
+  - action: Сделать невалидным поле на 2-3 уровне вложенности и в n-м элементе массива.
+  expected:
+  - Ошибка содержит путь вида items[3].address.zip или эквивалент по модели ошибок.
+  - Ответ не 5xx.
+  applicability:
+    when:
+    - Есть вложенные структуры.
+    skip_when:
+    - Плоская модель запроса.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: VAL-DEEP-NESTING
+  status: approved
+  title: Чрезмерно вложенный JSON отклоняется без деградации сервиса
+  category: validation
+  protocols:
+  - rest
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - validation
+  - security
+  - hardening
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Эндпоинт принимает JSON-тело.
+  steps:
+  - action: Отправить JSON с глубиной вложенности 1000+ уровней массивов/объектов.
+  - action: Проверить время ответа и доступность сервиса после запроса.
+  expected:
+  - Запрос отклоняется контролируемой ошибкой 4xx.
+  - Нет 5xx, переполнения стека или зависания; сервис продолжает отвечать.
+  applicability:
+    when:
+    - Тело запроса — JSON.
+    skip_when:
+    - Тело не принимается.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: VAL-LARGE-COLLECTION-PAYLOAD
+  status: approved
+  title: Массив с очень большим числом элементов отклоняется или обрабатывается в пределах лимитов
+  category: validation
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: boundary
+  priority: P2
+  tags:
+  - boundary
+  - validation
+  - hardening
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Эндпоинт принимает массив без явного maxItems.
+  steps:
+  - action: Отправить массив из 10^5 и 10^6 мелких элементов в пределах лимита размера тела.
+  expected:
+  - Сервис отклоняет запрос по задокументированному лимиту или обрабатывает его без 5xx и без деградации других запросов.
+  applicability:
+    when:
+    - Есть массивы во входных данных.
+    skip_when:
+    - maxItems задан и проверен отдельно.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: VAL-MALFORMED-JSON
+  status: approved
+  title: Синтаксически некорректный JSON отклоняется
+  category: validation
+  protocols:
+  - rest
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - validation
+  - error-handling
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Эндпоинт принимает JSON.
+  steps:
+  - action: Отправить обрезанный JSON, лишнюю запятую, комментарии, одинарные кавычки, неэкранированные управляющие символы,
+      пустое тело.
+  expected:
+  - Ответ — задокументированная ошибка 4xx, не 5xx.
+  - Сообщение не раскрывает внутренности парсера и stack trace.
+  applicability:
+    when:
+    - Тело — JSON.
+    skip_when:
+    - Нет тела запроса.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: VAL-JSON-TOP-LEVEL-TYPE
+  status: approved
+  title: Неожиданный тип корня JSON отклоняется
+  category: validation
+  protocols:
+  - rest
+  - graphql
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - validation
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Схема ожидает объект в корне.
+  steps:
+  - action: Отправить массив, строку, число, null и true вместо объекта.
+  expected:
+  - Каждый вариант отклоняется ошибкой валидации без 5xx.
+  applicability:
+    when:
+    - Тело — JSON-объект.
+    skip_when:
+    - Схема допускает несколько типов корня.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: VAL-BODY-ENCODING
+  status: approved
+  title: Тело в неверной кодировке или с BOM обрабатывается предсказуемо
+  category: validation
+  protocols:
+  - rest
+  - graphql
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - validation
+  - i18n
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Эндпоинт принимает текстовое тело.
+  steps:
+  - action: Отправить тело в Windows-1251 с charset=utf-8, невалидные UTF-8 последовательности, UTF-8 с BOM, UTF-16.
+  expected:
+  - Невалидная кодировка отклоняется 4xx или обрабатывается строго по контракту.
+  - Данные не сохраняются в искажённом виде.
+  applicability:
+    when:
+    - Есть текстовые поля.
+    skip_when:
+    - Контракт не определяет поведение и уточнение не получено.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: VAL-NUMBER-REPRESENTATION
+  status: approved
+  title: Альтернативные записи чисел обрабатываются по контракту
+  category: validation
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: boundary
+  priority: P1
+  tags:
+  - boundary
+  - validation
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть числовые поля.
+  steps:
+  - action: Отправить 1e3, 1.0 для integer, -0, ведущие нули 007, число строкой "5", NaN, Infinity, 2^53+1, 2^63, 2^64.
+  expected:
+  - Каждое представление принимается или отклоняется однозначно по контракту.
+  - Большие целые не теряют точность и не переполняются молча.
+  - NaN и Infinity отклоняются.
+  applicability:
+    when:
+    - Есть integer/number поля.
+    skip_when:
+    - Числовых полей нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: VAL-BOOLEAN-COERCION
+  status: approved
+  title: Неявное приведение типов для boolean не происходит
+  category: validation
+  protocols:
+  - rest
+  - graphql
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - validation
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть boolean поля в теле или query.
+  steps:
+  - action: Отправить "true", "false", 1, 0, "yes", пустую строку вместо boolean.
+  expected:
+  - Поведение соответствует контракту; в теле JSON строки и числа не приводятся к boolean молча.
+  applicability:
+    when:
+    - Есть boolean параметры.
+    skip_when:
+    - Контракт явно разрешает приведение.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: VAL-WHITESPACE-HANDLING
+  status: approved
+  title: Пробелы по краям и строки из пробелов обрабатываются согласованно
+  category: validation
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: boundary
+  priority: P2
+  tags:
+  - boundary
+  - validation
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть строковые поля с обязательностью или уникальностью.
+  steps:
+  - action: Отправить значение с пробелами по краям, строку из пробелов, табуляцию и неразрывный пробел в обязательном поле.
+  expected:
+  - Обрезка либо выполняется везде одинаково, либо не выполняется.
+  - Строка из одних пробелов не проходит проверку обязательности, если контракт этого требует.
+  - Уникальность не обходится добавлением пробела.
+  applicability:
+    when:
+    - Есть строковые поля.
+    skip_when:
+    - Строковых полей нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: VAL-CASE-SENSITIVITY
+  status: approved
+  title: Чувствительность к регистру идентификаторов, email и enum соответствует контракту
+  category: validation
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: boundary
+  priority: P2
+  tags:
+  - boundary
+  - validation
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть логины, email, коды или enum.
+  steps:
+  - action: Создать объект с email User@Example.com, затем искать/логиниться/создавать дубликат с user@example.com.
+  - action: Передать enum в другом регистре.
+  expected:
+  - Поведение одинаково во всех операциях (поиск, уникальность, логин).
+  - Enum в другом регистре обрабатывается строго по контракту.
+  applicability:
+    when:
+    - Есть строковые идентификаторы.
+    skip_when:
+    - Нет таких полей.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: VAL-SPECIAL-CHARACTERS
+  status: approved
+  title: Спецсимволы, emoji и управляющие символы сохраняются или отклоняются корректно
+  category: validation
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: boundary
+  priority: P1
+  tags:
+  - boundary
+  - validation
+  - i18n
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть свободные текстовые поля.
+  steps:
+  - action: Сохранить строки с кавычками, обратным слэшем, <>&, emoji, RTL-символами, \u0000, \u202E, суррогатными парами.
+  - action: Прочитать сохранённые данные.
+  expected:
+  - Принятые значения возвращаются без искажений и двойного экранирования.
+  - Null byte и запрещённые управляющие символы отклоняются или удаляются по контракту.
+  - Нет 5xx.
+  applicability:
+    when:
+    - Есть текстовые поля.
+    skip_when:
+    - Текстовых полей нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: VAL-DEPENDENT-FIELDS
+  status: approved
+  title: Взаимозависимые поля валидируются совместно
+  category: validation
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - validation
+  - business-logic
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Контракт содержит условные требования (если A, то обязательно B; oneOf/anyOf).
+  steps:
+  - action: 'Отправить комбинации: A без B, B без A, оба, ни одного, взаимоисключающие поля одновременно.'
+  expected:
+  - Недопустимые комбинации отклоняются с понятной ошибкой.
+  - Допустимые комбинации принимаются.
+  applicability:
+    when:
+    - Есть условные зависимости полей.
+    skip_when:
+    - Зависимостей нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: VAL-RANGE-ORDER
+  status: approved
+  title: Начало диапазона не может быть позже конца
+  category: validation
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - validation
+  - boundary
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть пары from/to, startDate/endDate, min/max.
+  steps:
+  - action: Отправить from > to, from == to, from < to; пустые границы по отдельности.
+  expected:
+  - from > to отклоняется, граничный случай from == to обрабатывается по контракту.
+  applicability:
+    when:
+    - Есть диапазоны.
+    skip_when:
+    - Диапазонов нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: VAL-DEFAULT-VALUES
+  status: approved
+  title: Опущенные необязательные поля получают задокументированные значения по умолчанию
+  category: validation
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: positive
+  priority: P2
+  tags:
+  - positive
+  - validation
+  - contract
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - В контракте указаны default.
+  steps:
+  - action: Создать ресурс без необязательных полей.
+  - action: Прочитать ресурс.
+  expected:
+  - Поля имеют значения из контракта, а не null или случайные значения.
+  applicability:
+    when:
+    - Контракт задаёт default.
+    skip_when:
+    - Default не определены.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: VAL-QUERY-PARAM-POLLUTION
+  status: approved
+  title: Дублирующиеся query-параметры обрабатываются однозначно
+  category: validation
+  protocols:
+  - rest
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - validation
+  - security
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Эндпоинт принимает query-параметры.
+  steps:
+  - action: Отправить ?id=1&id=2, ?role=user&role=admin, смешать параметр в query и теле.
+  expected:
+  - Поведение детерминировано и задокументировано (ошибка, первое или последнее значение).
+  - Дубликат не позволяет обойти проверку доступа или валидацию (HTTP parameter pollution).
+  applicability:
+    when:
+    - Есть query-параметры.
+    skip_when:
+    - Query-параметров нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: VAL-QUERY-ARRAY-FORMAT
+  status: approved
+  title: Массивы в query передаются в задокументированном формате
+  category: validation
+  protocols:
+  - rest
+  kind: boundary
+  priority: P3
+  tags:
+  - boundary
+  - validation
+  - regression
+  - nightly
+  preconditions:
+  - Параметр-массив в query.
+  steps:
+  - action: Передать a=1,2; a=1&a=2; a[]=1&a[]=2; пустой a=.
+  expected:
+  - Поддерживается только задокументированный стиль (OpenAPI style/explode); прочие отклоняются или игнорируются явно.
+  applicability:
+    when:
+    - Есть массивы в query.
+    skip_when:
+    - Нет массивов в query.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: VAL-REQUIRED-HEADERS
+  status: approved
+  title: Обязательные и форматные заголовки валидируются
+  category: validation
+  protocols:
+  - rest
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - validation
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Контракт требует кастомные заголовки (версия, клиент, устройство, api-key).
+  steps:
+  - action: Отправить запрос без заголовка, с пустым значением, с неверным форматом, с дубликатом заголовка.
+  expected:
+  - Отсутствие и неверный формат отклоняются задокументированной ошибкой.
+  applicability:
+    when:
+    - Есть обязательные заголовки.
+    skip_when:
+    - Нет кастомных заголовков.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: VAL-PATH-ID-FORMAT
+  status: approved
+  title: Неверный формат идентификатора в пути не вызывает 5xx
+  category: validation
+  protocols:
+  - rest
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - validation
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Операция с идентификатором в пути.
+  steps:
+  - action: Подставить не-uuid, 0, -1, очень длинную строку, %00, пробел, 9999999999999999999999.
+  expected:
+  - Ответ 400 или 404 по контракту, без 5xx.
+  - Ошибка не раскрывает SQL/ORM детали.
+  applicability:
+    when:
+    - Есть path-параметры.
+    skip_when:
+    - Нет path-параметров.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: VAL-ALL-ERRORS-REPORTED
+  status: approved
+  title: Ошибки валидации нескольких полей возвращаются по контракту (все сразу или первая)
+  category: validation
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P3
+  tags:
+  - negative
+  - validation
+  - error-handling
+  - regression
+  - nightly
+  preconditions:
+  - Запрос с несколькими полями.
+  steps:
+  - action: Сделать невалидными три поля одновременно.
+  expected:
+  - Набор ошибок соответствует контракту и стабилен между вызовами.
+  applicability:
+    when:
+    - Есть несколько валидируемых полей.
+    skip_when:
+    - Одно поле.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: VAL-MONEY-AMOUNT
+  status: approved
+  title: 'Денежные суммы: знак, точность и валюта валидируются'
+  category: validation
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: boundary
+  priority: P1
+  tags:
+  - boundary
+  - validation
+  - money
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть поля сумм и валют.
+  steps:
+  - action: Отправить 0, -0.01, 0.001 при точности 2 знака, огромную сумму, неизвестный код валюты, сумму строкой с запятой.
+  expected:
+  - Недопустимые значения отклоняются.
+  - Округление не выполняется молча, если контракт его не описывает.
+  applicability:
+    when:
+    - Есть денежные поля.
+    skip_when:
+    - Денежных полей нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium

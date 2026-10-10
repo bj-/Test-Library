@@ -1,5 +1,6 @@
 checks:
 - id: SEC-ROLE-SELF-ASSIGN
+  status: approved
   title: User cannot grant self a higher role
   category: security
   protocols:
@@ -12,10 +13,12 @@ checks:
   - negative
   - security
   - authz
+  - pr
   - ci
   - regression
+  - nightly
   - release
-  preconditions: &id001
+  preconditions:
   - User profile or role-assignment API accepts mutable data.
   steps:
   - action: Attempt to modify own role, group, privilege flags, or permission assignments through writable fields.
@@ -26,15 +29,18 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - User profile or role-assignment API accepts mutable data.
     skip_when:
     - Role changes are intentionally self-service under a documented policy.
   automation:
     level: full
     deterministic: true
   profiles:
+  - PR
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: critical

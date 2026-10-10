@@ -1,8 +1,9 @@
 checks:
 - id: REAL-MOBILE-CLIENT-API-ACCEPTDOCUMENTS-CROSS-PRINCIPAL-OR-STALE-R
+  status: draft
   title: Document acceptance is bound to the correct principal and revision
-  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить
-    перед исполнением.
+  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить перед
+    исполнением.
   category: security
   protocols:
   - rest
@@ -29,8 +30,8 @@ checks:
   - action: Отправить POST запрос на /documents/accept с заданными credentials/ролью/ресурсом.
     notes: Не использовать production credentials или реальные пользовательские данные.
   expected:
-  - Acceptance is recorded only for the intended principal and current document revision; rejected requests do not
-    create acceptance records.
+  - Acceptance is recorded only for the intended principal and current document revision; rejected requests do not create
+    acceptance records.
   - При отказе защищённые данные не раскрываются, а запрещённая мутация не меняет состояние.
   applicability:
     when:

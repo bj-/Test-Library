@@ -1,5 +1,6 @@
 checks:
 - id: SEC-TOKEN-SIGNATURE
+  status: approved
   title: Token with invalid signature is rejected
   category: security
   protocols:
@@ -12,10 +13,12 @@ checks:
   - negative
   - security
   - authn
+  - pr
   - ci
   - regression
+  - nightly
   - release
-  preconditions: &id001
+  preconditions:
   - Signed tokens are used.
   steps:
   - action: Modify a signed token claim or use a token signed with an untrusted key.
@@ -25,15 +28,18 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - Signed tokens are used.
     skip_when:
     - Authentication mechanism does not use signed tokens.
   automation:
     level: full
     deterministic: true
   profiles:
+  - PR
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: critical

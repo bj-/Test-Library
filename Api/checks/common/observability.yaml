@@ -1,0 +1,155 @@
+checks:
+- id: OBS-NO-SECRETS-IN-LOGS
+  status: approved
+  title: Логи не содержат паролей, токенов и ПДн в открытом виде
+  category: observability
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - observability
+  - privacy
+  - regression
+  - nightly
+  preconditions:
+  - Доступ к логам тестового окружения.
+  steps:
+  - action: Выполнить вход, операции с ПДн и ошибки с секретами в запросе; найти значения в логах и трассировках.
+  expected:
+  - Секреты и ПДн отсутствуют или маскированы.
+  applicability:
+    when:
+    - Логи доступны.
+    skip_when:
+    - Логи недоступны тестам.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: critical
+    likelihood: medium
+- id: OBS-AUDIT-TRAIL
+  status: approved
+  title: Чувствительные действия фиксируются в журнале аудита
+  category: observability
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: positive
+  priority: P1
+  tags:
+  - positive
+  - observability
+  - audit
+  - security
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть журнал аудита.
+  steps:
+  - action: Выполнить вход, смену прав, удаление, экспорт, неуспешные попытки доступа.
+  expected:
+  - Запись содержит кто, что, когда, откуда, результат; журнал недоступен для изменения пользователем.
+  applicability:
+    when:
+    - Есть аудит.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: OBS-TRACE-PROPAGATION
+  status: approved
+  title: Контекст трассировки принимается и передаётся дальше
+  category: observability
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - observability
+  - regression
+  - nightly
+  preconditions:
+  - Используется распределённая трассировка.
+  steps:
+  - action: Отправить запрос с traceparent и проверить trace в системе трассировки.
+  expected:
+  - Трасса связана с входящим контекстом; некорректный traceparent не ломает запрос.
+  applicability:
+    when:
+    - Есть трассировка.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: OBS-HEALTH-ENDPOINTS
+  status: approved
+  title: Health-эндпоинты отражают состояние и не раскрывают детали
+  category: observability
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - observability
+  - hardening
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть liveness/readiness.
+  steps:
+  - action: Запросить health при норме и при недоступной зависимости; запросить без аутентификации.
+  expected:
+  - Readiness отражает зависимости; публичный ответ не содержит версий, хостов и секретов.
+  applicability:
+    when:
+    - Есть health.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium

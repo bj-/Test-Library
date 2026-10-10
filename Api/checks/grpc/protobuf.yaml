@@ -1,40 +1,113 @@
 checks:
-  - id: GRPC-REQUEST-VALIDATION
-    title: Invalid gRPC request is rejected predictably
-    category: grpc-contract
-    protocols: [grpc]
-    kind: negative
-    priority: P1
-    tags: [negative, contract, validation, regression]
-    preconditions: [Request constraints and error policy are known.]
-    steps: [{action: "Call RPC with invalid enum, invalid business value, or missing semantic requirement."}]
-    expected: [A consistent status is returned, commonly INVALID_ARGUMENT for invalid arguments., No stack trace, secrets, or internal details are exposed.]
-    applicability: {when: [RPC has validated business fields.], skip_when: [All possible values are valid by contract.]}
-    automation: {level: full, deterministic: true}
-    profiles: [CI, Regression]
-  - id: GRPC-STATUS-MAPPING
-    title: RPC errors use documented gRPC status codes
-    category: grpc-errors
-    protocols: [grpc]
-    kind: contract
-    priority: P1
-    tags: [contract, error-handling, regression]
-    preconditions: [Error scenarios exist for the RPC.]
-    steps: [{action: "Trigger missing-resource, permission, invalid-argument, and state-conflict errors."}]
-    expected: [Documented status codes are used, such as NOT_FOUND, PERMISSION_DENIED, INVALID_ARGUMENT, or FAILED_PRECONDITION., Error details are stable within the contract.]
-    applicability: {when: [RPC documents errors or uses a standard error mapping.], skip_when: [No error scenario can be triggered.]}
-    automation: {level: full, deterministic: true}
-    profiles: [CI, Regression]
-  - id: GRPC-STREAM-TERMINATION
-    title: Streaming RPC terminates correctly
-    category: grpc-contract
-    protocols: [grpc]
-    kind: reliability
-    priority: P1
-    tags: [positive, reliability, regression, nightly]
-    preconditions: [RPC uses server, client, or bidirectional streaming.]
-    steps: [{action: "Open stream, exchange expected messages, and close according to contract."}]
-    expected: [Messages follow documented ordering and delivery guarantees., Stream ends with expected status and releases resources.]
-    applicability: {when: [RPC is streaming.], skip_when: [RPC is unary.]}
-    automation: {level: partial, deterministic: false, notes: Streaming timing and external events may need specialized harnesses.}
-    profiles: [Regression, Nightly]
+- id: GRPC-REQUEST-VALIDATION
+  status: approved
+  title: Invalid gRPC request is rejected predictably
+  category: grpc-contract
+  protocols:
+  - grpc
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - contract
+  - validation
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Request constraints and error policy are known.
+  steps:
+  - action: Call RPC with invalid enum, invalid business value, or missing semantic requirement.
+  expected:
+  - A consistent status is returned
+  - commonly INVALID_ARGUMENT for invalid arguments.
+  - No stack trace
+  - secrets
+  - or internal details are exposed.
+  applicability:
+    when:
+    - RPC has validated business fields.
+    skip_when:
+    - All possible values are valid by contract.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+- id: GRPC-STATUS-MAPPING
+  status: approved
+  title: RPC errors use documented gRPC status codes
+  category: grpc-errors
+  protocols:
+  - grpc
+  kind: contract
+  priority: P1
+  tags:
+  - contract
+  - error-handling
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Error scenarios exist for the RPC.
+  steps:
+  - action: Trigger missing-resource, permission, invalid-argument, and state-conflict errors.
+  expected:
+  - Documented status codes are used
+  - such as NOT_FOUND
+  - PERMISSION_DENIED
+  - INVALID_ARGUMENT
+  - or FAILED_PRECONDITION.
+  - Error details are stable within the contract.
+  applicability:
+    when:
+    - RPC documents errors or uses a standard error mapping.
+    skip_when:
+    - No error scenario can be triggered.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+- id: GRPC-STREAM-TERMINATION
+  status: approved
+  title: Streaming RPC terminates correctly
+  category: grpc-contract
+  protocols:
+  - grpc
+  kind: reliability
+  priority: P1
+  tags:
+  - positive
+  - reliability
+  - regression
+  - nightly
+  preconditions:
+  - RPC uses server
+  - client
+  - or bidirectional streaming.
+  steps:
+  - action: Open stream, exchange expected messages, and close according to contract.
+  expected:
+  - Messages follow documented ordering and delivery guarantees.
+  - Stream ends with expected status and releases resources.
+  applicability:
+    when:
+    - RPC is streaming.
+    skip_when:
+    - RPC is unary.
+  automation:
+    level: partial
+    deterministic: false
+    notes: Streaming timing and external events may need specialized harnesses.
+  profiles:
+  - Regression
+  - Nightly

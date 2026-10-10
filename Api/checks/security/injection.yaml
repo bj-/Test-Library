@@ -1,0 +1,642 @@
+checks:
+- id: INJ-SQL
+  status: approved
+  title: SQL-инъекция во входных параметрах не исполняется
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - negative
+  - injection
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Параметр попадает в запрос к реляционной БД (фильтр, поиск, сортировка, id).
+  steps:
+  - action: 'Подставить в path, query, body и заголовки: '' OR ''1''=''1, ''; --, UNION SELECT, boolean- и time-based payload
+      (pg_sleep, WAITFOR).'
+  - action: Сравнить ответы и время с контрольным запросом.
+  expected:
+  - 'Полезная нагрузка не исполняется: нет изменения поведения, данных, времени ответа или ошибок интерпретатора.'
+  - Ответ — штатная ошибка валидации или обычный результат с данными, трактованными как литерал.
+  - Нет 5xx и утечек деталей интерпретатора.
+  applicability:
+    when:
+    - Параметры участвуют в запросах к SQL БД.
+    skip_when:
+    - Хранилище без SQL и параметры не транслируются в SQL.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+  references:
+  - OWASP Web Security Testing Guide
+- id: INJ-NOSQL
+  status: approved
+  title: NoSQL-инъекция операторами запросов не исполняется
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - negative
+  - injection
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Используется MongoDB/Elastic/другая документная БД.
+  steps:
+  - action: 'Передать объекты вместо скаляров: {"$ne": null}, {"$gt": ""}, {"$regex": ".*"}, $where.'
+  - action: Использовать в логине и фильтрах.
+  expected:
+  - 'Полезная нагрузка не исполняется: нет изменения поведения, данных, времени ответа или ошибок интерпретатора.'
+  - Ответ — штатная ошибка валидации или обычный результат с данными, трактованными как литерал.
+  - Нет 5xx и утечек деталей интерпретатора.
+  - Логин с операторами вместо пароля не выполняется.
+  applicability:
+    when:
+    - Используется NoSQL хранилище.
+    skip_when:
+    - NoSQL не используется.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+  references:
+  - OWASP Web Security Testing Guide
+- id: INJ-OS-COMMAND
+  status: approved
+  title: Инъекция команд ОС не исполняется
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - negative
+  - injection
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Параметр может попадать в shell, конвертеры файлов или системные утилиты.
+  steps:
+  - action: Подставить ; id, | whoami, `sleep 10`, $(sleep 10), && ping.
+  expected:
+  - 'Полезная нагрузка не исполняется: нет изменения поведения, данных, времени ответа или ошибок интерпретатора.'
+  - Ответ — штатная ошибка валидации или обычный результат с данными, трактованными как литерал.
+  - Нет 5xx и утечек деталей интерпретатора.
+  applicability:
+    when:
+    - Сервис вызывает внешние процессы.
+    skip_when:
+    - Внешние процессы не вызываются.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+  references:
+  - OWASP Web Security Testing Guide
+- id: INJ-TEMPLATE-SSTI
+  status: approved
+  title: Инъекция в серверные шаблоны не исполняется
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - injection
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Пользовательские данные попадают в шаблоны писем, документов или уведомлений.
+  steps:
+  - action: 'Сохранить {{7*7}}, ${7*7}, <%= 7*7 %>, #{7*7} и вызвать генерацию письма или документа.'
+  expected:
+  - В результате буквальная строка, а не 49.
+  - Нет ошибок шаблонизатора в ответе.
+  applicability:
+    when:
+    - Есть рендеринг шаблонов с пользовательскими данными.
+    skip_when:
+    - Шаблоны не используются.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP Web Security Testing Guide
+- id: INJ-STORED-XSS
+  status: approved
+  title: Сохранённые данные с HTML/JS не создают XSS у потребителей API
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - injection
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Данные API отображаются в веб-интерфейсе или админке.
+  steps:
+  - action: 'Сохранить <script>alert(1)</script>, <img src=x onerror=...>, javascript: URL в текстовых и URL-полях.'
+  - action: Прочитать данные через API и открыть в UI.
+  expected:
+  - 'API возвращает данные с Content-Type: application/json, не text/html.'
+  - UI экранирует данные; URL-поля не принимают javascript:.
+  applicability:
+    when:
+    - Есть UI-потребитель API.
+    skip_when:
+    - API не имеет веб-потребителей.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP Web Security Testing Guide
+- id: INJ-HEADER-CRLF
+  status: approved
+  title: CRLF в значениях не позволяет внедрять заголовки ответа
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - injection
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Пользовательское значение попадает в заголовки ответа (Location, Set-Cookie, Content-Disposition).
+  steps:
+  - action: Передать значение с %0d%0aSet-Cookie:x=1 и \r\n в параметре redirect, имени файла, языке.
+  expected:
+  - В ответе нет внедрённого заголовка или разделения ответа.
+  - Запрос отклоняется или значение кодируется.
+  applicability:
+    when:
+    - Значения отражаются в заголовках.
+    skip_when:
+    - Отражения нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP Web Security Testing Guide
+- id: INJ-PATH-TRAVERSAL
+  status: approved
+  title: Обход каталогов через параметры файлов и путей невозможен
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - negative
+  - injection
+  - files
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Параметр задаёт имя файла, путь, шаблон или ключ объекта в хранилище.
+  steps:
+  - action: Передать ../../etc/passwd, ..\..\windows\win.ini, %2e%2e%2f, двойное кодирование, абсолютные пути, null byte.
+  expected:
+  - Доступ только к разрешённым объектам.
+  - Ответ не содержит содержимого системных файлов.
+  applicability:
+    when:
+    - Есть файловые параметры.
+    skip_when:
+    - Нет файловых параметров.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+  references:
+  - OWASP Web Security Testing Guide
+- id: INJ-LOG-FORGING
+  status: approved
+  title: Пользовательские данные не позволяют подделывать записи журналов
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - negative
+  - injection
+  - observability
+  - regression
+  - nightly
+  preconditions:
+  - Доступ к логам тестового окружения.
+  steps:
+  - action: Передать значения с \n, \r, ANSI escape-последовательностями и поддельной строкой лога, ${jndi:ldap://...}.
+  expected:
+  - Записи в логе экранированы и не разбиваются на поддельные.
+  - Lookup-выражения не исполняются.
+  applicability:
+    when:
+    - Есть доступ к логам.
+    skip_when:
+    - Логи недоступны тестам.
+  automation:
+    level: manual
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: INJ-PROTOTYPE-POLLUTION
+  status: approved
+  title: Специальные ключи __proto__ и constructor не меняют поведение сервера
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - injection
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Бэкенд на JavaScript/TypeScript или выполняет глубокое слияние объектов.
+  steps:
+  - action: 'Отправить {"__proto__": {"isAdmin": true}}, {"constructor": {"prototype": {...}}} в теле и query.'
+  - action: Выполнить последующий запрос другим пользователем.
+  expected:
+  - Ключи отклоняются или игнорируются.
+  - Последующие запросы не получают изменённых свойств.
+  applicability:
+    when:
+    - Node.js бэкенд или deep merge.
+    skip_when:
+    - Другая платформа без deep merge.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: INJ-UNSAFE-DESERIALIZATION
+  status: approved
+  title: Небезопасная десериализация пользовательских данных невозможна
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - injection
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - API принимает сериализованные объекты (Java serialization, pickle, YAML с тегами, XML).
+  steps:
+  - action: Отправить gadget payload или YAML/XML с исполняемыми типами.
+  expected:
+  - Типы не инстанцируются, запрос отклоняется.
+  applicability:
+    when:
+    - Принимаются форматы сериализации объектов.
+    skip_when:
+    - Только JSON/protobuf без полиморфной десериализации.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: INJ-XXE
+  status: approved
+  title: Внешние сущности XML не обрабатываются
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - negative
+  - injection
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - API принимает XML, SVG, DOCX, XLSX или SOAP.
+  steps:
+  - action: Отправить документ с DOCTYPE и внешней сущностью file:// и http:// на контролируемый сервер.
+  expected:
+  - Сущности не раскрываются, внешние запросы не выполняются.
+  - Запрос отклоняется или DOCTYPE игнорируется.
+  applicability:
+    when:
+    - Принимаются XML-форматы.
+    skip_when:
+    - XML не принимается.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+  references:
+  - OWASP Web Security Testing Guide
+- id: INJ-FILTER-EXPRESSION
+  status: approved
+  title: Выражения фильтрации (OData, RSQL, JSONPath, GraphQL where) не позволяют выйти за ограничения
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - injection
+  - filtering
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - API принимает язык выражений фильтрации.
+  steps:
+  - action: Сформировать фильтры по скрытым полям, с вложенными связями, с функциями и подзапросами.
+  expected:
+  - Фильтрация по непубличным полям запрещена.
+  - Результат не расширяет видимость данных.
+  applicability:
+    when:
+    - Есть язык фильтров.
+    skip_when:
+    - Фиксированные параметры фильтрации.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: INJ-REDOS
+  status: approved
+  title: Пользовательский ввод не вызывает катастрофический backtracking в regex
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - negative
+  - hardening
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Поля валидируются регулярными выражениями или поиск поддерживает regex.
+  steps:
+  - action: Отправить строки вида aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa! против уязвимых паттернов (email, url).
+  expected:
+  - Время ответа остаётся в пределах бюджета, CPU не насыщается.
+  applicability:
+    when:
+    - Есть regex-валидация.
+    skip_when:
+    - Нет regex.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: INJ-CSV-FORMULA
+  status: approved
+  title: Экспорт в CSV/XLSX нейтрализует формулы
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - negative
+  - injection
+  - files
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - API экспортирует пользовательские данные в CSV/XLSX.
+  steps:
+  - action: Сохранить значения, начинающиеся с =, +, -, @, \t, и выгрузить экспорт.
+  expected:
+  - Опасные значения экранированы (например, префикс ') и не исполняются как формулы.
+  applicability:
+    when:
+    - Есть экспорт таблиц.
+    skip_when:
+    - Экспорта нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: INJ-SSRF-PARAMETERS
+  status: approved
+  title: Параметры с URL и хостами не дают доступа к внутренней сети
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - negative
+  - injection
+  - hardening
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - API принимает URL для загрузки, превью, импорта или вебхуков.
+  steps:
+  - action: Передать http://169.254.169.254/, http://localhost, внутренние DNS-имена, IPv6, десятичную запись IP, редирект
+      на внутренний адрес, file://, gopher://.
+  expected:
+  - Запросы к внутренним адресам и неразрешённым схемам блокируются, в том числе после редиректа и DNS rebinding.
+  applicability:
+    when:
+    - Есть серверная загрузка по URL.
+    skip_when:
+    - URL не принимаются.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+  references:
+  - OWASP API Security Top 10

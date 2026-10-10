@@ -2,7 +2,8 @@ id: Smoke
 description: Critical-path minimal set
 include_tags:
 - smoke
-exclude_tags: []
+exclude_tags:
+- costly
 max_priority: P1
 selection:
   deterministic_only: true

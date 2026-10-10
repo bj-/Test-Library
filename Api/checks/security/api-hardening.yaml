@@ -1,0 +1,514 @@
+checks:
+- id: HARD-TLS-ONLY
+  status: approved
+  title: API доступен только по TLS с актуальными настройками
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - transport-security
+  - hardening
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Публичный или межсервисный эндпоинт.
+  steps:
+  - action: Обратиться по HTTP, по TLS 1.0/1.1, со слабыми шифрами; проверить HSTS и сертификат.
+  expected:
+  - HTTP отклоняется или перенаправляется без передачи данных; устаревшие протоколы отключены; HSTS присутствует; сертификат
+    валиден.
+  applicability:
+    when:
+    - Сетевой доступ к эндпоинту.
+    skip_when:
+    - Тест в среде без TLS (зафиксировать).
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: HARD-DEBUG-ENDPOINTS
+  status: approved
+  title: Отладочные и служебные эндпоинты недоступны извне
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - hardening
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Известен стек (Spring, .NET, Node, Django).
+  steps:
+  - action: Запросить /actuator, /debug, /metrics, /env, /swagger, /graphiql, /.git, /admin, /console, /heapdump.
+  expected:
+  - Служебные эндпоинты закрыты или требуют аутентификации в соответствии с политикой окружения.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: HARD-VERSION-DISCLOSURE
+  status: approved
+  title: Ответы не раскрывают версии ПО и инфраструктуры
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P3
+  tags:
+  - security
+  - hardening
+  - regression
+  - nightly
+  preconditions:
+  - Нет.
+  steps:
+  - action: Проанализировать Server, X-Powered-By, X-AspNet-Version и тела ошибок.
+  expected:
+  - Версии продуктов не раскрываются.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: HARD-EXCESSIVE-DATA-EXPOSURE
+  status: approved
+  title: Ответы не содержат внутренних полей сверх контракта
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - contract
+  - privacy
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Схемы ответов описаны в контракте.
+  steps:
+  - action: Сравнить фактические поля ответов со схемой для всех ролей.
+  expected:
+  - 'Нет недокументированных полей: внутренних id, флагов, хешей паролей, служебных метаданных.'
+  applicability:
+    when:
+    - Есть схемы ответов.
+    skip_when:
+    - Схемы отсутствуют.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP API Security Top 10
+- id: HARD-ID-PREDICTABILITY
+  status: approved
+  title: Предсказуемые идентификаторы не позволяют собрать данные перебором
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - negative
+  - enumeration
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Используются последовательные числовые id.
+  steps:
+  - action: Перебрать соседние id от имени пользователя без прав.
+  - action: Сравнить ответы для существующих и несуществующих id.
+  expected:
+  - Ответы для чужих и несуществующих id неразличимы по политике.
+  - Нельзя оценить объём бизнеса по id.
+  applicability:
+    when:
+    - Последовательные id.
+    skip_when:
+    - UUID или случайные id.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: HARD-SHADOW-API-VERSIONS
+  status: approved
+  title: Старые версии API и недокументированные маршруты не обходят защиту
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - versioning
+  - hardening
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - API версионируется.
+  steps:
+  - action: Вызвать ту же операцию через /v0, /v1, /beta, /internal, старые хосты.
+  - action: Сравнить авторизацию и валидацию с текущей версией.
+  expected:
+  - Устаревшие версии отключены или защищены не слабее текущей.
+  applicability:
+    when:
+    - Есть версионирование.
+    skip_when:
+    - Одна версия.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP API Security Top 10
+- id: HARD-METHOD-OVERRIDE
+  status: approved
+  title: Заголовки переопределения метода не обходят авторизацию
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authz
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - За шлюзом или фреймворком, поддерживающим override.
+  steps:
+  - action: 'Отправить POST с X-HTTP-Method-Override: DELETE, X-Method-Override, _method=PUT.'
+  expected:
+  - Override игнорируется или проверяется так же, как исходный метод.
+  applicability:
+    when:
+    - Всегда для REST.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: HARD-HOST-HEADER
+  status: approved
+  title: Подмена Host и X-Forwarded-Host не влияет на ссылки и маршрутизацию
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - injection
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - API формирует абсолютные ссылки (сброс пароля, Location, pagination links).
+  steps:
+  - action: Отправить запрос с поддельными Host, X-Forwarded-Host, X-Forwarded-Proto, Forwarded.
+  expected:
+  - Ссылки строятся из доверенной конфигурации, а не из заголовков клиента.
+  applicability:
+    when:
+    - Есть абсолютные ссылки.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: HARD-CACHE-POISONING
+  status: approved
+  title: Неключевые заголовки не отравляют общий кэш
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - negative
+  - caching
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Есть CDN или обратный прокси с кэшем.
+  steps:
+  - action: Отправить запрос с X-Forwarded-Host, X-Original-URL и cache buster; затем обычный запрос.
+  expected:
+  - Второй запрос не получает отравленный ответ.
+  applicability:
+    when:
+    - Есть общий кэш.
+    skip_when:
+    - Кэша нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: HARD-BUSINESS-FLOW-AUTOMATION
+  status: approved
+  title: Чувствительные бизнес-потоки защищены от автоматизированного злоупотребления
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - negative
+  - business-logic
+  - rate-limiting
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Есть потоки регистрации, бронирования, покупки, отправки сообщений.
+  steps:
+  - action: Выполнить поток скриптом массово с одного и нескольких клиентов.
+  expected:
+  - Срабатывают задокументированные ограничения (лимиты, CAPTCHA, device binding).
+  applicability:
+    when:
+    - Есть чувствительные потоки.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - OWASP API Security Top 10
+- id: HARD-UNSAFE-API-CONSUMPTION
+  status: approved
+  title: Ответы сторонних API валидируются перед использованием
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - negative
+  - resilience
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Сервис вызывает внешние API.
+  steps:
+  - action: Через заглушку внешнего API вернуть некорректную схему, огромный ответ, редирект, инъекции в полях.
+  expected:
+  - Сервис отклоняет или санитизирует данные, не следует редиректам слепо, ограничивает размер.
+  applicability:
+    when:
+    - Есть интеграции.
+    skip_when:
+    - Интеграций нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - OWASP API Security Top 10
+- id: HARD-EXPENSIVE-OPERATION-LIMITS
+  status: approved
+  title: Дорогие операции ограничены по ресурсам
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - rate-limiting
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Есть экспорт, отчёты, поиск, массовые операции.
+  steps:
+  - action: Запросить максимальный limit, широкий период, тяжёлые фильтры, параллельные экспорты.
+  expected:
+  - Действуют лимиты на размер, время и параллельность; сервис доступен другим клиентам.
+  applicability:
+    when:
+    - Есть дорогие операции.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP API Security Top 10
+- id: HARD-SENSITIVE-DATA-IN-URL
+  status: approved
+  title: Персональные данные и секреты не передаются в URL
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - negative
+  - privacy
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Контракт известен.
+  steps:
+  - action: Проанализировать path и query всех операций на наличие ПДн, токенов, паролей.
+  expected:
+  - ПДн и секреты передаются в теле или заголовках, не в URL.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium

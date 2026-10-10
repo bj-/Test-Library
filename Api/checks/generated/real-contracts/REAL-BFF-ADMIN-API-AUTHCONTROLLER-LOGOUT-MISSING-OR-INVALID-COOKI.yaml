@@ -1,8 +1,9 @@
 checks:
 - id: REAL-BFF-ADMIN-API-AUTHCONTROLLER-LOGOUT-MISSING-OR-INVALID-COOKI
+  status: draft
   title: Cookie-authenticated endpoint rejects missing/invalid session
-  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить
-    перед исполнением.
+  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить перед
+    исполнением.
   category: security
   protocols:
   - rest

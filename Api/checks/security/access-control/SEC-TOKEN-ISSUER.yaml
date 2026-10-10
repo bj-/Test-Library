@@ -1,5 +1,6 @@
 checks:
 - id: SEC-TOKEN-ISSUER
+  status: approved
   title: Token from untrusted issuer is rejected
   category: security
   protocols:
@@ -12,10 +13,12 @@ checks:
   - negative
   - security
   - authn
+  - pr
   - ci
   - regression
+  - nightly
   - release
-  preconditions: &id001
+  preconditions:
   - JWT/OIDC or another issuer-based token scheme is used.
   steps:
   - action: Present a token from an issuer not trusted by the service.
@@ -25,15 +28,18 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - JWT/OIDC or another issuer-based token scheme is used.
     skip_when:
     - Credential scheme does not have issuers.
   automation:
     level: full
     deterministic: true
   profiles:
+  - PR
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: critical

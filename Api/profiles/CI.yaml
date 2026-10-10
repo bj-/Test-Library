@@ -6,8 +6,9 @@ include_tags:
 - security
 - validation
 - error-handling
-exclude_tags: []
+exclude_tags:
+- costly
 max_priority: P2
 selection:
   deterministic_only: true
-  max_checks: 300
+  max_checks: 500

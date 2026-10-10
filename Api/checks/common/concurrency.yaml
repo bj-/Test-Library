@@ -1,0 +1,221 @@
+checks:
+- id: CONC-PARALLEL-CREATE-UNIQUE
+  status: approved
+  title: Параллельное создание с одним уникальным ключом создаёт один объект
+  category: concurrency
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - concurrency
+  - data-integrity
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Есть уникальные ключи.
+  steps:
+  - action: Отправить 20 параллельных запросов создания с одинаковым ключом.
+  expected:
+  - Создан ровно один объект; остальные получили задокументированный конфликт.
+  applicability:
+    when:
+    - Есть уникальность.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+- id: CONC-LOST-UPDATE
+  status: approved
+  title: Параллельные изменения не теряют друг друга молча
+  category: concurrency
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - concurrency
+  - data-integrity
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Ресурс изменяется несколькими клиентами.
+  steps:
+  - action: Два клиента читают ресурс и изменяют разные поля; затем одно поле.
+  expected:
+  - Используется оптимистическая блокировка или слияние по контракту; молчаливая потеря изменений отсутствует.
+  applicability:
+    when:
+    - Есть изменения.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+- id: CONC-COUNTER-INCREMENT
+  status: approved
+  title: Счётчики корректны при параллельных инкрементах
+  category: concurrency
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: reliability
+  priority: P1
+  tags:
+  - concurrency
+  - data-integrity
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Есть счётчики (лайки, остатки, просмотры).
+  steps:
+  - action: Выполнить N параллельных инкрементов.
+  expected:
+  - Итоговое значение равно начальному + N.
+  applicability:
+    when:
+    - Есть счётчики.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+- id: CONC-DELETE-VS-UPDATE
+  status: approved
+  title: Параллельные удаление и изменение не оставляют ресурс в противоречивом состоянии
+  category: concurrency
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - concurrency
+  - data-integrity
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Есть удаление и изменение.
+  steps:
+  - action: Одновременно удалить и изменить ресурс многократно.
+  expected:
+  - Ресурс либо удалён, либо изменён; нет 5xx и восстановления удалённого.
+  applicability:
+    when:
+    - Есть операции.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: CONC-DOUBLE-SUBMIT
+  status: approved
+  title: Двойная отправка формы не создаёт дубликат операции
+  category: concurrency
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - concurrency
+  - idempotency
+  - regression
+  - nightly
+  preconditions:
+  - Создающая операция без обязательного idempotency key.
+  steps:
+  - action: Отправить два одинаковых запроса с интервалом 0-100 мс.
+  expected:
+  - 'Поведение по контракту: дедупликация или явное создание двух объектов.'
+  applicability:
+    when:
+    - Есть создание.
+    skip_when:
+    - Обязательный idempotency key проверен отдельно.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+- id: CONC-STATE-TRANSITION-RACE
+  status: approved
+  title: Параллельные переходы состояния не нарушают автомат состояний
+  category: concurrency
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - concurrency
+  - business-logic
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Есть статусы (approve/reject, pay/cancel).
+  steps:
+  - action: Одновременно выполнить взаимоисключающие переходы.
+  expected:
+  - Выполнен только один переход; второй получает конфликт.
+  applicability:
+    when:
+    - Есть статусы.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium

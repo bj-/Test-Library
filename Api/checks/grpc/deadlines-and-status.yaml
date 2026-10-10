@@ -1,0 +1,401 @@
+checks:
+- id: GRPC-DEADLINE-EXCEEDED
+  status: approved
+  title: Превышение дедлайна возвращает DEADLINE_EXCEEDED без побочных эффектов сверх контракта
+  category: grpc-errors
+  protocols:
+  - grpc
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - deadlines
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - RPC с измеримым временем выполнения.
+  steps:
+  - action: Вызвать RPC с дедлайном 1 мс и меньше фактического времени.
+  expected:
+  - Клиент получает DEADLINE_EXCEEDED; сервер прекращает работу; состояние согласовано.
+  applicability:
+    when:
+    - Всегда для gRPC.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: GRPC-DEADLINE-PROPAGATION
+  status: approved
+  title: Дедлайн передаётся в нижележащие вызовы
+  category: grpc-errors
+  protocols:
+  - grpc
+  kind: reliability
+  priority: P2
+  tags:
+  - deadlines
+  - resilience
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Сервис вызывает другие gRPC-сервисы.
+  steps:
+  - action: Вызвать с коротким дедлайном при медленной зависимости.
+  expected:
+  - Нижележащие вызовы отменяются по истечении исходного дедлайна.
+  applicability:
+    when:
+    - Есть цепочки вызовов.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: GRPC-CANCELLATION
+  status: approved
+  title: Отмена клиентом прекращает обработку на сервере
+  category: grpc-errors
+  protocols:
+  - grpc
+  kind: reliability
+  priority: P2
+  tags:
+  - deadlines
+  - resilience
+  - regression
+  - nightly
+  preconditions:
+  - Долгий RPC.
+  steps:
+  - action: Отменить вызов на клиенте в процессе выполнения.
+  expected:
+  - Сервер получает CANCELLED и освобождает ресурсы; мутации не выполняются частично.
+  applicability:
+    when:
+    - Есть долгие RPC.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: GRPC-UNAUTHENTICATED-VS-PERMISSION-DENIED
+  status: approved
+  title: Отсутствие аутентификации и отсутствие прав различаются по статусу
+  category: grpc-errors
+  protocols:
+  - grpc
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - negative
+  - authn
+  - authz
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Защищённый RPC.
+  steps:
+  - action: Вызвать без токена, с невалидным токеном, с валидным токеном без прав.
+  expected:
+  - UNAUTHENTICATED для первых двух, PERMISSION_DENIED (или NOT_FOUND по политике сокрытия) для третьего.
+  applicability:
+    when:
+    - Есть защищённые RPC.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: GRPC-METADATA-AUTH-MISSING
+  status: approved
+  title: Каждый RPC сервиса требует аутентификационные метаданные
+  category: grpc-errors
+  protocols:
+  - grpc
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - negative
+  - authn
+  - metadata
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Сервис содержит защищённые методы.
+  steps:
+  - action: Перебрать все методы сервиса через reflection или descriptor и вызвать без метаданных.
+  expected:
+  - Все защищённые методы отклоняют вызов; публичные методы явно перечислены.
+  applicability:
+    when:
+    - Есть защищённые методы.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: GRPC-METADATA-MALFORMED
+  status: approved
+  title: Некорректные и чрезмерные метаданные отклоняются
+  category: grpc-errors
+  protocols:
+  - grpc
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - metadata
+  - hardening
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Нет.
+  steps:
+  - action: Передать метаданные с недопустимыми символами, -bin без base64, 1000 ключей, значения 64KB.
+  expected:
+  - RESOURCE_EXHAUSTED или INVALID_ARGUMENT без падения сервера.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: GRPC-NOT-FOUND-ALREADY-EXISTS
+  status: approved
+  title: Отсутствующий и дублирующийся ресурс дают NOT_FOUND и ALREADY_EXISTS
+  category: grpc-errors
+  protocols:
+  - grpc
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - contract
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Ресурсные RPC.
+  steps:
+  - action: Запросить несуществующий ресурс; создать дубликат.
+  expected:
+  - Статусы соответствуют AIP/контракту.
+  applicability:
+    when:
+    - Есть ресурсные RPC.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - https://google.aip.dev/193
+- id: GRPC-PRECONDITION-ABORTED
+  status: approved
+  title: FAILED_PRECONDITION и ABORTED используются согласно семантике повтора
+  category: grpc-errors
+  protocols:
+  - grpc
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - concurrency
+  - regression
+  - nightly
+  preconditions:
+  - Есть условные операции и конкурентные изменения.
+  steps:
+  - action: Вызвать операцию в неверном состоянии и при конфликте версий.
+  expected:
+  - FAILED_PRECONDITION — не повторять без изменения состояния; ABORTED — можно повторить транзакцию.
+  applicability:
+    when:
+    - Есть такие сценарии.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: GRPC-RESOURCE-EXHAUSTED
+  status: approved
+  title: Превышение квот возвращает RESOURCE_EXHAUSTED с RetryInfo
+  category: grpc-errors
+  protocols:
+  - grpc
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - rate-limiting
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть квоты или rate limit.
+  steps:
+  - action: Превысить квоту.
+  expected:
+  - RESOURCE_EXHAUSTED; детали содержат QuotaFailure или RetryInfo по контракту.
+  applicability:
+    when:
+    - Есть квоты.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: GRPC-RETRY-POLICY
+  status: approved
+  title: Автоматические повторы применяются только к безопасным методам и статусам
+  category: grpc-errors
+  protocols:
+  - grpc
+  kind: reliability
+  priority: P2
+  tags:
+  - resilience
+  - idempotency
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Настроен service config с retryPolicy.
+  steps:
+  - action: Сымитировать UNAVAILABLE для идемпотентного и неидемпотентного метода.
+  expected:
+  - Повторы только для разрешённых методов и статусов, с backoff; мутации не дублируются.
+  applicability:
+    when:
+    - Есть retryPolicy.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: GRPC-ERROR-DETAILS
+  status: approved
+  title: Ошибки содержат структурированные детали google.rpc.Status
+  category: grpc-errors
+  protocols:
+  - grpc
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - error-handling
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Модель ошибок использует rich error details.
+  steps:
+  - action: Вызвать ошибку валидации и бизнес-ошибку.
+  expected:
+  - Детали содержат BadRequest.FieldViolation, ErrorInfo (reason, domain) по контракту; без внутренних данных.
+  applicability:
+    when:
+    - Rich errors.
+    skip_when:
+    - Только код и сообщение.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - https://google.aip.dev/193

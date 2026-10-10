@@ -1,5 +1,6 @@
 checks:
 - id: SEC-AUTHZ-ERROR-LEAK
+  status: approved
   title: Authorization failures do not disclose protected data
   category: security
   protocols:
@@ -14,8 +15,9 @@ checks:
   - authz
   - ci
   - regression
+  - nightly
   - release
-  preconditions: &id001
+  preconditions:
   - API has protected resources and authorization-denial responses.
   steps:
   - action: Trigger denied access for an existing resource and compare error details with a nonexistent resource where policy
@@ -26,7 +28,8 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - API has protected resources and authorization-denial responses.
     skip_when:
     - Resource existence is intentionally public.
   automation:
@@ -35,6 +38,7 @@ checks:
   profiles:
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: high

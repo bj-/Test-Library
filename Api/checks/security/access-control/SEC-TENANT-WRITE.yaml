@@ -1,5 +1,6 @@
 checks:
 - id: SEC-TENANT-WRITE
+  status: approved
   title: Tenant A cannot mutate tenant B data
   category: security
   protocols:
@@ -12,10 +13,12 @@ checks:
   - negative
   - security
   - authz
+  - pr
   - ci
   - regression
+  - nightly
   - release
-  preconditions: &id001
+  preconditions:
   - Multi-tenant model and mutable tenant-scoped resource.
   steps:
   - action: From tenant A, attempt to update or delete a tenant B resource.
@@ -25,15 +28,18 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - Multi-tenant model and mutable tenant-scoped resource.
     skip_when:
     - Resource is explicitly shared with cross-tenant write permission.
   automation:
     level: full
     deterministic: true
   profiles:
+  - PR
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: critical

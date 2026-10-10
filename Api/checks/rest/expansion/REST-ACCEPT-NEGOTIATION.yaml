@@ -1,5 +1,6 @@
 checks:
 - id: REST-ACCEPT-NEGOTIATION
+  status: approved
   title: Согласование Accept
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: contract
@@ -11,13 +12,15 @@ checks:
   - contract
   - negative
   - rest
+  - ci
+  - regression
+  - nightly
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
   expected:
-  - поддерживаемый тип возвращается корректно; неподдерживаемый обрабатывается по
-    контракту
+  - поддерживаемый тип возвращается корректно; неподдерживаемый обрабатывается по контракту
   applicability:
     when:
     - операция поддерживает content negotiation
@@ -28,6 +31,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

@@ -1,5 +1,6 @@
 checks:
 - id: SEC-AUTHN-MISSING
+  status: approved
   title: Protected operation rejects missing credentials
   category: security
   protocols:
@@ -12,11 +13,13 @@ checks:
   - negative
   - security
   - authn
+  - smoke
+  - pr
   - ci
   - regression
+  - nightly
   - release
-  - smoke
-  preconditions: &id001
+  preconditions:
   - Operation requires authentication.
   steps:
   - action: Request protected operation without Authorization credentials.
@@ -26,7 +29,8 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - Operation requires authentication.
     skip_when:
     - Operation is public or anonymous access is explicitly documented.
   automation:
@@ -34,8 +38,10 @@ checks:
     deterministic: true
   profiles:
   - Smoke
+  - PR
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: critical

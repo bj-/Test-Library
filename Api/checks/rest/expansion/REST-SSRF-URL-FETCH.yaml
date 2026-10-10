@@ -1,5 +1,6 @@
 checks:
 - id: REST-SSRF-URL-FETCH
+  status: approved
   title: Контроль server-side URL fetch
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: security
@@ -12,6 +13,11 @@ checks:
   - negative
   - validation
   - rest
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -28,6 +34,9 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - PR
+  - CI
+  - Regression
   - Nightly
   - Release
   risk:

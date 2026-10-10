@@ -1,5 +1,6 @@
 checks:
 - id: REST-OBJECT-LEVEL-AUTHZ
+  status: approved
   title: Object-level authorization
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: security
@@ -12,6 +13,12 @@ checks:
   - authz
   - negative
   - rest
+  - smoke
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -29,8 +36,10 @@ checks:
     deterministic: true
   profiles:
   - Smoke
+  - PR
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: medium

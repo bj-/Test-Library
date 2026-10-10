@@ -1,8 +1,9 @@
 checks:
 - id: REAL-MOBILE-CLIENT-API-LOGOUT-MISSING-EXPIRED-OR-REFRESH-TOKEN
+  status: draft
   title: Logout requires a valid access token
-  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить
-    перед исполнением.
+  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить перед
+    исполнением.
   category: security
   protocols:
   - rest

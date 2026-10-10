@@ -6,7 +6,7 @@ include_tags:
 - security
 - positive
 exclude_tags:
-- nightly
+- costly
 max_priority: P1
 selection:
   deterministic_only: true

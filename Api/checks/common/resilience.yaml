@@ -1,0 +1,184 @@
+checks:
+- id: RESIL-DEPENDENCY-DOWN
+  status: approved
+  title: Недоступность зависимости даёт контролируемую ошибку
+  category: resilience
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: reliability
+  priority: P1
+  tags:
+  - resilience
+  - error-handling
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Можно отключить зависимость (БД, кэш, внешний API) в тестовом окружении.
+  steps:
+  - action: Отключить зависимость и выполнить операции, которые от неё зависят.
+  expected:
+  - Ответ 503 или задокументированная ошибка, без зависания и утечек; после восстановления работа продолжается.
+  applicability:
+    when:
+    - Есть зависимости.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+- id: RESIL-PARTIAL-DEGRADATION
+  status: approved
+  title: Отказ некритичной зависимости не ломает основной функционал
+  category: resilience
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: reliability
+  priority: P2
+  tags:
+  - resilience
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Есть некритичные зависимости (рекомендации, аналитика).
+  steps:
+  - action: Отключить некритичную зависимость.
+  expected:
+  - Основные операции работают; ответ помечает отсутствующие данные по контракту.
+  applicability:
+    when:
+    - Есть некритичные зависимости.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: RESIL-GRACEFUL-SHUTDOWN
+  status: approved
+  title: Перезапуск экземпляра не обрывает выполняющиеся запросы
+  category: resilience
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: reliability
+  priority: P2
+  tags:
+  - resilience
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Несколько экземпляров за балансировщиком.
+  steps:
+  - action: Под нагрузкой выполнить rolling restart.
+  expected:
+  - Нет ошибок сверх порога; длительные запросы завершаются.
+  applicability:
+    when:
+    - Есть оркестрация.
+    skip_when:
+    - Один экземпляр.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: RESIL-CIRCUIT-BREAKER
+  status: approved
+  title: Circuit breaker размыкается и восстанавливается по политике
+  category: resilience
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: reliability
+  priority: P3
+  tags:
+  - resilience
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Используется circuit breaker.
+  steps:
+  - action: Вызвать серию ошибок зависимости, затем восстановить её.
+  expected:
+  - Разомкнутое состояние возвращает быструю ошибку; полуоткрытое восстанавливается.
+  applicability:
+    when:
+    - Есть breaker.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: RESIL-BROKER-DOWN
+  status: approved
+  title: Недоступность брокера сообщений не теряет события
+  category: resilience
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: reliability
+  priority: P2
+  tags:
+  - resilience
+  - async-jobs
+  - data-integrity
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Используется брокер (Kafka, RabbitMQ).
+  steps:
+  - action: Отключить брокер, выполнить операции, восстановить брокер.
+  expected:
+  - События доставлены после восстановления (outbox) или операция отклонена явно.
+  applicability:
+    when:
+    - Есть брокер.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium

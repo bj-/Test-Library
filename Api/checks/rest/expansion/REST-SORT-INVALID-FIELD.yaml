@@ -1,5 +1,6 @@
 checks:
 - id: REST-SORT-INVALID-FIELD
+  status: approved
   title: Сортировка по неизвестному полю
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: pagination
@@ -12,6 +13,9 @@ checks:
   - filtering
   - validation
   - rest
+  - ci
+  - regression
+  - nightly
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -28,6 +32,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

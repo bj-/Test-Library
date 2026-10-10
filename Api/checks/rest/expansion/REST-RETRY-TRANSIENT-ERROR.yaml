@@ -1,5 +1,6 @@
 checks:
 - id: REST-RETRY-TRANSIENT-ERROR
+  status: approved
   title: Retry после временной ошибки
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: contract
@@ -11,6 +12,9 @@ checks:
   - reliability
   - resilience
   - rest
+  - ci
+  - regression
+  - nightly
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -27,6 +31,8 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
+  - Regression
   - Nightly
   risk:
     impact: medium

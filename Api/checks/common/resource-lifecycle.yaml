@@ -1,0 +1,531 @@
+checks:
+- id: RES-CRUD-CYCLE
+  status: approved
+  title: 'Полный жизненный цикл ресурса: создание, чтение, изменение, удаление'
+  category: resources
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: positive
+  priority: P1
+  tags:
+  - positive
+  - data-integrity
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Пользователь с правами на все операции.
+  steps:
+  - action: Создать ресурс, прочитать, изменить, прочитать, удалить, прочитать.
+  expected:
+  - Каждый шаг возвращает задокументированный результат; прочитанное состояние соответствует последней записи; после удаления
+    ресурс недоступен.
+  applicability:
+    when:
+    - Ресурс поддерживает CRUD.
+    skip_when:
+    - Ресурс только для чтения.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: RES-CREATE-RESPONSE-MATCHES-READ
+  status: approved
+  title: Ответ на создание и изменение совпадает с последующим чтением
+  category: resources
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - data-integrity
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Операции записи возвращают ресурс.
+  steps:
+  - action: Создать/изменить ресурс и сравнить ответ с GET.
+  expected:
+  - Поля и значения совпадают, кроме задокументированных вычисляемых асинхронно.
+  applicability:
+    when:
+    - Запись возвращает тело.
+    skip_when:
+    - Запись возвращает только id.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: RES-UPDATE-MISSING
+  status: approved
+  title: Изменение несуществующего ресурса не создаёт его неявно
+  category: resources
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - data-integrity
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть операции изменения.
+  steps:
+  - action: Выполнить PUT/PATCH/DELETE для несуществующего id.
+  expected:
+  - Ответ 404 или upsert строго по контракту; неявное создание отсутствует, если не задокументировано.
+  applicability:
+    when:
+    - Есть изменения.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: RES-IMMUTABLE-FIELDS
+  status: approved
+  title: Неизменяемые поля нельзя изменить после создания
+  category: resources
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - data-integrity
+  - security
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - У ресурса есть неизменяемые поля (владелец, тип, дата создания, номер).
+  steps:
+  - action: Попытаться изменить каждое неизменяемое поле через PUT, PATCH и вложенные объекты.
+  expected:
+  - Изменение отклоняется или игнорируется по контракту; значение не меняется.
+  applicability:
+    when:
+    - Есть неизменяемые поля.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: RES-SERVER-GENERATED-FIELDS
+  status: approved
+  title: Клиент не может задать серверные поля (id, createdAt, status, version)
+  category: resources
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - data-integrity
+  - security
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть серверные поля.
+  steps:
+  - action: Передать серверные поля при создании.
+  expected:
+  - Значения клиента отклоняются или игнорируются; сервер задаёт собственные.
+  applicability:
+    when:
+    - Есть серверные поля.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: RES-TIMESTAMPS
+  status: approved
+  title: Метки времени создания и изменения ведут себя корректно
+  category: resources
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - data-integrity
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Ресурс содержит createdAt/updatedAt.
+  steps:
+  - action: Создать ресурс, изменить его, выполнить запрос без изменений.
+  expected:
+  - createdAt не меняется; updatedAt растёт только при изменении; время в задокументированной зоне и формате.
+  applicability:
+    when:
+    - Есть метки времени.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: RES-REFERENTIAL-INTEGRITY
+  status: approved
+  title: Ссылка на несуществующий или чужой связанный ресурс отклоняется
+  category: resources
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - data-integrity
+  - authz
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Ресурс ссылается на другие ресурсы по id.
+  steps:
+  - action: Создать ресурс со ссылкой на несуществующий, удалённый и принадлежащий другому пользователю объект.
+  expected:
+  - Ссылки отклоняются; чужой объект не раскрывается через сообщение об ошибке.
+  applicability:
+    when:
+    - Есть связи.
+    skip_when:
+    - Нет связей.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: RES-DELETE-WITH-DEPENDENTS
+  status: approved
+  title: Удаление ресурса с зависимыми объектами выполняется по правилам каскада
+  category: resources
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - data-integrity
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть зависимые объекты.
+  steps:
+  - action: Удалить родительский ресурс с дочерними.
+  expected:
+  - Каскадное удаление или отказ строго по контракту; нет висячих ссылок.
+  applicability:
+    when:
+    - Есть зависимости.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: RES-SOFT-DELETE-VISIBILITY
+  status: approved
+  title: Мягко удалённые ресурсы не видны в обычных операциях
+  category: resources
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - data-integrity
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Используется soft delete.
+  steps:
+  - action: Удалить ресурс и проверить чтение, список, поиск, счётчики, уникальность имени.
+  expected:
+  - Ресурс скрыт везде, кроме задокументированных административных операций; уникальность учитывает политику.
+  applicability:
+    when:
+    - Soft delete.
+    skip_when:
+    - Hard delete.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: RES-UNIQUENESS-NORMALIZATION
+  status: approved
+  title: Уникальность не обходится вариациями значения
+  category: resources
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - data-integrity
+  - validation
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть уникальные поля.
+  steps:
+  - action: Создать дубликаты с другим регистром, пробелами, unicode-вариантами, ведущими нулями.
+  expected:
+  - Дубликаты распознаются согласно политике нормализации.
+  applicability:
+    when:
+    - Есть уникальные поля.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: RES-LIST-REFLECTS-CHANGES
+  status: approved
+  title: Списки и счётчики отражают создание, изменение и удаление
+  category: resources
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: positive
+  priority: P2
+  tags:
+  - positive
+  - data-integrity
+  - pagination
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть операция списка.
+  steps:
+  - action: Создать, изменить, удалить ресурс и запросить список и счётчики.
+  expected:
+  - Изменения видны в списке и счётчиках в пределах задокументированной задержки.
+  applicability:
+    when:
+    - Есть списки.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: RES-READ-AFTER-WRITE
+  status: approved
+  title: Чтение после записи соответствует модели согласованности
+  category: resources
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: reliability
+  priority: P2
+  tags:
+  - data-integrity
+  - reliability
+  - regression
+  - nightly
+  preconditions:
+  - Есть реплики, кэши или асинхронная обработка.
+  steps:
+  - action: Сразу после записи прочитать ресурс многократно из разных узлов.
+  expected:
+  - Сильная согласованность или задокументированное окно eventual consistency.
+  applicability:
+    when:
+    - Распределённое хранение.
+    skip_when:
+    - Одна БД без кэша.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: RES-BULK-LIMITS
+  status: approved
+  title: Массовые операции соблюдают лимиты и сообщают о каждом элементе
+  category: resources
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: boundary
+  priority: P2
+  tags:
+  - boundary
+  - data-integrity
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть bulk-операции.
+  steps:
+  - action: Отправить пустой пакет, пакет максимального размера, max+1, с дубликатами.
+  expected:
+  - Лимиты соблюдаются; результат по каждому элементу задокументирован.
+  applicability:
+    when:
+    - Есть bulk.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: RES-ARCHIVE-RESTORE
+  status: approved
+  title: Архивирование и восстановление сохраняют данные и связи
+  category: resources
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - data-integrity
+  - regression
+  - nightly
+  preconditions:
+  - Есть архивирование.
+  steps:
+  - action: Архивировать ресурс, проверить ограничения, восстановить.
+  expected:
+  - Архивный ресурс доступен только по политике; после восстановления данные и связи целы.
+  applicability:
+    when:
+    - Есть архив.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium

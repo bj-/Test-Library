@@ -16,8 +16,11 @@
 
 - `schema/` — JSON Schema для валидации записей и профилей.
 - `taxonomy/` — контролируемые словари категорий, меток, приоритетов и профилей.
-- `checks/common/` — проверки, общие для REST и gRPC.
-- `checks/rest/` и `checks/grpc/` — протокольные проверки.
+- `checks/common/` — протокольно-независимые проверки: ресурсы, бизнес-логика, конкурентность, ошибки, совместимость, устойчивость, производительность, наблюдаемость, async.
+- `checks/rest/`, `checks/grpc/`, `checks/graphql/`, `checks/websocket/` — протокольные проверки.
+- `checks/security/` — доступ, аутентификация и сессии, инъекции, hardening, приватность.
+- `checks/generated/` — кандидаты из реальных контрактов (`draft` / `needs_clarification`).
+- `docs/CATALOG.md` — сгенерированный каталог всех проверок по категориям.
 - `profiles/` — наборы и параметры запуска.
 - `selection-rules/` — правила отбора и ранжирования.
 - `validation/` — критерии качества библиотеки и покрытия.
@@ -48,13 +51,38 @@
 
 Не фиксируйте универсально HTTP-код или gRPC status для всех сервисов. Конкретное соответствие ошибок берётся из контракта и принятой в проекте модели ошибок.
 
-## Исправление конфликтов имён профилей
-Если валидатор сообщает `unknown profile CI` или `id must match filename`, выполните из корня библиотеки:
-```powershell
-python tools/repair_profiles.py
-python tools/validate_library.py .
-```
-Файл `tools/repair_profiles.py` приводит имена профилей к `PR.yaml`, `Smoke.yaml`, `CI.yaml`, `Regression.yaml`, `Nightly.yaml`, `Release.yaml` и устанавливает совпадающие `id`.
+## Статус проверки (`status`)
+
+- `approved` — запись проверена и участвует в отборе по умолчанию.
+- `draft` — сгенерированный или непроверенный кандидат.
+- `needs_clarification` — ожидаемое поведение заблокировано до решения владельца API.
+
+`select_checks.py` по умолчанию берёт только `approved`; другие статусы включаются явно: `--status approved,draft`.
+
+## Профили и регистр имён
+
+Профиль определяется полем `id` внутри файла `profiles/*.yaml`; имена файлов и ссылки на профили сравниваются без учёта регистра. Поэтому результат одинаков на Windows и Linux и не зависит от того, как git записал имя файла (при `core.ignorecase=true` git не фиксирует переименование, меняющее только регистр). Чтобы сменить регистр имени файла профиля, используйте `git mv profiles/x.yaml profiles/tmp.yaml` и затем `git mv profiles/tmp.yaml profiles/X.yaml`.
+
+Проверка входит в профиль, если он указан в её поле `profiles`; `include_tags` профиля используются только для проверок без поля `profiles`.
+
+Для `approved` проверок поле `profiles` и run-теги (`smoke`, `pr`, `ci`, ...) назначает `tools/assign_profiles.py` по правилам:
+
+| Профиль | Правило |
+|---|---|
+| Smoke | ручной выбор (остаётся, если уже указан); только `deterministic` + `automation.level: full` |
+| PR | Smoke + P0, детерминированные, полностью автоматизированные, без тега `costly` |
+| CI | P0–P2, детерминированные, не `manual`, без `costly` |
+| Release | P0–P1, детерминированные, не `manual` |
+| Regression | всё, кроме `kind: performance` |
+| Nightly | всё |
+
+Тег `costly` ставится проверкам, которым нужны нагрузка, fault injection, долгие ожидания или особая инфраструктура.
+
+## Добавление новой проверки
+
+1. Добавить запись в подходящий файл `checks/**.yaml` (новый файл — список `checks:`), `status: approved` для отобранных идей или `draft` для черновиков; `profiles` можно не указывать.
+2. `python tools/assign_profiles.py .` — назначить профили и run-теги, привести файлы к единому формату.
+3. `python tools/validate_library.py .` и `python tools/build_catalog.py .`.
 
 ## Stage 4: OpenAPI access-control coverage generator
 
@@ -74,13 +102,23 @@ See `docs/COVERAGE_GENERATOR_STAGE4.md`. Run `python tools/generate_coverage.py 
 Из корня `Api/`:
 
 ```bash
-# Проверка структуры каталога и JSON Schema
+# Профили и run-теги по правилам, затем проверка структуры и JSON Schema, затем каталог
+python tools/assign_profiles.py .
 python tools/validate_library.py .
+python tools/build_catalog.py .
+
+# В CI: убедиться, что профили и каталог не устарели
+python tools/assign_profiles.py . --check
+python tools/build_catalog.py . --check
 
 # Выборка по профилям
 python tools/select_checks.py . Smoke
 python tools/select_checks.py . CI
 python tools/select_checks.py . Regression
+
+# Отбор с кандидатами, причины исключения, JSON для раннера
+python tools/select_checks.py . CI --status approved,draft --explain
+python tools/select_checks.py . CI --format json
 
 # Генерация кандидатов и матрицы покрытия для примера
 python tools/generate_coverage.py --openapi examples/openapi.sample.yaml --access-model examples/access-model.sample.yaml --out build/coverage

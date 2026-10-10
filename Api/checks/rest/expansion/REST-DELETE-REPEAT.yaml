@@ -1,5 +1,6 @@
 checks:
 - id: REST-DELETE-REPEAT
+  status: approved
   title: Повторное удаление
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: contract
@@ -10,7 +11,9 @@ checks:
   tags:
   - idempotency
   - rest
+  - ci
   - regression
+  - nightly
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -27,6 +30,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

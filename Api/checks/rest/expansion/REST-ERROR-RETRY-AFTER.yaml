@@ -1,5 +1,6 @@
 checks:
 - id: REST-ERROR-RETRY-AFTER
+  status: approved
   title: Retry-After при временной ошибке
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: contract
@@ -11,6 +12,9 @@ checks:
   - contract
   - reliability
   - rest
+  - ci
+  - regression
+  - nightly
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -27,6 +31,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

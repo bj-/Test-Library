@@ -1,5 +1,6 @@
 checks:
 - id: SEC-AUTHZ-CACHE-ISOLATION
+  status: approved
   title: Authorization context is respected by caches
   category: security
   protocols:
@@ -12,10 +13,12 @@ checks:
   - negative
   - security
   - authz
+  - pr
+  - ci
   - regression
-  - release
   - nightly
-  preconditions: &id001
+  - release
+  preconditions:
   - Protected responses may be cached by client, gateway, CDN, or service.
   steps:
   - action: Request a protected resource as principal A, then repeat the same URL as principal B and across tenants.
@@ -26,13 +29,16 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - Protected responses may be cached by client, gateway, CDN, or service.
     skip_when:
     - Responses are public and contain no principal-specific data.
   automation:
     level: full
     deterministic: true
   profiles:
+  - PR
+  - CI
   - Regression
   - Nightly
   - Release

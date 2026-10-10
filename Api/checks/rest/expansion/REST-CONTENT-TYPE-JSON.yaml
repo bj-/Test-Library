@@ -1,5 +1,6 @@
 checks:
 - id: REST-CONTENT-TYPE-JSON
+  status: approved
   title: Content-Type и JSON-формат
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: contract
@@ -10,6 +11,10 @@ checks:
   tags:
   - contract
   - rest
+  - ci
+  - regression
+  - nightly
+  - release
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -28,6 +33,7 @@ checks:
   profiles:
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: medium

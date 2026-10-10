@@ -1,0 +1,230 @@
+checks:
+- id: PAGE-CURSOR-TAMPERING
+  status: approved
+  title: Подделанный или чужой курсор пагинации не раскрывает данные
+  category: pagination
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - pagination
+  - security
+  - authz
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Курсорная пагинация.
+  steps:
+  - action: Изменить байты курсора, декодировать base64 и изменить поля, использовать курсор другого пользователя или фильтра.
+  expected:
+  - Подделанный курсор отклоняется 4xx.
+  - Чужой курсор не возвращает данные вне прав текущего пользователя.
+  applicability:
+    when:
+    - Используются курсоры.
+    skip_when:
+    - Offset-пагинация.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: PAGE-BEYOND-LAST
+  status: approved
+  title: Запрос страницы за последней возвращает пустой результат без ошибки
+  category: pagination
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: boundary
+  priority: P2
+  tags:
+  - boundary
+  - pagination
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Коллекция с известным числом элементов.
+  steps:
+  - action: Запросить offset = total, total+1, очень большой offset.
+  expected:
+  - Пустой список с корректными метаданными или задокументированная ошибка; без 5xx.
+  applicability:
+    when:
+    - Коллекция пагинируется.
+    skip_when:
+    - Нет пагинации.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: PAGE-TOTAL-COUNT
+  status: approved
+  title: Общее число элементов согласовано с суммой страниц
+  category: pagination
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - pagination
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - API возвращает total/count.
+  steps:
+  - action: Пройти все страницы и подсчитать элементы при стабильных данных.
+  expected:
+  - Сумма элементов равна total, нет дублей и пропусков.
+  applicability:
+    when:
+    - Есть total.
+    skip_when:
+    - total не возвращается.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: PAGE-CONCURRENT-MODIFICATION
+  status: approved
+  title: Изменения коллекции во время обхода не приводят к дублям и пропускам сверх контракта
+  category: pagination
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: reliability
+  priority: P2
+  tags:
+  - pagination
+  - concurrency
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Коллекция изменяется во время обхода.
+  steps:
+  - action: Начать обход, вставить и удалить элементы до текущей позиции, продолжить обход.
+  expected:
+  - Для курсорной пагинации нет дублей и пропусков существующих элементов.
+  - Для offset поведение задокументировано.
+  applicability:
+    when:
+    - Пагинация по изменяемой коллекции.
+    skip_when:
+    - Коллекция неизменяема.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: PAGE-SEARCH-SPECIAL-CHARS
+  status: approved
+  title: Поиск со спецсимволами и wildcard не ломается и не расширяет выборку
+  category: pagination
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - filtering
+  - injection
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть полнотекстовый или LIKE-поиск.
+  steps:
+  - action: Искать %, _, *, ?, \, кавычки, пустую строку, строку из пробелов, очень длинный запрос.
+  expected:
+  - Спецсимволы трактуются буквально или по документированному синтаксису.
+  - '% или * не возвращают всю коллекцию в обход ограничений.'
+  - Нет 5xx.
+  applicability:
+    when:
+    - Есть поиск.
+    skip_when:
+    - Поиска нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: PAGE-SORT-NULLS-TIES
+  status: approved
+  title: Сортировка по полю с null и одинаковыми значениями детерминирована
+  category: pagination
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: boundary
+  priority: P3
+  tags:
+  - boundary
+  - sorting
+  - regression
+  - nightly
+  preconditions:
+  - Сортируемое поле может быть null или совпадать.
+  steps:
+  - action: Создать элементы с null и одинаковыми значениями, отсортировать asc и desc, пройти по страницам.
+  expected:
+  - Положение null задокументировано.
+  - Порядок при равных значениях стабилен (вторичный ключ).
+  applicability:
+    when:
+    - Есть сортировка.
+    skip_when:
+    - Сортировки нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium

@@ -1,8 +1,9 @@
 checks:
 - id: REAL-MOBILE-CLIENT-API-GETUNSIGNEDDOCUMENTS-GUEST-VS-AUTHENTICATE
+  status: draft
   title: Guest and authenticated document access follow distinct policies
-  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить
-    перед исполнением.
+  description: Кандидат сгенерирован по реальному OpenAPI-контракту. Политику доступа и тестовые данные подтвердить перед
+    исполнением.
   category: security
   protocols:
   - rest
@@ -29,8 +30,8 @@ checks:
   - action: Отправить GET запрос на /documents/unsigned с заданными credentials/ролью/ресурсом.
     notes: Не использовать production credentials или реальные пользовательские данные.
   expected:
-  - Guest context is bound to installation_id; authenticated context is bound to the user, and one principal cannot
-    read or mutate another principal’s acceptance/history.
+  - Guest context is bound to installation_id; authenticated context is bound to the user, and one principal cannot read or
+    mutate another principal’s acceptance/history.
   - При отказе защищённые данные не раскрываются, а запрещённая мутация не меняет состояние.
   applicability:
     when:

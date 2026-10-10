@@ -1,5 +1,6 @@
 checks:
 - id: REST-CORS-POLICY
+  status: approved
   title: Политика CORS
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: security
@@ -10,6 +11,9 @@ checks:
   tags:
   - security
   - rest
+  - ci
+  - regression
+  - nightly
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -26,6 +30,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

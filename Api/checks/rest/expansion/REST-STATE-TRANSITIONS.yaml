@@ -1,5 +1,6 @@
 checks:
 - id: REST-STATE-TRANSITIONS
+  status: approved
   title: Переходы состояния ресурса
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: resources
@@ -11,6 +12,10 @@ checks:
   - contract
   - negative
   - rest
+  - ci
+  - regression
+  - nightly
+  - release
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -27,8 +32,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: medium
     likelihood: medium

@@ -1,5 +1,6 @@
 checks:
 - id: REST-TYPE-MISMATCH
+  status: approved
   title: Несовпадение типа поля
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: validation
@@ -12,6 +13,10 @@ checks:
   - validation
   - contract
   - rest
+  - ci
+  - regression
+  - nightly
+  - release
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -30,6 +35,8 @@ checks:
   profiles:
   - CI
   - Regression
+  - Nightly
+  - Release
   risk:
     impact: medium
     likelihood: medium

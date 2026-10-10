@@ -1,5 +1,6 @@
 checks:
 - id: SEC-OWNERSHIP-UPDATE
+  status: approved
   title: User cannot modify another owner’s resource
   category: security
   protocols:
@@ -12,10 +13,12 @@ checks:
   - negative
   - security
   - authz
+  - pr
   - ci
   - regression
+  - nightly
   - release
-  preconditions: &id001
+  preconditions:
   - Resource is mutable and owner-restricted; users A and B and resource A exist.
   steps:
   - action: As user B, attempt to update a field on user A’s resource by changing the resource identifier.
@@ -25,15 +28,18 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - Resource is mutable and owner-restricted; users A and B and resource A exist.
     skip_when:
     - Resource is shared with user B with write permission.
   automation:
     level: full
     deterministic: true
   profiles:
+  - PR
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: critical

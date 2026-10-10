@@ -1,40 +1,104 @@
 checks:
-  - id: REST-METHOD-NOT-ALLOWED
-    title: Unsupported HTTP method is rejected
-    category: http-semantics
-    protocols: [rest]
-    kind: negative
-    priority: P2
-    tags: [negative, contract, regression]
-    preconditions: [Endpoint and supported methods are known.]
-    steps: [{action: Send a request using an unsupported method.}]
-    expected: [Documented status is returned, typically 405 when the method is known but disallowed., Allow lists supported methods when required by contract.]
-    applicability: {when: [Endpoint has a restricted method set.], skip_when: [Infrastructure intentionally masks method behavior and contract does not promise 405.]}
-    automation: {level: full, deterministic: true}
-    profiles: [CI, Regression]
-  - id: REST-HEAD-GET-CONSISTENCY
-    title: HEAD response is consistent with GET
-    category: http-semantics
-    protocols: [rest]
-    kind: contract
-    priority: P2
-    tags: [contract, compatibility, regression]
-    preconditions: [Endpoint supports GET and HEAD.]
-    steps: [{action: Execute GET and HEAD for the same resource.}]
-    expected: [Relevant status and headers are consistent., HEAD response has no body.]
-    applicability: {when: [HEAD is documented as supported.], skip_when: [HEAD is unsupported or custom semantics are documented.]}
-    automation: {level: full, deterministic: true}
-    profiles: [CI, Regression]
-  - id: REST-IDEMPOTENCY-RETRY
-    title: Retry does not duplicate an idempotent operation's effect
-    category: idempotency
-    protocols: [rest]
-    kind: reliability
-    priority: P1
-    tags: [positive, idempotency, resilience, regression]
-    preconditions: [Operation is idempotent or supports Idempotency-Key.]
-    steps: [{action: Repeat request using the same idempotency key or equivalent idempotent parameters.}]
-    expected: [Retry does not create duplicate business effects., Response and state match documented retry semantics.]
-    applicability: {when: [Operation promises idempotency or supports deduplication.], skip_when: [Operation is explicitly non-idempotent and has no deduplication mechanism.]}
-    automation: {level: full, deterministic: true}
-    profiles: [CI, Regression, Nightly]
+- id: REST-METHOD-NOT-ALLOWED
+  status: approved
+  title: Unsupported HTTP method is rejected
+  category: http-semantics
+  protocols:
+  - rest
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - contract
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Endpoint and supported methods are known.
+  steps:
+  - action: Send a request using an unsupported method.
+  expected:
+  - Documented status is returned
+  - typically 405 when the method is known but disallowed.
+  - Allow lists supported methods when required by contract.
+  applicability:
+    when:
+    - Endpoint has a restricted method set.
+    skip_when:
+    - Infrastructure intentionally masks method behavior and contract does not promise 405.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+- id: REST-HEAD-GET-CONSISTENCY
+  status: approved
+  title: HEAD response is consistent with GET
+  category: http-semantics
+  protocols:
+  - rest
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - compatibility
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Endpoint supports GET and HEAD.
+  steps:
+  - action: Execute GET and HEAD for the same resource.
+  expected:
+  - Relevant status and headers are consistent.
+  - HEAD response has no body.
+  applicability:
+    when:
+    - HEAD is documented as supported.
+    skip_when:
+    - HEAD is unsupported or custom semantics are documented.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+- id: REST-IDEMPOTENCY-RETRY
+  status: approved
+  title: Retry does not duplicate an idempotent operation's effect
+  category: idempotency
+  protocols:
+  - rest
+  kind: reliability
+  priority: P1
+  tags:
+  - positive
+  - idempotency
+  - resilience
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Operation is idempotent or supports Idempotency-Key.
+  steps:
+  - action: Repeat request using the same idempotency key or equivalent idempotent parameters.
+  expected:
+  - Retry does not create duplicate business effects.
+  - Response and state match documented retry semantics.
+  applicability:
+    when:
+    - Operation promises idempotency or supports deduplication.
+    skip_when:
+    - Operation is explicitly non-idempotent and has no deduplication mechanism.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release

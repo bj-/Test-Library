@@ -1,5 +1,6 @@
 checks:
 - id: SEC-TENANT-HEADER-SPOOF
+  status: approved
   title: Untrusted tenant header cannot override identity context
   category: security
   protocols:
@@ -12,10 +13,12 @@ checks:
   - negative
   - security
   - authz
+  - pr
   - ci
   - regression
+  - nightly
   - release
-  preconditions: &id001
+  preconditions:
   - Tenant context is passed via headers or request metadata.
   steps:
   - action: Authenticate in tenant A and set tenant-identifying headers to tenant B.
@@ -25,15 +28,18 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - Tenant context is passed via headers or request metadata.
     skip_when:
     - No client-supplied tenant context is accepted.
   automation:
     level: full
     deterministic: true
   profiles:
+  - PR
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: critical

@@ -1,5 +1,6 @@
 checks:
 - id: REST-SENSITIVE-DATA
+  status: approved
   title: Отсутствие чувствительных данных в ответах
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: security
@@ -11,6 +12,11 @@ checks:
   - security
   - contract
   - rest
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -27,8 +33,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - PR
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: medium

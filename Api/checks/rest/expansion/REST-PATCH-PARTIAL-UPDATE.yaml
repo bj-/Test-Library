@@ -1,5 +1,6 @@
 checks:
 - id: REST-PATCH-PARTIAL-UPDATE
+  status: approved
   title: Семантика PATCH
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: contract
@@ -11,6 +12,10 @@ checks:
   - contract
   - boundary
   - rest
+  - ci
+  - regression
+  - nightly
+  - release
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -27,7 +32,9 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: medium

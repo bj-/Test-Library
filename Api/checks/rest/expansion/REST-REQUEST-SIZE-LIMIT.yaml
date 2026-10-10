@@ -1,5 +1,6 @@
 checks:
 - id: REST-REQUEST-SIZE-LIMIT
+  status: approved
   title: Лимит размера тела
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: validation
@@ -12,6 +13,10 @@ checks:
   - negative
   - reliability
   - rest
+  - ci
+  - regression
+  - nightly
+  - release
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -28,8 +33,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: medium
     likelihood: medium

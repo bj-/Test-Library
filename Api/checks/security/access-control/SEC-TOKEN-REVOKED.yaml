@@ -1,5 +1,6 @@
 checks:
 - id: SEC-TOKEN-REVOKED
+  status: approved
   title: Revoked token cannot be reused
   category: security
   protocols:
@@ -12,10 +13,12 @@ checks:
   - negative
   - security
   - authn
+  - pr
   - ci
   - regression
+  - nightly
   - release
-  preconditions: &id001
+  preconditions:
   - The system supports token revocation, logout invalidation, or session termination.
   steps:
   - action: Obtain a valid token, revoke it or log out using the supported mechanism, then reuse it.
@@ -25,15 +28,18 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - The system supports token revocation, logout invalidation, or session termination.
     skip_when:
     - Tokens are intentionally non-revocable and the risk is explicitly accepted.
   automation:
     level: full
     deterministic: true
   profiles:
+  - PR
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: critical

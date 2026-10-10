@@ -1,5 +1,6 @@
 checks:
 - id: REST-JSON-DUPLICATE-KEYS
+  status: approved
   title: Дублирующиеся ключи JSON
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: validation
@@ -11,6 +12,9 @@ checks:
   - negative
   - validation
   - rest
+  - ci
+  - regression
+  - nightly
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -27,6 +31,8 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
+  - Regression
   - Nightly
   risk:
     impact: medium

@@ -1,0 +1,83 @@
+checks:
+- id: ERR-STABLE-ERROR-CODES
+  status: approved
+  title: Машиночитаемые коды ошибок стабильны и задокументированы
+  category: errors
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - error-handling
+  - compatibility
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Модель ошибок содержит code/type.
+  steps:
+  - action: Вызвать каждую задокументированную ошибку операции.
+  expected:
+  - Код ошибки совпадает с документацией и не зависит от языка сообщения.
+  applicability:
+    when:
+    - Есть коды ошибок.
+    skip_when:
+    - Модель ошибок без кодов.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: ERR-INTERNAL-ERROR-SHAPE
+  status: approved
+  title: Внутренняя ошибка сервера возвращается в общей модели без утечек
+  category: errors
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - error-handling
+  - security
+  - hardening
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть способ вызвать 5xx в тестовом окружении (fault injection, некорректная зависимость).
+  steps:
+  - action: Спровоцировать необработанное исключение на сервере.
+  expected:
+  - Ответ в модели ошибок с correlation id.
+  - Нет stack trace, SQL, путей файлов, версий библиотек и секретов.
+  applicability:
+    when:
+    - Можно спровоцировать сбой.
+    skip_when:
+    - Сбой не воспроизводим в окружении.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium

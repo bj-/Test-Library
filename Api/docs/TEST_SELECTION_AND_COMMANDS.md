@@ -17,12 +17,13 @@ python tools/validate_library.py .
 Ожидаемый результат для текущего архива:
 
 ```text
-Checks: 152 | Unique IDs: 152 | Profiles: 6
+Checks: 368 | Unique IDs: 368 | Profiles: 6
+Status: approved=320, draft=32, needs_clarification=16
 JSON Schema validation: enabled
-Errors: 0
+Errors: 0 | Warnings: 0
 ```
 
-Скрипт в текущей реализации принимает путь к корню библиотеки позиционным аргументом; `--help` не реализован.
+Скрипт принимает путь к корню библиотеки позиционным аргументом. Профили сопоставляются по `id` без учёта регистра; предупреждение `differs in case` не считается ошибкой.
 
 PowerShell:
 
@@ -41,9 +42,15 @@ python tools/select_checks.py . Nightly
 python tools/select_checks.py . Release
 ```
 
-Скрипт печатает приоритет, ID и заголовок выбранных проверок; количество выводится в stderr строкой `Selected: N`. Имя профиля соответствует файлу в `profiles/` и может указываться с `.yaml` или без расширения.
+Скрипт печатает приоритет, ID и заголовок выбранных проверок; итог выводится в stderr строкой `Selected: N | Excluded: M | Truncated by max_checks: K`. Имя профиля — это `id` профиля, регистр не важен, суффикс `.yaml` допускается.
 
-**Важно:** селектор использует пересечение тегов проверки с `include_tags`, исключает записи с `exclude_tags`, учитывает `max_priority` и при включённом `deterministic_only` исключает недетерминированные проверки. Наличие проверки в библиотеке не гарантирует её попадание в профиль.
+Параметры:
+
+- `--status approved,draft,needs_clarification` — какие статусы включать (по умолчанию только `approved`);
+- `--explain` — дополнительно вывести исключённые проверки с причиной;
+- `--format json` — машиночитаемый результат: выбранные и исключённые проверки с причинами.
+
+**Порядок отбора:** статус → членство в профиле (профиль указан в `check.profiles`; для проверок без этого поля — пересечение тегов с `include_tags`) → `exclude_tags` → `max_priority` → `deterministic_only` → сортировка по приоритету и ID → обрезка до `max_checks`. Наличие проверки в библиотеке не гарантирует её попадание в профиль.
 
 ## 3. Сгенерировать кандидаты по учебному OpenAPI
 
@@ -73,19 +80,21 @@ python tools/generate_real_contract_coverage.py
 
 Скрипт читает контракты из `examples/real-contracts/` и формирует артефакты в `build/real-contract-coverage/`, а также кандидаты в `checks/generated/real-contracts/`. Сначала сохраните текущие результаты, если они нужны для сравнения.
 
-## 5. Исправить имена/ссылки профилей при ошибках валидатора
+## 5. Имена файлов профилей
+
+Регистр имён файлов в `profiles/` на работу инструментов не влияет. Чтобы всё же переименовать файл с изменением регистра так, чтобы git это зафиксировал (Windows, `core.ignorecase=true`), делайте два шага:
 
 ```bash
-python tools/repair_profiles.py
-python tools/validate_library.py .
+git mv profiles/ci.yaml profiles/ci.tmp.yaml
+git mv profiles/ci.tmp.yaml profiles/CI.yaml
 ```
-
-Используйте repair-скрипт только если ошибки действительно связаны с ID/именами профилей; после изменения проверьте diff.
 
 ## 6. Рекомендуемый локальный контроль перед commit
 
 ```bash
+python tools/assign_profiles.py .
 python tools/validate_library.py .
+python tools/build_catalog.py .
 python tools/select_checks.py . Smoke
 python tools/select_checks.py . CI
 python tools/select_checks.py . Regression
@@ -102,6 +111,10 @@ steps:
     run: python -m pip install -r requirements-generator.txt
   - name: Validate library
     run: python tools/validate_library.py .
+  - name: Profiles and catalog are up to date
+    run: |
+      python tools/assign_profiles.py . --check
+      python tools/build_catalog.py . --check
   - name: Select smoke checks
     run: python tools/select_checks.py . Smoke
   - name: Select CI checks

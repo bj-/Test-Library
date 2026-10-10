@@ -1,28 +1,79 @@
 checks:
-  - id: CONTRACT-REQUIRED-FIELDS
-    title: Successful response contains required contract fields
-    category: contract
-    protocols: [rest, grpc, graphql, generic]
-    kind: contract
-    priority: P1
-    tags: [positive, contract, regression, ci]
-    preconditions: [A valid request exists for the operation.]
-    steps: [{action: Execute a valid request and validate the response against the contract.}]
-    expected: [Required fields are present., Field types and constraints match the schema.]
-    applicability: {when: [A response schema is defined.], skip_when: [The operation intentionally has no payload, such as HTTP 204.]}
-    automation: {level: full, deterministic: true}
-    profiles: [PR, CI, Regression]
-    risk: {impact: high, likelihood: high}
-  - id: CONTRACT-UNKNOWN-FIELD-POLICY
-    title: Unknown fields follow the documented contract policy
-    category: contract
-    protocols: [rest, graphql, generic]
-    kind: compatibility
-    priority: P2
-    tags: [contract, compatibility, regression]
-    preconditions: [Unknown-field policy is documented.]
-    steps: [{action: Add an unknown request field or inspect an extended response as applicable.}]
-    expected: [Unknown fields are rejected, ignored, or preserved exactly as documented.]
-    applicability: {when: [The contract defines unknown-field handling.], skip_when: [The format does not allow extensible fields.]}
-    automation: {level: full, deterministic: true}
-    profiles: [CI, Regression]
+- id: CONTRACT-REQUIRED-FIELDS
+  status: approved
+  title: Successful response contains required contract fields
+  category: contract
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - generic
+  kind: contract
+  priority: P1
+  tags:
+  - positive
+  - contract
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - A valid request exists for the operation.
+  steps:
+  - action: Execute a valid request and validate the response against the contract.
+  expected:
+  - Required fields are present.
+  - Field types and constraints match the schema.
+  applicability:
+    when:
+    - A response schema is defined.
+    skip_when:
+    - The operation intentionally has no payload
+    - such as HTTP 204.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: high
+- id: CONTRACT-UNKNOWN-FIELD-POLICY
+  status: approved
+  title: Unknown fields follow the documented contract policy
+  category: contract
+  protocols:
+  - rest
+  - graphql
+  - generic
+  kind: compatibility
+  priority: P2
+  tags:
+  - contract
+  - compatibility
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Unknown-field policy is documented.
+  steps:
+  - action: Add an unknown request field or inspect an extended response as applicable.
+  expected:
+  - Unknown fields are rejected
+  - ignored
+  - or preserved exactly as documented.
+  applicability:
+    when:
+    - The contract defines unknown-field handling.
+    skip_when:
+    - The format does not allow extensible fields.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly

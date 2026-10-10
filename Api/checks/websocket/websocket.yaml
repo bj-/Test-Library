@@ -1,0 +1,261 @@
+checks:
+- id: WS-HANDSHAKE-AUTH
+  status: approved
+  title: Установление соединения требует аутентификации
+  category: websocket
+  protocols:
+  - websocket
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - negative
+  - authn
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - WebSocket API.
+  steps:
+  - action: Подключиться без токена, с невалидным и истёкшим токеном.
+  expected:
+  - Handshake отклоняется или соединение закрывается до передачи данных.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Публичный канал (зафиксировать).
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: WS-ORIGIN-CHECK
+  status: approved
+  title: Проверка Origin защищает от cross-site WebSocket hijacking
+  category: websocket
+  protocols:
+  - websocket
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - session
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Cookie-аутентификация.
+  steps:
+  - action: Подключиться с чужим Origin, используя cookie жертвы.
+  expected:
+  - Соединение отклоняется.
+  applicability:
+    when:
+    - Cookie-аутентификация.
+    skip_when:
+    - Токен в первом сообщении.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: WS-SUBSCRIPTION-AUTHZ
+  status: approved
+  title: Подписки и сообщения авторизуются по каждому каналу
+  category: websocket
+  protocols:
+  - websocket
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - negative
+  - authz
+  - ownership
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Каналы на уровне пользователей и тенантов.
+  steps:
+  - action: Подписаться на канал другого пользователя или тенанта; отправить сообщение в чужой канал.
+  expected:
+  - Подписка и отправка отклоняются.
+  applicability:
+    when:
+    - Есть каналы.
+    skip_when:
+    - Один общий канал.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: WS-TOKEN-EXPIRY
+  status: approved
+  title: Истечение или отзыв токена учитывается в открытом соединении
+  category: websocket
+  protocols:
+  - websocket
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - token-lifecycle
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Долгие соединения.
+  steps:
+  - action: Держать соединение дольше срока жизни токена; отозвать токен.
+  expected:
+  - Соединение закрывается или требует обновления токена.
+  applicability:
+    when:
+    - Есть долгие соединения.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: WS-MESSAGE-LIMITS
+  status: approved
+  title: Размер и частота сообщений ограничены
+  category: websocket
+  protocols:
+  - websocket
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - rate-limiting
+  - hardening
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Нет.
+  steps:
+  - action: Отправить сообщение 10MB и 1000 сообщений в секунду.
+  expected:
+  - Соединение закрывается с кодом 1009/1008 или сообщения отклоняются.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: WS-MALFORMED-MESSAGE
+  status: approved
+  title: Некорректные сообщения не рвут соединение без ответа
+  category: websocket
+  protocols:
+  - websocket
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - validation
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Нет.
+  steps:
+  - action: Отправить невалидный JSON, неизвестный тип, бинарный кадр вместо текстового.
+  expected:
+  - Ответ-ошибка по протоколу или закрытие с кодом; сервер стабилен.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: WS-RECONNECT-RESUME
+  status: approved
+  title: Переподключение восстанавливает подписки без потери и дублей сверх контракта
+  category: websocket
+  protocols:
+  - websocket
+  kind: reliability
+  priority: P3
+  tags:
+  - streaming
+  - resilience
+  - regression
+  - nightly
+  preconditions:
+  - Протокол поддерживает resume.
+  steps:
+  - action: Разорвать соединение и переподключиться с last event id.
+  expected:
+  - Пропущенные события доставлены, дубли распознаваемы.
+  applicability:
+    when:
+    - Есть resume.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium

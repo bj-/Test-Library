@@ -1,0 +1,436 @@
+checks:
+- id: BIZ-WORKFLOW-STEP-SKIP
+  status: approved
+  title: Нельзя пропустить обязательный шаг бизнес-процесса
+  category: business-logic
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P0
+  tags:
+  - negative
+  - business-logic
+  - security
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Многошаговый процесс (оформление, подтверждение, оплата).
+  steps:
+  - action: Вызвать финальный шаг без промежуточных, в обратном порядке, повторно после завершения.
+  expected:
+  - Запросы отклоняются; состояние не переходит в недопустимое.
+  applicability:
+    when:
+    - Есть многошаговые процессы.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: BIZ-NEGATIVE-QUANTITY
+  status: approved
+  title: Отрицательные и нулевые количества и суммы не дают выгоды
+  category: business-logic
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P0
+  tags:
+  - negative
+  - business-logic
+  - money
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть количества, суммы, баллы.
+  steps:
+  - action: Передать отрицательное количество, отрицательную сумму перевода, 0, дробное количество штучного товара.
+  expected:
+  - Недопустимые значения отклоняются; баланс не увеличивается.
+  applicability:
+    when:
+    - Есть количества или суммы.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: BIZ-CLIENT-PRICE-TAMPERING
+  status: approved
+  title: Цена, скидка и итог рассчитываются на сервере
+  category: business-logic
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P0
+  tags:
+  - negative
+  - business-logic
+  - money
+  - security
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Клиент передаёт позиции заказа.
+  steps:
+  - action: Передать в запросе изменённые цену, скидку, итог, валюту, налог.
+  expected:
+  - Сервер игнорирует или отклоняет клиентские значения и считает сам.
+  applicability:
+    when:
+    - Есть расчёт стоимости.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: BIZ-ROUNDING
+  status: approved
+  title: Округление денежных величин корректно и не накапливает ошибку
+  category: business-logic
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: boundary
+  priority: P1
+  tags:
+  - boundary
+  - business-logic
+  - money
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть расчёты с долями (проценты, разбиение, конвертация).
+  steps:
+  - action: Выполнить операции, дающие доли копейки; разбить сумму на 3 части; повторить много раз.
+  expected:
+  - Округление по задокументированному правилу; сумма частей равна целому; нет дрейфа.
+  applicability:
+    when:
+    - Есть денежные расчёты.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: BIZ-LIMITS-QUOTAS
+  status: approved
+  title: Лимиты и квоты соблюдаются на границе и не обходятся параллельно
+  category: business-logic
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: boundary
+  priority: P1
+  tags:
+  - boundary
+  - business-logic
+  - concurrency
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть дневные лимиты, квоты, тарифные ограничения.
+  steps:
+  - action: Израсходовать лимит до границы, превысить на 1, выполнить параллельные запросы на остаток.
+  expected:
+  - Граница соблюдается точно, параллельные запросы не превышают лимит.
+  applicability:
+    when:
+    - Есть лимиты.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: BIZ-DOUBLE-SPEND
+  status: approved
+  title: Параллельные списания не приводят к двойной трате
+  category: business-logic
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P0
+  tags:
+  - negative
+  - business-logic
+  - money
+  - concurrency
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Есть баланс, бонусы, остатки.
+  steps:
+  - action: Отправить N параллельных запросов на списание всего баланса.
+  expected:
+  - Успешно не более одного; баланс не уходит в минус.
+  applicability:
+    when:
+    - Есть списания.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: critical
+    likelihood: medium
+- id: BIZ-ONE-TIME-BENEFIT-REUSE
+  status: approved
+  title: Одноразовые промокоды, бонусы и приглашения нельзя использовать повторно
+  category: business-logic
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - business-logic
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть одноразовые преимущества.
+  steps:
+  - action: Применить код повторно, другим пользователем, параллельно, после отмены заказа.
+  expected:
+  - Повторное применение отклоняется по политике.
+  applicability:
+    when:
+    - Есть промокоды.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: BIZ-TIME-WINDOW
+  status: approved
+  title: Операции вне разрешённого временного окна отклоняются
+  category: business-logic
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: boundary
+  priority: P2
+  tags:
+  - boundary
+  - business-logic
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть сроки действия (предложения, бронь, дедлайны).
+  steps:
+  - action: Выполнить операцию до начала, на границе и после окончания окна, в разных часовых поясах.
+  expected:
+  - Граница соблюдается по задокументированной зоне.
+  applicability:
+    when:
+    - Есть временные окна.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: BIZ-CURRENCY-MISMATCH
+  status: approved
+  title: Смешение валют в операции обрабатывается явно
+  category: business-logic
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - business-logic
+  - money
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Мультивалютность.
+  steps:
+  - action: Оплатить в одной валюте заказ в другой; перевести между счетами в разных валютах.
+  expected:
+  - Конвертация по задокументированному курсу или отказ.
+  applicability:
+    when:
+    - Несколько валют.
+    skip_when:
+    - Одна валюта.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: BIZ-HIERARCHY-CYCLES
+  status: approved
+  title: Ссылка на себя и циклы в иерархии запрещены
+  category: business-logic
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - business-logic
+  - data-integrity
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть иерархии (родитель, менеджер, категория).
+  steps:
+  - action: Сделать объект родителем самого себя; создать цикл A→B→A.
+  expected:
+  - Операция отклоняется; чтение иерархии не зацикливается.
+  applicability:
+    when:
+    - Есть иерархии.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: BIZ-SIDE-EFFECTS-ONCE
+  status: approved
+  title: Побочные эффекты (письма, push, события) выполняются ровно один раз
+  category: business-logic
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: reliability
+  priority: P2
+  tags:
+  - business-logic
+  - idempotency
+  - async-jobs
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Операция вызывает уведомления или события.
+  steps:
+  - action: Выполнить операцию, повтор с idempotency key, неуспешную операцию.
+  expected:
+  - Эффект один раз при успехе и ни разу при отказе.
+  applicability:
+    when:
+    - Есть побочные эффекты.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium

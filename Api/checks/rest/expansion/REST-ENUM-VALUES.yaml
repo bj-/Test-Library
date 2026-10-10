@@ -1,5 +1,6 @@
 checks:
 - id: REST-ENUM-VALUES
+  status: approved
   title: Допустимые и неизвестные enum
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: validation
@@ -12,6 +13,10 @@ checks:
   - negative
   - boundary
   - rest
+  - ci
+  - regression
+  - nightly
+  - release
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -30,6 +35,8 @@ checks:
   profiles:
   - CI
   - Regression
+  - Nightly
+  - Release
   risk:
     impact: medium
     likelihood: medium

@@ -1,5 +1,6 @@
 checks:
 - id: REST-ERROR-SCHEMA
+  status: approved
   title: Стабильная схема ошибок
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: contract
@@ -11,6 +12,10 @@ checks:
   - contract
   - negative
   - rest
+  - ci
+  - regression
+  - nightly
+  - release
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -29,6 +34,7 @@ checks:
   profiles:
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: medium

@@ -1,5 +1,6 @@
 checks:
 - id: SEC-AUTHZ-REVOKE-ROLE
+  status: approved
   title: Role revocation takes effect within policy window
   category: security
   protocols:
@@ -12,10 +13,11 @@ checks:
   - negative
   - security
   - authz
+  - ci
   - regression
-  - release
   - nightly
-  preconditions: &id001
+  - release
+  preconditions:
   - Roles can be revoked while a session or token remains active.
   steps:
   - action: Authenticate with a privileged role, revoke that role, then retry privileged operations with existing sessions/tokens.
@@ -25,13 +27,15 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - Roles can be revoked while a session or token remains active.
     skip_when:
     - Roles are immutable for the lifetime of the identity.
   automation:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   - Release

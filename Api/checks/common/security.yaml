@@ -1,29 +1,90 @@
 checks:
-  - id: SECURITY-AUTH-REQUIRED
-    title: Protected operation rejects unauthenticated requests
-    category: security
-    protocols: [rest, grpc, graphql, generic]
-    kind: negative
-    priority: P0
-    tags: [negative, security, authn, regression, ci]
-    preconditions: [The operation requires authentication.]
-    steps: [{action: Call the operation without credentials.}]
-    expected: [Request is rejected according to the authentication policy., No protected data or internal details are disclosed.]
-    applicability: {when: [Operation is declared protected.], skip_when: [Operation is public or anonymous access is documented.]}
-    automation: {level: full, deterministic: true}
-    profiles: [PR, CI, Regression, Release]
-    risk: {impact: critical, likelihood: high}
-  - id: SECURITY-AUTHZ-CROSS-USER
-    title: User cannot access another user's resource
-    category: security
-    protocols: [rest, graphql, generic]
-    kind: negative
-    priority: P0
-    tags: [negative, security, authz, regression, release]
-    preconditions: [Two users with distinct access and a resource owned by user A exist.]
-    steps: [{action: Authenticate as user B and request user A's resource.}]
-    expected: [Access is denied or resource is hidden according to policy., No owner data leaks in response or side effects.]
-    applicability: {when: [Resource has an owner, tenant, or access restriction.], skip_when: [Resource is intentionally public.]}
-    automation: {level: full, deterministic: true}
-    profiles: [CI, Regression, Release]
-    risk: {impact: critical, likelihood: medium}
+- id: SECURITY-AUTH-REQUIRED
+  status: approved
+  title: Protected operation rejects unauthenticated requests
+  category: security
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - generic
+  kind: negative
+  priority: P0
+  tags:
+  - negative
+  - security
+  - authn
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - The operation requires authentication.
+  steps:
+  - action: Call the operation without credentials.
+  expected:
+  - Request is rejected according to the authentication policy.
+  - No protected data or internal details are disclosed.
+  applicability:
+    when:
+    - Operation is declared protected.
+    skip_when:
+    - Operation is public or anonymous access is documented.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: high
+- id: SECURITY-AUTHZ-CROSS-USER
+  status: approved
+  title: User cannot access another user's resource
+  category: security
+  protocols:
+  - rest
+  - graphql
+  - generic
+  kind: negative
+  priority: P0
+  tags:
+  - negative
+  - security
+  - authz
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Two users with distinct access and a resource owned by user A exist.
+  steps:
+  - action: Authenticate as user B and request user A's resource.
+  expected:
+  - Access is denied or resource is hidden according to policy.
+  - No owner data leaks in response or side effects.
+  applicability:
+    when:
+    - Resource has an owner
+    - tenant
+    - or access restriction.
+    skip_when:
+    - Resource is intentionally public.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium

@@ -1,0 +1,309 @@
+checks:
+- id: ASYNC-WEBHOOK-SIGNATURE
+  status: approved
+  title: Вебхуки подписаны, подпись проверяется, повтор отклоняется
+  category: async
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - webhooks
+  - authn
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - API отправляет или принимает вебхуки.
+  steps:
+  - action: Проверить подпись исходящего вебхука; отправить входящий вебхук без подписи, с неверной подписью, со старым timestamp,
+      повторно.
+  expected:
+  - Без валидной подписи и в пределах окна времени вебхук отклоняется; повтор распознаётся.
+  applicability:
+    when:
+    - Есть вебхуки.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: ASYNC-WEBHOOK-URL-SSRF
+  status: approved
+  title: URL вебхука не может указывать на внутренние адреса
+  category: async
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - webhooks
+  - injection
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Пользователь задаёт URL вебхука.
+  steps:
+  - action: Зарегистрировать URL на localhost, 169.254.169.254, внутренние имена, редирект на внутренний адрес.
+  expected:
+  - Регистрация или доставка блокируются.
+  applicability:
+    when:
+    - Пользовательские вебхуки.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: ASYNC-WEBHOOK-RETRY
+  status: approved
+  title: Неуспешная доставка вебхука повторяется с backoff и ограничением
+  category: async
+  protocols:
+  - rest
+  - graphql
+  kind: reliability
+  priority: P2
+  tags:
+  - webhooks
+  - resilience
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Исходящие вебхуки.
+  steps:
+  - action: Вернуть 500 и тайм-аут от получателя.
+  expected:
+  - Повторы по задокументированному расписанию; после лимита событие помечается неуспешным.
+  applicability:
+    when:
+    - Есть вебхуки.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: ASYNC-IDEMPOTENT-CONSUMER
+  status: approved
+  title: Повторная доставка события обрабатывается однократно
+  category: async
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: reliability
+  priority: P1
+  tags:
+  - webhooks
+  - idempotency
+  - data-integrity
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Сервис потребляет события или вебхуки.
+  steps:
+  - action: Доставить одно событие дважды и с задержкой.
+  expected:
+  - Эффект применяется один раз.
+  applicability:
+    when:
+    - Есть потребление событий.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: ASYNC-EVENT-ORDERING
+  status: approved
+  title: Нарушение порядка событий не портит состояние
+  category: async
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: reliability
+  priority: P2
+  tags:
+  - webhooks
+  - data-integrity
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - События могут приходить не по порядку.
+  steps:
+  - action: Доставить updated раньше created, старую версию после новой.
+  expected:
+  - Состояние итоговое корректно (версии, sequence).
+  applicability:
+    when:
+    - Есть события.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: ASYNC-JOB-LIFECYCLE
+  status: approved
+  title: Фоновая задача проходит статусы и отдаёт результат
+  category: async
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: positive
+  priority: P2
+  tags:
+  - positive
+  - async-jobs
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть асинхронные задачи.
+  steps:
+  - action: Создать задачу, опрашивать статус до завершения, получить результат; задачу с ошибкой.
+  expected:
+  - Статусы соответствуют контракту; ошибка содержит причину; результат доступен в течение срока хранения.
+  applicability:
+    when:
+    - Есть задачи.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: ASYNC-JOB-CANCEL
+  status: approved
+  title: Отмена фоновой задачи останавливает её и не оставляет частичных эффектов
+  category: async
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: negative
+  priority: P3
+  tags:
+  - negative
+  - async-jobs
+  - data-integrity
+  - regression
+  - nightly
+  preconditions:
+  - Задачи можно отменять.
+  steps:
+  - action: Отменить задачу в очереди, во время выполнения, после завершения.
+  expected:
+  - Поведение по контракту; частичные эффекты откатываются или документируются.
+  applicability:
+    when:
+    - Есть отмена.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: ASYNC-DEAD-LETTER
+  status: approved
+  title: Необрабатываемые сообщения уходят в DLQ без блокировки очереди
+  category: async
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: reliability
+  priority: P3
+  tags:
+  - async-jobs
+  - resilience
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - Используется очередь.
+  steps:
+  - action: Отправить poison message.
+  expected:
+  - Сообщение после лимита попыток в DLQ; остальные обрабатываются.
+  applicability:
+    when:
+    - Есть очереди.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium

@@ -1,0 +1,329 @@
+checks:
+- id: GRPC-MAX-MESSAGE-SIZE
+  status: approved
+  title: Сообщения больше лимита отклоняются RESOURCE_EXHAUSTED
+  category: grpc-contract
+  protocols:
+  - grpc
+  kind: boundary
+  priority: P1
+  tags:
+  - boundary
+  - hardening
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Известен лимит размера сообщения.
+  steps:
+  - action: Отправить сообщение max-1, max, max+1 байт; запросить ответ, превышающий лимит клиента.
+  expected:
+  - За лимитом RESOURCE_EXHAUSTED без падения сервера.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: GRPC-UNKNOWN-FIELDS
+  status: approved
+  title: Неизвестные поля сообщения обрабатываются по политике совместимости
+  category: grpc-contract
+  protocols:
+  - grpc
+  kind: compatibility
+  priority: P2
+  tags:
+  - compatibility
+  - contract
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть клиенты разных версий.
+  steps:
+  - action: Отправить сообщение с полем, отсутствующим в схеме сервера.
+  expected:
+  - Поле игнорируется без ошибки (proto3) и не попадает в хранилище неявно.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: GRPC-FIELD-PRESENCE
+  status: approved
+  title: Значение по умолчанию отличается от неустановленного поля, где это важно
+  category: grpc-contract
+  protocols:
+  - grpc
+  kind: boundary
+  priority: P1
+  tags:
+  - boundary
+  - contract
+  - validation
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Поля, где 0, пустая строка или false значимы (optional, wrappers, FieldMask).
+  steps:
+  - action: Отправить update с полем = 0/""/false и без поля; использовать FieldMask.
+  expected:
+  - Сервер различает «установить в 0» и «не менять» по контракту.
+  applicability:
+    when:
+    - Есть частичные обновления.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: GRPC-ENUM-UNKNOWN-VALUE
+  status: approved
+  title: Неизвестное и нулевое значение enum обрабатывается явно
+  category: grpc-contract
+  protocols:
+  - grpc
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - validation
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть enum.
+  steps:
+  - action: Отправить числовое значение вне enum и значение 0 (UNSPECIFIED).
+  expected:
+  - INVALID_ARGUMENT или задокументированное поведение; UNSPECIFIED не трактуется как валидный выбор.
+  applicability:
+    when:
+    - Есть enum.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: GRPC-ONEOF
+  status: approved
+  title: Поля oneof валидируются и не установлены одновременно
+  category: grpc-contract
+  protocols:
+  - grpc
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - validation
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть oneof.
+  steps:
+  - action: Не установить ни одно поле oneof; установить через wire два поля.
+  expected:
+  - Отсутствие обязательного варианта отклоняется; последнее поле побеждает согласно proto без неоднозначности в логике.
+  applicability:
+    when:
+    - Есть oneof.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: GRPC-REPEATED-BOUNDARIES
+  status: approved
+  title: 'Repeated и map поля: пусто, много элементов, дубликаты ключей'
+  category: grpc-contract
+  protocols:
+  - grpc
+  kind: boundary
+  priority: P2
+  tags:
+  - boundary
+  - validation
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть repeated/map.
+  steps:
+  - action: Отправить пустой список, 10^5 элементов, дубликаты в map на wire.
+  expected:
+  - Поведение по контракту без 5xx/INTERNAL.
+  applicability:
+    when:
+    - Есть repeated.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: GRPC-WELL-KNOWN-TYPES
+  status: approved
+  title: Timestamp, Duration и другие well-known types валидируются по диапазонам
+  category: grpc-contract
+  protocols:
+  - grpc
+  kind: boundary
+  priority: P2
+  tags:
+  - boundary
+  - validation
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Используются google.protobuf.Timestamp/Duration.
+  steps:
+  - action: Отправить nanos вне 0..999999999, секунды вне диапазона, отрицательную Duration.
+  expected:
+  - Невалидные значения отклоняются INVALID_ARGUMENT.
+  applicability:
+    when:
+    - Есть WKT.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: GRPC-PROTO-BREAKING
+  status: approved
+  title: Изменения proto не ломают совместимость wire и JSON
+  category: grpc-contract
+  protocols:
+  - grpc
+  kind: compatibility
+  priority: P0
+  tags:
+  - compatibility
+  - contract
+  - versioning
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Proto-файлы в репозитории.
+  steps:
+  - action: Запустить buf breaking против последнего релиза; проверить reserved для удалённых номеров и имён.
+  expected:
+  - Нет переиспользования номеров полей, смены типов и переименований без новой версии пакета.
+  applicability:
+    when:
+    - Есть proto.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+  references:
+  - https://buf.build/docs/breaking
+- id: GRPC-JSON-TRANSCODING
+  status: approved
+  title: HTTP/JSON транскодирование соответствует proto-аннотациям
+  category: grpc-contract
+  protocols:
+  - grpc
+  - rest
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - compatibility
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Используется grpc-gateway или Envoy transcoding.
+  steps:
+  - action: 'Вызвать REST-эквиваленты: int64 как строка, имена полей lowerCamelCase, enum строкой, ошибки в HTTP-статусы.'
+  expected:
+  - Отображение соответствует google.api.http и стандартному маппингу статусов.
+  applicability:
+    when:
+    - Есть транскодирование.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium

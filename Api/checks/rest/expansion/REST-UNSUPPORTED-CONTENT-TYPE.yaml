@@ -1,5 +1,6 @@
 checks:
 - id: REST-UNSUPPORTED-CONTENT-TYPE
+  status: approved
   title: Неподдерживаемый Content-Type запроса
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: validation
@@ -11,6 +12,10 @@ checks:
   - negative
   - validation
   - rest
+  - ci
+  - regression
+  - nightly
+  - release
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -29,6 +34,7 @@ checks:
   profiles:
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: medium

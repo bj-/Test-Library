@@ -1,0 +1,371 @@
+checks:
+- id: GQL-INTROSPECTION
+  status: approved
+  title: Introspection отключён или ограничен в продуктиве
+  category: graphql
+  protocols:
+  - graphql
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - hardening
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - GraphQL API.
+  steps:
+  - action: Выполнить запрос __schema без аутентификации и с ролью пользователя.
+  expected:
+  - Introspection недоступен публично по политике.
+  applicability:
+    when:
+    - Всегда для GraphQL.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: GQL-DEPTH-LIMIT
+  status: approved
+  title: Глубина запроса ограничена
+  category: graphql
+  protocols:
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - security
+  - rate-limiting
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть циклические связи типов.
+  steps:
+  - action: Отправить запрос с вложенностью 20, 50, 100 уровней.
+  expected:
+  - Запрос отклоняется до выполнения с понятной ошибкой.
+  applicability:
+    when:
+    - Всегда для GraphQL.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: GQL-COMPLEXITY-LIMIT
+  status: approved
+  title: Стоимость запроса ограничена (поля, списки, first/last)
+  category: graphql
+  protocols:
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - security
+  - rate-limiting
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Нет.
+  steps:
+  - action: 'Запросить большие списки с вложенными списками и first: 10000.'
+  expected:
+  - Превышение стоимости отклоняется до выполнения.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: GQL-ALIAS-BATCH-ABUSE
+  status: approved
+  title: Алиасы и batch-запросы не обходят rate limit
+  category: graphql
+  protocols:
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - security
+  - rate-limiting
+  - authn
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть чувствительные мутации (логин, OTP).
+  steps:
+  - action: Отправить 1000 алиасов login в одном запросе; массив запросов в одном HTTP.
+  expected:
+  - Лимиты применяются к операциям, а не к HTTP-запросам; перебор невозможен.
+  applicability:
+    when:
+    - Есть такие мутации.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: GQL-FIELD-LEVEL-AUTHZ
+  status: approved
+  title: Авторизация применяется на уровне полей и вложенных резолверов
+  category: graphql
+  protocols:
+  - graphql
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - negative
+  - authz
+  - pr
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть поля с ограниченным доступом.
+  steps:
+  - action: Запросить защищённые поля напрямую, через вложенные связи, через fragments и union.
+  expected:
+  - Защищённые поля недоступны по всем путям.
+  applicability:
+    when:
+    - Есть ограниченные поля.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - PR
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: critical
+    likelihood: medium
+- id: GQL-ERRORS-NO-LEAK
+  status: approved
+  title: Ошибки GraphQL не раскрывают внутренние детали
+  category: graphql
+  protocols:
+  - graphql
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - error-handling
+  - security
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Нет.
+  steps:
+  - action: Вызвать ошибки резолвера, синтаксиса, валидации.
+  expected:
+  - errors не содержат stack trace, SQL, путей; extensions.code стабильный.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: GQL-FIELD-SUGGESTIONS
+  status: approved
+  title: Подсказки «Did you mean» не раскрывают схему при закрытом introspection
+  category: graphql
+  protocols:
+  - graphql
+  kind: security
+  priority: P3
+  tags:
+  - security
+  - hardening
+  - enumeration
+  - regression
+  - nightly
+  preconditions:
+  - Introspection закрыт.
+  steps:
+  - action: Запросить поля с опечатками.
+  expected:
+  - Подсказки отключены.
+  applicability:
+    when:
+    - Introspection закрыт.
+    skip_when:
+    - Introspection открыт намеренно.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: GQL-CSRF-GET-MUTATION
+  status: approved
+  title: Мутации не выполняются через GET и простые Content-Type
+  category: graphql
+  protocols:
+  - graphql
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - session
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Cookie-аутентификация.
+  steps:
+  - action: Отправить мутацию через GET и через POST с text/plain/form-urlencoded.
+  expected:
+  - Мутации отклоняются.
+  applicability:
+    when:
+    - Cookie-аутентификация.
+    skip_when:
+    - Только Bearer.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: GQL-INPUT-VALIDATION
+  status: approved
+  title: Входные типы и переменные валидируются
+  category: graphql
+  protocols:
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - validation
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Нет.
+  steps:
+  - action: Передать переменные неверного типа, null в non-null, неизвестные поля input.
+  expected:
+  - Ошибки валидации до выполнения резолверов.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: GQL-PARTIAL-DATA
+  status: approved
+  title: Частичные результаты с ошибками соответствуют спецификации nullability
+  category: graphql
+  protocols:
+  - graphql
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - error-handling
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Резолверы могут падать независимо.
+  steps:
+  - action: Сломать один резолвер в запросе с несколькими полями.
+  expected:
+  - data содержит остальные поля, null распространяется по правилам non-null, errors.path корректен.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium

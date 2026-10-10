@@ -1,5 +1,6 @@
 checks:
 - id: SEC-TOKEN-AUDIENCE
+  status: approved
   title: Token for another audience is rejected
   category: security
   protocols:
@@ -14,8 +15,9 @@ checks:
   - authn
   - ci
   - regression
+  - nightly
   - release
-  preconditions: &id001
+  preconditions:
   - Token validation uses issuer/audience claims.
   steps:
   - action: Present a correctly signed token issued for a different service or audience.
@@ -25,7 +27,8 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - Token validation uses issuer/audience claims.
     skip_when:
     - Credential scheme has no audience concept.
   automation:
@@ -34,6 +37,7 @@ checks:
   profiles:
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: high

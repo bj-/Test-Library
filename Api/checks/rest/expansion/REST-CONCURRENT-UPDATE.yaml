@@ -1,5 +1,6 @@
 checks:
 - id: REST-CONCURRENT-UPDATE
+  status: approved
   title: Конкурентное обновление
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: resilience
@@ -12,6 +13,10 @@ checks:
   - resilience
   - contract
   - rest
+  - ci
+  - regression
+  - nightly
+  - release
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -28,6 +33,8 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
+  - Regression
   - Nightly
   - Release
   risk:

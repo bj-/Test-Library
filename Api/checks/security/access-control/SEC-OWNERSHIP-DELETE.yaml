@@ -1,5 +1,6 @@
 checks:
 - id: SEC-OWNERSHIP-DELETE
+  status: approved
   title: User cannot delete another owner’s resource
   category: security
   protocols:
@@ -12,10 +13,12 @@ checks:
   - negative
   - security
   - authz
+  - pr
   - ci
   - regression
+  - nightly
   - release
-  preconditions: &id001
+  preconditions:
   - Resource supports deletion and is owner-restricted.
   steps:
   - action: As user B, attempt to delete user A’s resource.
@@ -25,15 +28,18 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - Resource supports deletion and is owner-restricted.
     skip_when:
     - Resource is shared with user B with delete permission.
   automation:
     level: full
     deterministic: true
   profiles:
+  - PR
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: critical

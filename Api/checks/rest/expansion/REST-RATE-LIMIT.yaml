@@ -1,5 +1,6 @@
 checks:
 - id: REST-RATE-LIMIT
+  status: approved
   title: Ограничение частоты запросов
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: security
@@ -12,13 +13,16 @@ checks:
   - resilience
   - negative
   - rest
+  - ci
+  - regression
+  - nightly
+  - release
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
   expected:
-  - лимит и заголовки соответствуют политике, доступ восстанавливается по окончании
-    окна
+  - лимит и заголовки соответствуют политике, доступ восстанавливается по окончании окна
   applicability:
     when:
     - настроен rate limit
@@ -29,6 +33,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   - Release

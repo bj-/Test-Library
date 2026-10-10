@@ -5,6 +5,7 @@
   "required": [
     "id",
     "title",
+    "status",
     "category",
     "protocols",
     "kind",
@@ -27,6 +28,14 @@
     },
     "description": {
       "type": "string"
+    },
+    "status": {
+      "description": "Review state: approved - ready for selection; draft - generated or unreviewed candidate; needs_clarification - expected behavior is blocked on an owner decision.",
+      "enum": [
+        "approved",
+        "draft",
+        "needs_clarification"
+      ]
     },
     "category": {
       "type": "string"

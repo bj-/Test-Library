@@ -1,5 +1,6 @@
 checks:
 - id: SEC-TENANT-READ
+  status: approved
   title: Tenant A cannot read tenant B data
   category: security
   protocols:
@@ -12,11 +13,13 @@ checks:
   - negative
   - security
   - authz
+  - smoke
+  - pr
   - ci
   - regression
+  - nightly
   - release
-  - smoke
-  preconditions: &id001
+  preconditions:
   - Multi-tenant data model with tenant-scoped resources; tenants A and B exist.
   steps:
   - action: Authenticate in tenant A and request a known tenant B resource identifier.
@@ -26,7 +29,8 @@ checks:
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
     contract specifies it.
   applicability:
-    when: *id001
+    when:
+    - Multi-tenant data model with tenant-scoped resources; tenants A and B exist.
     skip_when:
     - API is single-tenant or resource is explicitly shared across tenants.
   automation:
@@ -34,8 +38,10 @@ checks:
     deterministic: true
   profiles:
   - Smoke
+  - PR
   - CI
   - Regression
+  - Nightly
   - Release
   risk:
     impact: critical

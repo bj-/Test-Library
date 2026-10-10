@@ -1,0 +1,383 @@
+checks:
+- id: HTTP-UNKNOWN-ROUTE
+  status: approved
+  title: Неизвестный маршрут возвращает 404, а не 5xx или 200
+  category: http-semantics
+  protocols:
+  - rest
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - contract
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Базовый URL API известен.
+  steps:
+  - action: Запросить несуществующий путь и опечатку в существующем пути.
+  expected:
+  - Ответ 404 в формате модели ошибок.
+  - Не возвращается HTML-страница по умолчанию и не раскрывается фреймворк.
+  applicability:
+    when:
+    - Всегда для REST API.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: HTTP-OPTIONS-ALLOW
+  status: approved
+  title: OPTIONS возвращает согласованный список методов
+  category: http-semantics
+  protocols:
+  - rest
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - compatibility
+  - regression
+  - nightly
+  preconditions:
+  - Эндпоинт поддерживает несколько методов.
+  steps:
+  - action: Отправить OPTIONS без Origin.
+  expected:
+  - Allow соответствует реально поддерживаемым методам.
+  applicability:
+    when:
+    - OPTIONS поддерживается.
+    skip_when:
+    - OPTIONS отключён на шлюзе.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: HTTP-TRAILING-SLASH-CASE
+  status: approved
+  title: Вариации пути (слэш в конце, регистр, двойной слэш) обрабатываются единообразно
+  category: http-semantics
+  protocols:
+  - rest
+  kind: boundary
+  priority: P3
+  tags:
+  - boundary
+  - contract
+  - security
+  - regression
+  - nightly
+  preconditions:
+  - Существующий эндпоинт.
+  steps:
+  - action: Вызвать /items/, /Items, //items, /items;param, /./items.
+  expected:
+  - Поведение задокументировано и одинаково.
+  - Вариации пути не обходят авторизацию или правила шлюза.
+  applicability:
+    when:
+    - Всегда для REST.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: HTTP-COMPRESSION
+  status: approved
+  title: Сжатие ответа согласуется через Accept-Encoding
+  category: http-semantics
+  protocols:
+  - rest
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - contract
+  - performance
+  - regression
+  - nightly
+  preconditions:
+  - Ответы крупнее порога сжатия.
+  steps:
+  - action: 'Запросить с Accept-Encoding: gzip, br и identity.'
+  - action: Отправить сжатое тело запроса с Content-Encoding.
+  expected:
+  - Content-Encoding соответствует запрошенному.
+  - Распакованное тело совпадает с несжатым.
+  - Неподдерживаемое сжатие запроса отклоняется 415.
+  applicability:
+    when:
+    - Сжатие включено.
+    skip_when:
+    - Сжатие не используется.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: HTTP-REQUEST-SMUGGLING
+  status: approved
+  title: Противоречивые Content-Length и Transfer-Encoding не приводят к request smuggling
+  category: http-semantics
+  protocols:
+  - rest
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - negative
+  - hardening
+  - costly
+  - regression
+  - nightly
+  preconditions:
+  - API за прокси/балансировщиком.
+  steps:
+  - action: Отправить запрос с CL и TE одновременно, дублирующим CL, некорректным chunked.
+  - action: Сразу отправить второй запрос в то же соединение.
+  expected:
+  - Противоречивые запросы отклоняются 400.
+  - Второй запрос не получает чужой ответ и не склеивается с первым.
+  applicability:
+    when:
+    - Есть промежуточные прокси.
+    skip_when:
+    - Прямое подключение без прокси.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: HTTP-HEADER-SIZE-LIMIT
+  status: approved
+  title: Слишком большие заголовки отклоняются контролируемо
+  category: http-semantics
+  protocols:
+  - rest
+  kind: boundary
+  priority: P2
+  tags:
+  - boundary
+  - hardening
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Нет.
+  steps:
+  - action: Отправить заголовок 16KB, 64KB, 1000 заголовков, огромный Cookie.
+  expected:
+  - Ответ 431 или 400, без 5xx и разрыва без ответа.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: HTTP-URL-LENGTH-LIMIT
+  status: approved
+  title: Очень длинный URL отклоняется контролируемо
+  category: http-semantics
+  protocols:
+  - rest
+  kind: boundary
+  priority: P3
+  tags:
+  - boundary
+  - hardening
+  - regression
+  - nightly
+  preconditions:
+  - Есть query или path параметры.
+  steps:
+  - action: Отправить URL длиной 8KB, 16KB и 64KB.
+  expected:
+  - Ответ 414 или задокументированная ошибка без 5xx.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: HTTP-ACCEPT-LANGUAGE
+  status: approved
+  title: Язык сообщений определяется Accept-Language с fallback
+  category: http-semantics
+  protocols:
+  - rest
+  - graphql
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - i18n
+  - regression
+  - nightly
+  preconditions:
+  - API локализует сообщения.
+  steps:
+  - action: Запросить с ru, en, неподдерживаемым языком, некорректным значением заголовка.
+  expected:
+  - Используется запрошенный язык или задокументированный fallback.
+  - Коды ошибок не зависят от языка.
+  applicability:
+    when:
+    - API поддерживает локализацию.
+    skip_when:
+    - Локализации нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: HTTP-VARY-HEADER
+  status: approved
+  title: Кэшируемые ответы содержат корректный Vary
+  category: http-semantics
+  protocols:
+  - rest
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - caching
+  - regression
+  - nightly
+  preconditions:
+  - Ответ зависит от Accept, Accept-Language, Authorization или Origin.
+  steps:
+  - action: Запросить ресурс с разными значениями влияющих заголовков.
+  expected:
+  - Vary перечисляет все заголовки, влияющие на ответ.
+  applicability:
+    when:
+    - Ответы кэшируемы.
+    skip_when:
+    - 'Cache-Control: no-store для всех ответов.'
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+- id: HTTP-BODY-WITHOUT-CONTENT-TYPE
+  status: approved
+  title: Тело без Content-Type обрабатывается предсказуемо
+  category: http-semantics
+  protocols:
+  - rest
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - validation
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Эндпоинт принимает тело.
+  steps:
+  - action: Отправить JSON-тело без Content-Type и с text/plain.
+  expected:
+  - Ответ 415 или задокументированное поведение; тело не интерпретируется как другой формат молча.
+  applicability:
+    when:
+    - Есть тело запроса.
+    skip_when:
+    - Нет тела.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: HTTP-BODY-ON-GET-DELETE
+  status: approved
+  title: Тело в GET/DELETE игнорируется или отклоняется по контракту
+  category: http-semantics
+  protocols:
+  - rest
+  kind: boundary
+  priority: P3
+  tags:
+  - boundary
+  - contract
+  - regression
+  - nightly
+  preconditions:
+  - Есть GET или DELETE.
+  steps:
+  - action: Отправить GET и DELETE с телом, содержащим фильтры или id.
+  expected:
+  - Тело не меняет семантику запроса, если контракт этого не описывает.
+  applicability:
+    when:
+    - Есть GET/DELETE.
+    skip_when:
+    - Контракт явно использует тело.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium

@@ -1,0 +1,158 @@
+checks:
+- id: PRIV-DATA-MASKING
+  status: approved
+  title: Чувствительные данные маскируются в ответах по политике
+  category: privacy
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - privacy
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть номера карт, документов, телефоны.
+  steps:
+  - action: Прочитать ресурс от имени ролей с разным уровнем доступа.
+  expected:
+  - Маскирование соответствует роли; полные значения доступны только разрешённым ролям.
+  applicability:
+    when:
+    - Есть чувствительные поля.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: PRIV-ERASURE
+  status: approved
+  title: Удаление персональных данных по запросу выполняется полностью
+  category: privacy
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: positive
+  priority: P2
+  tags:
+  - positive
+  - privacy
+  - data-integrity
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть операция удаления аккаунта или ПДн.
+  steps:
+  - action: Удалить данные пользователя, проверить чтение, поиск, экспорт, связанные ресурсы.
+  expected:
+  - ПДн недоступны во всех каналах, кроме задокументированных юридических исключений.
+  applicability:
+    when:
+    - Есть удаление.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+- id: PRIV-CONSENT-ENFORCEMENT
+  status: approved
+  title: Обработка, требующая согласия, не выполняется без него
+  category: privacy
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - privacy
+  - business-logic
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть согласия (оферта, документы, рассылки).
+  steps:
+  - action: Вызвать операции, требующие принятия документов или согласия, до и после принятия и после отзыва.
+  expected:
+  - Без согласия операция отклоняется или ограничивается по политике; принятие фиксируется с версией документа.
+  applicability:
+    when:
+    - Есть согласия.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+- id: PRIV-SELF-DATA-EXPORT
+  status: approved
+  title: Экспорт собственных данных содержит только данные пользователя
+  category: privacy
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - privacy
+  - ownership
+  - regression
+  - nightly
+  preconditions:
+  - Есть выгрузка данных пользователя.
+  steps:
+  - action: Запросить экспорт двумя пользователями.
+  expected:
+  - Каждый экспорт содержит только свои данные и полный набор по политике.
+  applicability:
+    when:
+    - Есть экспорт.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium

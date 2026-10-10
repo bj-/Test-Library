@@ -1,5 +1,6 @@
 checks:
 - id: REST-SECURITY-HEADERS
+  status: approved
   title: Защитные HTTP-заголовки
   description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
   category: security
@@ -10,6 +11,9 @@ checks:
   tags:
   - security
   - rest
+  - ci
+  - regression
+  - nightly
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
@@ -26,8 +30,9 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
-  - Release
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
