@@ -4,7 +4,8 @@
 
 1. Клонировать рядом `postman`, `test-runs` (и при необходимости `Test-Library`, `PostmanScripts`).
 2. Проверить инструменты (раздел «Подготовка машины»).
-3. Создать `postman/.local/<Окружение>.yaml` со стендом и учётками - **спросить у пользователя**.
+3. Стенд и учётки тестовых стендов уже в окружении `postman/postman/environments/<Окружение>.environment.yaml`.
+   Нет нужного окружения или это production - **спросить у пользователя**.
 4. Выбрать или составить набор `postman/tools/run/suites/<Модуль>/<набор>.yaml`.
 5. Запустить: `python tools/run/run.py tools/run/suites/<Модуль>/<набор>.yaml --runner newman` (из корня `postman`).
 6. Разобрать падения (раздел «Разбор»), завести баги по [`bugs.md`](bugs.md), заполнить раздел «Разбор и баги»
@@ -42,15 +43,15 @@ Git Bash искажает пути при вызове `newman.cmd` напрям
 
 ## Окружение и секреты
 
-- Окружение в git: `postman/postman/environments/<Окружение>.environment.yaml` - только несекретные значения.
-- Локальные значения: `postman/.local/<Окружение>.yaml` (каталог в `.gitignore`), плоский YAML `ключ: значение`,
-  перекрывает окружение. Минимум - `baseUrl` и `AdminAccounts`:
+- Окружение в git: `postman/postman/environments/<Окружение>.environment.yaml` - включая адрес и учётки тестовых
+  стендов (креды стендов открыты, см. «Креды»).
+- Переопределения: `postman/.local/<Окружение>.yaml` (каталог в `.gitignore`) - для production и личных учёток, плоский YAML `ключ: значение`,
+  перекрывает окружение, например:
   ```yaml
-  baseUrl: https://bff-admin.sandbox.viiitech.ru
+  baseUrl: https://bff-admin.example.ru
   AdminAccounts: '[{"login":"...","password":"...","role":"root"}]'
   ```
-  Остальные переменные фреймворка - `PostmanScripts/README.md`.
-- `.local/` нужен, чтобы не держать адреса и креды в коллекции Postman и иметь разные значения на разных машинах.
+  Переменные фреймворка - `PostmanScripts/README.md`.
 
 ## Креды
 
