@@ -66,8 +66,9 @@ Git Bash искажает пути при вызове `newman.cmd` напрям
 
 ## Трекер для багов
 
-Тип и адрес трекера выбирает тот, кто запускает: `postman/.local/tracker.yaml` (`type`, `url`, `project`) или ключи
-`run.py --tracker youtrack --tracker-url <адрес> --tracker-project <ключ>`. Выбор попадает в отчёт (строка «Трекер
+Тип и адрес трекера, префикс темы бага (по умолчанию `[AT]`) и метки (по умолчанию `Autotest`) выбирает тот, кто
+запускает: `postman/.local/tracker.yaml` (образец - `postman/tools/run/tracker.example.yaml`) или ключи
+`run.py --tracker youtrack --tracker-url <адрес> --tracker-project <ключ> --bug-prefix <префикс> --bug-tag <метка>`. Выбор попадает в отчёт (строка «Трекер
 для багов»); шаблоны - `templates/trackers/`. Не задан - баги только в `test-runs/bugs`, трекер уточнить у пользователя.
 
 ## Наборы тестов

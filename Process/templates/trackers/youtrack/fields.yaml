@@ -4,7 +4,7 @@ tracker: youtrack
 issue_url: "{url}/issue/{id}"                 # ссылка на задачу для поля «Трекер» базового бага
 new_issue_url: "{url}/newIssue?project={project}"
 
-summary: "{заголовок}"                        # «<Где>: <что не так>», без номера BUG-NNNN
+summary: "{summary_prefix} {заголовок}"       # префикс из настроек (по умолчанию [AT]) + «<Где>: <что не так> - <суть>», без BUG-NNNN
 description: markdown                         # YouTrack Markdown: таблицы, блоки кода ```bash / ```json / ```http
 
 fields:
@@ -33,10 +33,8 @@ fields:
       verified: Verified
       reopened: Reopened
 
-tags:
-  - test-runs                                 # все баги из прогонов
-  - "{BUG-NNNN}"                              # связь с файлом в test-runs
-  - "{Тип}"                                   # implementation | contract | requirements | security
+tags: "{tags}"                                # метки из настроек запускающего (по умолчанию [Autotest]);
+                                              # связь с файлом test-runs - ссылкой в описании
 
 # Команда для окна команд YouTrack (заполняет поля одной строкой):
-command: "Type Bug Severity {Severity} Subsystem {Subsystem} tag test-runs tag {BUG-NNNN} tag {Тип}"
+command: "Type Bug Severity {Severity} Subsystem {Subsystem} {tag <метка> для каждой метки}"

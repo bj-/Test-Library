@@ -13,13 +13,18 @@
 
 Тип и адрес трекера выбирает тот, кто запускает прогон:
 
-- в `postman/.local/tracker.yaml` (не в git, у каждого свой):
+- в `postman/.local/tracker.yaml` (не в git, у каждого свой; образец - `postman/tools/run/tracker.example.yaml`):
   ```yaml
   type: youtrack                        # имя папки здесь
   url: https://youtrack.example.ru      # адрес трекера
   project: SH                           # ключ проекта
+  summary_prefix: '[AT]'                # префикс темы бага, по умолчанию [AT]
+  tags: [Autotest]                      # метки бага, по умолчанию Autotest
   ```
-- или ключами `run.py --tracker youtrack --tracker-url <адрес> --tracker-project <ключ>` (перекрывают файл).
+- или ключами `run.py --tracker youtrack --tracker-url <адрес> --tracker-project <ключ> --bug-prefix <префикс>
+  --bug-tag <метка>` (`--bug-tag` можно несколько; ключи перекрывают файл).
+
+Тема бага в трекере = префикс + заголовок базового бага (без номера BUG-NNNN); метки ставятся все из настроек.
 
 Выбор записывается в отчёт прогона (строка «Трекер»). Не задан - баги оформляются только по базовому шаблону,
 перенос в трекер - после того как пользователь назовёт трекер.
