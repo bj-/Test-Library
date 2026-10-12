@@ -30,7 +30,7 @@
       "type": "string"
     },
     "status": {
-      "description": "Review state: approved - ready for selection; draft - generated or unreviewed candidate; needs_clarification - expected behavior is blocked on an owner decision.",
+      "description": "Review state: approved - ready for selection; draft - generated or unreviewed candidate; needs_clarification - expected behavior is not confirmed by an owner: the test is still generated with the expectation from the source hierarchy (docs/decisions/0002) and the question is raised as a bug or issue.",
       "enum": [
         "approved",
         "draft",

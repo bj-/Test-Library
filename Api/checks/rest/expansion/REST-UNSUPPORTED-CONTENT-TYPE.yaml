@@ -2,7 +2,9 @@ checks:
 - id: REST-UNSUPPORTED-CONTENT-TYPE
   status: approved
   title: Неподдерживаемый Content-Type запроса
-  description: Черновой шаблон проверки; адаптировать к спецификации конкретного API.
+  description: 'Тело в типе, которого операция не принимает (text/plain, application/x-www-form-urlencoded, multipart/form-data,
+    application/xml вместо application/json; или наоборот). Важно и для безопасности: text/plain и form-urlencoded - простые
+    кросс-доменные запросы без preflight (CSRF).'
   category: validation
   protocols:
   - rest
@@ -19,15 +21,18 @@ checks:
   preconditions:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
-  - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Отправить корректное по содержанию тело с Content-Type text/plain, application/x-www-form-urlencoded, multipart/form-data,
+      application/xml, без Content-Type, с application/json; charset=utf-16.
   expected:
-  - запрос отклоняется документированно, побочных эффектов нет
+  - 415 Unsupported Media Type (RFC 9110 п. 15.5.16), желательно с заголовком Accept или Accept-Post со списком допустимых
+    типов; 400 - отклонение от стандарта, если не оговорено моделью ошибок проекта.
+  - Тело не разбирается как JSON вопреки заголовку; побочных эффектов нет.
+  - Одинаковое поведение во всех операциях с телом.
   applicability:
     when:
     - операция принимает тело запроса
     skip_when:
     - operation is not supported by the API
-    - expected behavior is not specified and requires review
   automation:
     level: full
     deterministic: true
@@ -39,4 +44,6 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - RFC 9110 15.5.16
+  - docs/decisions/0002-expected-behavior-sources.md

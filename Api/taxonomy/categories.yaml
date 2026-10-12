@@ -20,3 +20,4 @@ categories:
   graphql: GraphQL-specific query, schema, and abuse controls
   websocket: WebSocket connection, message, and subscription behavior
   privacy: Personal data handling, masking, consent, and erasure
+  requirements: Requirement transfer errors - spec vs contract vs implementation, unspecified behavior

@@ -25,3 +25,4 @@ _Последнее обновление: 2026-10-12_
 | Дата | Кто / машина | Что сделано |
 |---|---|---|
 | 2026-10-12 | Claude | Создан каркас: `CLAUDE.md`, `docs/STATUS.md`, `docs/ideas.md`, `docs/decisions/` |
+| 2026-10-12 | Claude | ADR 0002: ожидаемое поведение из всех источников (ТЗ, контракт, стандарты, здравый смысл), контракту не доверяем, соответствие контракту - лишь часть проверок; категория `requirements` (REQ-*), новые AUTH-LOGOUT-CLEARS-COOKIE, AUTH-LOGIN-IDENTIFIER-NORMALIZATION; уточнены HTTP-TRAILING-SLASH-CASE, REST-UNSUPPORTED-CONTENT-TYPE (415, RFC 9110) |

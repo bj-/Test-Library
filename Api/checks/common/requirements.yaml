@@ -1,0 +1,228 @@
+checks:
+- id: REQ-SPEC-NOT-IN-CONTRACT
+  status: approved
+  title: Требование ТЗ не потеряно по пути в контракт и реализацию
+  description: Аналитик или разработчик мог пропустить требование заказчика. Контракт молчит - это не значит, что требования
+    нет. Проверка строится от ТЗ, а не от контракта.
+  category: requirements
+  protocols:
+  - generic
+  kind: contract
+  priority: P1
+  tags:
+  - negative
+  - requirements
+  - contract
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть ТЗ заказчика и/или внутренние ТЗ (ФТТ, ОТЗ, ЧТЗ) с идентифицируемыми требованиями.
+  steps:
+  - action: Для каждого требования ТЗ, относящегося к API, найти операцию, поле или поведение контракта, которые его реализуют.
+  - action: Для требований без отражения в контракте выполнить запросы, которыми пользователь пытался бы получить требуемое
+      поведение (ожидаемая ручка, параметр, поле ответа).
+  expected:
+  - У каждого требования есть реализующая операция или явная отметка, что оно вне этого API.
+  - Требование без реализации оформляется находкой (баг на контракт/реализацию или вопрос на ТЗ), тест-заглушка помечается
+    TODO со ссылкой на требование, а не удаляется.
+  applicability:
+    when:
+    - Доступно хотя бы одно ТЗ.
+    skip_when:
+    - ТЗ нет совсем (зафиксировать как риск).
+  automation:
+    level: partial
+    deterministic: true
+    notes: Сопоставление требований и операций - анализ; запросы-пробы автоматизируются.
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - docs/decisions/0002-expected-behavior-sources.md
+- id: REQ-CONTRACT-CONTRADICTS-SPEC
+  status: approved
+  title: Поведение по контракту не противоречит ТЗ
+  description: Разработчик мог неверно понять ТЗ (или аналитик - заказчика). Расхождение источников - находка сама по себе.
+  category: requirements
+  protocols:
+  - generic
+  kind: contract
+  priority: P1
+  tags:
+  - negative
+  - requirements
+  - contract
+  - business-logic
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть ТЗ и контракт, описывающие одно поведение (коды ошибок, ограничения полей, права, сроки, лимиты).
+  steps:
+  - action: Сравнить ограничения из ТЗ и контракта (длины, форматы, обязательность, права ролей, лимиты попыток, сроки сессий,
+      коды и тексты ошибок).
+  - action: Выполнить запросы на границах обоих вариантов ограничения.
+  expected:
+  - Тест утверждает ожидание по более авторитетному источнику (ТЗ заказчика > ОТЗ > ЧТЗ > контракт; требования безопасности
+    стандарта - не ниже ТЗ).
+  - Противоречие оформляется багом/вопросом на документ, даже если реализация совпадает с контрактом.
+  applicability:
+    when:
+    - Одно поведение описано в нескольких источниках.
+    skip_when:
+    - Поведение описано только в одном источнике.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - docs/decisions/0002-expected-behavior-sources.md
+- id: REQ-CONTRACT-SELF-CONSISTENCY
+  status: approved
+  title: Контракт не противоречит сам себе и своей прежней версии
+  description: Описание операции, схема, примеры и общие компоненты могут расходиться; новая версия может молча отменить обещание
+    прежней.
+  category: requirements
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: contract
+  priority: P2
+  tags:
+  - negative
+  - requirements
+  - contract
+  - compatibility
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Есть контракт; желательно - его прежняя версия.
+  steps:
+  - action: Сверить текст описаний операций с их схемами, кодами ответов и примерами (например, описание обещает поле или
+      код, которого нет в схеме).
+  - action: Сверить одно и то же поле в разных операциях (формат, длина, регистр, nullable).
+  - action: Сверить с прежней версией контракта обещания поведения, исчезнувшие без замены (нормализация пути, снятие cookie,
+      коды ошибок).
+  expected:
+  - Противоречия и пропавшие обещания оформлены находками.
+  - Пропавшее обещание по умолчанию продолжает проверяться (ожидание из прежней версии/стандарта) до явного решения.
+  applicability:
+    when:
+    - Контракт содержит текстовые описания поведения или есть прежняя версия.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: high
+  references:
+  - docs/decisions/0002-expected-behavior-sources.md
+- id: REQ-UNSPECIFIED-BEHAVIOR-PROBE
+  status: approved
+  title: Неописанное поведение выясняется тестом и сравнивается со стандартом и здравым смыслом
+  description: Источники молчат (обрезка пробелов, регистр, путь со слешем, снятие cookie, лишние поля, повтор параметра).
+    Это не повод не проверять - фактическое поведение фиксируется тестом.
+  category: requirements
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: contract
+  priority: P2
+  tags:
+  - boundary
+  - requirements
+  - validation
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Найдено поведение, о котором молчат контракт и ТЗ.
+  steps:
+  - action: Выполнить запрос, выявляющий фактическое поведение, и сохранить ответ в результате теста.
+  - action: Сравнить с ожиданием по стандарту (RFC, OWASP), практике отрасли и поведению соседних операций того же API.
+  expected:
+  - Тест утверждает ожидание со ссылкой на его источник; несовпадение - потенциальный дефект, заводится баг.
+  - Фактическое поведение одинаково во всех операциях с тем же полем или механизмом.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: high
+  references:
+  - docs/decisions/0002-expected-behavior-sources.md
+- id: REQ-CROSS-CLIENT-CONSISTENCY
+  status: approved
+  title: Одно правило продукта одинаково в API разных клиентов
+  description: Политика паролей, формат телефона и email, регистр логина, сроки сессий в API админки и мобильного клиента
+    реализуют разные команды - и расходятся.
+  category: requirements
+  protocols:
+  - generic
+  kind: contract
+  priority: P2
+  tags:
+  - negative
+  - requirements
+  - business-logic
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - У продукта несколько API (клиентов) с общими сущностями или правилами.
+  steps:
+  - action: Выписать правила, общие для клиентов по ТЗ (валидация идентификаторов, пароли, сессии, лимиты, ошибки).
+  - action: Выполнить одинаковые граничные запросы в каждом API.
+  expected:
+  - Правило одинаково везде, где ТЗ не требует различий; расхождение - находка.
+  applicability:
+    when:
+    - Есть два и более API одного продукта.
+    skip_when:
+    - API один.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - docs/decisions/0002-expected-behavior-sources.md

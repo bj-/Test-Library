@@ -49,6 +49,7 @@ tag_groups:
   - audit
   - privacy
   - hardening
+  - requirements
   quality:
   - performance
   - reliability

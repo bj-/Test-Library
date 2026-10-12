@@ -1016,3 +1016,100 @@ checks:
     likelihood: medium
   references:
   - RFC 6749, RFC 7636, OAuth 2.0 Security BCP
+- id: AUTH-LOGOUT-CLEARS-COOKIE
+  status: approved
+  title: Выход снимает cookie сессии на клиенте
+  description: Сервер закрывает сессию (AUTH-LOGOUT-INVALIDATES), но если ответ не снимает cookie, браузер продолжает её хранить
+    и слать - клиент не узнаёт о выходе, значение остаётся в хранилище браузера. Контракт и ТЗ часто об этом молчат - проверяется
+    всё равно.
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - session
+  - token-lifecycle
+  - ci
+  - regression
+  - nightly
+  preconditions:
+  - Сессия в cookie, есть операция выхода (logout) или завершения текущей сессии.
+  steps:
+  - action: Войти, выполнить выход с cookie сессии.
+  - action: Проверить заголовки Set-Cookie ответа.
+  expected:
+  - 'Ответ содержит Set-Cookie с тем же именем, Path и Domain, пустым значением и Max-Age=0 или Expires в прошлом (OWASP Session
+    Management Cheat Sheet: Session Expiration; RFC 6265 п. 3.1).'
+  - Отсутствие снятия cookie - потенциальный дефект, даже если контракт его не обещает.
+  applicability:
+    when:
+    - Сессия передаётся в cookie.
+    skip_when:
+    - Только Bearer-токены в заголовке.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html
+  - RFC 6265
+- id: AUTH-LOGIN-IDENTIFIER-NORMALIZATION
+  status: approved
+  title: Логин (email, телефон) нормализуется одинаково при входе, создании и поиске
+  description: Обрезка пробелов, регистр, Unicode-нормализация и формат идентификатора решаются разработчиком молча. Расхождение
+    между входом, регистрацией и фильтрами даёт дубли учёток, невозможность войти или обход блокировки по учётке.
+  category: validation
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: boundary
+  priority: P1
+  tags:
+  - boundary
+  - authn
+  - validation
+  - enumeration
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Есть вход по идентификатору (email, телефон, логин).
+  steps:
+  - action: Войти с идентификатором с пробелами по краям, в другом регистре, с неразрывным пробелом, с омоглифом, в альтернативной
+      записи телефона (+7/8, скобки, дефисы).
+  - action: Те же варианты - в создании учётки (если есть) и в фильтрах поиска по идентификатору.
+  - action: Сравнить с ограничениями формата в контракте и ТЗ.
+  expected:
+  - Фактическое поведение зафиксировано тестом (обрезает или отвергает, учитывает регистр или нет).
+  - Нормализация одинакова при входе, создании и поиске; не противоречит формату из контракта (если контракт требует format
+    email, строка с пробелами либо отвергается 400, либо обрезается до проверки - и это описано).
+  - Счётчик неудачных попыток и блокировка привязаны к нормализованному идентификатору - вариант записи не обходит лимит.
+  applicability:
+    when:
+    - Есть вход по идентификатору.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - RFC 5321
+  - docs/decisions/0002-expected-behavior-sources.md

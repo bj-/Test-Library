@@ -2,15 +2,15 @@
 
 Файл генерируется `python tools/build_catalog.py .` — не редактируйте вручную.
 
-Всего проверок: **368** — approved: 320, draft: 32, needs_clarification: 16.
-Протоколы: generic: 39, graphql: 191, grpc: 138, rest: 319, websocket: 59.
+Всего проверок: **375** — approved: 327, draft: 32, needs_clarification: 16.
+Протоколы: generic: 42, graphql: 194, grpc: 141, rest: 323, websocket: 60.
 
 | Категория | Описание | Проверок |
 |---|---|---:|
 | [contract](#contract) | API contract and schema conformance | 25 |
 | [resources](#resources) | Resource lifecycle and state transitions | 19 |
-| [security](#security) | Authentication, authorization, and data isolation | 146 |
-| [validation](#validation) | Input validation and normalization | 36 |
+| [security](#security) | Authentication, authorization, and data isolation | 147 |
+| [validation](#validation) | Input validation and normalization | 37 |
 | [http-semantics](#http-semantics) | HTTP methods, headers, and status semantics | 13 |
 | [errors](#errors) | Error response shape and consistency | 3 |
 | [pagination](#pagination) | Pagination, filtering, and sorting | 13 |
@@ -28,6 +28,7 @@
 | [graphql](#graphql) | GraphQL-specific query, schema, and abuse controls | 10 |
 | [websocket](#websocket) | WebSocket connection, message, and subscription behavior | 7 |
 | [privacy](#privacy) | Personal data handling, masking, consent, and erasure | 4 |
+| [requirements](#requirements) | Requirement transfer errors - spec vs contract vs implementation, unspecified behavior | 5 |
 
 ## contract
 
@@ -224,6 +225,7 @@ Authentication, authorization, and data isolation
 | `SEC-TOKEN-AUDIENCE` | Token for another audience is rejected | P1 | approved | rest, graphql, generic | CI, Regression, Nightly, Release |
 | `SEC-TOKEN-REFRESH-REPLAY` | Refresh-token replay is rejected or rotated | P1 | approved | rest, graphql, generic | CI, Regression, Nightly, Release |
 | `AUTH-JWT-TIME-CLAIMS` | Токены с nbf/iat в будущем и без exp обрабатываются по политике | P2 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly |
+| `AUTH-LOGOUT-CLEARS-COOKIE` | Выход снимает cookie сессии на клиенте | P2 | approved | rest | CI, Regression, Nightly |
 | `AUTH-PASSWORD-POLICY` | Политика паролей применяется на сервере | P2 | approved | rest, graphql | CI, Regression, Nightly |
 | `AUTH-SESSION-TIMEOUT` | Сессия истекает после простоя и абсолютного срока | P2 | approved | rest, graphql | Regression, Nightly |
 | `AUTH-TOKEN-IN-URL` | Учётные данные не передаются и не принимаются в URL | P2 | approved | rest, graphql | CI, Regression, Nightly |
@@ -246,6 +248,7 @@ Input validation and normalization
 
 | ID | Проверка | P | Статус | Протоколы | Профили |
 |---|---|---|---|---|---|
+| `AUTH-LOGIN-IDENTIFIER-NORMALIZATION` | Логин (email, телефон) нормализуется одинаково при входе, создании и поиске | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `REST-DATE-TIME-TZ` | Дата, время и timezone | P1 | approved | rest | CI, Regression, Nightly, Release |
 | `REST-ENUM-VALUES` | Допустимые и неизвестные enum | P1 | approved | rest | CI, Regression, Nightly, Release |
 | `REST-NULL-VS-OMITTED` | Null и отсутствующее поле | P1 | approved | rest | CI, Regression, Nightly, Release |
@@ -543,3 +546,15 @@ Personal data handling, masking, consent, and erasure
 | `PRIV-DATA-MASKING` | Чувствительные данные маскируются в ответах по политике | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
 | `PRIV-ERASURE` | Удаление персональных данных по запросу выполняется полностью | P2 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly |
 | `PRIV-SELF-DATA-EXPORT` | Экспорт собственных данных содержит только данные пользователя | P3 | approved | rest, grpc, graphql, websocket | Regression, Nightly |
+
+## requirements
+
+Requirement transfer errors - spec vs contract vs implementation, unspecified behavior
+
+| ID | Проверка | P | Статус | Протоколы | Профили |
+|---|---|---|---|---|---|
+| `REQ-CONTRACT-CONTRADICTS-SPEC` | Поведение по контракту не противоречит ТЗ | P1 | approved | generic | CI, Regression, Nightly, Release |
+| `REQ-SPEC-NOT-IN-CONTRACT` | Требование ТЗ не потеряно по пути в контракт и реализацию | P1 | approved | generic | CI, Regression, Nightly, Release |
+| `REQ-CONTRACT-SELF-CONSISTENCY` | Контракт не противоречит сам себе и своей прежней версии | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
+| `REQ-CROSS-CLIENT-CONSISTENCY` | Одно правило продукта одинаково в API разных клиентов | P2 | approved | generic | CI, Regression, Nightly |
+| `REQ-UNSPECIFIED-BEHAVIOR-PROBE` | Неописанное поведение выясняется тестом и сравнивается со стандартом и здравым смыслом | P2 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly |
