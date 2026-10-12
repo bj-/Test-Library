@@ -1,0 +1,42 @@
+# Соответствие полей базового бага (Process/templates/bug.md) полям YouTrack.
+# Названия полей и значений - типовые для YouTrack; сверить с проектом (Настройки проекта -> Поля) и поправить здесь.
+tracker: youtrack
+issue_url: "{url}/issue/{id}"                 # ссылка на задачу для поля «Трекер» базового бага
+new_issue_url: "{url}/newIssue?project={project}"
+
+summary: "{заголовок}"                        # «<Где>: <что не так>», без номера BUG-NNNN
+description: markdown                         # YouTrack Markdown: таблицы, блоки кода ```bash / ```json / ```http
+
+fields:
+  Type:
+    from: const
+    value: Bug
+  Severity:                                   # в некоторых проектах - Priority; тогда поменять имя поля
+    from: Серьёзность
+    map:
+      critical: Critical
+      major: Major
+      minor: Minor
+      trivial: Trivial
+  Priority:
+    from: Приоритет                           # ставит команда; при переносе не заполнять
+    map: {}
+  Subsystem:
+    from: Модуль                              # BFF-Admin-Auth; значение должно существовать в проекте
+  State:
+    from: Статус
+    map:
+      new: Submitted
+      confirmed: Open
+      rejected: "Won't fix"
+      fixed: Fixed
+      verified: Verified
+      reopened: Reopened
+
+tags:
+  - test-runs                                 # все баги из прогонов
+  - "{BUG-NNNN}"                              # связь с файлом в test-runs
+  - "{Тип}"                                   # implementation | contract | requirements | security
+
+# Команда для окна команд YouTrack (заполняет поля одной строкой):
+command: "Type Bug Severity {Severity} Subsystem {Subsystem} tag test-runs tag {BUG-NNNN} tag {Тип}"

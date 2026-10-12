@@ -7,7 +7,8 @@
 |---|---|
 | [`running-tests.md`](running-tests.md) | Запуск: раннеры, окружение и секреты, наборы, отчёт о прогоне, разбор результатов |
 | [`bugs.md`](bugs.md) | Правила оформления багов: когда заводить, классификация, серьёзность, жизненный цикл |
-| [`templates/bug.md`](templates/bug.md) | Шаблон бага |
+| [`templates/bug.md`](templates/bug.md) | Базовый шаблон бага (файл в `test-runs/bugs/`) |
+| [`templates/trackers/`](templates/trackers/README.md) | Шаблоны под трекеры (сейчас YouTrack), выбор трекера |
 
 ## Репозитории
 
