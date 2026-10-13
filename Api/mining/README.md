@@ -21,6 +21,32 @@ python tools/mining/enrich.py  --batch pilot              # шаг 2b: тест�
 Все шаги возобновляемы: прерванный запуск продолжается с места остановки (`state.json`, `pr_tests.json`).
 Код выхода 2 — остановка по лимиту API, запустить позже.
 
+## Очередная LLM-партия (шаги 3–5) — порядок для Claude
+
+Запускать в свежей сессии из `C:\Git\Test-Library` (расход растёт с длиной разговора). Человек присылает `/usage`
+до начала и после конца партии.
+
+1. `git pull --rebase`; прочитать `docs/STATUS.md` и `Api/mining/budget.md`.
+2. **Размер партии.** Норма — до 150 багов в день на все машины (`budget.md`, «Текущая норма»). Сложить «Багов»
+   по строкам с сегодняшней датой; партия = 150 − сумма. Ноль или меньше — партию не начинать, сказать человеку.
+   Нет `/usage` «до» — попросить его до начала работы.
+3. **Имя** — следующее после последнего `build/mining/pilot/batches/p-NN.ids` (`p-02` → `p-03`).
+4. Из `Api/`, с `PYTHONUTF8=1`: `python tools/mining/batch.py make --name p-NN --n <размер>`.
+   Нет `build/mining/pilot/filtered.jsonl` — сначала `collect.py`, `filter.py`, `enrich.py` (раздел «Запуск»);
+   нет `build/mining/library_index.txt` — `batch.py index`.
+5. Прочитать `mining/prompts/triage_abstract.md`, `build/mining/library_index.txt`, `taxonomy/categories.yaml`,
+   `taxonomy/tags.yaml` и файл партии `build/mining/pilot/batches/p-NN.md`. Файл большой (80 багов ≈ 5000 строк) —
+   читать кусками по ~1300 строк, ответы по каждому куску писать в отдельный файл в scratchpad, затем склеить в
+   `batches/p-NN.out.jsonl` (UTF-8 без BOM, одна строка на баг, порядок как в партии).
+6. `batch.py check --name p-NN` (должно быть N/N, ошибок 0), показать `batch.py stats`.
+7. `budget.md` — строка партии: дата, машина, `p-NN`, багов, «неделя до»; «после» и расход — по `/usage` после.
+   `docs/STATUS.md` — строка «В работе» (обработано X/696, итоги new/extends/covered) и запись в журнале.
+8. Коммит: `batches/p-NN.ids`, `batches/p-NN.out.jsonl`, `budget.md`, `docs/STATUS.md`; `git push` — без отдельного
+   подтверждения (решение пользователя, 2026-10-13). Остальное из `build/mining/` в git не попадает.
+
+Подводные камни (Windows): в PowerShell `[IO.File]` берёт пути от каталога процесса, а не от `cd` — только
+абсолютные пути или Edit/Write; `git push` может вернуть код 255 при успехе — проверять `git rev-parse HEAD origin/main`.
+
 ## Бережная нагрузка на источники
 
 Параметры — `politeness` в `sources.yaml`:
