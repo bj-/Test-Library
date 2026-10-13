@@ -10,7 +10,7 @@ _Последнее обновление: 2026-10-13_
 
 | Задача | Кто | Статус / заметки |
 |---|---|---|
-| Пополнение библиотеки идеями из открытых баг-трекеров — план `Api/docs/BUG_MINING_PLAN.md` | Claude | План и ADR [0004](decisions/0004-bug-tracker-mining.md) приняты; следующий шаг — сборщик GitHub и трассировка |
+| Пополнение библиотеки идеями из открытых баг-трекеров — план `Api/docs/BUG_MINING_PLAN.md` | Claude | План и ADR [0004](decisions/0004-bug-tracker-mining.md) приняты; пилот собран: 1022 → 696 после фильтра, 245 с тестами из фикса (`Api/build/mining/pilot/REPORT.md`); дальше трассировка и калибровка лимита |
 
 ## Следующие шаги
 
@@ -38,3 +38,5 @@ _Последнее обновление: 2026-10-13_
 | 2026-10-13 | Claude | ADR [0004](decisions/0004-bug-tracker-mining.md): выгрузка из баг-трекеров — Claude Code партиями (≤ 5 % недельного лимита в день), кандидаты в `Api/ideas/mined/`, метка `real-world-bug` + трассировка `RWB-*` в отдельном файле, скрипты в `Api/tools/mining/`; баги вне области (сборка, UI, память) — в корзину на будущее |
 | 2026-10-13 | Claude | План выгрузки: уже реализованные идеи без пруфов, совпавшие с найденным багом, получают метку `real-world-bug` и `RWB-*` (раздел «Пруфы к существующим», `apply_proofs.py`) |
 | 2026-10-13 | Claude | `docs/ideas.md`: OWASP Top 10:2025 как каркас покрытия; разобрать пентест-агент Strix |
+| 2026-10-13 | Claude | Выгрузка багов, этап 1: `Api/mining/sources.yaml` (пилот: nest, express, body-parser, session, cookie, keycloak, strapi, directus, GHSA npm), `Api/tools/mining/` — `collect.py`, `filter.py`, `enrich.py` (тесты из фикс-PR); бережная нагрузка на источники (пауза, резерв лимита, Retry-After, кэш). Сбор не запускался: нет токена GitHub, анонимный лимит исчерпан |
+| 2026-10-13 | Claude | Выгрузка багов: первый прогон пилота — 1022 собрано, 696 после фильтра, 245 с тестами из фикс-PR; 333 запроса к GitHub. Фильтр: отсев duplicate, `allow_no_fix` для nest/express. Отчёт — `Api/build/mining/pilot/REPORT.md` |

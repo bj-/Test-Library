@@ -62,3 +62,8 @@ artifacts/
 test-results/
 allure-results/
 allure-report/
+
+# Bug mining: raw dumps and intermediate files are not committed (ADR 0004); only batch reports are
+build/mining/**
+!build/mining/*/
+!build/mining/*/REPORT.md

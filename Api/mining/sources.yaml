@@ -1,0 +1,73 @@
+# Источники выгрузки багов (ADR 0004, план — docs/BUG_MINING_PLAN.md).
+#
+# Метки не перечисляются точно: сборщик читает метки репозитория и отбирает их по шаблонам.
+# include_labels — какие метки означают баг (запрос к API идёт по ним, логика ИЛИ);
+# require_labels — дополнительно нужна хотя бы одна такая метка (сужение, например по area);
+# exclude_labels — к шаблонам из defaults добавляются шаблоны источника.
+# max_items — сколько issue сохранить в raw после отбора по меткам (до фильтра).
+
+politeness:
+  # Бережная нагрузка на серверы источников, чтобы не получить бан.
+  min_interval_s: 1.5        # пауза между любыми двумя запросами; запросы только последовательные
+  rate_limit_reserve: 0.2    # не тратить последние 20 % лимита GitHub: остановиться и дождаться сброса
+  max_wait_s: 3600           # если до сброса лимита дольше — прекратить, продолжить следующим запуском
+  backoff_s: [60, 120, 300]  # 403/429 вторичного лимита без Retry-After и 5xx: пауза и повтор
+  user_agent: Test-Library-bug-mining (github.com/bj-/Test-Library)
+
+defaults:
+  include_labels: '(?i)\bbug\b'
+  exclude_labels: >-
+    (?i)not.?a.?bug|bug.?bounty|question|feature|enhancement|\bdocs?\b|documentation|duplicate|invalid|
+    won.?t.?fix|stale|support|discussion|needs?.?(info|more)|(pending|needs?|can.?not|can.?t).?reproduc|
+    invalid.?template|\bui\b|frontend|design.?system|\bci\b|dependenc|typings?|typescript
+  body_max_chars: 4000
+
+sources:
+  # allow_no_fix: мейнтейнеры закрывают исправленное как COMPLETED без привязки PR («fixed in vX» в комментарии);
+  # такие записи помечаются fix_evidence: closed-completed, окончательно решает триаж.
+  - id: nestjs-nest
+    type: github
+    repo: nestjs/nest
+    allow_no_fix: true
+    max_items: 200
+  - id: express
+    type: github
+    repo: expressjs/express
+    allow_no_fix: true
+    max_items: 80
+  - id: body-parser
+    type: github
+    repo: expressjs/body-parser
+    max_items: 40
+  - id: express-session
+    type: github
+    repo: expressjs/session
+    max_items: 40
+  - id: jshttp-cookie
+    type: github
+    repo: jshttp/cookie
+    max_items: 20
+  - id: keycloak
+    type: github
+    repo: keycloak/keycloak
+    include_labels: '(?i)^kind/bug$'
+    require_labels: '(?i)^area/(authentication|oidc|token|login|account|admin/api|core|authorization|user-profile|brute)'
+    exclude_labels: '(?i)^area/(admin/ui|account/ui|ui|docs|dist|testsuite|ci)'
+    max_items: 200
+  - id: strapi
+    type: github
+    repo: strapi/strapi
+    exclude_labels: '(?i)admin|design|i18n.?ui|cli|upgrade'
+    max_items: 150
+  - id: directus
+    type: github
+    repo: directus/directus
+    exclude_labels: '(?i)^app$|studio|frontend|extension.?sdk'
+    max_items: 150
+  - id: ghsa-npm
+    type: ghsa
+    ecosystem: npm
+    # CWE под OWASP API Top 10: доступ, аутентификация, сессии, mass assignment, prototype pollution,
+    # ReDoS и ресурсы, SSRF, инъекции, раскрытие данных, open redirect.
+    cwes: [639, 284, 285, 862, 863, 287, 306, 384, 613, 640, 915, 1321, 1333, 400, 770, 918, 89, 943, 78, 94, 200, 209, 601, 352]
+    max_items: 200
