@@ -5,6 +5,7 @@ Usage: validate_library.py [library-root]
 Exit code: 0 - no errors, 1 - errors found.
 """
 from pathlib import Path
+import re
 import sys
 
 from library import (
@@ -17,6 +18,9 @@ except ImportError:
     Draft202012Validator = None
 
 RUN_TAGS = {"smoke", "regression", "nightly", "release", "pr", "ci"}
+# Proof of a real bug: tag real-world-bug + reference to the trace file (ADR 0004)
+TRACE_FILE = "traceability/real-world-bugs.yaml"
+RWB_REF = re.compile(r"Real-world bug: (RWB-\d{4,})")
 
 
 def validate(root: Path):
@@ -25,6 +29,8 @@ def validate(root: Path):
     tags_doc = load_yaml(root / "taxonomy/tags.yaml")
     tags = {t for group in tags_doc["tag_groups"].values() for t in group}
     categories = set(load_yaml(root / "taxonomy/categories.yaml")["categories"])
+    trace_path = root / TRACE_FILE
+    traces = (load_yaml(trace_path) or {}) if trace_path.exists() else {}
 
     profiles, profile_errors = load_profiles(root)
     errors += profile_errors
@@ -82,6 +88,14 @@ def validate(root: Path):
             errors.append(f"{cid}: full automation requires deterministic=true")
         if c.get("kind") in RUN_TAGS:
             errors.append(f"{cid}: kind must not be a run tag")
+        rwb = [m.group(1) for r in c.get("references") or [] if (m := RWB_REF.fullmatch(str(r)))]
+        for trace_id in rwb:
+            if trace_id not in traces:
+                errors.append(f"{cid}: {trace_id} is missing in {TRACE_FILE}")
+        if rwb and "real-world-bug" not in c.get("tags", []):
+            errors.append(f"{cid}: references {', '.join(rwb)} require tag real-world-bug")
+        if "real-world-bug" in c.get("tags", []) and not rwb:
+            errors.append(f"{cid}: tag real-world-bug requires a 'Real-world bug: RWB-NNNN' reference")
 
     by_status = {s: sum(c.get("status") == s for c in checks) for s in CHECK_STATUSES}
     print(f"Checks: {len(checks)} | Unique IDs: {len(seen)} | Profiles: {len(profiles)}")

@@ -62,6 +62,8 @@ tag_groups:
   - graphql
   - websocket
   - generic
+  origin:
+  - real-world-bug
 rules:
 - kind describes behavior; run tags describe where a check is selected.
 - Run tags must mirror check.profiles (lower-cased); tools/assign_profiles.py keeps them in sync.

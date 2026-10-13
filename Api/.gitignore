@@ -67,3 +67,7 @@ allure-report/
 build/mining/**
 !build/mining/*/
 !build/mining/*/REPORT.md
+# результаты LLM-партий (свои формулировки, без текстов issue) — в git, чтобы продолжать с любой машины
+!build/mining/*/batches/
+!build/mining/*/batches/*.out.jsonl
+!build/mining/*/batches/*.ids
