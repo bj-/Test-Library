@@ -31,7 +31,7 @@
 
 ## Запуск тестов и баги
 
-`Process/` — общие правила процесса (ADR 0003): запуск тестов и разбор результатов — `Process/running-tests.md`,
+`Process/` — общие правила процесса (ADR 0003): создание коллекции — `Process/collections.md`, запуск тестов и разбор результатов — `Process/running-tests.md`,
 оформление багов — `Process/bugs.md`, шаблон — `Process/templates/bug.md`. На новой машине начинать с
 «Короткого пути» в `running-tests.md`.
 
