@@ -43,7 +43,7 @@ sources.yaml → [1 сбор] → raw/*.jsonl → [2 фильтр] → [3 три
 |---|---|---|---|
 | 1. Сбор | Закрытые баги по меткам и ключевым словам, связанный PR, имена и diff тестовых файлов | `sources.yaml` → `build/mining/raw/<source>.jsonl` | Python: `gh api graphql`, JIRA REST (JQL), Launchpad API, GitLab API, GHSA API |
 | 2. Фильтр | Только fixed или со смёрженным PR; без question/feature/docs; дедуп по URL; обрезка длинных тел | raw → `filtered.jsonl` | Python, без LLM |
-| 3. Триаж | «Дефект поведения API, видимый снаружи?» да/нет; для «нет» — класс (`build`, `ui`, `memory`, `perf-internal`, `docs`, `other`) | filtered → `triaged.jsonl`, `out-of-scope.jsonl` | Claude Code, партиями |
+| 3. Триаж | «Дефект поведения API, видимый снаружи?» да/нет; для «нет» — класс (`build`, `ui`, `memory`, `perf-internal`, `docs`, `framework-internal`, `usage`, `insufficient-data`, `client-lib`, `other`) | filtered → `triaged.jsonl`, `out-of-scope.jsonl` | Claude Code, партиями |
 | 4. Абстракция | Паттерн: условие, действие, ожидание, фактическое поведение, протокол, `category` и `tags` из таксономии, OWASP API / CWE, источник ожидания (RFC, стандарт, здравый смысл) | triaged → `patterns.jsonl` | Claude Code, партиями |
 | 5. Сопоставление | Ближайшая существующая запись: `covered` (только пруф), `extends` (новый вариант к записи X), `new` | patterns + `docs/CATALOG.md` → `matched.jsonl` | Claude Code, партиями |
 | 6. Кластеризация | Склейка `new`-паттернов в уникальные идеи, подсчёт подтверждающих багов | matched → `Api/ideas/mined/<batch>.md` | Claude Code + ручная проверка |

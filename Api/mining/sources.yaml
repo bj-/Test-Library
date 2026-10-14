@@ -4,6 +4,8 @@
 # include_labels — какие метки означают баг (запрос к API идёт по ним, логика ИЛИ);
 # require_labels — дополнительно нужна хотя бы одна такая метка (сужение, например по area);
 # exclude_labels — к шаблонам из defaults добавляются шаблоны источника.
+# exclude_title — предфильтр до LLM по заголовку (внутренности фреймворка, сборка); калибровка на пилоте:
+#   у nest и express отсекает 28 багов вне области, API-баги не теряются (build/mining/pilot/REPORT.md).
 # max_items — сколько issue сохранить в raw после отбора по меткам (до фильтра).
 
 politeness:
@@ -29,11 +31,21 @@ sources:
     type: github
     repo: nestjs/nest
     allow_no_fix: true
+    exclude_title: >-
+      (?i)(\bDI\b|dependency injection|\binjectable\b|\bdecorators?\b|lifecycle hooks?|\bonModule\w*|
+      \bonApplication\w*|\bCLI\b|schematics?|\bwebpack\b|\bswc\b|\besbuild\b|\btsc\b|\btypescript\b|\btypings?\b|
+      \bjest\b|testing ?module|\bvitest\b|\brepl\b|\bmonorepo\b|circular (dependency|import)|dynamic module|
+      forRoot(Async)?|\bbuild\b|compil(e|er|ation))
     max_items: 200
   - id: express
     type: github
     repo: expressjs/express
     allow_no_fix: true
+    exclude_title: >-
+      (?i)(\bDI\b|dependency injection|\binjectable\b|\bdecorators?\b|lifecycle hooks?|\bonModule\w*|
+      \bonApplication\w*|\bCLI\b|schematics?|\bwebpack\b|\bswc\b|\besbuild\b|\btsc\b|\btypescript\b|\btypings?\b|
+      \bjest\b|testing ?module|\bvitest\b|\brepl\b|\bmonorepo\b|circular (dependency|import)|dynamic module|
+      forRoot(Async)?|\bbuild\b|compil(e|er|ation))
     max_items: 80
   - id: body-parser
     type: github

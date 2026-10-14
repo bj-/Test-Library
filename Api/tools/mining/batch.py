@@ -21,7 +21,8 @@ from library import iter_checks, load_yaml, setup_console  # noqa: E402
 
 BODY_LIMIT = 1500
 TESTS_LIMIT = 1200
-OOS_CLASSES = {"build", "ui", "memory", "perf-internal", "docs", "other"}
+OOS_CLASSES = {"build", "ui", "memory", "perf-internal", "docs", "framework-internal", "usage", "insufficient-data",
+               "client-lib", "other"}
 MATCH_TYPES = {"covered", "extends", "new"}
 PROTOCOLS = {"rest", "grpc", "graphql", "websocket", "generic"}
 MINING = Path("build/mining")
@@ -122,6 +123,11 @@ def cmd_check(args) -> int:
             errors.append(f"{where}: match.type {m.get('type')!r}")
         elif m["type"] != "new" and m.get("check_id") not in known:
             errors.append(f"{where}: check_id {m.get('check_id')!r} нет в библиотеке")
+        variant = m.get("variant")
+        if "variant" in m and m.get("type") != "extends" and variant:
+            errors.append(f"{where}: variant только у extends")
+        if variant and variant.lower().startswith(("добавить", "вариант")):
+            errors.append(f"{where}: variant — шаг в повелительной форме, без «Добавить …»")
     if missing := set(ids) - seen:
         errors.append(f"нет ответа для {len(missing)}: {sorted(missing)[:5]}")
     for e in errors:

@@ -4,7 +4,8 @@
 Usage: filter.py [--batch pilot] [--allow-no-fix] [--sources mining/sources.yaml]
 Run from Api/. Keeps fixed bugs only (merged PR or fixing commit; advisories are kept as published;
 sources with allow_no_fix also keep issues closed as COMPLETED, marked fix_evidence: closed-completed),
-drops excluded labels and feature/question titles, dedups by id, cleans and truncates bodies.
+drops excluded labels, feature/question titles and per-source exclude_title (framework internals, build) —
+except records already answered by an LLM batch, so re-filtering never orphans results; dedups by id, cleans and truncates bodies.
 Prints drop reasons per source; the same numbers go to filter_stats.json.
 """
 from __future__ import annotations
@@ -33,6 +34,11 @@ def clean_body(text: str, limit: int) -> str:
     return text
 
 
+def folded(pattern: str) -> str:
+    """A regex from a folded YAML scalar (>-): line breaks become spaces, which must not stick to alternatives."""
+    return re.sub(r"\s*\|\s*", "|", " ".join(pattern.split()))
+
+
 def main() -> int:
     setup_console()
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
@@ -46,6 +52,8 @@ def main() -> int:
     by_id = {s["id"]: s for s in cfg["sources"]}
     base = Path("build/mining") / args.batch
     seen, kept = set(), []
+    answered = {json.loads(line)["id"] for f in (base / "batches").glob("*.out.jsonl")
+                for line in f.open(encoding="utf-8") if line.strip()}
     stats: dict[str, Counter] = defaultdict(Counter)
 
     for raw in sorted((base / "raw").glob("*.jsonl")):
@@ -54,7 +62,7 @@ def main() -> int:
             src = by_id.get(r["source"], {})
             st = stats[r["source"]]
             st["raw"] += 1
-            exc = [re.compile(" ".join(p.split())) for p in (defaults.get("exclude_labels"), src.get("exclude_labels")) if p]
+            exc = [re.compile(folded(p)) for p in (defaults.get("exclude_labels"), src.get("exclude_labels")) if p]
             reason = None
             if r["id"] in seen:
                 reason = "дубль"
@@ -67,6 +75,9 @@ def main() -> int:
                 reason = "исключающая метка"
             elif TITLE_DROP.search(r["title"]):
                 reason = "заголовок: фича/вопрос/доки"
+            elif (src.get("exclude_title") and r["id"] not in answered
+                  and re.search(folded(src["exclude_title"]), r["title"])):
+                reason = "заголовок: внутренности фреймворка/сборка"
             if reason:
                 st["drop: " + reason] += 1
                 continue

@@ -120,7 +120,12 @@ def build_plan(batch: str, errors: list[str], drafts_written: bool = False) -> d
         if m["check_id"] not in checks:
             errors.append(f"{bug_id}: запись {m['check_id']} не найдена в библиотеке")
             continue
-        variant = variant_text(m.get("note")) if m["type"] == "extends" and bug_id not in no_variant else None
+        if m["type"] != "extends" or bug_id in no_variant:
+            variant = None
+        elif "variant" in m:  # prompt with a separate step field (after the pilot)
+            variant = m["variant"]
+        else:  # pilot: the step is cut out of the note
+            variant = variant_text(m.get("note"))
         proofs[m["check_id"]].append({"bug": bug_id, "type": m["type"], "note": m.get("note") or "",
                                       "variant": variant})
     proofs = {cid: {"rwb": rwb_for(cid), "title": checks[cid]["title"], "items": items}
