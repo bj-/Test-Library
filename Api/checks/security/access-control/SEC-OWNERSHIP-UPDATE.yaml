@@ -13,6 +13,7 @@ checks:
   - negative
   - security
   - authz
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -23,6 +24,8 @@ checks:
   steps:
   - action: As user B, attempt to update a field on user A’s resource by changing the resource identifier.
     notes: 'Matrix axis: Resource ownership; scenario: Cross-owner update. Use isolated synthetic identities and data.'
+  - action: Вспомогательные операции (reorder/move), меняющие поля документа в обход основного update
+    notes: 'Real-world bug: RWB-0152 (GHSA-f7hx-52q9-hcrf)'
   expected:
   - Deny the operation; persisted state of resource A remains unchanged.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
@@ -46,3 +49,4 @@ checks:
     likelihood: high
   references:
   - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model
+  - 'Real-world bug: RWB-0152'

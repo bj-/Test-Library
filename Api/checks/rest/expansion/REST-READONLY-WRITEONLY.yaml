@@ -12,6 +12,7 @@ checks:
   - contract
   - validation
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -20,6 +21,13 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Вычисляемые значения внутри свободной карты атрибутов и round-trip GET→PUT
+    notes: 'Real-world bug: RWB-0129 (keycloak/keycloak#52173)'
+  - action: Отсутствие read-only поля в запросе на изменение не должно давать ошибку
+    notes: 'Real-world bug: RWB-0129 (keycloak/keycloak#49272)'
+  - action: Обновление ресурса без writeOnly-секрета (тело из GET, где секрет не отдаётся) сохраняет прежний секрет; проверить
+      аутентификацией по нему, в том числе на мигрированных данных
+    notes: 'Real-world bug: RWB-0129 (keycloak/keycloak#48868)'
   expected:
   - защищённые поля не принимаются/не раскрываются вопреки контракту
   applicability:
@@ -39,4 +47,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0129'

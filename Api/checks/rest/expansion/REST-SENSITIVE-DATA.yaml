@@ -12,6 +12,7 @@ checks:
   - security
   - contract
   - rest
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -21,6 +22,8 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Маскирование секрета зависит от роли и должно совпадать между версиями API
+    notes: 'Real-world bug: RWB-0133 (keycloak/keycloak#52197)'
   expected:
   - секреты и чужие данные не возвращаются в success/error responses
   applicability:
@@ -41,4 +44,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0133'

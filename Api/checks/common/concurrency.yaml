@@ -219,3 +219,84 @@ checks:
   risk:
     impact: high
     likelihood: medium
+- id: CONC-REQUEST-CONTEXT-ISOLATION
+  status: draft
+  title: Параллельные запросы разных пользователей получают только свой контекст и свой ответ
+  category: concurrency
+  protocols:
+  - generic
+  kind: reliability
+  priority: P1
+  tags:
+  - concurrency
+  - tenant-isolation
+  - ownership
+  - data-integrity
+  - costly
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Несколько пользователей или tenant; есть маршруты с контекстом уровня запроса (пользователь, tenant, язык) или вызовы
+    нижележащего сервиса через общее соединение.
+  steps:
+  - action: Параллельно отправить N запросов от разных пользователей с уникальными входными данными к одним маршрутам.
+  - action: Сверить, что каждый ответ относится к своему пользователю и рассчитан по своим входным данным.
+  expected:
+  - Нет чужих данных, пустого контекста и 5xx.
+  - Ответы не перепутаны при общем канале к нижележащему сервису.
+  applicability:
+    when:
+    - Многопользовательский сервис.
+    skip_when:
+    - Однопользовательский сервис без параллельной нагрузки.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: critical
+    likelihood: low
+  references:
+  - CWE-362
+  - 'Real-world bug: RWB-0007'
+- id: CONC-PARALLEL-INDEPENDENT
+  status: draft
+  title: Параллельные независимые запросы одной операции выполняются без 5xx
+  category: concurrency
+  protocols:
+  - generic
+  kind: reliability
+  priority: P2
+  tags:
+  - concurrency
+  - reliability
+  - costly
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Операция при обработке читает общую конфигурацию или кэш (политики, настройки).
+  steps:
+  - action: Отправить N параллельных запросов создания независимых объектов (разные ключи); повторить серию несколько раз.
+  expected:
+  - Все запросы завершаются успехом или ожидаемой бизнес-ошибкой; 5xx и обрывов нет.
+  applicability:
+    when:
+    - Есть изменяющие операции.
+    skip_when:
+    - Только чтение статичных данных.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - CWE-362
+  - 'Real-world bug: RWB-0008'

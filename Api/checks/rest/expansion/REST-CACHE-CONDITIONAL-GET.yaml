@@ -11,6 +11,7 @@ checks:
   tags:
   - contract
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -18,6 +19,12 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: HEAD и QUERY с If-None-Match дают 304 так же, как GET
+    notes: 'Real-world bug: RWB-0111 (expressjs/express#7365)'
+  - action: Проверить набор заголовков в 304 (Trailer, заголовки тела)
+    notes: 'Real-world bug: RWB-0111 (expressjs/express#2749)'
+  - action: Коллизия ETag у разных тел одинаковой длины
+    notes: 'Real-world bug: RWB-0111 (expressjs/express#2667)'
   expected:
   - 304 возвращается только при неизменившемся представлении
   applicability:
@@ -36,4 +43,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0111'

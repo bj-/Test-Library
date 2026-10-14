@@ -12,6 +12,7 @@ checks:
   - boundary
   - validation
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -20,6 +21,8 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Добавить даты на границе года и функции над датами в фильтре и сортировке
+    notes: 'Real-world bug: RWB-0113 (directus/directus#28254)'
   expected:
   - ISO-8601, offset, leap day и invalid date соответствуют контракту
   applicability:
@@ -39,4 +42,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0113'

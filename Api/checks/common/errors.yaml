@@ -54,6 +54,7 @@ checks:
   - error-handling
   - security
   - hardening
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -62,6 +63,10 @@ checks:
   - Есть способ вызвать 5xx в тестовом окружении (fault injection, некорректная зависимость).
   steps:
   - action: Спровоцировать необработанное исключение на сервере.
+  - action: Ошибка зависимости со своим кодом не меняет статус ответа клиенту
+    notes: 'Real-world bug: RWB-0068 (nestjs/nest#17695)'
+  - action: Ошибка, возникшая асинхронно в обработчике, — ответ приходит без зависания и в общей модели
+    notes: 'Real-world bug: RWB-0068 (nestjs/nest#373)'
   expected:
   - Ответ в модели ошибок с correlation id.
   - Нет stack trace, SQL, путей файлов, версий библиотек и секретов.
@@ -81,3 +86,46 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0068'
+- id: ERR-STATUS-MATCHES-EFFECT
+  status: draft
+  title: Код ответа соответствует фактическому результату операции
+  category: errors
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - error-handling
+  - data-integrity
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Изменяющая операция с побочными действиями после основной транзакции (синхронизация, кэш, события).
+  steps:
+  - action: Выполнить изменяющую операцию (в том числе DELETE) разными клиентами; затем прочитать ресурс.
+  expected:
+  - Успех — 2xx.
+  - При 5xx состояние не изменено или ошибка явно сообщает о частичном выполнении.
+  applicability:
+    when:
+    - Есть изменяющие операции.
+    skip_when:
+    - —
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - RFC 9110 §15.6
+  - 'Real-world bug: RWB-0045'

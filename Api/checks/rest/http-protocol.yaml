@@ -117,6 +117,7 @@ checks:
   - positive
   - contract
   - performance
+  - real-world-bug
   - regression
   - nightly
   preconditions:
@@ -124,6 +125,8 @@ checks:
   steps:
   - action: 'Запросить с Accept-Encoding: gzip, br и identity.'
   - action: Отправить сжатое тело запроса с Content-Encoding.
+  - action: Добавить сжатие одновременно с установкой cookie сессии и проверку живости сервиса
+    notes: 'Real-world bug: RWB-0081 (expressjs/session#72)'
   expected:
   - Content-Encoding соответствует запрошенному.
   - Распакованное тело совпадает с несжатым.
@@ -142,6 +145,8 @@ checks:
   risk:
     impact: low
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0081'
 - id: HTTP-REQUEST-SMUGGLING
   status: approved
   title: Противоречивые Content-Length и Transfer-Encoding не приводят к request smuggling
@@ -383,3 +388,84 @@ checks:
   risk:
     impact: low
     likelihood: medium
+- id: HTTP-VERSION-PARITY
+  status: draft
+  title: Запросы по HTTP/2 и с предложением Upgrade h2c обслуживаются так же, как по HTTP/1.1
+  category: http-semantics
+  protocols:
+  - rest
+  kind: compatibility
+  priority: P3
+  tags:
+  - compatibility
+  - reliability
+  - transport-security
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервер или прокси принимает HTTP/2 (ALPN h2) или клиенты могут предлагать Upgrade.
+  steps:
+  - action: Выполнить основные запросы (GET, POST с телом) по HTTP/2 и по HTTP/1.1; сравнить ответы.
+  - action: Отправить HTTP/1.1 запрос с Connection Upgrade, Upgrade h2c и HTTP2-Settings (GET и POST с телом).
+  - action: Проверить живость сервиса после серии.
+  expected:
+  - Ответы одинаковы для обеих версий протокола.
+  - Upgrade игнорируется (обычный ответ HTTP/1.1) или выполняется корректно (101); соединение не сбрасывается, процесс не
+    падает.
+  applicability:
+    when:
+    - Сервис доступен по HTTP.
+    skip_when:
+    - —
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - RFC 9113
+  - RFC 9110 §7.8
+  - 'Real-world bug: RWB-0013'
+- id: HTTP-ABSOLUTE-URL-BASE-PATH
+  status: draft
+  title: Абсолютные URL, которые формирует сервер, учитывают публичный адрес и базовый путь
+  category: http-semantics
+  protocols:
+  - rest
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - compatibility
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервис опубликован за прокси, возможно под подпутём; сервер формирует абсолютные ссылки (Location, callback OAuth, ссылки
+    в письмах, пагинация).
+  steps:
+  - action: Запустить сценарии, где сервер формирует абсолютный URL, и разобрать полученные адреса.
+  expected:
+  - URL содержит публичную схему, хост и базовый путь и ведёт на рабочий маршрут.
+  applicability:
+    when:
+    - Сервер формирует абсолютные ссылки.
+    skip_when:
+    - Только относительные ссылки.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Конфигурация публичного URL
+  - 'Real-world bug: RWB-0027'

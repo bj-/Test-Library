@@ -13,6 +13,7 @@ checks:
   - negative
   - security
   - authz
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -24,6 +25,8 @@ checks:
   - action: Request a protected resource as principal A, then repeat the same URL as principal B and across tenants.
     notes: 'Matrix axis: Tenant isolation; scenario: Cross-principal cache leakage. Use isolated synthetic identities and
       data.'
+  - action: Set-Cookie в кэшируемом ответе — проверять двумя пользователями через общий кэш
+    notes: 'Real-world bug: RWB-0145 (GHSA-2jfj-6hjv-fm6j)'
   expected:
   - Cached responses are partitioned or bypassed appropriately; B never receives A’s protected content.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
@@ -47,3 +50,4 @@ checks:
     likelihood: medium
   references:
   - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model
+  - 'Real-world bug: RWB-0145'

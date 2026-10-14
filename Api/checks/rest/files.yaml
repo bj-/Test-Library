@@ -49,6 +49,7 @@ checks:
   - negative
   - files
   - security
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -59,6 +60,8 @@ checks:
   steps:
   - action: Загрузить исполняемый файл с расширением .jpg, корректный файл с неверным Content-Type, polyglot-файл, HTML и
       SVG вместо изображения.
+  - action: Согласованность проверки на альтернативных путях загрузки (TUS, импорт по URL)
+    notes: 'Real-world bug: RWB-0073 (directus/directus#27784)'
   expected:
   - Запрещённые типы отклоняются; сохранённый файл отдаётся с безопасным Content-Type.
   applicability:
@@ -78,6 +81,8 @@ checks:
   risk:
     impact: critical
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0073'
 - id: FILE-FILENAME-SANITIZATION
   status: approved
   title: Имя загружаемого файла санитизируется
@@ -129,6 +134,7 @@ checks:
   - negative
   - files
   - security
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -137,6 +143,10 @@ checks:
   - Файлы доступны другим пользователям.
   steps:
   - action: Загрузить тестовый EICAR, SVG со скриптом, PDF с JavaScript, документ с макросами.
+  - action: Файл получает сам сервер по ссылке пользователя (превью, закладка), а не загружает клиент
+    notes: 'Real-world bug: RWB-0072 (GHSA-788w-68h3-cvxp)'
+  - action: Пакеты расширений (темы, плагины) — путь за каталог и исполнение файлов данных; связано с INJ-PATH-TRAVERSAL
+    notes: 'Real-world bug: RWB-0072 (GHSA-jj74-hc2q-xrvm)'
   expected:
   - Файл блокируется, помещается в карантин или отдаётся только как attachment по политике.
   applicability:
@@ -155,6 +165,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0072'
 - id: FILE-ARCHIVE-BOMB
   status: approved
   title: Архивные и графические бомбы не исчерпывают ресурсы
@@ -168,12 +180,19 @@ checks:
   - files
   - security
   - costly
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Сервер распаковывает архивы или обрабатывает изображения.
   steps:
   - action: Загрузить zip-бомбу, архив с path traversal в именах, изображение 50000x50000 пикселей.
+  - action: Добавить медиафайлы с искажёнными размерами блоков (бесконечный цикл разбора), не только архивы и изображения
+    notes: 'Real-world bug: RWB-0069 (GHSA-f94x-6692-553q)'
+  - action: Заявленный в заголовке ZIP размер занижен — лимит должен считаться по фактическому выходу
+    notes: 'Real-world bug: RWB-0069 (GHSA-c6fg-446q-cg94)'
+  - action: Не бомба, а испорченные сжатые данные — проверять живость сервиса после ответа
+    notes: 'Real-world bug: RWB-0069 (GHSA-8238-w5pm-2374)'
   expected:
   - Обработка ограничена по размеру и времени; файлы не пишутся вне каталога.
   applicability:
@@ -190,6 +209,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0069'
 - id: FILE-EMPTY-AND-MALFORMED-MULTIPART
   status: approved
   title: Пустой файл и некорректный multipart обрабатываются корректно
@@ -202,6 +223,7 @@ checks:
   - negative
   - files
   - validation
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -227,6 +249,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0071'
 - id: FILE-DOWNLOAD-AUTHZ
   status: approved
   title: Скачивание файлов проверяет права и срок действия ссылок
@@ -240,6 +264,7 @@ checks:
   - files
   - security
   - authz
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -250,6 +275,9 @@ checks:
   steps:
   - action: Скачать чужой файл по id, по прямому URL хранилища, по истёкшей подписанной ссылке, по подписанной ссылке с изменёнными
       параметрами.
+  - action: Манипуляция путём в URL статического контента (traversal, кодирование) приводит к файлу другой сущности, а права
+      проверены по сущности из исходного пути; прогонять на внешнем хранилище
+    notes: 'Real-world bug: RWB-0070 (GHSA-rg9r-hr7g-5gc2)'
   expected:
   - Доступ отклоняется во всех случаях.
   applicability:
@@ -269,6 +297,8 @@ checks:
   risk:
     impact: critical
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0070'
 - id: FILE-DOWNLOAD-HEADERS
   status: approved
   title: Скачивание отдаёт корректные Content-Type, Content-Disposition и nosniff
@@ -372,3 +402,165 @@ checks:
   risk:
     impact: low
     likelihood: medium
+- id: FILE-TRANSFORM-LIMITS
+  status: draft
+  title: Лимит трансформации файла пропускает допустимые комбинации и отклоняет превышение
+  category: files
+  protocols:
+  - rest
+  kind: boundary
+  priority: P3
+  tags:
+  - boundary
+  - files
+  - validation
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Эндпоинт отдаёт файл с трансформацией на лету (размер, формат, качество) и лимитом на результат.
+  steps:
+  - action: Запросить трансформацию с малыми размерами без format и с каждым format (jpeg, png, webp, avif).
+  - action: Запросить размер чуть выше лимита и комбинацию, где выше лимита только промежуточный шаг.
+  expected:
+  - Запросы в пределах лимита успешны независимо от format.
+  - Превышение лимита, в том числе на промежуточном шаге, — 4xx.
+  applicability:
+    when:
+    - Есть трансформация файлов.
+    skip_when:
+    - Файлы отдаются как есть.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: low
+  references:
+  - OWASP API4:2023
+  - 'Real-world bug: RWB-0012'
+- id: FILE-MALFORMED-STRUCTURE
+  status: draft
+  title: Повреждённый файл при разборе метаданных даёт 4xx, а не падение процесса
+  category: files
+  protocols:
+  - rest
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - files
+  - resilience
+  - hardening
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервис разбирает загружаемые файлы (медиа, документы, архивы) для метаданных или превью.
+  steps:
+  - action: Загрузить файл известного формата с размером блока меньше заголовка, отрицательным остатком, обрезанным концом.
+  - action: Проверить живость сервиса другими запросами.
+  expected:
+  - Ошибка разбора как 4xx или файл принят без метаданных; процесс продолжает работу.
+  applicability:
+    when:
+    - Есть разбор содержимого файлов.
+    skip_when:
+    - Файлы хранятся без разбора.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - CWE-248
+  - CWE-400
+  - 'Real-world bug: RWB-0031'
+- id: FILE-UPLOAD-KEY-COLLISION
+  status: draft
+  title: Загрузка не перезаписывает чужой файл с тем же именем или ключом хранилища
+  category: files
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - files
+  - ownership
+  - authz
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Разные владельцы или коллекции хранят файлы в общем хранилище.
+  steps:
+  - action: Загрузить файл с именем или ключом существующего файла другой коллекции или другого пользователя.
+  - action: Скачать исходный файл.
+  expected:
+  - Исходный файл не изменился; новому присвоен уникальный ключ или 409/403.
+  applicability:
+    when:
+    - Есть загрузка файлов.
+    skip_when:
+    - Нет загрузки.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - OWASP API1:2023
+  - CWE-639
+  - 'Real-world bug: RWB-0037'
+- id: FILE-ABORTED-UPLOAD-CLEANUP
+  status: draft
+  title: Прерванная загрузка не оставляет данных в хранилище и не учитывается в квоте
+  category: files
+  protocols:
+  - rest
+  kind: reliability
+  priority: P3
+  tags:
+  - files
+  - resilience
+  - costly
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Загрузка сохраняет данные до завершения запроса.
+  steps:
+  - action: Многократно начинать multipart-загрузку и обрывать соединение на разных этапах.
+  - action: Проверить квоту, список файлов и занятое место.
+  expected:
+  - Прерванные загрузки не оставляют файлов и не учитываются в квоте.
+  applicability:
+    when:
+    - Есть загрузка файлов.
+    skip_when:
+    - Нет загрузки.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - OWASP API4:2023
+  - CWE-459
+  - 'Real-world bug: RWB-0048'

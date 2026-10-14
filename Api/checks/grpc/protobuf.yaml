@@ -88,6 +88,7 @@ checks:
   tags:
   - positive
   - reliability
+  - real-world-bug
   - regression
   - nightly
   preconditions:
@@ -96,6 +97,10 @@ checks:
   - or bidirectional streaming.
   steps:
   - action: Open stream, exchange expected messages, and close according to contract.
+  - action: Исключение в обработчике стрима — клиент получает ошибку, сервис после этого доступен
+    notes: 'Real-world bug: RWB-0074 (nestjs/nest#13360)'
+  - action: Исключение обработчика до первого сообщения — итоговый статус не OK
+    notes: 'Real-world bug: RWB-0074 (nestjs/nest#13187)'
   expected:
   - Messages follow documented ordering and delivery guarantees.
   - Stream ends with expected status and releases resources.
@@ -111,3 +116,5 @@ checks:
   profiles:
   - Regression
   - Nightly
+  references:
+  - 'Real-world bug: RWB-0074'

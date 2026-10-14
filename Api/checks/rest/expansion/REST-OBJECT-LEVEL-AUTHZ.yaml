@@ -13,6 +13,7 @@ checks:
   - authz
   - negative
   - rest
+  - real-world-bug
   - smoke
   - pr
   - ci
@@ -23,6 +24,8 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Добавить параметр цели в действиях бота/агента (каналы, комнаты) и проверку каждого действия чтения метаданных
+    notes: 'Real-world bug: RWB-0124 (GHSA-g7fw-3gjp-g5hf)'
   expected:
   - доступ и мутации разрешены только по политике; отказ не раскрывает данные
   applicability:
@@ -44,4 +47,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0124'

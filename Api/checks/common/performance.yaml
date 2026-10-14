@@ -13,11 +13,18 @@ checks:
   tags:
   - performance
   - costly
+  - real-world-bug
   - nightly
   preconditions:
   - Определены SLO и тестовые данные реалистичного объёма.
   steps:
   - action: Измерить p50/p95/p99 для ключевых операций.
+  - action: Добавить замер задержки при росте объёма данных (тенанты, роли) и сравнение с предыдущей версией — ловит регрессии
+      сложности
+    notes: 'Real-world bug: RWB-0096 (keycloak/keycloak#51554)'
+  - action: Добавить замер при росте числа ролей; проверять все варианты эндпоинта (realm и client) — фикс одного не гарантирует
+      другой
+    notes: 'Real-world bug: RWB-0096 (keycloak/keycloak#51531)'
   expected:
   - Перцентили в пределах SLO; регрессия относительно базовой линии не выше порога.
   applicability:
@@ -33,6 +40,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0096'
 - id: PERF-LOAD-THROUGHPUT
   status: approved
   title: Сервис выдерживает целевую нагрузку
@@ -185,11 +194,14 @@ checks:
   tags:
   - performance
   - costly
+  - real-world-bug
   - nightly
   preconditions:
   - Нет.
   steps:
   - action: Измерить размер ответов основных операций при реалистичных данных.
+  - action: Добавить списки с крупными объектами и сортировкой (500 от СУБД)
+    notes: 'Real-world bug: RWB-0097 (strapi/strapi#27393)'
   expected:
   - Ответы не содержат лишних вложенных данных; размер ограничен пагинацией или лимитами.
   applicability:
@@ -205,3 +217,5 @@ checks:
   risk:
     impact: low
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0097'

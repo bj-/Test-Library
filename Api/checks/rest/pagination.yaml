@@ -51,6 +51,7 @@ checks:
   - positive
   - filtering
   - sorting
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -58,6 +59,10 @@ checks:
   - Dataset can verify filters and sort order.
   steps:
   - action: Request a collection with two filters and a supported sort field.
+  - action: Добавить сортировку по вычисляемым полям при фильтре по связи (DISTINCT) и проверку на разных СУБД
+    notes: 'Real-world bug: RWB-0118 (strapi/strapi#26746)'
+  - action: Сортировка на уровне раскрываемой связи вместе с сортировкой верхнего уровня
+    notes: 'Real-world bug: RWB-0118 (strapi/strapi#26359)'
   expected:
   - Every returned item satisfies all filters.
   - Ordering matches requested field and direction.
@@ -73,3 +78,91 @@ checks:
   - CI
   - Regression
   - Nightly
+  references:
+  - 'Real-world bug: RWB-0118'
+- id: REST-FILTER-OPERATOR-TYPE-MATRIX
+  status: draft
+  title: Каждый оператор фильтра работает для каждого допустимого типа поля и возвращает ровно подходящие записи
+  category: pagination
+  protocols:
+  - rest
+  - graphql
+  kind: positive
+  priority: P2
+  tags:
+  - positive
+  - filtering
+  - validation
+  - data-integrity
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Список поддерживает фильтры с операторами (eq, neq, in, gt, starts_with, contains, регистронезависимые и т. п.).
+  - Создан набор записей с известными значениями каждого типа поля, включая null, пустую строку и JSON-путь.
+  steps:
+  - action: Для каждого типа и подтипа поля (integer и int64, geometry и geometry.Point, string, date, json) применить каждый
+      документированный для него оператор.
+  - action: Сравнить результат с эталонным отбором на клиенте по полному списку без фильтра.
+  - action: Применить недокументированный для типа оператор.
+  expected:
+  - Допустимый оператор принимается (2xx) для типа и всех его подтипов.
+  - Результат совпадает с эталонным отбором; нет молчаливого пустого ответа.
+  - Недопустимый оператор — 400 с понятной ошибкой.
+  applicability:
+    when:
+    - Есть фильтрация списков с операторами.
+    skip_when:
+    - Фильтров нет или только точное совпадение по одному полю.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Документация операторов фильтра
+  - 'Real-world bug: RWB-0001'
+- id: REST-FILTER-EQUIVALENT-FORMS
+  status: draft
+  title: Логически эквивалентные формы фильтра дают одинаковый ответ
+  category: pagination
+  protocols:
+  - rest
+  - graphql
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - filtering
+  - data-integrity
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Фильтр поддерживает логические операторы ($and, $or) и условия по связанным сущностям.
+  steps:
+  - action: Выполнить один и тот же фильтр (в том числе по связи) в плоской форме и обёрнутым в $and/$or разной глубины вложенности.
+  - action: Сравнить состав выборки и заполненность связанных полей.
+  expected:
+  - Состав и содержимое ответа одинаковы во всех эквивалентных формах.
+  applicability:
+    when:
+    - Фильтр поддерживает вложенные логические выражения.
+    skip_when:
+    - Только плоские фильтры.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - Здравый смысл — эквивалентные выражения дают одинаковый результат
+  - 'Real-world bug: RWB-0002'

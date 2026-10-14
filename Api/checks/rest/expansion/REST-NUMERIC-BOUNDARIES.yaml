@@ -12,6 +12,7 @@ checks:
   - boundary
   - validation
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -20,6 +21,10 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Добавить переполнение в арифметике времени (метка времени + длительность) для параметров срока
+    notes: 'Real-world bug: RWB-0123 (keycloak/keycloak#52491)'
+  - action: Добавить числа больше 2^53 и с высокой точностью в полях с правилами валидации
+    notes: 'Real-world bug: RWB-0123 (directus/directus#26448)'
   expected:
   - inclusive/exclusive границы соблюдаются
   applicability:
@@ -39,4 +44,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0123'

@@ -13,6 +13,7 @@ checks:
   - negative
   - validation
   - rest
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -22,6 +23,32 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Добавить DNS rebinding (TOCTOU)
+    notes: 'Real-world bug: RWB-0135 (GHSA-322m-ff4g-9vx9)'
+  - action: Добавить переходные IPv6 и сокращённую запись IPv4
+    notes: 'Real-world bug: RWB-0135 (GHSA-r7f2-6fj8-6fg2)'
+  - action: Обход allow-list — разрешённый хост в пути/query/поддомене
+    notes: 'Real-world bug: RWB-0135 (GHSA-4233-jc72-56c5)'
+  - action: 'Добавить вариант с редиректом: внешний URL отвечает 3xx на внутренний адрес; проверка не должна ограничиваться
+      исходным URL'
+    notes: 'Real-world bug: RWB-0135 (GHSA-r4gj-5m52-g5wh)'
+  - action: 'Добавить вариант транспорта: цель с HTTP/2 и имя, разрешающееся во внутренний адрес — защита не должна зависеть
+      от версии протокола'
+    notes: 'Real-world bug: RWB-0135 (GHSA-3pq3-5fj3-cg6v)'
+  - action: Хост из allowlist с DNS на внутренний адрес (DNS rebinding) — проверять IP после резолва
+    notes: 'Real-world bug: RWB-0135 (GHSA-cjq9-62q9-8jv4)'
+  - action: Утечка учётных данных пользователя в исходящий запрос и повторная проверка адреса при редиректе
+    notes: 'Real-world bug: RWB-0135 (GHSA-pj5h-5q6c-3pfx)'
+  - action: URL из директив внутри содержимого, разрешаемых сервером с его учётными данными, — ограничение тем же источником
+    notes: 'Real-world bug: RWB-0135 (GHSA-qgvj-qcf8-xq73)'
+  - action: Обход allowlist префиксом пути без границы сегмента в прокси с учётными данными сервера
+    notes: 'Real-world bug: RWB-0135 (GHSA-m62c-5q34-f3cf)'
+  - action: link-local IPv6 вне fe80::/64 (весь fe80::/10)
+    notes: 'Real-world bug: RWB-0135 (GHSA-rpw4-54j3-4h4q)'
+  - action: NAT64 local-use 64:ff9b:1::/48 (в дополнение к ::ffff:0:0/96 и 64:ff9b::/96)
+    notes: 'Real-world bug: RWB-0135 (GHSA-2vr4-cq9g-pvrc)'
+  - action: Исходящие запросы с учётными данными сервера — назначение ограничено origin интеграции, и после редиректа тоже
+    notes: 'Real-world bug: RWB-0135 (GHSA-q5wm-mgqx-fv2f)'
   expected:
   - запрещённые схемы и internal/private targets блокируются
   applicability:
@@ -42,4 +69,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0135'

@@ -1,0 +1,42 @@
+checks:
+- id: SEC-AUTHZ-RECREATED-IDENTITY
+  status: draft
+  title: Права и согласия не переходят к пересозданному пользователю с тем же логином
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - authz
+  - privilege-escalation
+  - token-lifecycle
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Можно удалить пользователя и создать нового с тем же логином или email.
+  steps:
+  - action: Выдать пользователю A права, делегирование, согласия, членство; удалить его.
+  - action: Создать нового пользователя с тем же логином; войти, обновить токены, проверить права и claims.
+  expected:
+  - Новый пользователь не получает права и согласия старого; привязка к неизменяемому внутреннему id.
+  applicability:
+    when:
+    - Есть удаление пользователей и повторная регистрация.
+    skip_when:
+    - Логины не переиспользуются.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - OWASP API5:2023
+  - CWE-639
+  - 'Real-world bug: RWB-0025'

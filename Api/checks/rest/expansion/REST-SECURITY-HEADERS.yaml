@@ -11,6 +11,7 @@ checks:
   tags:
   - security
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -18,6 +19,14 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Проверять наличие заголовков и других следов глобальных middleware на всех группах маршрутов, включая исключённые
+      из глобального префикса и служебные
+    notes: 'Real-world bug: RWB-0132 (nestjs/nest#13401)'
+  - action: Проверять заголовки и другие следы middleware во всех версиях API (вместе с вариантом про исключения из глобального
+      префикса)
+    notes: 'Real-world bug: RWB-0132 (nestjs/nest#13093)'
+  - action: Регистрация middleware шаблоном на все маршруты и под альтернативным HTTP-сервером
+    notes: 'Real-world bug: RWB-0132 (nestjs/nest#972)'
   expected:
   - обязательные заголовки присутствуют и согласованы с политикой
   applicability:
@@ -36,4 +45,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0132'

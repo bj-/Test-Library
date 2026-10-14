@@ -13,6 +13,7 @@ checks:
   - validation
   - boundary
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -21,6 +22,11 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Отсутствуют все поля сразу - пустой POST и GET на URL действия формы; ответ должен быть валидационным, а не общей
+      ошибкой
+    notes: 'Real-world bug: RWB-0131 (keycloak/keycloak#52076)'
+  - action: Прогон по всем эндпоинтам, включая сгенерированные/унаследованные, где валидация может быть молча отключена
+    notes: 'Real-world bug: RWB-0131 (nestjs/nest#5688)'
   expected:
   - пропуск каждого обязательного параметра даёт контролируемую ошибку
   applicability:
@@ -40,4 +46,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0131'

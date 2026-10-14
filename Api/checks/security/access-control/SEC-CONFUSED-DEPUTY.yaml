@@ -1,0 +1,45 @@
+checks:
+- id: SEC-CONFUSED-DEPUTY
+  status: draft
+  title: Действия во внешней системе от имени пользователя выполняются только с его правами
+  category: security
+  protocols:
+  - rest
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - authz
+  - privilege-escalation
+  - money
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервер действует во внешней системе (SCM, платежи, почта) от имени пользователя или проксирует запросы со своим ключом.
+  steps:
+  - action: Запустить операцию над ресурсом внешней системы, к которому у пользователя нет доступа, без своего токена и с
+      токеном без прав.
+  - action: Под обычным пользователем вызвать через прокси операции сверх нужных (создание выплат, чтение клиентов, удаление).
+  expected:
+  - Операция отклоняется или выполняется только с правами пользователя; отката на сервисные учётные данные нет.
+  - Неразрешённые методы и пути прокси — 403.
+  applicability:
+    when:
+    - Есть интеграции от имени пользователя или прокси к стороннему API.
+    skip_when:
+    - Нет исходящих интеграций.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: critical
+    likelihood: low
+  references:
+  - OWASP API5:2023
+  - CWE-441
+  - 'Real-world bug: RWB-0043'

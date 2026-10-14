@@ -12,6 +12,7 @@ checks:
   - boundary
   - validation
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -20,6 +21,8 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Поле логина без лимита длины на неаутентифицированном эндпоинте — усиление записи в логи
+    notes: 'Real-world bug: RWB-0137 (keycloak/keycloak#50903)'
   expected:
   - min-1/min/max/max+1 проверяются относительно ограничений
   applicability:
@@ -39,4 +42,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0137'

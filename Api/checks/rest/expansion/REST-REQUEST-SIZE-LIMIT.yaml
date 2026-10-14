@@ -13,6 +13,7 @@ checks:
   - negative
   - reliability
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -21,6 +22,8 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: 'Добавить сочетание лимитов по маршрутам: особый лимит не ломает разбор тела на других'
+    notes: 'Real-world bug: RWB-0130 (nestjs/nest#14734)'
   expected:
   - размеры около границы обрабатываются корректно; превышение безопасно отклоняется
   applicability:
@@ -40,4 +43,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0130'

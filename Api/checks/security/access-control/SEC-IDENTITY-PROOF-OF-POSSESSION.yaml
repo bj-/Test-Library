@@ -1,0 +1,44 @@
+checks:
+- id: SEC-IDENTITY-PROOF-OF-POSSESSION
+  status: draft
+  title: Заявленная клиентом идентичность без доказательства владения не даёт прав и льгот
+  category: security
+  protocols:
+  - rest
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - authn
+  - business-logic
+  - money
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Запрос содержит идентификатор (адрес кошелька, DID, account id), по которому сервер выдаёт льготу или доступ.
+  steps:
+  - action: Указать идентификатор чужого субъекта, удовлетворяющего условиям, без подписи или с подписью другого ключа; запросить
+      ресурс.
+  - action: Повторить в течение TTL кэша решений.
+  expected:
+  - Без доказательства владения льгота и доступ не выдаются; кэш решений привязан к доказанной идентичности.
+  applicability:
+    when:
+    - Есть доступ по заявленному идентификатору.
+    skip_when:
+    - Идентичность только из аутентификации.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - OWASP API2:2023
+  - CWE-290
+  - 'Real-world bug: RWB-0042'

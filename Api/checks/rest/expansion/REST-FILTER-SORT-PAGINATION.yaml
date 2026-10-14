@@ -12,6 +12,7 @@ checks:
   - filtering
   - pagination
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -20,6 +21,10 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Пустые значения sort и ручной порядок связей при пагинации
+    notes: 'Real-world bug: RWB-0119 (strapi/strapi#26577)'
+  - action: Исходный баг серии strapi#26577/26550/26465 — пруф к тому же варианту
+    notes: 'Real-world bug: RWB-0119 (strapi/strapi#26426)'
   expected:
   - все элементы соответствуют фильтру; порядок стабилен; нет пропусков/дублей
   applicability:
@@ -39,4 +44,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0119'

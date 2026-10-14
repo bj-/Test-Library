@@ -65,8 +65,11 @@ def bug_info(bug_id: str, src: dict, result: dict) -> dict:
     return info
 
 
-def build_plan(batch: str, errors: list[str]) -> dict:
-    """Clusters and proofs with RWB IDs. Existing RWB of a check (earlier batch) is reused."""
+def build_plan(batch: str, errors: list[str], drafts_written: bool = False) -> dict:
+    """Clusters and proofs with RWB IDs. Existing RWB of a check (earlier batch) is reused.
+
+    drafts_written: records of accepted clusters are already in checks/ (apply_proofs.py).
+    """
     review = load_yaml(MINED / f"{batch}.review.yaml")
     results = {r["id"]: r for r in load_results(batch) if r["verdict"] == "api"}
     sources = load_sources(batch)
@@ -97,11 +100,12 @@ def build_plan(batch: str, errors: list[str]) -> dict:
             seen.add(b)
         if c.get("decision") == "accept":
             cid = c.get("check_id") or ""
-            if cid in checks:
+            c = dict(c, rwb=rwb_for(cid))
+            applied = f"Real-world bug: {c['rwb']}" in (checks.get(cid, {}).get("references") or [])
+            if cid in checks and not (drafts_written or applied):
                 errors.append(f"кластер {key}: {cid} уже есть в библиотеке — для дополнения это extends")
             if not c.get("file", "").startswith("checks/"):
                 errors.append(f"кластер {key}: file должен быть в checks/")
-            c = dict(c, rwb=rwb_for(cid))
         elif c.get("decision") == "reject" and not c.get("reason"):
             errors.append(f"кластер {key}: у reject нужна причина")
         clusters.append(c)

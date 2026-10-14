@@ -13,6 +13,7 @@ checks:
   - negative
   - security
   - authz
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -23,6 +24,13 @@ checks:
   steps:
   - action: Authenticate as a user lacking the permission and call the protected operation.
     notes: 'Matrix axis: Authorization; scenario: Missing permission. Use isolated synthetic identities and data.'
+  - action: 'Добавить позитивную сторону матрицы прав: минимальная достаточная роль получает полный ответ, вложенные коллекции
+      не отфильтровываются молча при 200; сравнивать с ответом полной учётки и прежней версией'
+    notes: 'Real-world bug: RWB-0146 (keycloak/keycloak#52753)'
+  - action: Маршруты из базовых/общих обработчиков — проверять каждый отдельно, а не по одному представителю
+    notes: 'Real-world bug: RWB-0146 (nestjs/nest#879)'
+  - action: Имена методов/маршрутов с общим префиксом и разным регистром при правилах по имени
+    notes: 'Real-world bug: RWB-0146 (GHSA-88h9-xgvx-hvf2)'
   expected:
   - Access is denied according to policy; no protected side effect occurs.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
@@ -46,3 +54,4 @@ checks:
     likelihood: high
   references:
   - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model
+  - 'Real-world bug: RWB-0146'

@@ -1,0 +1,42 @@
+checks:
+- id: SEC-CLONE-FIELD-PERMISSIONS
+  status: draft
+  title: Копирование ресурса соблюдает полевые права чтения и создания
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - authz
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Есть операция duplicate, clone или copy; часть полей скрыта или закрыта правами.
+  steps:
+  - action: Скопировать объект пользователем с ограниченными полевыми правами; прочитать копию.
+  - action: Вызвать дублирование там, где оно отключено настройкой.
+  expected:
+  - Копия не содержит значений, которые вызывающий не может читать или задавать.
+  - Отключённое дублирование недоступно.
+  applicability:
+    when:
+    - Есть копирование.
+    skip_when:
+    - Нет копирования.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - OWASP API3:2023
+  - CWE-863
+  - 'Real-world bug: RWB-0047'

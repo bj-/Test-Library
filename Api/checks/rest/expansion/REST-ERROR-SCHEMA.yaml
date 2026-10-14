@@ -12,6 +12,7 @@ checks:
   - contract
   - negative
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -20,6 +21,10 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Регрессия схемы ошибок после обновления фреймворка — снимок ошибок до/после
+    notes: 'Real-world bug: RWB-0117 (nestjs/nest#4319)'
+  - action: Ошибки промежуточных слоёв (middleware, guard, прокси) — та же схема, что у ошибок обработчика
+    notes: 'Real-world bug: RWB-0117 (nestjs/nest#431)'
   expected:
   - ошибка соответствует схеме и не раскрывает stack trace/секреты
   applicability:
@@ -39,4 +44,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0117'

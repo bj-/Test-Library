@@ -20,7 +20,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from assign_profiles import dump  # noqa: E402
+from assign_profiles import RUN_TAGS, dump  # noqa: E402
 from cluster import TRACE_FILE, build_plan  # noqa: E402
 from library import setup_console  # noqa: E402
 
@@ -35,7 +35,9 @@ def ref(rwb: str) -> str:
 def mark(check: dict, rwb: str) -> list[str]:
     changes = []
     if TAG not in check["tags"]:
-        check["tags"].append(TAG)
+        tags = check["tags"]
+        pos = next((i for i, t in enumerate(tags) if t in RUN_TAGS), len(tags))  # run tags stay last
+        tags.insert(pos, TAG)
         changes.append("метка")
     refs = check.setdefault("references", [])
     if ref(rwb) not in refs:
@@ -88,7 +90,7 @@ def main() -> int:
     ap.add_argument("--proofs-only", action="store_true")
     args = ap.parse_args()
     errors: list[str] = []
-    plan = build_plan(args.batch, errors)
+    plan = build_plan(args.batch, errors, drafts_written=True)
     pending = [c["key"] for c in plan["clusters"] if c["decision"] == "pending"]
     if pending and not args.proofs_only:
         errors.append(f"не решены кластеры: {', '.join(pending)}")

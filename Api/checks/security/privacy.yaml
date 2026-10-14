@@ -13,6 +13,7 @@ checks:
   tags:
   - security
   - privacy
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -21,6 +22,11 @@ checks:
   - Есть номера карт, документов, телефоны.
   steps:
   - action: Прочитать ресурс от имени ролей с разным уровнем доступа.
+  - action: 'Добавить обратную сторону: избыточное маскирование несекретных полей и read-modify-write с маской'
+    notes: 'Real-world bug: RWB-0098 (keycloak/keycloak#52792)'
+  - action: Обойти все пути получения одного и того же чувствительного объекта (и эквивалентные пользовательские типы) и сравнить
+      маскирование
+    notes: 'Real-world bug: RWB-0098 (GHSA-p795-mqf2-36mf)'
   expected:
   - Маскирование соответствует роли; полные значения доступны только разрешённым ролям.
   applicability:
@@ -39,6 +45,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0098'
 - id: PRIV-ERASURE
   status: approved
   title: Удаление персональных данных по запросу выполняется полностью
@@ -156,3 +164,46 @@ checks:
   risk:
     impact: low
     likelihood: medium
+- id: PRIV-RESPONSE-FOREIGN-DATA
+  status: draft
+  title: Ответ не содержит фрагментов данных других запросов и памяти процесса
+  category: privacy
+  protocols:
+  - rest
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - privacy
+  - data-integrity
+  - concurrency
+  - costly
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Ответ формируется из двоичных данных или сериализует объекты сервера (SSR, кэш, экспорт, файлы).
+  steps:
+  - action: Параллельно слать запросы с уникальными маркерами в теле и Authorization.
+  - action: Читать ответы эндпоинтов, отдающих двоичные или сериализованные данные; искать чужие маркеры и аномальный размер.
+  expected:
+  - В ответе только данные этого ресурса; размер соответствует содержимому; чужих маркеров нет.
+  applicability:
+    when:
+    - Есть двоичные или сериализованные ответы.
+    skip_when:
+    - Только статичный JSON из БД без общих буферов.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: critical
+    likelihood: low
+  references:
+  - OWASP API3:2023
+  - CWE-226
+  - 'Real-world bug: RWB-0009'

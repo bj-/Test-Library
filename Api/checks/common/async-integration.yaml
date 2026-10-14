@@ -12,6 +12,7 @@ checks:
   - security
   - webhooks
   - authn
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -22,6 +23,8 @@ checks:
   steps:
   - action: Проверить подпись исходящего вебхука; отправить входящий вебхук без подписи, с неверной подписью, со старым timestamp,
       повторно.
+  - action: 'Добавить сторону приёма: подпись по сырым байтам при неканоническом форматировании JSON'
+    notes: 'Real-world bug: RWB-0053 (nestjs/nest#14543)'
   expected:
   - Без валидной подписи и в пределах окна времени вебхук отклоняется; повтор распознаётся.
   applicability:
@@ -41,6 +44,8 @@ checks:
   risk:
     impact: critical
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0053'
 - id: ASYNC-WEBHOOK-URL-SSRF
   status: approved
   title: URL вебхука не может указывать на внутренние адреса
@@ -54,6 +59,7 @@ checks:
   - security
   - webhooks
   - injection
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -82,6 +88,8 @@ checks:
   risk:
     impact: critical
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0054'
 - id: ASYNC-WEBHOOK-RETRY
   status: approved
   title: Неуспешная доставка вебхука повторяется с backoff и ограничением
@@ -209,6 +217,7 @@ checks:
   tags:
   - positive
   - async-jobs
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -216,6 +225,8 @@ checks:
   - Есть асинхронные задачи.
   steps:
   - action: Создать задачу, опрашивать статус до завершения, получить результат; задачу с ошибкой.
+  - action: Задача падает на ограничении данных — проверить детализацию причины в статусе и судьбу частичного результата
+    notes: 'Real-world bug: RWB-0052 (strapi/strapi#26579)'
   expected:
   - Статусы соответствуют контракту; ошибка содержит причину; результат доступен в течение срока хранения.
   applicability:
@@ -233,6 +244,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0052'
 - id: ASYNC-JOB-CANCEL
   status: approved
   title: Отмена фоновой задачи останавливает её и не оставляет частичных эффектов
@@ -285,12 +298,15 @@ checks:
   - async-jobs
   - resilience
   - costly
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Используется очередь.
   steps:
   - action: Отправить poison message.
+  - action: Различение повторяемых и неповторяемых ошибок — бизнес-ошибка не должна повторяться
+    notes: 'Real-world bug: RWB-0051 (nestjs/nest#10091)'
   expected:
   - Сообщение после лимита попыток в DLQ; остальные обрабатываются.
   applicability:
@@ -307,3 +323,161 @@ checks:
   risk:
     impact: low
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0051'
+- id: ASYNC-RPC-ERROR-PROPAGATION
+  status: draft
+  title: Ошибка обработчика в схеме запрос-ответ через брокер возвращается вызывающему
+  category: async
+  protocols:
+  - generic
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - async-jobs
+  - error-handling
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Синхронный вызов поверх брокера (reply-topic, request-reply).
+  steps:
+  - action: Отправить сообщение, на которое обработчик заведомо отвечает ошибкой; ждать ответа.
+  expected:
+  - Вызывающий получает ошибку в документированном формате, а не таймаут.
+  applicability:
+    when:
+    - Есть request-reply через брокер.
+    skip_when:
+    - Только асинхронные события.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - CWE-755
+  - 'Real-world bug: RWB-0032'
+- id: ASYNC-MESSAGE-VALIDATION
+  status: draft
+  title: Входящие сообщения брокера валидируются по схеме так же, как HTTP-запросы
+  category: async
+  protocols:
+  - generic
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - validation
+  - async-jobs
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервис принимает команды или события через брокер (Kafka, RabbitMQ, NATS) с объявленной схемой.
+  steps:
+  - action: Отправить сообщение с неверными типами, лишними и отсутствующими полями.
+  expected:
+  - Сообщение отклоняется (ошибка в reply-топике или DLQ); обработчик не выполняется с невалидными данными.
+  applicability:
+    when:
+    - Есть входящие сообщения брокера.
+    skip_when:
+    - Брокера нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - CWE-20
+  - 'Real-world bug: RWB-0033'
+- id: ASYNC-EVENT-PATH-SAME-RULES
+  status: draft
+  title: Событийный путь применяет те же фильтры и границы доступа, что и плановый
+  category: async
+  protocols:
+  - rest
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - webhooks
+  - authz
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Объекты или пользователи попадают в систему двумя путями — плановой синхронизацией с фильтрами и входящим событием или
+    вебхуком.
+  steps:
+  - action: Настроить фильтр или область, исключающую объект или пользователя.
+  - action: Отправить легитимное событие об исключённом объекте (изменение, добавление в другую группу); сравнить с результатом
+      плановой синхронизации.
+  expected:
+  - Событие для исключённого объекта игнорируется; пользователь вне области не получает доступ.
+  applicability:
+    when:
+    - Есть синхронизация по событиям и по расписанию.
+    skip_when:
+    - Один путь поступления данных.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP API8:2023
+  - CWE-863
+  - 'Real-world bug: RWB-0040'
+- id: ASYNC-SSE-STREAM
+  status: draft
+  title: Потоковый ответ SSE работает для всех методов и отдаёт text/event-stream
+  category: async
+  protocols:
+  - rest
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - streaming
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Есть эндпоинт Server-Sent Events, в том числе вызываемый методом с телом.
+  steps:
+  - action: Вызвать SSE-эндпоинт GET и POST с телом; дождаться событий; сравнить.
+  expected:
+  - 200, Content-Type text/event-stream; события приходят до закрытия клиентом.
+  applicability:
+    when:
+    - Есть SSE.
+    skip_when:
+    - Нет потоковых ответов.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - WHATWG HTML — Server-Sent Events
+  - 'Real-world bug: RWB-0050'

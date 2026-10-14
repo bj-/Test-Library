@@ -13,6 +13,7 @@ checks:
   - reliability
   - contract
   - rest
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -22,6 +23,8 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: 'Добавить проверку после сохранения файла (тип, размер > 2 ГиБ): ошибка не должна оставлять ресурс'
+    notes: 'Real-world bug: RWB-0141 (strapi/strapi#26674)'
   expected:
   - при ошибке не сохраняются частичные изменения, если контракт обещает атомарность
   applicability:
@@ -42,4 +45,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0141'

@@ -13,6 +13,7 @@ checks:
   - negative
   - security
   - authz
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -22,6 +23,8 @@ checks:
   steps:
   - action: Create or discover a job as user A and attempt to poll, cancel, or fetch its result as user B.
     notes: 'Matrix axis: Authorization; scenario: Async job ownership. Use isolated synthetic identities and data.'
+  - action: Эндпоинт списка задач, а не только чтение отдельной задачи
+    notes: 'Real-world bug: RWB-0144 (GHSA-7hfw-grcm-cqm6)'
   expected:
   - Job metadata and results are restricted to authorized principals; ownership is enforced at every job operation.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
@@ -44,3 +47,4 @@ checks:
     likelihood: medium
   references:
   - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model
+  - 'Real-world bug: RWB-0144'

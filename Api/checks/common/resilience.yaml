@@ -14,12 +14,25 @@ checks:
   - resilience
   - error-handling
   - costly
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Можно отключить зависимость (БД, кэш, внешний API) в тестовом окружении.
   steps:
   - action: Отключить зависимость и выполнить операции, которые от неё зависят.
+  - action: Добавить проверку живости сервиса сразу после отказа зависимости
+    notes: 'Real-world bug: RWB-0107 (strapi/strapi#27374)'
+  - action: Ошибка зависимости не маппится в 403/404 (ложный отказ в доступе)
+    notes: 'Real-world bug: RWB-0107 (directus/directus#27412)'
+  - action: Зависимость отключена в конфигурации (а не упала) — контролируемая ошибка
+    notes: 'Real-world bug: RWB-0107 (keycloak/keycloak#51352)'
+  - action: Явно проверять, что при недоступном хранилище списки не возвращают 200 с пустыми данными
+    notes: 'Real-world bug: RWB-0107 (keycloak/keycloak#51268)'
+  - action: Отказ зависимости после отправки заголовков потокового ответа — проверить живость сервиса после
+    notes: 'Real-world bug: RWB-0107 (nestjs/nest#10681)'
+  - action: 'Добавить фазу восстановления: после возврата зависимости сервис переподключается без своего перезапуска'
+    notes: 'Real-world bug: RWB-0107 (nestjs/nest#9363)'
   expected:
   - Ответ 503 или задокументированная ошибка, без зависания и утечек; после восстановления работа продолжается.
   applicability:
@@ -36,6 +49,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0107'
 - id: RESIL-PARTIAL-DEGRADATION
   status: approved
   title: Отказ некритичной зависимости не ломает основной функционал
@@ -50,12 +65,15 @@ checks:
   tags:
   - resilience
   - costly
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Есть некритичные зависимости (рекомендации, аналитика).
   steps:
   - action: Отключить некритичную зависимость.
+  - action: Добавить отключённый модуль/фичу лицензии и проверку всех операций CRUD, а не только create
+    notes: 'Real-world bug: RWB-0109 (strapi/strapi#27245)'
   expected:
   - Основные операции работают; ответ помечает отсутствующие данные по контракту.
   applicability:
@@ -72,6 +90,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0109'
 - id: RESIL-GRACEFUL-SHUTDOWN
   status: approved
   title: Перезапуск экземпляра не обрывает выполняющиеся запросы
@@ -86,12 +106,17 @@ checks:
   tags:
   - resilience
   - costly
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Несколько экземпляров за балансировщиком.
   steps:
   - action: Под нагрузкой выполнить rolling restart.
+  - action: Добавить негрейсфул остановку (SIGKILL, OOM) с удерживаемой распределённой блокировкой
+    notes: 'Real-world bug: RWB-0108 (directus/directus#27961)'
+  - action: Долгие соединения разных типов не блокируют остановку
+    notes: 'Real-world bug: RWB-0108 (nestjs/nest#13910)'
   expected:
   - Нет ошибок сверх порога; длительные запросы завершаются.
   applicability:
@@ -108,6 +133,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0108'
 - id: RESIL-CIRCUIT-BREAKER
   status: approved
   title: Circuit breaker размыкается и восстанавливается по политике
@@ -182,3 +209,43 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+- id: RESIL-ENCRYPTION-KEY-ROTATION
+  status: draft
+  title: Нерасшифровываемое после смены ключа значение не ломает чтение и сохранение остальных данных
+  category: resilience
+  protocols:
+  - rest
+  kind: reliability
+  priority: P3
+  tags:
+  - resilience
+  - data-integrity
+  - costly
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Часть полей хранится зашифрованной (ключи интеграций, секреты); есть доступ к смене ключа и перезапуску стенда.
+  steps:
+  - action: Сохранить зашифрованное значение, сменить ключ шифрования и перезапустить сервис.
+  - action: Прочитать и изменить объект с этим полем и соседние поля; ввести значение заново.
+  expected:
+  - Чтение и сохранение работают; нерасшифровываемое поле пустое или помечено, в журнале предупреждение.
+  - Значение можно ввести заново.
+  applicability:
+    when:
+    - Есть шифрование хранимых полей и управляемый стенд.
+    skip_when:
+    - Нет доступа к ключам стенда.
+  automation:
+    level: manual
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - Практика ротации ключей
+  - 'Real-world bug: RWB-0021'

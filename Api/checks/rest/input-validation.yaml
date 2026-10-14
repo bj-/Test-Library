@@ -12,6 +12,7 @@ checks:
   tags:
   - negative
   - validation
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -21,6 +22,8 @@ checks:
   steps:
   - action: Отправить значения корректного формата и граничные корректные варианты.
   - action: 'Отправить значения неверного формата: без домена, лишние символы, неверная длина uuid, несуществующая дата 2023-02-30.'
+  - action: Проверка формата на экстремально длинном значении — время, память и отсутствие 5xx
+    notes: 'Real-world bug: RWB-0175 (GHSA-h3mg-xc3c-68pw)'
   expected:
   - Корректные значения принимаются.
   - Некорректные отклоняются задокументированной ошибкой валидации с указанием поля.
@@ -41,6 +44,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0175'
 - id: VAL-REGEX-PATTERN
   status: approved
   title: Поле с pattern принимает только совпадающие значения
@@ -92,6 +97,7 @@ checks:
   tags:
   - boundary
   - validation
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -101,6 +107,8 @@ checks:
   steps:
   - action: Отправить массивы длиной min-1, min, max, max+1.
   - action: Отправить массив с дубликатами при uniqueItems.
+  - action: Добавить обязательный массив с пустыми элементами среди непустых
+    notes: 'Real-world bug: RWB-0163 (keycloak/keycloak#52776)'
   expected:
   - Значения в пределах принимаются, за пределами отклоняются с указанием поля.
   - Дубликаты отклоняются или схлопываются строго по контракту.
@@ -120,6 +128,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0163'
 - id: VAL-NESTED-OBJECT-ERRORS
   status: approved
   title: Ошибка во вложенном объекте указывает точный путь к полю
@@ -134,6 +144,7 @@ checks:
   - negative
   - validation
   - error-handling
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -159,6 +170,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0171'
 - id: VAL-DEEP-NESTING
   status: approved
   title: Чрезмерно вложенный JSON отклоняется без деградации сервиса
@@ -173,6 +186,7 @@ checks:
   - validation
   - security
   - hardening
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -182,6 +196,8 @@ checks:
   steps:
   - action: Отправить JSON с глубиной вложенности 1000+ уровней массивов/объектов.
   - action: Проверить время ответа и доступность сервиса после запроса.
+  - action: Вложенность не только в JSON, но и в строковых шаблонах (glob/brace, выражения)
+    notes: 'Real-world bug: RWB-0165 (GHSA-qhr7-859c-m2p7)'
   expected:
   - Запрос отклоняется контролируемой ошибкой 4xx.
   - Нет 5xx, переполнения стека или зависания; сервис продолжает отвечать.
@@ -201,6 +217,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0165'
 - id: VAL-LARGE-COLLECTION-PAYLOAD
   status: approved
   title: Массив с очень большим числом элементов отклоняется или обрабатывается в пределах лимитов
@@ -215,6 +233,7 @@ checks:
   - boundary
   - validation
   - hardening
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -222,6 +241,8 @@ checks:
   - Эндпоинт принимает массив без явного maxItems.
   steps:
   - action: Отправить массив из 10^5 и 10^6 мелких элементов в пределах лимита размера тела.
+  - action: Объявленная длина без самих данных (маленький запрос — большое выделение)
+    notes: 'Real-world bug: RWB-0169 (GHSA-jp82-f5mq-hwhp)'
   expected:
   - Сервис отклоняет запрос по задокументированному лимиту или обрабатывает его без 5xx и без деградации других запросов.
   applicability:
@@ -239,6 +260,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0169'
 - id: VAL-MALFORMED-JSON
   status: approved
   title: Синтаксически некорректный JSON отклоняется
@@ -252,6 +275,7 @@ checks:
   - negative
   - validation
   - error-handling
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -261,6 +285,10 @@ checks:
   steps:
   - action: Отправить обрезанный JSON, лишнюю запятую, комментарии, одинарные кавычки, неэкранированные управляющие символы,
       пустое тело.
+  - action: Добавить сравнение разных видов невалидного JSON между собой
+    notes: 'Real-world bug: RWB-0170 (expressjs/body-parser#119)'
+  - action: Проверять не только 400, но и что тело — в общей схеме ошибки без стека (ошибка парсера вне фильтров приложения)
+    notes: 'Real-world bug: RWB-0170 (nestjs/nest#422)'
   expected:
   - Ответ — задокументированная ошибка 4xx, не 5xx.
   - Сообщение не раскрывает внутренности парсера и stack trace.
@@ -280,6 +308,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0170'
 - id: VAL-JSON-TOP-LEVEL-TYPE
   status: approved
   title: Неожиданный тип корня JSON отклоняется
@@ -292,6 +322,7 @@ checks:
   tags:
   - negative
   - validation
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -299,6 +330,8 @@ checks:
   - Схема ожидает объект в корне.
   steps:
   - action: Отправить массив, строку, число, null и true вместо объекта.
+  - action: Явно включить литерал null и пустое тело с Content-Type JSON
+    notes: 'Real-world bug: RWB-0168 (keycloak/keycloak#52798)'
   expected:
   - Каждый вариант отклоняется ошибкой валидации без 5xx.
   applicability:
@@ -316,6 +349,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0168'
 - id: VAL-BODY-ENCODING
   status: approved
   title: Тело в неверной кодировке или с BOM обрабатывается предсказуемо
@@ -444,6 +479,7 @@ checks:
   tags:
   - boundary
   - validation
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -451,6 +487,8 @@ checks:
   - Есть строковые поля с обязательностью или уникальностью.
   steps:
   - action: Отправить значение с пробелами по краям, строку из пробелов, табуляцию и неразрывный пробел в обязательном поле.
+  - action: Добавить обход проверки зарезервированного префикса пробелами и несогласованность create/delete
+    notes: 'Real-world bug: RWB-0176 (directus/directus#28037)'
   expected:
   - Обрезка либо выполняется везде одинаково, либо не выполняется.
   - Строка из одних пробелов не проходит проверку обязательности, если контракт этого требует.
@@ -470,6 +508,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0176'
 - id: VAL-CASE-SENSITIVITY
   status: approved
   title: Чувствительность к регистру идентификаторов, email и enum соответствует контракту
@@ -483,6 +523,7 @@ checks:
   tags:
   - boundary
   - validation
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -491,6 +532,8 @@ checks:
   steps:
   - action: Создать объект с email User@Example.com, затем искать/логиниться/создавать дубликат с user@example.com.
   - action: Передать enum в другом регистре.
+  - action: Сравнение имён в правилах авторизации (allow/deny-list) расходится с исполнителем по регистру — обход ограничения
+    notes: 'Real-world bug: RWB-0164 (GHSA-hmp2-4m7g-22cv)'
   expected:
   - Поведение одинаково во всех операциях (поиск, уникальность, логин).
   - Enum в другом регистре обрабатывается строго по контракту.
@@ -509,6 +552,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0164'
 - id: VAL-SPECIAL-CHARACTERS
   status: approved
   title: Спецсимволы, emoji и управляющие символы сохраняются или отклоняются корректно
@@ -523,6 +568,7 @@ checks:
   - boundary
   - validation
   - i18n
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -532,6 +578,8 @@ checks:
   steps:
   - action: Сохранить строки с кавычками, обратным слэшем, <>&, emoji, RTL-символами, \u0000, \u202E, суррогатными парами.
   - action: Прочитать сохранённые данные.
+  - action: Многобайтовые символы в протоколах с префиксом длины — проверять целостность и следующие сообщения потока
+    notes: 'Real-world bug: RWB-0174 (nestjs/nest#1734)'
   expected:
   - Принятые значения возвращаются без искажений и двойного экранирования.
   - Null byte и запрещённые управляющие символы отклоняются или удаляются по контракту.
@@ -552,6 +600,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0174'
 - id: VAL-DEPENDENT-FIELDS
   status: approved
   title: Взаимозависимые поля валидируются совместно
@@ -566,6 +616,7 @@ checks:
   - negative
   - validation
   - business-logic
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -574,6 +625,8 @@ checks:
   - Контракт содержит условные требования (если A, то обязательно B; oneOf/anyOf).
   steps:
   - action: 'Отправить комбинации: A без B, B без A, оба, ни одного, взаимоисключающие поля одновременно.'
+  - action: Добавить вариант взаимоисключающих полей с проверкой, что часть операции не отброшена молча
+    notes: 'Real-world bug: RWB-0167 (strapi/strapi#27421)'
   expected:
   - Недопустимые комбинации отклоняются с понятной ошибкой.
   - Допустимые комбинации принимаются.
@@ -593,6 +646,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0167'
 - id: VAL-RANGE-ORDER
   status: approved
   title: Начало диапазона не может быть позже конца
@@ -647,6 +702,7 @@ checks:
   - positive
   - validation
   - contract
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -655,6 +711,12 @@ checks:
   steps:
   - action: Создать ресурс без необязательных полей.
   - action: Прочитать ресурс.
+  - action: 'Добавить boolean-параметры query: отсутствует, пустое значение; сравнение до и после обновления зависимостей'
+    notes: 'Real-world bug: RWB-0166 (nestjs/nest#12818)'
+  - action: Явное указание значения, совпадающего с умолчанием, — дедупликация, а не 5xx
+    notes: 'Real-world bug: RWB-0166 (keycloak/keycloak#50882)'
+  - action: Наличие необязательного поля отключает применение умолчаний к связанному набору
+    notes: 'Real-world bug: RWB-0166 (keycloak/keycloak#50807)'
   expected:
   - Поля имеют значения из контракта, а не null или случайные значения.
   applicability:
@@ -672,6 +734,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0166'
 - id: VAL-QUERY-PARAM-POLLUTION
   status: approved
   title: Дублирующиеся query-параметры обрабатываются однозначно
@@ -684,6 +748,7 @@ checks:
   - negative
   - validation
   - security
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -691,6 +756,8 @@ checks:
   - Эндпоинт принимает query-параметры.
   steps:
   - action: Отправить ?id=1&id=2, ?role=user&role=admin, смешать параметр в query и теле.
+  - action: Добавить вариант для urlencoded-тела (не только query) и регрессию между версиями
+    notes: 'Real-world bug: RWB-0173 (expressjs/body-parser#687)'
   expected:
   - Поведение детерминировано и задокументировано (ошибка, первое или последнее значение).
   - Дубликат не позволяет обойти проверку доступа или валидацию (HTTP parameter pollution).
@@ -709,6 +776,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0173'
 - id: VAL-QUERY-ARRAY-FORMAT
   status: approved
   title: Массивы в query передаются в задокументированном формате
@@ -720,12 +789,21 @@ checks:
   tags:
   - boundary
   - validation
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Параметр-массив в query.
   steps:
   - action: Передать a=1,2; a=1&a=2; a[]=1&a[]=2; пустой a=.
+  - action: Один элемент, закодированные скобки, запрос через прокси стенда
+    notes: 'Real-world bug: RWB-0172 (expressjs/express#7178)'
+  - action: Добавить границу числа элементов (20/21 и больше)
+    notes: 'Real-world bug: RWB-0172 (expressjs/express#7147)'
+  - action: bracket-нотация a[]= и регрессия разбора после обновления парсера query
+    notes: 'Real-world bug: RWB-0172 (nestjs/nest#14486)'
+  - action: Добавить границу числа элементов и максимального индекса (20/21) и разреженные индексы
+    notes: 'Real-world bug: RWB-0172 (expressjs/express#5688)'
   expected:
   - Поддерживается только задокументированный стиль (OpenAPI style/explode); прочие отклоняются или игнорируются явно.
   applicability:
@@ -742,6 +820,8 @@ checks:
   risk:
     impact: low
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0172'
 - id: VAL-REQUIRED-HEADERS
   status: approved
   title: Обязательные и форматные заголовки валидируются
@@ -892,3 +972,46 @@ checks:
   risk:
     impact: high
     likelihood: medium
+- id: VAL-DEFERRED-FAILURE
+  status: draft
+  title: Принятые при записи данные не вызывают 5xx в зависимых операциях
+  category: validation
+  protocols:
+  - generic
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - validation
+  - data-integrity
+  - error-handling
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Ресурс имеет необязательные числовые, датовые или перечисляемые поля, которые используются другими операциями.
+  steps:
+  - action: Создать объект с пустой строкой, null и граничными значениями в необязательных полях.
+  - action: Выполнить все операции, которые используют объект — чтение, список, поиск, вычисление, экспорт, применение политики.
+  expected:
+  - Запись либо отклоняется 400, либо значение нормализуется к отсутствующему.
+  - Ни одна зависимая операция не возвращает 5xx из-за ранее принятых данных.
+  applicability:
+    when:
+    - Есть операции
+    - использующие сохранённые поля объекта.
+    skip_when:
+    - Ресурс только хранится и читается без обработки.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - OWASP ASVS V5 — валидация на входе
+  - а не при использовании
+  - 'Real-world bug: RWB-0003'

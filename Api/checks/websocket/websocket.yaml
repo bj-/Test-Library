@@ -11,6 +11,7 @@ checks:
   - security
   - negative
   - authn
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -20,6 +21,8 @@ checks:
   - WebSocket API.
   steps:
   - action: Подключиться без токена, с невалидным и истёкшим токеном.
+  - action: Служебные namespace и секреты по умолчанию
+    notes: 'Real-world bug: RWB-0177 (GHSA-gg6r-gp4c-89hp)'
   expected:
   - Handshake отклоняется или соединение закрывается до передачи данных.
   applicability:
@@ -39,6 +42,8 @@ checks:
   risk:
     impact: critical
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0177'
 - id: WS-ORIGIN-CHECK
   status: approved
   title: Проверка Origin защищает от cross-site WebSocket hijacking
@@ -90,6 +95,7 @@ checks:
   - negative
   - authz
   - ownership
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -99,6 +105,9 @@ checks:
   - Каналы на уровне пользователей и тенантов.
   steps:
   - action: Подписаться на канал другого пользователя или тенанта; отправить сообщение в чужой канал.
+  - action: Перебор всех типов действий протокола (включая пакетные PATCH_MULTI и аналоги) — действие без явного правила должно
+      запрещаться
+    notes: 'Real-world bug: RWB-0179 (GHSA-89vx-jh4q-vg3w)'
   expected:
   - Подписка и отправка отклоняются.
   applicability:
@@ -118,6 +127,8 @@ checks:
   risk:
     impact: critical
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0179'
 - id: WS-TOKEN-EXPIRY
   status: approved
   title: Истечение или отзыв токена учитывается в открытом соединении
@@ -202,6 +213,7 @@ checks:
   tags:
   - negative
   - validation
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -209,6 +221,8 @@ checks:
   - Нет.
   steps:
   - action: Отправить невалидный JSON, неизвестный тип, бинарный кадр вместо текстового.
+  - action: Синтаксически корректное сообщение с невалидной по схеме нагрузкой
+    notes: 'Real-world bug: RWB-0178 (nestjs/nest#3127)'
   expected:
   - Ответ-ошибка по протоколу или закрытие с кодом; сервер стабилен.
   applicability:
@@ -226,6 +240,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0178'
 - id: WS-RECONNECT-RESUME
   status: approved
   title: Переподключение восстанавливает подписки без потери и дублей сверх контракта

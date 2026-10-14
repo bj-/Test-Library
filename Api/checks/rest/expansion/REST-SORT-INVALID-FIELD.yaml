@@ -13,6 +13,7 @@ checks:
   - filtering
   - validation
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -20,6 +21,10 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Добавить сортировку по существующему, но скрытому полю как оракул, включая алиасы, суффиксы и составные выражения
+    notes: 'Real-world bug: RWB-0134 (GHSA-53vv-xm9f-mm82)'
+  - action: Сортировка по существующему, но закрытому полевыми правами полю — отклонять как неизвестное
+    notes: 'Real-world bug: RWB-0134 (GHSA-9g87-32v6-3c2r)'
   expected:
   - запрещённые поля не раскрываются, ошибка/игнорирование соответствует контракту
   applicability:
@@ -38,4 +43,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0134'

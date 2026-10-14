@@ -199,6 +199,7 @@ checks:
   - negative
   - requirements
   - business-logic
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -207,6 +208,16 @@ checks:
   steps:
   - action: Выписать правила, общие для клиентов по ТЗ (валидация идентификаторов, пароли, сессии, лимиты, ошибки).
   - action: Выполнить одинаковые граничные запросы в каждом API.
+  - action: Одна сущность через разные эндпоинты и протоколы, сравнение полей и связей
+    notes: 'Real-world bug: RWB-0099 (strapi/strapi#27447)'
+  - action: Добавить сравнение одной сущности в разных версиях API
+    notes: 'Real-world bug: RWB-0099 (keycloak/keycloak#53117)'
+  - action: Добавить сравнение REST и GraphQL одного продукта на агрегатах с группировкой по функциям
+    notes: 'Real-world bug: RWB-0099 (directus/directus#26703)'
+  - action: Разные транспорты одного API (REST и WebSocket) — валидация параметров должна совпадать
+    notes: 'Real-world bug: RWB-0099 (directus/directus#27844)'
+  - action: Разные пути создания одного объекта (админ-API, регистрация, метаданные) — одинаковые политики
+    notes: 'Real-world bug: RWB-0099 (keycloak/keycloak#49457)'
   expected:
   - Правило одинаково везде, где ТЗ не требует различий; расхождение - находка.
   applicability:
@@ -226,3 +237,4 @@ checks:
     likelihood: medium
   references:
   - docs/decisions/0002-expected-behavior-sources.md
+  - 'Real-world bug: RWB-0099'

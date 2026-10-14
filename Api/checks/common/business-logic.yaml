@@ -13,6 +13,7 @@ checks:
   - negative
   - business-logic
   - security
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -22,6 +23,8 @@ checks:
   - Многошаговый процесс (оформление, подтверждение, оплата).
   steps:
   - action: Вызвать финальный шаг без промежуточных, в обратном порядке, повторно после завершения.
+  - action: Пропуск шага согласования через другой канал продолжения с токеном, выданным для иного шага
+    notes: 'Real-world bug: RWB-0066 (GHSA-35jj-42hp-8gmq)'
   expected:
   - Запросы отклоняются; состояние не переходит в недопустимое.
   applicability:
@@ -41,6 +44,8 @@ checks:
   risk:
     impact: critical
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0066'
 - id: BIZ-NEGATIVE-QUANTITY
   status: approved
   title: Отрицательные и нулевые количества и суммы не дают выгоды
@@ -257,6 +262,7 @@ checks:
   tags:
   - negative
   - business-logic
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -265,6 +271,9 @@ checks:
   - Есть одноразовые преимущества.
   steps:
   - action: Применить код повторно, другим пользователем, параллельно, после отмены заказа.
+  - action: Добавить приглашение, ставшее недействительным из-за активации пользователя другим путём; проверять код и текст
+      ошибки
+    notes: 'Real-world bug: RWB-0064 (directus/directus#26699)'
   expected:
   - Повторное применение отклоняется по политике.
   applicability:
@@ -283,6 +292,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0064'
 - id: BIZ-TIME-WINDOW
   status: approved
   title: Операции вне разрешённого временного окна отклоняются
@@ -410,6 +421,7 @@ checks:
   - business-logic
   - idempotency
   - async-jobs
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -417,6 +429,10 @@ checks:
   - Операция вызывает уведомления или события.
   steps:
   - action: Выполнить операцию, повтор с idempotency key, неуспешную операцию.
+  - action: Добавить сравнение одиночного и массового удаления по числу побочных эффектов
+    notes: 'Real-world bug: RWB-0065 (strapi/strapi#26610)'
+  - action: Обработчик WebSocket-события, зарегистрированный дважды (наследование)
+    notes: 'Real-world bug: RWB-0065 (nestjs/nest#2557)'
   expected:
   - Эффект один раз при успехе и ни разу при отказе.
   applicability:
@@ -434,3 +450,48 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0065'
+- id: BIZ-EMAIL-LINK-CROSS-SESSION
+  status: draft
+  title: Ссылка-действие из письма работает в другой сессии и после перезапуска сервиса
+  category: business-logic
+  protocols:
+  - rest
+  kind: positive
+  priority: P2
+  tags:
+  - positive
+  - business-logic
+  - session
+  - error-handling
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Процесс с подтверждением по ссылке из письма (верификация email, сброс пароля, привязка аккаунта); есть варианты настройки
+    потока.
+  steps:
+  - action: Начать процесс в сессии A, открыть ссылку в сессии B (другие cookie), вернуться в A; повторить для каждого варианта
+      потока.
+  - action: Открыть ссылку новым клиентом без cookie после перезапуска сервиса.
+  expected:
+  - Подтверждение учитывается одинаково во всех вариантах; процесс завершается.
+  - Без исходной сессии — действие выполняется или понятная ошибка (ссылка истекла, войдите заново), но не 5xx.
+  applicability:
+    when:
+    - Есть ссылки-действия в письмах.
+    skip_when:
+    - Нет email-сценариев.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Здравый смысл — пользователь открывает письмо на другом устройстве
+  - 'Real-world bug: RWB-0017'

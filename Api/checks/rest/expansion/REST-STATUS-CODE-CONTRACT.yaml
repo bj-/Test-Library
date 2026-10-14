@@ -11,6 +11,7 @@ checks:
   tags:
   - contract
   - rest
+  - real-world-bug
   - smoke
   - pr
   - ci
@@ -21,6 +22,8 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Эндпоинты-перенаправления — проверять код 3xx и Location, без автоматического следования редиректам
+    notes: 'Real-world bug: RWB-0136 (nestjs/nest#2360)'
   expected:
   - статус и тело ответа соответствуют документированному response
   applicability:
@@ -42,4 +45,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0136'

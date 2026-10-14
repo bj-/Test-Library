@@ -13,6 +13,7 @@ checks:
   - negative
   - security
   - authn
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -22,6 +23,10 @@ checks:
   steps:
   - action: Present a correctly signed token issued for a different service or audience.
     notes: 'Matrix axis: Authentication; scenario: Wrong audience. Use isolated synthetic identities and data.'
+  - action: Аудитория/приложение для проверки берётся из параметра запроса — должна браться из конфигурации сервиса
+    notes: 'Real-world bug: RWB-0160 (GHSA-g74q-6g2f-874x)'
+  - action: Смена resource/audience при refresh — refresh-токен привязан к исходному ресурсу
+    notes: 'Real-world bug: RWB-0160 (GHSA-cw9w-vv67-hf73)'
   expected:
   - Token is rejected unless its audience is explicitly accepted by policy.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
@@ -44,3 +49,4 @@ checks:
     likelihood: medium
   references:
   - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model
+  - 'Real-world bug: RWB-0160'

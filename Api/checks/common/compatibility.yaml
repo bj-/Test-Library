@@ -57,6 +57,7 @@ checks:
   tags:
   - contract
   - compatibility
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -65,6 +66,16 @@ checks:
   - Контракт опубликован.
   steps:
   - action: Для всех операций проверить существование, коды ответов и схемы (schemathesis, dredd, contract tests).
+  - action: Производные контракты (схемы MCP-инструментов, SDK) против контракта API
+    notes: 'Real-world bug: RWB-0067 (directus/directus#27039)'
+  - action: Описанные параметры без эффекта — проверить влияние каждого документированного параметра
+    notes: 'Real-world bug: RWB-0067 (directus/directus#27762)'
+  - action: Реализованные маршруты, отсутствующие в контракте (включая публичные без аутентификации)
+    notes: 'Real-world bug: RWB-0067 (directus/directus#27761)'
+  - action: Маршруты-префиксы перехватывают более длинные пути — проверить, что ответ от нужной операции
+    notes: 'Real-world bug: RWB-0067 (expressjs/express#2495)'
+  - action: Документ discovery/метаданных как контракт — сверять объявленные возможности с фактическими
+    notes: 'Real-world bug: RWB-0067 (keycloak/keycloak#49730)'
   expected:
   - Все задокументированные операции существуют; ответы соответствуют схемам; нет недокументированных операций.
   applicability:
@@ -83,6 +94,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0067'
 - id: COMPAT-ADDITIVE-CHANGE
   status: approved
   title: Добавление полей не ломает существующих клиентов

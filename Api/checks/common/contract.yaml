@@ -77,3 +77,80 @@ checks:
   - CI
   - Regression
   - Nightly
+- id: CONTRACT-FIELD-SELECTION
+  status: draft
+  title: Выбор полей возвращает ровно запрошенные поля с правильными значениями
+  category: contract
+  protocols:
+  - rest
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - compatibility
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - API поддерживает выбор полей (fields, select, sparse fieldsets), в том числе для связей.
+  steps:
+  - action: Запросить списки и объекты с разными наборами полей — с id и без, со связями, с '*'.
+  - action: Сравнить с полным ответом.
+  expected:
+  - Возвращаются запрошенные поля с теми же значениями, что в полном ответе; ключ есть, если запрошен или обязателен.
+  - Поля сверх запрошенных не возвращаются (кроме обязательных по контракту).
+  applicability:
+    when:
+    - Есть выбор полей.
+    skip_when:
+    - Ответ фиксированной формы.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - JSON API sparse fieldsets
+  - 'Real-world bug: RWB-0026'
+- id: CONTRACT-PUBLISHED-SCHEMA-VALID
+  status: draft
+  title: Опубликованные сервисом описания API валидны в заявленном диалекте
+  category: contract
+  protocols:
+  - generic
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - compatibility
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервис отдаёт описание (openapi.json, JSON Schema, MCP tools/list, GraphQL SDL, proto через reflection).
+  steps:
+  - action: Скачать описание и проверить строгим валидатором заявленной версии (OpenAPI 3.1, JSON Schema 2020-12).
+  expected:
+  - Описание валидно; $schema и версия соответствуют фактическому синтаксису.
+  applicability:
+    when:
+    - Сервис публикует описание.
+    skip_when:
+    - Описание не публикуется.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - OpenAPI 3.1
+  - JSON Schema 2020-12
+  - 'Real-world bug: RWB-0049'

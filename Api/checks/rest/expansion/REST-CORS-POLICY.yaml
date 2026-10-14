@@ -11,6 +11,7 @@ checks:
   tags:
   - security
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -36,4 +37,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0112'

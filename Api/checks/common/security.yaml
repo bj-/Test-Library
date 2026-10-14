@@ -14,6 +14,7 @@ checks:
   - negative
   - security
   - authn
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -23,6 +24,8 @@ checks:
   - The operation requires authentication.
   steps:
   - action: Call the operation without credentials.
+  - action: Глобальный префикс и привязка middleware к контроллеру — проверять маршруты в опубликованном виде
+    notes: 'Real-world bug: RWB-0162 (nestjs/nest#718)'
   expected:
   - Request is rejected according to the authentication policy.
   - No protected data or internal details are disclosed.
@@ -43,6 +46,8 @@ checks:
   risk:
     impact: critical
     likelihood: high
+  references:
+  - 'Real-world bug: RWB-0162'
 - id: SECURITY-AUTHZ-CROSS-USER
   status: approved
   title: User cannot access another user's resource

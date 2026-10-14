@@ -91,6 +91,7 @@ checks:
   tags:
   - contract
   - pagination
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -98,6 +99,8 @@ checks:
   - API возвращает total/count.
   steps:
   - action: Пройти все страницы и подсчитать элементы при стабильных данных.
+  - action: Число записей больше лимита по умолчанию, агрегат количества через GraphQL и REST совпадает с реальным
+    notes: 'Real-world bug: RWB-0095 (directus/directus#26768)'
   expected:
   - Сумма элементов равна total, нет дублей и пропусков.
   applicability:
@@ -115,6 +118,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0095'
 - id: PAGE-CONCURRENT-MODIFICATION
   status: approved
   title: Изменения коллекции во время обхода не приводят к дублям и пропускам сверх контракта
@@ -166,6 +171,7 @@ checks:
   - negative
   - filtering
   - injection
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -173,6 +179,8 @@ checks:
   - Есть полнотекстовый или LIKE-поиск.
   steps:
   - action: Искать %, _, *, ?, \, кавычки, пустую строку, строку из пробелов, очень длинный запрос.
+  - action: Добавить значения с обратным слэшем в конце и незакрытыми экранированными кавычками в синтаксисе key:value
+    notes: 'Real-world bug: RWB-0094 (keycloak/keycloak#50228)'
   expected:
   - Спецсимволы трактуются буквально или по документированному синтаксису.
   - '% или * не возвращают всю коллекцию в обход ограничений.'
@@ -192,6 +200,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0094'
 - id: PAGE-SORT-NULLS-TIES
   status: approved
   title: Сортировка по полю с null и одинаковыми значениями детерминирована

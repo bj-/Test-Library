@@ -14,6 +14,7 @@ checks:
   - negative
   - validation
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -23,6 +24,10 @@ checks:
   steps:
   - action: Отправить корректное по содержанию тело с Content-Type text/plain, application/x-www-form-urlencoded, multipart/form-data,
       application/xml, без Content-Type, с application/json; charset=utf-16.
+  - action: Добавить синтаксически неверный media type и проверку схемы тела ошибки, а не только статуса
+    notes: 'Real-world bug: RWB-0140 (nestjs/nest#15022)'
+  - action: Синтаксически некорректный (а не просто неподдерживаемый) Content-Type и пустое значение
+    notes: 'Real-world bug: RWB-0140 (keycloak/keycloak#49964)'
   expected:
   - 415 Unsupported Media Type (RFC 9110 п. 15.5.16), желательно с заголовком Accept или Accept-Post со списком допустимых
     типов; 400 - отклонение от стандарта, если не оговорено моделью ошибок проекта.
@@ -47,3 +52,4 @@ checks:
   references:
   - RFC 9110 15.5.16
   - docs/decisions/0002-expected-behavior-sources.md
+  - 'Real-world bug: RWB-0140'

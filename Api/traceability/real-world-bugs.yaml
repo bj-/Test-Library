@@ -15,4 +15,2871 @@
 #       product: продукт
 #       closed: YYYY-MM-DD
 #       summary: краткая суть своими словами, без копии текста issue
-{}
+RWB-0001:
+  pattern: Матрица «оператор фильтра × тип поля»; допустимые операторы принимаются для типа и подтипов, результат совпадает
+    с эталонным отбором по полному списку
+  checks:
+  - REST-FILTER-OPERATOR-TYPE-MATRIX
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/28303
+    fix: https://github.com/directus/directus/pull/28308
+    product: Directus
+    closed: '2026-09-30'
+    summary: API отклоняет документированный оператор фильтра для подтипов поля
+  - url: https://github.com/directus/directus/issues/28256
+    fix: https://github.com/directus/directus/pull/28264
+    product: Directus
+    closed: '2026-09-22'
+    summary: Фильтр по строковому значению в JSON-поле молча не находит записи
+RWB-0002:
+  pattern: Логически эквивалентные фильтры (плоская форма, вложенные $and/$or) дают одинаковый ответ
+  checks:
+  - REST-FILTER-EQUIVALENT-FORMS
+  batch: pilot
+  bugs:
+  - url: https://github.com/strapi/strapi/issues/27235
+    fix: https://github.com/strapi/strapi/pull/27236
+    product: Strapi
+    closed: '2026-08-05'
+    summary: Связи, выведенные из фильтра, терялись в ответе в зависимости от глубины вложенности $and/$or
+RWB-0003:
+  pattern: Данные, принятые при записи, не вызывают 5xx в зависимых операциях (чтение, поиск, экспорт, политика)
+  checks:
+  - VAL-DEFERRED-FAILURE
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/53456
+    fix: https://github.com/keycloak/keycloak/pull/53517
+    product: Keycloak
+    closed: '2026-10-06'
+    summary: Принятые при сохранении пустые строки ломают последующую операцию с 500
+RWB-0004:
+  pattern: Разрешённая операция работает для каждой роли с правом, а не только для администратора (позитивная матрица прав)
+  checks:
+  - SEC-AUTHZ-ROLE-POSITIVE-MATRIX
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/28285
+    fix: https://github.com/directus/directus/pull/28286
+    product: Directus
+    closed: '2026-09-23'
+    summary: Чтение, доступное не-админу по правам, падает 500, у админа работает
+RWB-0005:
+  pattern: Делегированный администратор над собственной учёткой — явное разрешение или 403 по политике, без 5xx
+  checks:
+  - SEC-ROLE-ADMIN-SELF-TARGET
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/50136
+    fix: https://github.com/keycloak/keycloak/pull/50233
+    product: Keycloak
+    closed: '2026-06-23'
+    summary: Сброс пароля администратором для собственной учётки при детальных правах даёт бесконечную рекурсию и 500
+RWB-0006:
+  pattern: Неожиданный тип, пустое или отсутствующее поле, участвующее в проверке безопасности, приводит к отказу, а не к
+    пропуску проверки (fail-closed)
+  checks:
+  - SEC-FAIL-CLOSED-INPUT
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/53140
+    fix: https://github.com/keycloak/keycloak/pull/53186
+    product: Keycloak
+    closed: '2026-09-25'
+    summary: Неожиданный тип значения claim отключал проверку привязки клиента (fail-open)
+  - url: https://github.com/keycloak/keycloak/issues/50719
+    fix: https://github.com/keycloak/keycloak/pull/50729
+    product: Keycloak
+    closed: '2026-07-10'
+    summary: Если клиент не прислал поле authenticatorAttachment, проверка политики WebAuthn пропускалась
+RWB-0007:
+  pattern: Параллельные запросы разных пользователей получают только свой контекст и свой ответ (в том числе через общий канал
+    к нижележащему сервису)
+  checks:
+  - CONC-REQUEST-CONTEXT-ISOLATION
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/17007
+    product: NestJS
+    closed: '2026-05-25'
+    summary: Провайдеры уровня запроса кэшировались как синглтоны — контекст запроса терялся
+  - url: https://github.com/nestjs/nest/issues/16989
+    product: NestJS
+    closed: '2026-05-21'
+    summary: При параллельных запросах зависимости уровня запроса приходили undefined → 500
+  - url: https://github.com/nestjs/nest/issues/505
+    product: NestJS
+    closed: '2018-04-20'
+    summary: Параллельные запросы через клиент микросервиса получали несоответствующие результаты — проверяется параллельными
+      вызовами.
+RWB-0008:
+  pattern: Параллельные независимые запросы одной операции выполняются без 5xx (общая кэшированная конфигурация)
+  checks:
+  - CONC-PARALLEL-INDEPENDENT
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/50286
+    fix: https://github.com/keycloak/keycloak/pull/50287
+    product: Keycloak
+    closed: '2026-06-24'
+    summary: Параллельные регистрации клиентов падают из-за гонки на общем кэшированном состоянии
+RWB-0009:
+  pattern: Ответ не содержит фрагментов данных других запросов и памяти процесса (общие буферы сериализации)
+  checks:
+  - PRIV-RESPONSE-FOREIGN-DATA
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-j22f-vq7h-c4qm
+    fix: https://github.com/sveltejs/devalue/commit/46dc877b3570dafb1cd3291b9bb48cecef8f7266
+    product: devalue
+    closed: '2026-10-01'
+    summary: Сериализация Buffer отдавала в ответе общий пул памяти процесса с данными чужих запросов — видно в ответе публичной
+      страницы.
+RWB-0010:
+  pattern: Интроспекция (RFC 7662) — active true для действующих токенов каждого типа с теми же claims, false для отозванных
+    и истёкших
+  checks:
+  - AUTH-TOKEN-INTROSPECTION
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/53029
+    fix: https://github.com/keycloak/keycloak/pull/53583
+    product: Keycloak
+    closed: '2026-10-07'
+    summary: Ответ интроспекции не содержит claim, который есть в самом токене
+  - url: https://github.com/keycloak/keycloak/issues/51552
+    fix: https://github.com/keycloak/keycloak/pull/53012
+    product: Keycloak
+    closed: '2026-09-22'
+    summary: 'После ужесточения проверки aud интроспекция refresh-токена всегда возвращала active: false'
+RWB-0011:
+  pattern: Анонимный запрос без входа не получает cookie сессии и не создаёт серверную сессию
+  checks:
+  - AUTH-SESSION-NOT-BEFORE-LOGIN
+  batch: pilot
+  bugs:
+  - url: https://github.com/expressjs/session/issues/239
+    fix: https://github.com/expressjs/session/commit/85667685a518fb73f2ac6a4cd97d482a3a536584
+    product: express-session
+    closed: '2015-12-15'
+    summary: Анонимный запрос получал cookie сессии
+RWB-0012:
+  pattern: Лимит трансформации файла на лету (размер, формат) не отклоняет допустимые комбинации и отклоняет превышение, в
+    том числе на промежуточном шаге
+  checks:
+  - FILE-TRANSFORM-LIMITS
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/28103
+    fix: https://github.com/directus/directus/pull/28111
+    product: Directus
+    closed: '2026-08-18'
+    summary: Лимит размера трансформации изображения считался неверно при указании format, допустимый запрос отклонялся
+RWB-0013:
+  pattern: Запросы по HTTP/2 и с предложением Upgrade h2c обслуживаются так же, как по HTTP/1.1; соединение не сбрасывается,
+    процесс не падает
+  checks:
+  - HTTP-VERSION-PARITY
+  batch: pilot
+  bugs:
+  - url: https://github.com/expressjs/express/issues/6580
+    product: Express
+    closed: '2025-06-21'
+    summary: Сервер падал на любом запросе по HTTP/2
+  - url: https://github.com/expressjs/express/issues/5678
+    product: Express
+    closed: '2024-05-22'
+    summary: 'На запрос с Connection: Upgrade, HTTP2-Settings сервер отвечал не по стандарту — HTTP/2-клиенты падали'
+RWB-0014:
+  pattern: Прямой выбор, inline- и именованные фрагменты, алиасы, вложенные аргументы в запросе по id и в списке дают одинаковые
+    данные
+  checks:
+  - GQL-EQUIVALENT-SELECTION-FORMS
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/28060
+    fix: https://github.com/directus/directus/pull/28128
+    product: Directus
+    closed: '2026-08-20'
+    summary: Именованный фрагмент на union-типе возвращал null вместо значений
+  - url: https://github.com/directus/directus/issues/27772
+    fix: https://github.com/directus/directus/pull/27864
+    product: Directus
+    closed: '2026-07-21'
+    summary: Алиас на вложенном поле-связи в GraphQL возвращал null вместо данных
+  - url: https://github.com/directus/directus/issues/26232
+    fix: https://github.com/directus/directus/pull/26233
+    product: Directus
+    closed: '2025-11-21'
+    summary: Фильтр по полю полиморфной связи работал в запросе списка и падал в запросе по id
+RWB-0015:
+  pattern: Публикация черновика переносит все изменения (включая связи и их порядок), не удаляет объект из связей других и
+    работает между типами с разными режимами
+  checks:
+  - RES-DRAFT-PUBLISH-FIDELITY
+  batch: pilot
+  bugs:
+  - url: https://github.com/strapi/strapi/issues/26786
+    fix: https://github.com/strapi/strapi/pull/26791
+    product: Strapi
+    closed: '2026-06-25'
+    summary: Повторная публикация не переносила новый порядок M2M-связей из черновика
+  - url: https://github.com/strapi/strapi/issues/26473
+    fix: https://github.com/strapi/strapi/pull/26536
+    product: Strapi
+    closed: '2026-06-03'
+    summary: Публикация объекта, связанного с объектом того же типа, удаляла его из связей опубликованной версии ссылающегося
+      объекта
+  - url: https://github.com/strapi/strapi/issues/26804
+    fix: https://github.com/strapi/strapi/pull/26805
+    product: Strapi
+    closed: '2026-06-29'
+    summary: 'Публикация с many-to-many связью на нелокализованный тип падала: locale "null" not found'
+RWB-0016:
+  pattern: Изменение связанного ресурса не меняет ручной порядок связей у другой стороны
+  checks:
+  - RES-RELATION-ORDER-STABLE
+  batch: pilot
+  bugs:
+  - url: https://github.com/strapi/strapi/issues/26615
+    fix: https://github.com/strapi/strapi/pull/26838
+    product: Strapi
+    closed: '2026-07-06'
+    summary: Редактирование дочерней записи сбрасывало ручной порядок oneToMany-связей у родителя
+RWB-0017:
+  pattern: Ссылка-действие из письма работает в другом браузере/сессии и после перезапуска сервиса (или понятная ошибка, но
+    не 5xx), во всех вариантах настройки потока
+  checks:
+  - BIZ-EMAIL-LINK-CROSS-SESSION
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/52604
+    fix: https://github.com/keycloak/keycloak/pull/52626
+    product: Keycloak
+    closed: '2026-10-08'
+    summary: Подтверждение привязки аккаунта по ссылке из письма в другом браузере не работало в одном из вариантов flow
+  - url: https://github.com/keycloak/keycloak/issues/51088
+    fix: https://github.com/keycloak/keycloak/pull/51089
+    product: Keycloak
+    closed: '2026-07-28'
+    summary: Ссылка подтверждения email, открытая в новом браузере после перезапуска сервера, давала 500
+RWB-0018:
+  pattern: Refresh без параметра scope сохраняет scope исходной авторизации (RFC 6749 §6)
+  checks:
+  - AUTH-REFRESH-PRESERVES-SCOPE
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/52574
+    fix: https://github.com/keycloak/keycloak/pull/52622
+    product: Keycloak
+    closed: '2026-09-16'
+    summary: Access-токен после refresh терял scope openid, если его не повторили в запросе — UserInfo ломался
+RWB-0019:
+  pattern: Ошибка шага второго фактора у пользователя без зарегистрированного фактора — обычная 4xx, как у пользователя с
+    фактором, без 5xx
+  checks:
+  - AUTH-MFA-UNENROLLED-ERROR
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/52464
+    fix: https://github.com/keycloak/keycloak/pull/53554
+    product: Keycloak
+    closed: '2026-10-06'
+    summary: Ошибочная ветка входа для идентифицированного пользователя без passkey давала 500 вместо страницы ошибки входа
+RWB-0020:
+  pattern: PAR (RFC 9126) — параметры через request_uri действуют как в прямом запросе; срок request_uri ограничивает погашение,
+    а не длительность входа
+  checks:
+  - AUTH-OAUTH-PAR
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/51761
+    fix: https://github.com/keycloak/keycloak/pull/52852
+    product: Keycloak
+    closed: '2026-09-17'
+    summary: Срок жизни request_uri из PAR ограничивал всю длительность интерактивного входа
+  - url: https://github.com/keycloak/keycloak/issues/49255
+    fix: https://github.com/keycloak/keycloak/pull/50183
+    product: Keycloak
+    closed: '2026-06-22'
+    summary: Параметр prompt=create, переданный через PAR, игнорировался
+RWB-0021:
+  pattern: Значение, которое не удаётся расшифровать после смены ключа, не ломает чтение и сохранение остальных данных
+  checks:
+  - RESIL-ENCRYPTION-KEY-ROTATION
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/26734
+    fix: https://github.com/directus/directus/pull/26764
+    product: Directus
+    closed: '2026-02-27'
+    summary: После смены ключа шифрования одно нерасшифровываемое поле ломало чтение и сохранение всех настроек
+RWB-0022:
+  pattern: Тысячи связанных объектов не дают 5xx из-за лимитов СУБД на параметры запроса (2100 MSSQL, 1000 в IN Oracle)
+  checks:
+  - RES-LARGE-RELATION-SET
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/51510
+    fix: https://github.com/keycloak/keycloak/pull/52021
+    product: Keycloak
+    closed: '2026-08-25'
+    summary: Запрос с IN по большому числу связанных ролей превышал лимит параметров СУБД (2100 в MSSQL) — админка не открывалась
+RWB-0023:
+  pattern: Серверный кэш различает ответы по всем значимым параметрам запроса и по типу ресурса при одинаковых id
+  checks:
+  - RES-CACHE-KEY-COMPLETENESS
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/13058
+    product: NestJS
+    closed: '2024-01-17'
+    summary: Несколько модулей кэша разделяли один менеджер — объекты разных типов с одинаковыми id перезатирали друг друга
+  - url: https://github.com/directus/directus/issues/26929
+    fix: https://github.com/directus/directus/commit/9b82d128483692533e718982d54bd2a40a070d95
+    product: Directus
+    closed: '2026-04-15'
+    summary: Кэш ответов эндпоинта не учитывал query-параметры — возвращался ответ на другой запрос
+RWB-0024:
+  pattern: Незавершённые сообщения (slowloris) и непрочитанные ответы не накапливаются без ограничения; таймауты, лимит соединений,
+    backpressure
+  checks:
+  - HARD-SLOW-CLIENT-LIMITS
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-96h4-vgxj-gvm2
+    fix: https://github.com/nestjs/nest/pull/17746
+    product: '@nestjs/microservices'
+    closed: '2026-09-30'
+    summary: TCP-транспорт микросервисов без аутентификации неограниченно копил память на незавершённых пакетах и непрочитанных
+      ответах
+RWB-0025:
+  pattern: Права и согласия не переходят к пересозданному пользователю с тем же логином; привязка к неизменяемому id
+  checks:
+  - SEC-AUTHZ-RECREATED-IDENTITY
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/51398
+    fix: https://github.com/keycloak/keycloak/pull/52842
+    product: Keycloak
+    closed: '2026-09-23'
+    summary: Делегирование, выданное по имени пользователя, переходило к новому пользователю с тем же логином после удаления
+      старого
+RWB-0026:
+  pattern: Выбор полей (fields, sparse fieldsets) возвращает ровно запрошенные поля с правильными значениями, включая ключ
+    и вложенные связи
+  checks:
+  - CONTRACT-FIELD-SELECTION
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/26596
+    fix: https://github.com/directus/directus/pull/26600
+    product: Directus
+    closed: '2026-02-06'
+    summary: После обновления выборка с указанием полей теряла первичный ключ — элементы списков приходили без id
+RWB-0027:
+  pattern: Абсолютные URL, которые формирует сервер (Location, callback, ссылки в письмах), учитывают публичный базовый путь
+  checks:
+  - HTTP-ABSOLUTE-URL-BASE-PATH
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/26236
+    fix: https://github.com/directus/directus/pull/26239
+    product: Directus
+    closed: '2025-11-21'
+    summary: При публикации под подпутём redirect_uri для SSO строился без базового пути PUBLIC_URL
+RWB-0028:
+  pattern: Режим «только чтение» для пользовательских запросов (SQL, GraphQL) запрещает любые изменения, а не проверяет первое
+    ключевое слово
+  checks:
+  - SEC-READONLY-MODE-ENFORCED
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-mwwr-p57h-56pf
+    fix: https://github.com/bytebase/dbhub/pull/342
+    product: '@bytebase/dbhub'
+    closed: '2026-09-24'
+    summary: Режим только для чтения проверял лишь первое ключевое слово запроса; SELECT с функциями менял данные
+  - url: https://github.com/advisories/GHSA-5648-rgj9-v224
+    fix: https://github.com/zereight/gitlab-mcp/pull/571
+    product: '@zereight/mcp-gitlab'
+    closed: '2026-09-15'
+    summary: Проверка read-only для GraphQL обходилась запятой перед mutation; запрос не проверял allowlist проектов
+RWB-0029:
+  pattern: Данные и снапшоты, выгруженные API, принимаются им же обратно без изменений (round-trip)
+  checks:
+  - RES-EXPORT-IMPORT-ROUNDTRIP
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/26235
+    fix: https://github.com/directus/directus/pull/26934
+    product: Directus
+    closed: '2026-04-15'
+    summary: 'Применение снапшота схемы, выгруженного API, падало 500: длина nvarchar(max) выгружалась как -1'
+RWB-0030:
+  pattern: IP клиента определяется по X-Forwarded-For с учётом числа доверенных прокси, одинаково на всех маршрутах и модулях
+  checks:
+  - HARD-CLIENT-IP-TRUSTED-PROXIES
+  batch: pilot
+  bugs:
+  - url: https://github.com/expressjs/express/issues/2569
+    fix: https://github.com/expressjs/express/commit/20aa12616abac9466d590c9fb333fd8a0408eedc
+    product: Express
+    closed: '2015-03-02'
+    summary: Настройка числа доверенных прокси не работала, IP клиента определялся неверно
+  - url: https://github.com/expressjs/express/issues/2550
+    fix: https://github.com/expressjs/express/commit/b40e74d6b6a3c32b9ce1b28ce533e5e322eb502d
+    product: Express
+    closed: '2015-02-23'
+    summary: Настройка доверенных прокси не наследовалась вложенным приложением — IP клиента различался по маршрутам
+RWB-0031:
+  pattern: Повреждённый файл (некорректные размеры блоков) при разборе метаданных даёт 4xx, а не падение процесса
+  checks:
+  - FILE-MALFORMED-STRUCTURE
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-8j4c-6x6g-rq3j
+    fix: https://github.com/Borewit/music-metadata/pull/2700
+    product: music-metadata
+    closed: '2026-10-08'
+    summary: Специально сформированный медиафайл роняет процесс при разборе метаданных
+RWB-0032:
+  pattern: Ошибка обработчика в схеме запрос-ответ через брокер возвращается вызывающему в документированном формате, а не
+    таймаутом
+  checks:
+  - ASYNC-RPC-ERROR-PROPAGATION
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/10113
+    product: NestJS
+    closed: '2022-10-21'
+    summary: Ошибка обработчика в запрос-ответ через брокер не доходит до вызывающего
+RWB-0033:
+  pattern: Входящие сообщения брокера валидируются по схеме так же, как HTTP-запросы
+  checks:
+  - ASYNC-MESSAGE-VALIDATION
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/5974
+    product: NestJS
+    closed: '2022-07-13'
+    summary: Обработчик сообщений Kafka получает обёртку сообщения вместо полезной нагрузки, DTO-валидация не применяется.
+RWB-0034:
+  pattern: Сгенерированные сервером секреты (HMAC-ключи, секреты клиентов) имеют энтропию не ниже требуемой алгоритмом
+  checks:
+  - AUTH-GENERATED-SECRET-STRENGTH
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/49793
+    fix: https://github.com/keycloak/keycloak/pull/50083
+    product: Keycloak
+    closed: '2026-06-23'
+    summary: Сгенерированный секрет клиента короче, чем требует настроенный HMAC-алгоритм
+RWB-0035:
+  pattern: Встроенные (системные) объекты защищены от удаления и изменения при любой конфигурации, понятной ошибкой одинаково
+    во всех версиях API
+  checks:
+  - RES-SYSTEM-OBJECT-PROTECTED
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/50796
+    fix: https://github.com/keycloak/keycloak/pull/50809
+    product: Keycloak
+    closed: '2026-08-26'
+    summary: Защита встроенных клиентов от удаления привязана к литеральному имени realm, а не к настроенному — при нестандартной
+      конфигурации служебный объект удаляется через admin API.
+  - url: https://github.com/keycloak/keycloak/issues/49674
+    fix: https://github.com/keycloak/keycloak/pull/49675
+    product: Keycloak
+    closed: '2026-06-29'
+    summary: Удаление системного клиента даёт неинформативную ошибку unknown_error, по-разному в v1 и v2
+RWB-0036:
+  pattern: Все задокументированные схемы Authorization принимаются на своих эндпоинтах; неподдерживаемые — 401 с WWW-Authenticate
+  checks:
+  - SEC-AUTHN-SCHEMES-SUPPORTED
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/49611
+    fix: https://github.com/keycloak/keycloak/pull/49630
+    product: Keycloak
+    closed: '2026-06-03'
+    summary: Расширения API после регресса принимают только Bearer/DPoP и отклоняют Basic
+RWB-0037:
+  pattern: Загрузка не перезаписывает чужой файл с тем же именем или ключом хранилища
+  checks:
+  - FILE-UPLOAD-KEY-COLLISION
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-7vg8-29qx-jgj8
+    fix: https://github.com/payloadcms/payload/commit/2df8238fbf17edfce335c399b90bf524ba9906a2
+    product: '@payloadcms/storage-s3'
+    closed: '2026-10-07'
+    summary: Загрузка клиентом могла перезаписать объект хранилища другой коллекции с тем же ключом
+RWB-0038:
+  pattern: Пользовательские поля профиля не переопределяют зарезервированные claims токена (sub, iss, aud, exp, roles)
+  checks:
+  - AUTH-TOKEN-RESERVED-CLAIMS
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-66wr-7vmr-p5jq
+    fix: https://github.com/payloadcms/payload/commit/56cd5cd050a57daebf33159e41e5ff9d4a45239c
+    product: payload
+    closed: '2026-10-07'
+    summary: Поле, отображённое на зарезервированный claim, попадало в выдаваемый при входе токен
+RWB-0039:
+  pattern: Индикатор ресурса (RFC 8707), не соответствующий аудитории клиента, даёт 400 invalid_target
+  checks:
+  - AUTH-OAUTH-RESOURCE-INDICATOR
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/49077
+    fix: https://github.com/keycloak/keycloak/pull/49081
+    product: Keycloak
+    closed: '2026-08-31'
+    summary: Параметр resource при токене без аудитории давал 500 вместо 400 invalid_target
+RWB-0040:
+  pattern: Событийный путь (вебхук, событие) применяет те же фильтры и границы доступа, что и плановая синхронизация
+  checks:
+  - ASYNC-EVENT-PATH-SAME-RULES
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-c36c-cf6r-ghgj
+    fix: https://github.com/backstage/backstage/commit/989db63b6f87c8fc04d440f296ad89e10c79b363
+    product: '@backstage/plugin-catalog-backend-module-bitbucket-server'
+    closed: '2026-10-07'
+    summary: Событийный путь (вебхук репозитория) добавляет в каталог источник, который плановое обнаружение отсекает фильтрами.
+  - url: https://github.com/advisories/GHSA-gp6m-x9vw-5c5x
+    fix: https://github.com/backstage/backstage/commit/c211b4b67d28efd2f4fac63e35e2ac515e305cb3
+    product: '@backstage/plugin-catalog-backend-module-gitlab'
+    closed: '2026-10-07'
+    summary: Событийная загрузка пользователей организации GitLab допускает идентичность вне заданной области, которую плановая
+      загрузка отсекает.
+RWB-0041:
+  pattern: Вход через внешний IdP не связывается с существующей учёткой по неподтверждённому email (email_verified=false или
+    нет признака)
+  checks:
+  - AUTH-EXTERNAL-IDP-UNVERIFIED-EMAIL
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-xm5q-p7w3-x6cp
+    fix: https://github.com/backstage/backstage/commit/507e65ab9160aae6b602513dbfaebdd6be0ca8bb
+    product: '@backstage/plugin-auth-node'
+    closed: '2026-10-07'
+    summary: Вход через внешний IdP с email_verified=false сопоставляется с учёткой по email - захват чужой идентичности.
+  - url: https://github.com/advisories/GHSA-826h-28h9-65hg
+    fix: https://github.com/backstage/backstage/commit/1b1f05e82161aaabc226c1d7d498d746956bf942
+    product: '@backstage/plugin-auth-backend-module-oidc-provider'
+    closed: '2026-10-07'
+    summary: OIDC-провайдер с неподтверждёнными email позволяет войти под чужой учёткой каталога через сопоставление по email.
+  - url: https://github.com/advisories/GHSA-6j36-r6pr-59x4
+    fix: https://github.com/vendurehq/vendure/commit/3bb04718ea4f9395fda731bd2a4bcfc3afb0a485
+    product: '@vendure/core'
+    closed: '2026-09-17'
+    summary: Внешний вход связывается с существующей учёткой по email без подтверждения владения — захват аккаунта.
+RWB-0042:
+  pattern: Заявленная клиентом идентичность (кошелёк, DID, account id) без доказательства владения не даёт прав и льгот
+  checks:
+  - SEC-IDENTITY-PROOF-OF-POSSESSION
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-jg6q-3qfh-r9f8
+    fix: https://github.com/insumerapi/mppx-condition-gate/commit/b1d9935a57ba6d32da49eead1bfb459ad0cd55ab
+    product: '@insumermodel/mppx-condition-gate, @insumermodel/mppx-token-gate'
+    closed: '2026-10-07'
+    summary: Бесплатный доступ выдаётся по адресу кошелька, который клиент просто указал, без доказательства владения.
+RWB-0043:
+  pattern: Действия во внешней системе от имени пользователя — только с его правами; нет отката на сервисные учётные данные,
+    прокси к стороннему API пропускает только нужные операции
+  checks:
+  - SEC-CONFUSED-DEPUTY
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-29gx-h2m3-xw44
+    fix: https://github.com/backstage/backstage/commit/6fb2a41ea47da37eafe5ea744050
+    product: '@backstage/plugin-scaffolder-backend, @backstage/plugin-scaffolder-backend-module-azure, @backstage/plugin-scaffolder-backend-module-bitbucket-cloud,
+      @backstage/plugin-scaffolder-backend-module-bitbucket-server, @backstage/plugin-scaffolder-backend-module-github, @backstage/plugin-scaffolder-backend-module-gitlab'
+    closed: '2026-10-07'
+    summary: Действия с внешними системами без учётных данных пользователя выполняются под учёткой интеграции с более широкими
+      правами.
+  - url: https://github.com/advisories/GHSA-r9v2-gg2j-22q5
+    fix: https://github.com/payloadcms/payload/commit/2f94a4205e5ba3ec0e91c92ed54f24f429826dd0
+    product: '@payloadcms/plugin-stripe'
+    closed: '2026-10-06'
+    summary: Через прокси к платёжному API аутентифицированный пользователь выполнял произвольные операции Stripe с ключом
+      сервера.
+RWB-0044:
+  pattern: Обмен и обновление токена сохраняют привязку к отправителю (DPoP, mTLS) или требуют доказательство владения ключом
+  checks:
+  - AUTH-TOKEN-SENDER-CONSTRAINED
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/50963
+    fix: https://github.com/keycloak/keycloak/commit/ce856343b51e73a6b6f47bf2a170712cce5069ce
+    product: Keycloak
+    closed: '2026-07-21'
+    summary: Обмен токена с DPoP-привязкой выдаёт новый токен без привязки (cnf отсутствует).
+RWB-0045:
+  pattern: Код ответа соответствует фактическому результату; при 5xx — состояние не изменено (или явное сообщение о частичном
+    выполнении)
+  checks:
+  - ERR-STATUS-MATCHES-EFFECT
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/48904
+    fix: https://github.com/keycloak/keycloak/pull/49084
+    product: Keycloak
+    closed: '2026-05-26'
+    summary: DELETE realm через REST возвращает 500, хотя удаление в итоге выполняется.
+RWB-0046:
+  pattern: Код и вызовы инструментов, сгенерированные LLM по вводу пользователя, не выполняют исходящих запросов и опасных
+    операций (prompt injection)
+  checks:
+  - INJ-LLM-GENERATED-ACTIONS
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-w7x8-q2gp-5cgg
+    product: flowise, flowise-components
+    closed: '2026-10-07'
+    summary: Через неаутентифицированный API предсказаний prompt injection заставляет сгенерированный LLM код обойти regex-блоклист
+      и сделать внешние запросы (SSRF, утечка данных).
+RWB-0047:
+  pattern: Копирование/клонирование ресурса соблюдает полевые права чтения и создания; отключённое дублирование недоступно
+  checks:
+  - SEC-CLONE-FIELD-PERMISSIONS
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-vc4h-q48j-5hcx
+    fix: https://github.com/payloadcms/payload/commit/099ef12e2682f076aa8e8d0ccb790536b4e1027f
+    product: payload
+    closed: '2026-10-06'
+    summary: Операция дублирования копирует скрытые и запрещённые полевыми правами значения исходного документа.
+RWB-0048:
+  pattern: Прерванная загрузка не оставляет данных в хранилище и не учитывается в квоте
+  checks:
+  - FILE-ABORTED-UPLOAD-CLEANUP
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-3pph-fpjx-jg34
+    fix: https://github.com/expressjs/multer/commit/53337f9713619ef3381ee6b4e541f926dbaac305
+    product: multer
+    closed: '2026-09-28'
+    summary: Прерванная в узкое окно multipart-загрузка оставляет файл на диске без очистки — накопление исчерпывает хранилище.
+RWB-0049:
+  pattern: Опубликованные сервисом описания (OpenAPI, JSON Schema, MCP tools, SDL) валидны в заявленном диалекте и проходят
+    строгий валидатор
+  checks:
+  - CONTRACT-PUBLISHED-SCHEMA-VALID
+  batch: pilot
+  bugs:
+  - url: https://github.com/strapi/strapi/issues/27395
+    fix: https://github.com/strapi/strapi/pull/27505
+    product: Strapi
+    closed: '2026-09-08'
+    summary: Опубликованные схемы инструментов не соответствуют заявленному диалекту JSON Schema
+RWB-0050:
+  pattern: Потоковый ответ SSE работает для всех методов (включая POST с телом), отдаёт text/event-stream и события до закрытия
+    клиентом
+  checks:
+  - ASYNC-SSE-STREAM
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/17098
+    product: NestJS
+    closed: '2026-06-08'
+    summary: SSE на POST-маршруте возвращает пустой 200
+RWB-0051:
+  pattern: Необрабатываемые сообщения уходят в DLQ без блокировки очереди
+  checks:
+  - ASYNC-DEAD-LETTER
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/10091
+    product: NestJS
+    closed: '2022-08-31'
+    summary: Любая ошибка обработчика запускает повтор доставки события
+RWB-0052:
+  pattern: Фоновая задача проходит статусы и отдаёт результат
+  checks:
+  - ASYNC-JOB-LIFECYCLE
+  batch: pilot
+  bugs:
+  - url: https://github.com/strapi/strapi/issues/26579
+    fix: https://github.com/strapi/strapi/pull/26880
+    product: Strapi
+    closed: '2026-07-21'
+    summary: Фоновая задача перевода падала целиком с общим сообщением, когда одно значение превышало maxLength
+RWB-0053:
+  pattern: Вебхуки подписаны, подпись проверяется, повтор отклоняется
+  checks:
+  - ASYNC-WEBHOOK-SIGNATURE
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/14543
+    product: NestJS
+    closed: '2025-01-31'
+    summary: После обновления фреймворка переразобранное тело давало другую HMAC-подпись — проверка подписи вендора ломалась
+RWB-0054:
+  pattern: URL вебхука не может указывать на внутренние адреса
+  checks:
+  - ASYNC-WEBHOOK-URL-SSRF
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-q567-cr4x-96w4
+    fix: https://github.com/triggerdotdev/trigger.dev/pull/4199
+    product: trigger.dev
+    closed: '2026-10-02'
+    summary: URL вебхука канала оповещений не проверялся — сервер слал POST на внутренние адреса
+  - url: https://github.com/advisories/GHSA-xxv7-2vv3-h682
+    fix: https://github.com/triggerdotdev/trigger.dev/pull/4199
+    product: trigger.dev
+    closed: '2026-10-02'
+    summary: URL вебхука канала оповещений не проверялся на внутренние адреса (дубль GHSA-q567)
+  - url: https://github.com/advisories/GHSA-354h-gmhv-mr9c
+    fix: https://github.com/TryGhost/Ghost/commit/815962dd2760e55c5dc8d0fb7fac732a7634566f
+    product: ghost
+    closed: '2026-10-07'
+    summary: SSRF через URL вебхука — сотрудник опрашивает внутренние хосты с сервера.
+RWB-0055:
+  pattern: API-ключи ограничены по правам, отзываются и не раскрываются
+  checks:
+  - AUTH-API-KEY-LIFECYCLE
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/50855
+    fix: https://github.com/keycloak/keycloak/pull/50910
+    product: Keycloak
+    closed: '2026-07-20'
+    summary: Предыдущий (ротированный) секрет клиента оставался действительным после отключения функции ротации
+  - url: https://github.com/advisories/GHSA-238x-w2j9-gwwr
+    fix: https://github.com/payloadcms/payload/commit/880d2e900be22cd66a9e939f2b3e702fa413180f
+    product: payload
+    closed: '2026-10-06'
+    summary: Пользователь с правом читать чужие документы пользователей получал их активные API-ключи.
+  - url: https://github.com/advisories/GHSA-2q76-m6w6-qgc6
+    fix: https://github.com/payloadcms/payload/commit/025581d8c5ed836039ad85397288a30f0d3c11c1
+    product: '@payloadcms/plugin-mcp'
+    closed: '2026-10-06'
+    summary: Пользователь управлял API-ключами чужой учётной записи — захват аккаунта.
+RWB-0056:
+  pattern: Перебор паролей ограничивается
+  checks:
+  - AUTH-BRUTE-FORCE-PROTECTION
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/49960
+    fix: https://github.com/keycloak/keycloak/pull/50047
+    product: Keycloak
+    closed: '2026-06-16'
+    summary: Обновление токена из существующей сессии сбрасывает блокировку после перебора
+RWB-0057:
+  pattern: Сессионные cookie имеют Secure, HttpOnly, SameSite и узкие Domain/Path
+  checks:
+  - AUTH-COOKIE-ATTRIBUTES
+  batch: pilot
+  bugs:
+  - url: https://github.com/jshttp/cookie/issues/103
+    fix: https://github.com/jshttp/cookie/commit/e248786d0aaab4a4759bd277066e50f38067e402
+    product: cookie
+    closed: '2020-04-22'
+    summary: Сервер выдаёт синтаксически невалидный Set-Cookie (Max-Age=Infinity)
+  - url: https://github.com/strapi/strapi/issues/26723
+    fix: https://github.com/strapi/strapi/pull/26747
+    product: Strapi
+    closed: '2026-06-23'
+    summary: Cookie refresh-токена выдавались без Max-Age, несмотря на настройку
+RWB-0058:
+  pattern: Логин (email, телефон) нормализуется одинаково при входе, создании и поиске
+  checks:
+  - AUTH-LOGIN-IDENTIFIER-NORMALIZATION
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/53138
+    fix: https://github.com/keycloak/keycloak/pull/53287
+    product: Keycloak
+    closed: '2026-09-29'
+    summary: Проверка согласия сравнивала идентификатор строго, а поиск пользователя — без учёта формы
+RWB-0059:
+  pattern: После выхода токен и сессия недействительны
+  checks:
+  - AUTH-LOGOUT-INVALIDATES
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/50629
+    fix: https://github.com/keycloak/keycloak/pull/50828
+    product: Keycloak
+    closed: '2026-07-16'
+    summary: После отзыва согласия отзыв refresh-токена завершался ошибкой и выход не сохранялся
+RWB-0060:
+  pattern: Операции, требующие второго фактора, недоступны без него
+  checks:
+  - AUTH-MFA-STEP-UP
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/28152
+    fix: https://github.com/directus/directus/pull/28176
+    product: Directus
+    closed: '2026-10-02'
+    summary: Требование MFA вычисляется по-разному при входе, обновлении токена и чтении политик
+RWB-0061:
+  pattern: OAuth/OIDC flow проверяет redirect_uri, state и PKCE
+  checks:
+  - AUTH-OAUTH-REDIRECT-STATE
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/26237
+    fix: https://github.com/directus/directus/pull/26239
+    product: Directus
+    closed: '2025-11-21'
+    summary: После обновления SSO-вход с прежде разрешённым redirect отклоняется как недопустимый
+  - url: https://github.com/keycloak/keycloak/issues/49456
+    fix: https://github.com/keycloak/keycloak/pull/50026
+    product: Keycloak
+    closed: '2026-06-23'
+    summary: Запрет HTTP redirect_uri не применялся к клиентам, разрешённым через документ метаданных
+RWB-0062:
+  pattern: Политика паролей применяется на сервере
+  checks:
+  - AUTH-PASSWORD-POLICY
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/51674
+    fix: https://github.com/keycloak/keycloak/pull/51840
+    product: Keycloak
+    closed: '2026-08-28'
+    summary: Короткий пароль при смене в режиме FIPS давал 500 вместо ошибки политики паролей
+RWB-0063:
+  pattern: Сессия истекает после простоя и абсолютного срока
+  checks:
+  - AUTH-SESSION-TIMEOUT
+  batch: pilot
+  bugs:
+  - url: https://github.com/expressjs/session/issues/340
+    fix: https://github.com/expressjs/session/commit/4c476fa7f01aac55ae8bc68d411ebfad22379eea
+    product: express-session
+    closed: '2016-08-24'
+    summary: Скользящее продление сессии не обновляло срок
+RWB-0064:
+  pattern: Одноразовые промокоды, бонусы и приглашения нельзя использовать повторно
+  checks:
+  - BIZ-ONE-TIME-BENEFIT-REUSE
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/26699
+    fix: https://github.com/directus/directus/pull/26971
+    product: Directus
+    closed: '2026-03-31'
+    summary: Принятие приглашения для уже активированного пользователя давало общую ошибку INVALID_PAYLOAD «не приглашён»
+RWB-0065:
+  pattern: Побочные эффекты (письма, push, события) выполняются ровно один раз
+  checks:
+  - BIZ-SIDE-EFFECTS-ONCE
+  batch: pilot
+  bugs:
+  - url: https://github.com/strapi/strapi/issues/26610
+    fix: https://github.com/strapi/strapi/pull/26613
+    product: Strapi
+    closed: '2026-06-15'
+    summary: Массовое удаление из списка вызывало обработчики delete дважды
+  - url: https://github.com/nestjs/nest/issues/2557
+    product: NestJS
+    closed: '2019-09-16'
+    summary: При наследовании WebSocket-шлюза одно событие обрабатывается дважды — клиент получает два ответа.
+RWB-0066:
+  pattern: Нельзя пропустить обязательный шаг бизнес-процесса
+  checks:
+  - BIZ-WORKFLOW-STEP-SKIP
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-35jj-42hp-8gmq
+    product: n8n
+    closed: '2026-09-10'
+    summary: Токен возобновления, выданный анонимному отправителю формы, принимался другим каналом (chat WebSocket) и снимал
+      шаг согласования.
+RWB-0067:
+  pattern: Реализация соответствует опубликованному контракту
+  checks:
+  - COMPAT-IMPLEMENTATION-MATCHES-CONTRACT
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/27039
+    fix: https://github.com/directus/directus/pull/27121
+    product: Directus
+    closed: '2026-06-25'
+    summary: Схема MCP-инструмента описывала data как массив, а нижележащий API ждал объект — обновление всегда падало
+  - url: https://github.com/directus/directus/issues/27762
+    fix: https://github.com/directus/directus/pull/27922
+    product: Directus
+    closed: '2026-07-17'
+    summary: В спецификации описаны query-параметры, которые API не принимает и молча игнорирует
+  - url: https://github.com/directus/directus/issues/27761
+    fix: https://github.com/directus/directus/pull/27857
+    product: Directus
+    closed: '2026-07-08'
+    summary: Работающие публичные эндпоинты (регистрация, подтверждение email, TFA) отсутствовали в спецификации
+  - url: https://github.com/expressjs/express/issues/2495
+    product: Express
+    closed: '2022-02-17'
+    summary: Регулярное выражение в параметре маршрута перехватывало путь с бо́льшим числом сегментов
+  - url: https://github.com/keycloak/keycloak/issues/49730
+    fix: https://github.com/keycloak/keycloak/pull/49751
+    product: Keycloak
+    closed: '2026-06-16'
+    summary: Документ discovery не объявляет метод аутентификации none, хотя он фактически поддерживается
+  - url: https://github.com/keycloak/keycloak/issues/52378
+    fix: https://github.com/keycloak/keycloak/commit/8ba7f54bae428057fb83aefeef906491476e1b0d
+    product: Keycloak
+    closed: '2026-09-30'
+    summary: Опубликованная OpenAPI-схема описывает ответ как массив пользователей, а API возвращает группы.
+RWB-0068:
+  pattern: Внутренняя ошибка сервера возвращается в общей модели без утечек
+  checks:
+  - ERR-INTERNAL-ERROR-SHAPE
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/17695
+    product: NestJS
+    closed: '2026-09-14'
+    summary: Ошибка внешней зависимости с полем statusCode отдавалась клиенту как HTTP-ошибка
+  - url: https://github.com/nestjs/nest/issues/373
+    product: NestJS
+    closed: '2018-02-15'
+    summary: Ошибка, возвращённая обработчиком асинхронно (Observable.throw), не превращалась в ответ — необработанный reject
+      вместо ошибки клиенту.
+RWB-0069:
+  pattern: Архивные и графические бомбы не исчерпывают ресурсы
+  checks:
+  - FILE-ARCHIVE-BOMB
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-f94x-6692-553q
+    fix: https://github.com/Borewit/music-metadata/pull/2734
+    product: music-metadata
+    closed: '2026-10-08'
+    summary: Загрузка медиафайла с искажённым заголовком вешает процесс разбора метаданных
+  - url: https://github.com/advisories/GHSA-c6fg-446q-cg94
+    fix: https://github.com/cthackers/adm-zip/commit/491600683dacb6cb9fe0718a0eeb9cb5eb49afa6
+    product: adm-zip
+    closed: '2026-09-29'
+    summary: Асинхронная распаковка ZIP игнорирует лимит выходного размера — архив с заявленным размером 1 байт распаковывается
+      в 64 МБ.
+  - url: https://github.com/advisories/GHSA-8238-w5pm-2374
+    fix: https://github.com/cthackers/adm-zip/commit/5e70d3a26097d68fa981c41f022c053117174e49
+    product: adm-zip
+    closed: '2026-09-29'
+    summary: Повреждённый DEFLATE-поток в ZIP при асинхронной распаковке даёт необработанную ошибку и роняет процесс.
+RWB-0070:
+  pattern: Скачивание файлов проверяет права и срок действия ссылок
+  checks:
+  - FILE-DOWNLOAD-AUTHZ
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-rg9r-hr7g-5gc2
+    fix: https://github.com/backstage/backstage/commit/bf6bbf7326ada7d96d7b2c4ebc4a71546106f311
+    product: '@backstage/plugin-techdocs-backend'
+    closed: '2026-10-07'
+    summary: Специально составленный URL статического контента документации отдаёт документацию другой сущности при внешнем
+      хранилище.
+RWB-0071:
+  pattern: Пустой файл и некорректный multipart обрабатываются корректно
+  checks:
+  - FILE-EMPTY-AND-MALFORMED-MULTIPART
+  batch: pilot
+  bugs:
+  - url: https://github.com/expressjs/express/issues/6406
+    product: Express
+    closed: '2025-03-19'
+    summary: 'Уязвимая зависимость разбора multipart: искажённая форма роняла процесс'
+RWB-0072:
+  pattern: Вредоносное содержимое обнаруживается или изолируется
+  checks:
+  - FILE-MALICIOUS-CONTENT
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-788w-68h3-cvxp
+    product: ghost
+    closed: '2026-10-07'
+    summary: Изображение с внешнего сайта при создании карточки-закладки обрабатывается уязвимой библиотекой SVG — RCE
+  - url: https://github.com/advisories/GHSA-jj74-hc2q-xrvm
+    fix: https://github.com/TryGhost/Ghost/commit/d2f498694be549074dd5817fd0e8a1371b65df02
+    product: ghost
+    closed: '2026-10-07'
+    summary: Загружаемая тема с файлами переводов позволяла администратору выполнить код на сервере
+RWB-0073:
+  pattern: Тип файла проверяется по содержимому, а не только по расширению
+  checks:
+  - FILE-UPLOAD-TYPE-VALIDATION
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/27784
+    fix: https://github.com/directus/directus/pull/27793
+    product: Directus
+    closed: '2026-07-10'
+    summary: Resumable-загрузка (TUS) не применяла allow-list MIME-типов, в отличие от multipart
+  - url: https://github.com/nestjs/nest/issues/437
+    product: NestJS
+    closed: '2018-03-01'
+    summary: fileFilter перехватчика загрузки игнорировался — файлы недопустимого типа принимались.
+RWB-0074:
+  pattern: Streaming RPC terminates correctly
+  checks:
+  - GRPC-STREAM-TERMINATION
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/13360
+    product: NestJS
+    closed: '2024-03-27'
+    summary: Исключение в серверном стриме gRPC приводило к необработанному отказу и падению процесса
+  - url: https://github.com/nestjs/nest/issues/13187
+    product: NestJS
+    closed: '2024-02-12'
+    summary: Ошибка в обработчике gRPC-стрима завершала стрим статусом OK — клиент не видел ошибку
+RWB-0075:
+  pattern: Отладочные и служебные эндпоинты недоступны извне
+  checks:
+  - HARD-DEBUG-ENDPOINTS
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-jmg2-rcxh-w8q3
+    fix: https://github.com/web-infra-dev/rsdoctor/pull/1744
+    product: '@rsdoctor/rspack-plugin'
+    closed: '2026-09-24'
+    summary: Служебный HTTP-сервер инструмента отдаёт исходный код без аутентификации, слушает все интерфейсы и разрешает
+      CORS *
+  - url: https://github.com/advisories/GHSA-rqx4-3f6q-3x2v
+    fix: https://github.com/mockoon/mockoon/pull/2254
+    product: '@mockoon/cli, @mockoon/commons-server'
+    closed: '2026-09-11'
+    summary: Admin API мок-сервера без аутентификации и с CORS * позволял читать секреты и переписывать ответы
+RWB-0076:
+  pattern: Ответы не содержат внутренних полей сверх контракта
+  checks:
+  - HARD-EXCESSIVE-DATA-EXPOSURE
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/51137
+    fix: https://github.com/keycloak/keycloak/pull/51912
+    product: Keycloak
+    closed: '2026-09-08'
+    summary: Политика облегчённых токенов не применялась для token exchange и JWT grant — токен содержал лишние claims
+  - url: https://github.com/advisories/GHSA-g2v8-7jhw-pp8p
+    fix: https://github.com/backstage/backstage/commit/66d2219edf0abe33ab7d0c1ced5d069d1e065be5
+    product: '@backstage/plugin-scaffolder-backend'
+    closed: '2026-10-07'
+    summary: Чтение чужой фоновой задачи возвращает внутренние данные выполнения, включая учётные данные внешних сервисов.
+  - url: https://github.com/advisories/GHSA-xgv3-crq2-6f69
+    fix: https://github.com/payloadcms/payload/commit/f5f1283d275c58b30e2faa6be7cdc4d49451ea91
+    product: payload
+    closed: '2026-10-06'
+    summary: Ответы обновления токена и сброса пароля возвращали поля пользователя, закрытые полевыми правами.
+RWB-0077:
+  pattern: Дорогие операции ограничены по ресурсам
+  checks:
+  - HARD-EXPENSIVE-OPERATION-LIMITS
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-ff3f-86qr-9cv3
+    fix: https://github.com/angular/angular/pull/70717
+    product: '@angular/router'
+    closed: '2026-09-30'
+    summary: Числовые имена matrix-параметров в URL вызывали усиление потребления памяти ~350x при серверном рендеринге
+  - url: https://github.com/advisories/GHSA-477h-4r7f-fvrx
+    fix: https://github.com/browserify/pbkdf2/commit/493d8d8ff437f680338bf7397398fda884ad462e
+    product: pbkdf2
+    closed: '2026-10-06'
+    summary: Очень длинный пароль хешируется на каждой итерации PBKDF2 — один запрос входа нагружает CPU надолго.
+  - url: https://github.com/advisories/GHSA-rj75-hqrm-r3gf
+    fix: https://github.com/postcss/postcss-selector-parser/commit/62b191792df0a0bc56062e5a875bc74aae2a51cd
+    product: postcss-selector-parser
+    closed: '2026-10-05'
+    summary: Плоский CSS-селектор из множества классов разбирается за O(n²) — CPU исчерпывается одним запросом.
+  - url: https://github.com/advisories/GHSA-r3ph-w7gj-g6xm
+    fix: https://github.com/nodeca/js-yaml/commit/6a8e05f9a485188ed730ac81e81ae221352ef480
+    product: js-yaml
+    closed: '2026-09-29'
+    summary: Лимит merge-ключей YAML не учитывает пустые отображения — документ 500 КБ занимает процессор на 13 с.
+RWB-0078:
+  pattern: Подмена Host и X-Forwarded-Host не влияет на ссылки и маршрутизацию
+  checks:
+  - HARD-HOST-HEADER
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-fm8p-53ww-hf6w
+    fix: https://github.com/bytebase/dbhub/pull/340
+    product: '@bytebase/dbhub'
+    closed: '2026-09-24'
+    summary: 'Проверка Origin == Host не защищает от DNS rebinding: неаутентифицированный локальный HTTP-сервер выполнял SQL'
+RWB-0079:
+  pattern: Старые версии API и недокументированные маршруты не обходят защиту
+  checks:
+  - HARD-SHADOW-API-VERSIONS
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-r9ph-3637-55px
+    fix: https://github.com/backstage/backstage/commit/2d5d3e77d630455d6d48cfa8f31fd3c126fd6f29
+    product: '@backstage/plugin-kubernetes-backend'
+    closed: '2026-10-07'
+    summary: Устаревший маршрут принимает данные сущности от клиента и по ним отдаёт объекты вне области прав пользователя.
+RWB-0080:
+  pattern: Ответы сторонних API валидируются перед использованием
+  checks:
+  - HARD-UNSAFE-API-CONSUMPTION
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-542g-h47m-68v8
+    fix: https://github.com/axios/axios/pull/11141
+    product: axios
+    closed: '2026-09-30'
+    summary: Ошибка сессии HTTP/2 к недоступному или не-HTTP/2 узлу роняла процесс вызывающей стороны
+  - url: https://github.com/advisories/GHSA-c475-qrg2-pj4r
+    fix: https://github.com/patrickjuchli/basic-ftp/commit/d0d9e07c56e519587bb50532ac6eadbb0cb0cfe9
+    product: basic-ftp
+    closed: '2026-10-01'
+    summary: Клиент FTP разбирает листинг каталога квадратичным regex — сторонний сервер блокирует процесс одной строкой;
+      проявляется в API импорта с FTP.
+  - url: https://github.com/advisories/GHSA-3xpg-4rpp-hhhm
+    fix: https://github.com/nodejs/undici/commit/2c7d7e1227043c644c4c32cfd1e276f4fd4fcb11
+    product: undici
+    closed: '2026-09-29'
+    summary: Распаковка ответа внешнего сервера не ограничена по размеру — сжатая бомба от upstream исчерпывает память.
+RWB-0081:
+  pattern: Сжатие ответа согласуется через Accept-Encoding
+  checks:
+  - HTTP-COMPRESSION
+  batch: pilot
+  bugs:
+  - url: https://github.com/expressjs/session/issues/72
+    fix: https://github.com/expressjs/session/commit/64be0b19e3eb596f6b18cc593983caa7b8028768
+    product: express-session
+    closed: '2014-08-06'
+    summary: Сочетание сжатия ответа и сессии роняло процесс (write after end)
+RWB-0082:
+  pattern: Выражения фильтрации (OData, RSQL, JSONPath, GraphQL where) не позволяют выйти за ограничения
+  checks:
+  - INJ-FILTER-EXPRESSION
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-v6q3-xqxm-6f5v
+    fix: https://github.com/TryGhost/Ghost/pull/30760
+    product: ghost
+    closed: '2026-10-07'
+    summary: Фильтр по скрытому полю token приглашений позволял подобрать секрет и повысить привилегии
+  - url: https://github.com/advisories/GHSA-5x6v-p487-7qh2
+    fix: https://github.com/langchain-ai/langchainjs/pull/10701
+    product: '@langchain/redis'
+    closed: '2026-10-06'
+    summary: Значения TAG/TEXT-фильтров RediSearch не экранировались, можно расширить запрос за границу арендатора
+  - url: https://github.com/advisories/GHSA-9q4r-4842-93vw
+    fix: https://github.com/triggerdotdev/trigger.dev/pull/4316
+    product: trigger.dev
+    closed: '2026-10-02'
+    summary: Имя оконной функции в пользовательском языке запросов подставлялось в SQL без экранирования — подзапрос вне фильтра
+      тенанта
+  - url: https://github.com/advisories/GHSA-pj7x-6wpf-pgvp
+    fix: https://github.com/payloadcms/payload/commit/03b78c7e0901d19c67f07bdf6396a276010adbcc
+    product: '@payloadcms/db-d1-sqlite, @payloadcms/db-postgres, @payloadcms/db-sqlite, @payloadcms/db-vercel-postgres'
+    closed: '2026-10-07'
+    summary: SQL-инъекция через путь к вложенному полю JSON и операторы в запросе фильтрации
+  - url: https://github.com/advisories/GHSA-fpww-c55p-cjv6
+    fix: https://github.com/payloadcms/payload/commit/caa3f69b5aecc6e7c2b459ed87972cbca9f33ee5
+    product: payload
+    closed: '2026-10-06'
+    summary: Полиморфные join-фильтры позволяли подобрать значения скрытых полей, включая токены сброса пароля.
+  - url: https://github.com/advisories/GHSA-xf65-r35x-wmmv
+    fix: https://github.com/vendurehq/vendure/commit/6daf5cb8571321eb6c6afa1d8e95a390c060be02
+    product: '@vendure/core'
+    closed: '2026-09-17'
+    summary: Обязательный фильтр видимости объединялся с клиентским через управляемый клиентом OR — публичный API отдавал
+      скрытые сущности.
+RWB-0083:
+  pattern: Пользовательские данные не позволяют подделывать записи журналов
+  checks:
+  - INJ-LOG-FORGING
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/52103
+    fix: https://github.com/keycloak/keycloak/pull/52107
+    product: Keycloak
+    closed: '2026-09-04'
+    summary: Неаутентифицированный запрос с %0A в client_id создаёт в логе поддельные записи.
+RWB-0084:
+  pattern: NoSQL-инъекция операторами запросов не исполняется
+  checks:
+  - INJ-NOSQL
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-m6rx-h84q-8r95
+    fix: https://github.com/langchain-ai/langchainjs/pull/11672
+    product: '@langchain/mongodb'
+    closed: '2026-10-08'
+    summary: Структурированный идентификатор сессии превращался в условие запроса NoSQL
+RWB-0085:
+  pattern: Инъекция команд ОС не исполняется
+  checks:
+  - INJ-OS-COMMAND
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-hf57-cqmx-p4gr
+    fix: https://github.com/diegosouzapw/OmniRoute/pull/11028
+    product: omniroute
+    closed: '2026-09-10'
+    summary: Поле versionCommand запускалось через execFileSync с интерпретатором -e; без логина эндпоинт доступен анонимно
+  - url: https://github.com/advisories/GHSA-8w7q-29mw-gf5c
+    fix: https://github.com/backstage/backstage/commit/02cd7cdbb18b687446277b5602adaee7f1d53cbb
+    product: '@backstage/plugin-techdocs-node'
+    closed: '2026-10-07'
+    summary: Значения конфигурации генератора документации из пользовательского репозитория вызывают выполнение кода на сервере
+      при сборке.
+  - url: https://github.com/advisories/GHSA-pqg4-j6r4-53mv
+    fix: https://github.com/ljharb/shell-quote/commit/6002b2ed90c6b83095eb272b6b0adaf3a172b0bc
+    product: shell-quote
+    closed: '2026-10-06'
+    summary: Перевод строки в аргументе после токена-комментария в quote() выводит строку из-под кавычек — инъекция команды.
+RWB-0086:
+  pattern: Обход каталогов через параметры файлов и путей невозможен
+  checks:
+  - INJ-PATH-TRAVERSAL
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-f7v3-xhm6-w245
+    fix: https://github.com/backstage/backstage/commit/017ace52d9b327ededc6704cf17799c875ae0f29
+    product: '@backstage/plugin-techdocs-node'
+    closed: '2026-10-07'
+    summary: Конфигурация расширения Markdown (snippets) позволяет включать файлы хоста и внутренние ресурсы при сборке документации.
+  - url: https://github.com/advisories/GHSA-9gfj-28hw-jchp
+    fix: https://github.com/knowns-dev/knowns/commit/09c5a96fd5817b941dc86669278c1a17db10ed4e
+    product: knowns
+    closed: '2026-09-25'
+    summary: Инструменты MCP документов и памяти склеивали путь пользователя без проверки — чтение, запись и удаление вне
+      проекта; переименование с удалением шло по праву записи.
+RWB-0087:
+  pattern: Специальные ключи __proto__ и constructor не меняют поведение сервера
+  checks:
+  - INJ-PROTOTYPE-POLLUTION
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/28209
+    fix: https://github.com/directus/directus/pull/28211
+    product: Directus
+    closed: '2026-10-06'
+    summary: Алиас поля __proto__ в GraphQL-запросе писал в Object.prototype
+  - url: https://github.com/advisories/GHSA-7mx3-vvmw-hjmv
+    fix: https://github.com/ardatan/graphql-tools/pull/8423
+    product: '@graphql-tools/utils'
+    closed: '2026-10-05'
+    summary: Алиасы __proto__/constructor при слиянии ответов подграфов загрязняли прототип и ломали все запросы
+  - url: https://github.com/advisories/GHSA-gcgf-fh7c-8gf2
+    fix: https://github.com/middleapi/orpc/pull/1727
+    product: '@orpc/zod'
+    closed: '2026-10-05'
+    summary: Слой приведения типов входа подменял прототип объекта по ключу __proto__ и падал TypeError на ключе constructor
+  - url: https://github.com/advisories/GHSA-2mhw-wcx5-v3xj
+    fix: https://github.com/thomaspoignant/scim-patch/pull/1127
+    product: scim-patch
+    closed: '2026-09-28'
+    summary: SCIM PATCH с путём через унаследованные методы (toString.x) менял глобальные встроенные объекты
+  - url: https://github.com/advisories/GHSA-8hq7-ggx2-cc6m
+    fix: https://github.com/mcollina/msgpack5/commit/20e82600ac9462e679c8a45e5723315f21e2c774
+    product: msgpack5
+    closed: '2026-10-08'
+    summary: Частичные опции декодера msgpack отключают защиту от __proto__
+  - url: https://github.com/advisories/GHSA-97rh-rhh2-7vjv
+    fix: https://github.com/payloadcms/payload/commit/e947fc4ba4a434f276d043386e501b1d14eda679
+    product: payload
+    closed: '2026-10-07'
+    summary: Публичная операция создания первого пользователя позволяла RCE через несанитизированные данные
+  - url: https://github.com/advisories/GHSA-r488-j9vj-wx3q
+    fix: https://github.com/payloadcms/payload/commit/333b82b9f3e685fed6826c2e3270da79df8336c6
+    product: '@payloadcms/plugin-form-builder'
+    closed: '2026-10-07'
+    summary: Отправка формы, сформированная специально, ведёт к выполнению кода (prototype pollution)
+  - url: https://github.com/advisories/GHSA-qf28-8hc6-vwrp
+    fix: https://github.com/payloadcms/payload/commit/a742140ab4fca3160f7f83e9e7d996552ffc3b5a
+    product: '@payloadcms/plugin-import-export'
+    closed: '2026-10-06'
+    summary: Неаутентифицированный импорт данных допускал prototype pollution и выполнение кода.
+  - url: https://github.com/advisories/GHSA-mjw6-4jj6-33hc
+    fix: https://github.com/uhop/stream-json/commit/2f2d35bbb547306991ded6487a279154d865a358
+    product: stream-json
+    closed: '2026-10-05'
+    summary: Потоковый JSON-парсер присваивает ключ __proto__ обычным присваиванием и подменяет прототип разобранного объекта.
+  - url: https://github.com/advisories/GHSA-325j-mg25-8q58
+    product: yayson
+    closed: '2026-09-11'
+    summary: Значения type/id документа JSON:API используются как ключи объектов — type=__proto__ загрязняет прототип процесса.
+  - url: https://github.com/advisories/GHSA-679f-58pq-4v2c
+    product: n8n
+    closed: '2026-09-10'
+    summary: Имена узлов из сохранённого через API объекта (__proto__) использовались как ключи — загрязнение прототипа; запрет
+      имён был только на клиенте.
+RWB-0088:
+  pattern: Пользовательский ввод не вызывает катастрофический backtracking в regex
+  checks:
+  - INJ-REDOS
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-9m4w-fmjw-fvjq
+    fix: https://github.com/TryGhost/Ghost/pull/31058
+    product: ghost
+    closed: '2026-10-07'
+    summary: ReDoS во входных данных функции встраивания медиа
+  - url: https://github.com/advisories/GHSA-fwh9-qg68-vxp4
+    fix: https://github.com/TryGhost/Ghost/pull/31058
+    product: ghost
+    closed: '2026-10-07'
+    summary: ReDoS при импорте контента
+  - url: https://github.com/advisories/GHSA-c29m-xwm3-cm6r
+    fix: https://github.com/axios/axios/pull/11141
+    product: axios
+    closed: '2026-09-30'
+    summary: 'ReDoS в разборе data: URL в HTTP-клиенте, достижим через URL от пользователя'
+  - url: https://github.com/advisories/GHSA-mghh-pgcx-3jjj
+    fix: https://github.com/axios/axios/pull/11141
+    product: axios
+    closed: '2026-09-30'
+    summary: ReDoS в нормализации хоста при обходе прокси, достижим через Location редиректа от злонамеренного сервера
+  - url: https://github.com/advisories/GHSA-6h2x-m376-mqjq
+    fix: https://github.com/hapijs/joi/pull/3143
+    product: joi
+    closed: '2026-09-29'
+    summary: 'Квадратичный backtracking в проверке ISO-даты: валидная дата и длинная дробная часть секунд'
+  - url: https://github.com/advisories/GHSA-jx63-h26r-8cph
+    fix: https://github.com/Sync-in/server/pull/228
+    product: '@sync-in/server'
+    closed: '2026-09-22'
+    summary: Регулярное выражение из запроса компилировалось без проверки, катастрофический backtracking блокировал сервер
+  - url: https://github.com/advisories/GHSA-68jq-fhch-4xq4
+    fix: https://github.com/quasarframework/quasar/commit/7a954ddafa756afe95c8f633f48ed68a07209d3d
+    product: quasar
+    closed: '2026-10-07'
+    summary: Длинный заголовок User-Agent вызывает катастрофический backtracking до маршрутизации — один запрос блокирует
+      сервер.
+  - url: https://github.com/advisories/GHSA-2g7p-5934-q4w7
+    fix: https://github.com/payloadcms/payload/commit/0084bd51fb7742b26a88431bb84cb1696857e6dc
+    product: payload
+    closed: '2026-10-06'
+    summary: Некорректный multipart-запрос обрабатывается очень долго из-за ReDoS в разборе Content-Type.
+  - url: https://github.com/advisories/GHSA-gjj5-9665-rwrc
+    fix: https://github.com/nodeca/probe-image-size/commit/60cc96ac0b671e79e328213d0a8e831312b09e84
+    product: probe-image-size
+    closed: '2026-10-02'
+    summary: Определение размеров изображения по SVG квадратично по времени на входе со множеством '<' — DoS через загрузку
+      файла или ссылку.
+  - url: https://github.com/advisories/GHSA-prgh-xp8r-p3m5
+    fix: https://github.com/nodemailer/nodemailer/commit/c07f17518d25aca8ab2ad66968dcbca538c24b89
+    product: nodemailer
+    closed: '2026-09-30'
+    summary: Разбор email-адреса квадратичен на адресах, склеенных комментариями RFC 5322 — одно письмо или поле блокирует
+      сервис.
+  - url: https://github.com/advisories/GHSA-q2hr-2g5m-vwhr
+    fix: https://github.com/juliangruber/brace-expansion/commit/33a5ef17b8d800bbfa8c52b14c39043b6aac1a96
+    product: brace-expansion
+    closed: '2026-09-29'
+    summary: Раскрытие фигурных скобок в glob-шаблоне квадратично по числу '}' — шаблон 128 КБ блокирует на ~28 с.
+  - url: https://github.com/advisories/GHSA-v53p-9fqp-m79j
+    fix: https://github.com/nodemailer/nodemailer/commit/437d7fc47403df176bc39271641541b7a9bce102
+    product: nodemailer
+    closed: '2026-09-29'
+    summary: Резервный regex поиска адреса в свободном тексте даёт квадратичный backtracking — 273 КБ блокируют на 43 с.
+  - url: https://github.com/advisories/GHSA-253c-mchw-3w2r
+    fix: https://github.com/markdown-it/markdown-it/commit/09fa07118dda4c953f058848f53dae88395618ca
+    product: markdown-it
+    closed: '2026-09-29'
+    summary: Рендер Markdown с автоссылками квадратичен на сотнях email или '://' — несколько сотен КБ блокируют сервис на
+      десятки секунд.
+  - url: https://github.com/advisories/GHSA-f67j-2jqw-jpq7
+    product: '@angular/platform-server'
+    closed: '2026-09-28'
+    summary: Незавершённый DOCTYPE в HTML пользователя вводит парсер серверного рендера в бесконечный цикл — процесс зависает.
+  - url: https://github.com/advisories/GHSA-9rgm-9g3h-6x36
+    fix: https://github.com/sveltejs/devalue/commit/8b2a4562c446d7c36d9d629778079a5fae4243e1
+    product: devalue
+    closed: '2026-09-17'
+    summary: Разбор сериализованных данных с индексами вне границ работает квадратично — DoS при передаче таких данных в API.
+  - url: https://github.com/advisories/GHSA-jgm3-qmp2-c4p7
+    fix: https://github.com/vendurehq/vendure/commit/f74cbbb0b9a50b5b0131822835fe7ee9b71b42c9
+    product: '@vendure/core'
+    closed: '2026-09-17'
+    summary: Публичный фильтр regex передаёт шаблон клиента в движок регулярных выражений без ограничений — ReDoS без аутентификации.
+RWB-0089:
+  pattern: SQL-инъекция во входных параметрах не исполняется
+  checks:
+  - INJ-SQL
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-r3rv-jm3r-62q2
+    fix: https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/6995c8cf8e51b2ad055de63dcaa4094eebbef5ce
+    product: mariadb
+    closed: '2026-10-08'
+    summary: Экранирование кавычки обратным слэшем не работает в режиме NO_BACKSLASH_ESCAPES — SQL-инъекция через плейсхолдер
+  - url: https://github.com/advisories/GHSA-v6pj-gxxw-phfw
+    fix: https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/144b8f4ef29539a9fb4b75d972b9dcdac4088b4e
+    product: mariadb
+    closed: '2026-10-08'
+    summary: Ключи объекта из тела становятся именами столбцов без экранирования — SQL-инъекция и запись лишних полей
+  - url: https://github.com/advisories/GHSA-r223-96jv-q533
+    fix: https://github.com/jhipster/generator-jhipster/commit/f6f1579581da8db0d1b8bd28dd473b56951c83af
+    product: generator-jhipster
+    closed: '2026-10-08'
+    summary: Параметр sort подставляется в ORDER BY без проверки — SQL-инъекция с несколькими операторами
+  - url: https://github.com/advisories/GHSA-v49j-62m6-pgrr
+    fix: https://github.com/payloadcms/payload/commit/a742140ab4fca3160f7f83e9e7d996552ffc3b5a
+    product: payload
+    closed: '2026-10-06'
+    summary: SQL-инъекция через динамические фильтры и join-параметры на SQLite/Postgres.
+  - url: https://github.com/advisories/GHSA-wmw4-mw6x-6vfm
+    fix: https://github.com/fecommunity/reactpress/commit/78ecb70af1c021455c05fdcbe137212c70e310d6
+    product: '@fecommunity/reactpress'
+    closed: '2026-09-23'
+    summary: Имена query-параметров подставлялись в SQL как имена столбцов — слепая SQL-инъекция без аутентификации.
+RWB-0090:
+  pattern: Параметры с URL и хостами не дают доступа к внутренней сети
+  checks:
+  - INJ-SSRF-PARAMETERS
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-q8hw-4fvp-9rwv
+    fix: https://github.com/nuxt-modules/og-image/pull/637
+    product: nuxt-og-image
+    closed: '2026-09-17'
+    summary: URL шрифта из base64-JSON сегмента пути запрашивался сервером без проверки; статус ответа выдавал результат
+  - url: https://github.com/advisories/GHSA-2h44-8472-frjj
+    fix: https://github.com/zereight/gitlab-mcp/pull/625
+    product: '@zereight/mcp-gitlab'
+    closed: '2026-09-15'
+    summary: Заголовок X-GitLab-API-URL задавал базовый адрес исходящих вызовов, сервер отправлял туда токен
+  - url: https://github.com/advisories/GHSA-q38j-6vcm-2f5m
+    fix: https://github.com/backstage/backstage/commit/28aa82ae2815988721dd7bbf43cd69c431dcd71b
+    product: '@backstage/plugin-techdocs-node'
+    closed: '2026-10-07'
+    summary: Конфигурация плагинов из пользовательского репозитория позволяла сборке обращаться к внутренней сети
+  - url: https://github.com/advisories/GHSA-g734-fhp4-7mfp
+    fix: https://github.com/backstage/backstage/commit/b0170fad7962fb8c3d71366b5265cf283c7bbcf7
+    product: '@backstage/plugin-scaffolder-backend-module-sentry'
+    closed: '2026-10-07'
+    summary: Пользователь задаёт apiBaseUrl действия, сервер обращается к произвольному адресу и отправляет туда токен интеграции.
+  - url: https://github.com/keycloak/keycloak/issues/52167
+    fix: https://github.com/keycloak/keycloak/commit/4a19f6ea7002b4759cef945be44359c9daf503e7
+    product: Keycloak
+    closed: '2026-09-29'
+    summary: Эндпоинт регистрации узла кластера сохраняет произвольный хост, которому затем доверяют при выдаче токенов.
+  - url: https://github.com/advisories/GHSA-pcmq-25r3-5w9v
+    fix: https://github.com/backstage/backstage/commit/23774b61560d851bc69cd6a77d12561b24d11afd
+    product: '@backstage/plugin-catalog-backend'
+    closed: '2026-10-07'
+    summary: Регистрация источника каталога с неразрешённым типом (file) обрабатывается сервером и даёт доступ к файлам хоста
+      — проверяется через API регистрации.
+  - url: https://github.com/advisories/GHSA-xvq9-wjp8-hwqf
+    fix: https://github.com/i18next/i18next-http-backend/commit/07e028862b25d0b9251bf3cafb92be2d35285f85
+    product: i18next-http-backend
+    closed: '2026-10-06'
+    summary: Значение языка с двоеточием, подставленное в шаблон пути загрузки переводов, уводит запрос на другой origin (SSRF).
+  - url: https://github.com/advisories/GHSA-6mwv-4mrm-5p3m
+    fix: https://github.com/decolua/9router/commit/126aa244c5b51b74ab8c7594e3418fcf4437bf6f
+    product: 9router
+    closed: '2026-09-23'
+    summary: Параметр region подставлялся в имя хоста — '#' и порт уводили запрос с API-ключом в Authorization на хост атакующего.
+  - url: https://github.com/advisories/GHSA-798p-78g2-v556
+    fix: https://github.com/ondata/ckan-mcp-server/commit/bb7439b553b9f965adc3d43bcd415c42eebe2f40
+    product: '@aborruso/ckan-mcp-server'
+    closed: '2026-09-22'
+    summary: Защита от SSRF проверяет только строку хоста без DNS — имя, указывающее на внутренний адрес или метаданные облака,
+      проходит.
+  - url: https://github.com/advisories/GHSA-65h7-9wrw-629c
+    product: '@frontmcp/adapters, frontmcp, mcp-from-openapi'
+    closed: '2026-09-11'
+    summary: Запрет loopback для внешних $ref в OpenAPI обходится через DNS-имя, редирект и IPv4-mapped IPv6 — SSRF при загрузке
+      спецификации.
+  - url: https://github.com/advisories/GHSA-f6mr-pjwc-34m4
+    fix: https://github.com/angular/angular/commit/3e924cc8dbbb57f23b262cb8f0d7e2bd0673034c
+    product: '@angular/platform-server'
+    closed: '2026-09-10'
+    summary: Unicode-пробел в начале пути проходит проверку same-origin, но при SSR обрезается — запрос с учётными данными
+      уходит на чужой хост.
+RWB-0091:
+  pattern: Инъекция в серверные шаблоны не исполняется
+  checks:
+  - INJ-TEMPLATE-SSTI
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-8r5x-fm3f-whwj
+    fix: https://github.com/handlebars-lang/handlebars.js/pull/2185
+    product: handlebars
+    closed: '2026-10-08'
+    summary: Объект вместо строки шаблона приводит к исполнению кода
+RWB-0092:
+  pattern: Чувствительные действия фиксируются в журнале аудита
+  checks:
+  - OBS-AUDIT-TRAIL
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/52568
+    fix: https://github.com/keycloak/keycloak/pull/52705
+    product: Keycloak
+    closed: '2026-09-14'
+    summary: Отказ при проверке resource indicators не фиксировался событием ошибки
+  - url: https://github.com/keycloak/keycloak/issues/52257
+    fix: https://github.com/keycloak/keycloak/pull/52258
+    product: Keycloak
+    closed: '2026-09-18'
+    summary: При нескольких событиях в одном запросе слушатели получали неверный тип события (привязка учётки логировалась
+      как LOGIN)
+  - url: https://github.com/directus/directus/issues/26242
+    fix: https://github.com/directus/directus/pull/26247
+    product: Directus
+    closed: '2025-11-24'
+    summary: Для загрузки файла администратором тенанта в событии не передавался контекст пользователя
+RWB-0093:
+  pattern: Health-эндпоинты отражают состояние и не раскрывают детали
+  checks:
+  - OBS-HEALTH-ENDPOINTS
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/11442
+    product: NestJS
+    closed: '2023-05-22'
+    summary: Исключение /health из auth-middleware перестало работать при глобальном префиксе и версионировании
+RWB-0094:
+  pattern: Поиск со спецсимволами и wildcard не ломается и не расширяет выборку
+  checks:
+  - PAGE-SEARCH-SPECIAL-CHARS
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/50228
+    fix: https://github.com/keycloak/keycloak/pull/51543
+    product: Keycloak
+    closed: '2026-08-10'
+    summary: Некорректный поисковый запрос с незакрытым экранированием даёт необработанное исключение
+RWB-0095:
+  pattern: Общее число элементов согласовано с суммой страниц
+  checks:
+  - PAGE-TOTAL-COUNT
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/26768
+    fix: https://github.com/directus/directus/pull/26774
+    product: Directus
+    closed: '2026-03-05'
+    summary: GraphQL-агрегат countAll выполнял выборку с лимитом по умолчанию вместо подсчёта
+RWB-0096:
+  pattern: Задержка ключевых операций в пределах SLO при обычной нагрузке
+  checks:
+  - PERF-LATENCY-BASELINE
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/51554
+    fix: https://github.com/keycloak/keycloak/pull/51569
+    product: Keycloak
+    closed: '2026-08-17'
+    summary: Время каждого запроса Admin API росло сверхлинейно с числом realm (до 9–13 с при 400)
+  - url: https://github.com/keycloak/keycloak/issues/51531
+    fix: https://github.com/keycloak/keycloak/pull/51565
+    product: Keycloak
+    closed: '2026-08-26'
+    summary: Эндпоинт составных ролей пользователя перебирал все роли realm — не масштабировался
+RWB-0097:
+  pattern: Размер ответов разумен и не растёт неограниченно
+  checks:
+  - PERF-PAYLOAD-SIZE
+  batch: pilot
+  bugs:
+  - url: https://github.com/strapi/strapi/issues/27393
+    fix: https://github.com/strapi/strapi/pull/27394
+    product: Strapi
+    closed: '2026-08-21'
+    summary: Список версий объекта с большими полями падает 500 (нехватка памяти сортировки)
+RWB-0098:
+  pattern: Чувствительные данные маскируются в ответах по политике
+  checks:
+  - PRIV-DATA-MASKING
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/52792
+    fix: https://github.com/keycloak/keycloak/pull/53361
+    product: Keycloak
+    closed: '2026-10-07'
+    summary: Маскирование секретов скрывало несекретное поле конфигурации
+  - url: https://github.com/advisories/GHSA-p795-mqf2-36mf
+    fix: https://github.com/backstage/backstage/commit/388926ae5734bc20bd6a1520d02896be834f6527
+    product: '@backstage/plugin-kubernetes-backend'
+    closed: '2026-10-07'
+    summary: Через один из путей запроса ресурсов пользователь получает немаскированные секреты, которые на других путях маскируются.
+RWB-0099:
+  pattern: Одно правило продукта одинаково в API разных клиентов
+  checks:
+  - REQ-CROSS-CLIENT-CONSISTENCY
+  batch: pilot
+  bugs:
+  - url: https://github.com/strapi/strapi/issues/27447
+    fix: https://github.com/strapi/strapi/pull/27462
+    product: Strapi
+    closed: '2026-09-17'
+    summary: Связи сущности теряются в одном из путей чтения, в других возвращаются
+  - url: https://github.com/keycloak/keycloak/issues/53117
+    fix: https://github.com/keycloak/keycloak/pull/53209
+    product: Keycloak
+    closed: '2026-09-29'
+    summary: Публичное поле вырезалось из ответа новой версии API
+  - url: https://github.com/directus/directus/issues/26703
+    fix: https://github.com/directus/directus/pull/26706
+    product: Directus
+    closed: '2026-02-23'
+    summary: GraphQL-агрегат с группировкой по функциям даты возвращал пустой group, REST — правильно
+  - url: https://github.com/directus/directus/issues/27844
+    fix: https://github.com/directus/directus/pull/27845
+    product: Directus
+    closed: '2026-07-08'
+    summary: Через WebSocket параметры запроса не валидировались, отрицательный limit принимался, через REST — 400
+  - url: https://github.com/keycloak/keycloak/issues/49457
+    fix: https://github.com/keycloak/keycloak/pull/49886
+    product: Keycloak
+    closed: '2026-06-22'
+    summary: Клиент, созданный альтернативным способом (CIMD), не проходит политики, применяемые при сохранении из консоли
+RWB-0100:
+  pattern: Массовые операции соблюдают лимиты и сообщают о каждом элементе
+  checks:
+  - RES-BULK-LIMITS
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/27863
+    fix: https://github.com/directus/directus/pull/27882
+    product: Directus
+    closed: '2026-07-14'
+    summary: Массовое обновление с повторяющимися ID у не-администратора падало ложной ошибкой прав на поля
+  - url: https://github.com/directus/directus/issues/27514
+    fix: https://github.com/directus/directus/pull/27759
+    product: Directus
+    closed: '2026-08-14'
+    summary: Массовое обновление с пустым списком ключей обновляло все записи коллекции
+  - url: https://github.com/directus/directus/issues/26754
+    fix: https://github.com/directus/directus/pull/26759
+    product: Directus
+    closed: '2026-03-05'
+    summary: 'Массовое удаление с пустым массивом: 204 для администратора и 500 для обычного пользователя'
+RWB-0101:
+  pattern: Ответ на создание и изменение совпадает с последующим чтением
+  checks:
+  - RES-CREATE-RESPONSE-MATCHES-READ
+  batch: pilot
+  bugs:
+  - url: https://github.com/strapi/strapi/issues/26606
+    fix: https://github.com/strapi/strapi/pull/26607
+    product: Strapi
+    closed: '2026-06-15'
+    summary: PUT пользователя со связью по documentId возвращал 200, но связь не сохранялась
+RWB-0102:
+  pattern: Удаление ресурса с зависимыми объектами выполняется по правилам каскада
+  checks:
+  - RES-DELETE-WITH-DEPENDENTS
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/51589
+    fix: https://github.com/keycloak/keycloak/pull/51616
+    product: Keycloak
+    closed: '2026-08-25'
+    summary: После удаления роли, на которую ссылается маппинг области, выдача токена падала с 500 для клиента
+RWB-0103:
+  pattern: Неизменяемые поля нельзя изменить после создания
+  checks:
+  - RES-IMMUTABLE-FIELDS
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/28131
+    fix: https://github.com/directus/directus/pull/28132
+    product: Directus
+    closed: '2026-08-21'
+    summary: Идентификатор экземпляра в настройках меняется через PATCH
+RWB-0104:
+  pattern: Ссылка на несуществующий или чужой связанный ресурс отклоняется
+  checks:
+  - RES-REFERENTIAL-INTEGRITY
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/50178
+    fix: https://github.com/keycloak/keycloak/pull/50181
+    product: Keycloak
+    closed: '2026-08-11'
+    summary: API принимает разрешение со scope, не связанным с выбранным ресурсом, интерфейс такое не допускает
+RWB-0105:
+  pattern: Клиент не может задать серверные поля (id, createdAt, status, version)
+  checks:
+  - RES-SERVER-GENERATED-FIELDS
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/28207
+    fix: https://github.com/directus/directus/pull/28208
+    product: Directus
+    closed: '2026-09-08'
+    summary: При загрузке файла клиентские значения серверных полей записывались привилегированно
+RWB-0106:
+  pattern: Метки времени создания и изменения ведут себя корректно
+  checks:
+  - RES-TIMESTAMPS
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/28042
+    fix: https://github.com/directus/directus/pull/28043
+    product: Directus
+    closed: '2026-08-27'
+    summary: При загрузке через TUS (resumable) серверное поле uploaded_on не заполнялось
+RWB-0107:
+  pattern: Недоступность зависимости даёт контролируемую ошибку
+  checks:
+  - RESIL-DEPENDENCY-DOWN
+  batch: pilot
+  bugs:
+  - url: https://github.com/strapi/strapi/issues/27374
+    fix: https://github.com/strapi/strapi/pull/27543
+    product: Strapi
+    closed: '2026-09-07'
+    summary: Отказ провайдера хранения при загрузке завершал весь процесс
+  - url: https://github.com/directus/directus/issues/27412
+    fix: https://github.com/directus/directus/pull/28076
+    product: Directus
+    closed: '2026-08-13'
+    summary: Зависание клиента объектного хранилища маскировалось под 403 Forbidden при отдаче файла
+  - url: https://github.com/keycloak/keycloak/issues/51352
+    fix: https://github.com/keycloak/keycloak/pull/51374
+    product: Keycloak
+    closed: '2026-09-21'
+    summary: При отключённом в конфигурации отправителе почты операции с настройками почты давали 500 (NPE)
+  - url: https://github.com/keycloak/keycloak/issues/51268
+    fix: https://github.com/keycloak/keycloak/pull/53623
+    product: Keycloak
+    closed: '2026-10-07'
+    summary: При остановленной БД эндпоинт членов группы иногда возвращал 200 и пустой список
+  - url: https://github.com/nestjs/nest/issues/10681
+    product: NestJS
+    closed: '2023-02-01'
+    summary: Ошибка источника в середине потоковой отдачи файла роняла процесс
+  - url: https://github.com/nestjs/nest/issues/9363
+    product: NestJS
+    closed: '2022-03-25'
+    summary: После перезапуска нижележащего микросервиса клиентское соединение не восстанавливалось
+  - url: https://github.com/nestjs/nest/issues/288
+    product: NestJS
+    closed: '2017-12-21'
+    summary: Отказ соединения с нижестоящим сервисом нельзя было перехватить — недоступность зависимости ломала обработку
+      вместо контролируемой ошибки.
+RWB-0108:
+  pattern: Перезапуск экземпляра не обрывает выполняющиеся запросы
+  checks:
+  - RESIL-GRACEFUL-SHUTDOWN
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/27961
+    fix: https://github.com/directus/directus/pull/28316
+    product: Directus
+    closed: '2026-10-07'
+    summary: Распределённая блокировка без TTL после аварийной остановки процесса блокировала весь кластер
+  - url: https://github.com/nestjs/nest/issues/13910
+    product: NestJS
+    closed: '2024-11-25'
+    summary: Закрытие WebSocket-адаптера закрывало HTTP-сервер раньше времени и блокировало остановку при долгих соединениях
+RWB-0109:
+  pattern: Отказ некритичной зависимости не ломает основной функционал
+  checks:
+  - RESIL-PARTIAL-DEGRADATION
+  batch: pilot
+  bugs:
+  - url: https://github.com/strapi/strapi/issues/27245
+    fix: https://github.com/strapi/strapi/pull/27312
+    product: Strapi
+    closed: '2026-09-01'
+    summary: Изменение и удаление workflow падали 500, когда необязательный модуль лицензии отключён
+RWB-0110:
+  pattern: Асинхронное принятие задачи 202
+  checks:
+  - REST-ASYNC-202
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/27854
+    fix: https://github.com/directus/directus/pull/27862
+    product: Directus
+    closed: '2026-07-21'
+    summary: Фоновый импорт отвечал до чтения всего тела; через прокси импорт зависал до таймаута и не записывал строки
+RWB-0111:
+  pattern: ETag/Last-Modified conditional GET
+  checks:
+  - REST-CACHE-CONDITIONAL-GET
+  batch: pilot
+  bugs:
+  - url: https://github.com/expressjs/express/issues/7365
+    fix: https://github.com/expressjs/express/pull/7366
+    product: Express
+    closed: '2026-07-12'
+    summary: Условный запрос безопасным методом с телом не даёт 304
+  - url: https://github.com/expressjs/express/issues/2749
+    product: Express
+    closed: '2025-03-27'
+    summary: Ответ 304 содержал заголовок Trailer — прокси отбрасывали ответ с 502
+  - url: https://github.com/expressjs/express/issues/2667
+    fix: https://github.com/expressjs/express/commit/c8d61b62693948568083d5ad3c4491e5cc6f5338
+    product: Express
+    closed: '2015-06-21'
+    summary: Слабый ETag совпадал у разных тел до 1 КБ — клиенты получали 304 со старыми данными
+RWB-0112:
+  pattern: Политика CORS
+  checks:
+  - REST-CORS-POLICY
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/3939
+    product: NestJS
+    closed: '2020-01-28'
+    summary: После обновления CORS на Fastify-адаптере перестал работать — заголовки не отдаются.
+RWB-0113:
+  pattern: Дата, время и timezone
+  checks:
+  - REST-DATE-TIME-TZ
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/28254
+    fix: https://github.com/directus/directus/pull/28257
+    product: Directus
+    closed: '2026-09-21'
+    summary: Функция year() в фильтре/сортировке давала ISO-год вместо календарного
+RWB-0114:
+  pattern: Дублирование уникального ключа
+  checks:
+  - REST-DUPLICATE-UNIQUE-KEY
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/27986
+    fix: https://github.com/directus/directus/pull/28001
+    product: Directus
+    closed: '2026-08-04'
+    summary: Обновление строки с её же значениями уникального составного ключа отклонялось как дубликат
+  - url: https://github.com/directus/directus/issues/26997
+    fix: https://github.com/directus/directus/pull/27001
+    product: Directus
+    closed: '2026-03-30'
+    summary: 'Замена файла отклонялась FORBIDDEN: проверка уникальности filename_disk находила сам обновляемый файл'
+RWB-0115:
+  pattern: Пустые объект, массив и строка
+  checks:
+  - REST-EMPTY-VALUES
+  batch: pilot
+  bugs:
+  - url: https://github.com/expressjs/express/issues/5959
+    product: Express
+    closed: '2024-09-13'
+    summary: 'Пустое тело при Content-Type: application/json давало undefined вместо пустого объекта'
+  - url: https://github.com/keycloak/keycloak/issues/50039
+    fix: https://github.com/keycloak/keycloak/pull/50073
+    product: Keycloak
+    closed: '2026-06-22'
+    summary: Пустая строка в массиве URI даёт 409 «дубликат» вместо 400 на одной из СУБД
+RWB-0116:
+  pattern: Допустимые и неизвестные enum
+  checks:
+  - REST-ENUM-VALUES
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/50362
+    fix: https://github.com/keycloak/keycloak/pull/50411
+    product: Keycloak
+    closed: '2026-09-21'
+    summary: Динамическая регистрация отклонялась целиком из-за одного неподдерживаемого grant_type
+RWB-0117:
+  pattern: Стабильная схема ошибок
+  checks:
+  - REST-ERROR-SCHEMA
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/4319
+    product: NestJS
+    closed: '2020-03-15'
+    summary: После обновления фреймворка схема тела HTTP-ошибок изменилась (message → error) — ломаются клиенты.
+  - url: https://github.com/nestjs/nest/issues/431
+    product: NestJS
+    closed: '2018-02-18'
+    summary: Исключение из middleware превращалось в ответ «[object Object]» вместо модели ошибки — видно по ответу.
+RWB-0118:
+  pattern: Filtering and sorting compose correctly
+  checks:
+  - REST-FILTER-SORT-COMPOSITION
+  batch: pilot
+  bugs:
+  - url: https://github.com/strapi/strapi/issues/26746
+    fix: https://github.com/strapi/strapi/pull/26751
+    product: Strapi
+    closed: '2026-07-07'
+    summary: Сортировка по вычисляемому статусу вместе с фильтром по связи давала 500 на PostgreSQL
+  - url: https://github.com/strapi/strapi/issues/26359
+    fix: https://github.com/strapi/strapi/pull/26361
+    product: Strapi
+    closed: '2026-05-18'
+    summary: Сортировка внутри раскрытия вложенной связи (populate.sort) игнорировалась
+RWB-0119:
+  pattern: Комбинация filter/sort/pagination
+  checks:
+  - REST-FILTER-SORT-PAGINATION
+  batch: pilot
+  bugs:
+  - url: https://github.com/strapi/strapi/issues/26577
+    fix: https://github.com/strapi/strapi/pull/26785
+    product: Strapi
+    closed: '2026-06-25'
+    summary: Пустой sort по умолчанию в GraphQL перебивал заданный пользователем порядок связей при пагинации
+  - url: https://github.com/strapi/strapi/issues/26550
+    fix: https://github.com/strapi/strapi/pull/26553
+    product: Strapi
+    closed: '2026-06-05'
+    summary: Пустой orderBy вложенных связей в компоненте сбрасывал заданный в админке порядок
+  - url: https://github.com/strapi/strapi/issues/26465
+    fix: https://github.com/strapi/strapi/pull/26427
+    product: Strapi
+    closed: '2026-06-03'
+    summary: Порядок элементов повторяемого компонента в GraphQL-ответе перестал совпадать с заданным
+  - url: https://github.com/strapi/strapi/issues/26426
+    fix: https://github.com/strapi/strapi/pull/26427
+    product: Strapi
+    closed: '2026-06-03'
+    summary: GraphQL возвращал связи в неверном порядке из-за пустого sort
+RWB-0120:
+  pattern: HEAD response is consistent with GET
+  checks:
+  - REST-HEAD-GET-CONSISTENCY
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/14016
+    product: NestJS
+    closed: '2024-09-23'
+    summary: HEAD на существующий GET-маршрут возвращал 404 после обновления
+RWB-0121:
+  pattern: Mass assignment защищённых полей
+  checks:
+  - REST-MASS-ASSIGNMENT
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/52488
+    fix: https://github.com/keycloak/keycloak/pull/53303
+    product: Keycloak
+    closed: '2026-10-06'
+    summary: PUT позволял снять флаг builtIn и тем отключить защиту встроенного потока от изменений
+  - url: https://github.com/advisories/GHSA-4ww4-68q3-h7g5
+    fix: https://github.com/payloadcms/payload/commit/2a69863deb0e3c87e36c1b3b17ab2d5b02fcb941
+    product: '@payloadcms/db-mongodb'
+    closed: '2026-10-07'
+    summary: Полевые ограничения на запись обходятся на одном из адаптеров хранения — пользователь меняет запрещённые поля
+      доступного документа.
+  - url: https://github.com/advisories/GHSA-fx49-4h83-wjv9
+    fix: https://github.com/payloadcms/payload/commit/9de9e7911e29d60870a1d5480412524c63d6411e
+    product: payload
+    closed: '2026-10-06'
+    summary: Полевое ограничение на изменение пароля в коллекции пользователей не применялось на сервере.
+  - url: https://github.com/advisories/GHSA-vmjq-hvgq-2wv4
+    product: 9router
+    closed: '2026-09-23'
+    summary: PATCH настроек записывал всё тело без белого списка — пользователь отключал требование входа для всего приложения.
+RWB-0122:
+  pattern: Null и отсутствующее поле
+  checks:
+  - REST-NULL-VS-OMITTED
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/51527
+    fix: https://github.com/keycloak/keycloak/commit/6d95a8addd73e71f390ed350fbcfb201e2a90b19
+    product: Keycloak
+    closed: '2026-08-18'
+    summary: PATCH с явным null в поле секрета генерирует новый секрет в обход политики ротации - старый перестаёт работать
+      сразу.
+RWB-0123:
+  pattern: Числовые границы
+  checks:
+  - REST-NUMERIC-BOUNDARIES
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/52491
+    fix: https://github.com/keycloak/keycloak/pull/52499
+    product: Keycloak
+    closed: '2026-09-15'
+    summary: max_age около Integer.MAX_VALUE переполнял сумму authTime + maxAge и требовал повторного входа
+  - url: https://github.com/directus/directus/issues/26448
+    fix: https://github.com/directus/directus/pull/27321
+    product: Directus
+    closed: '2026-06-27'
+    summary: Большое число в decimal-поле с правилом валидации давало необработанную ошибку вместо ошибки валидации
+RWB-0124:
+  pattern: Object-level authorization
+  checks:
+  - REST-OBJECT-LEVEL-AUTHZ
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-g7fw-3gjp-g5hf
+    fix: https://github.com/openclaw/openclaw/pull/99905
+    product: '@openclaw/feishu, @openclaw/googlechat, @openclaw/matrix, @openclaw/msteams'
+    closed: '2026-10-05'
+    summary: Явно указанная цель чтения (канал, комната) обходила allowlist бота
+RWB-0125:
+  pattern: Валидация redirect URL
+  checks:
+  - REST-OPEN-REDIRECT
+  batch: pilot
+  bugs:
+  - url: https://github.com/expressjs/express/issues/6614
+    product: Express
+    closed: '2025-07-03'
+    summary: Location принимает javascript:-схему
+  - url: https://github.com/keycloak/keycloak/issues/51712
+    fix: https://github.com/keycloak/keycloak/pull/51909
+    product: Keycloak
+    closed: '2026-08-25'
+    summary: Исправление безопасности стало отклонять post_logout_redirect_uri с вложенными OIDC-параметрами
+  - url: https://github.com/advisories/GHSA-2m6q-8v3h-jqww
+    fix: https://github.com/adonisjs/http-server/commit/4548a0631ce2ef1618f04c7b41465be42cad2f7d
+    product: '@adonisjs/http-server'
+    closed: '2026-10-08'
+    summary: Неэкранированный параметр маршрута даёт scheme-relative Location и открытый редирект
+  - url: https://github.com/advisories/GHSA-w84c-53h3-mc2g
+    fix: https://github.com/payloadcms/payload/commit/a742140ab4fca3160f7f83e9e7d996552ffc3b5a
+    product: '@payloadcms/next, payload'
+    closed: '2026-10-06'
+    summary: Параметр redirect после аутентификации отправлял пользователя на недоверенный адрес.
+RWB-0126:
+  pattern: Границы размера страницы
+  checks:
+  - REST-PAGINATION-LIMITS
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/52033
+    fix: https://github.com/keycloak/keycloak/pull/52034
+    product: Keycloak
+    closed: '2026-09-08'
+    summary: Запрос списка пользователей с max=100000 превышал таймаут транзакции, клиент получал обрезанный JSON
+RWB-0127:
+  pattern: Семантика PATCH
+  checks:
+  - REST-PATCH-PARTIAL-UPDATE
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/27877
+    fix: https://github.com/directus/directus/pull/27880
+    product: Directus
+    closed: '2026-09-17'
+    summary: Применение diff с удалением вложенного meta-свойства удаляло всю коллекцию с данными и отвечало 204
+  - url: https://github.com/keycloak/keycloak/issues/51213
+    fix: https://github.com/keycloak/keycloak/pull/51252
+    product: Keycloak
+    closed: '2026-08-03'
+    summary: PATCH с null и PUT без поля не удаляли сертификат подписи — старый ключ оставался доверенным
+RWB-0128:
+  pattern: Location при создании
+  checks:
+  - REST-POST-LOCATION
+  batch: pilot
+  bugs:
+  - url: https://github.com/expressjs/express/issues/5602
+    product: Express
+    closed: '2025-03-19'
+    summary: После патча формирование Location ломалось для доменов с не-ASCII символами
+RWB-0129:
+  pattern: Поля readOnly/writeOnly
+  checks:
+  - REST-READONLY-WRITEONLY
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/52173
+    fix: https://github.com/keycloak/keycloak/pull/52178
+    product: Keycloak
+    closed: '2026-08-31'
+    summary: Вычисляемый атрибут попадал в ответ GET и сохранялся при обратной записи без изменений
+  - url: https://github.com/keycloak/keycloak/issues/49272
+    fix: https://github.com/keycloak/keycloak/pull/49475
+    product: Keycloak
+    closed: '2026-05-29'
+    summary: PUT без read-only атрибутов отклонялся как попытка их изменить
+  - url: https://github.com/keycloak/keycloak/issues/48868
+    fix: https://github.com/keycloak/keycloak/pull/49714
+    product: Keycloak
+    closed: '2026-06-08'
+    summary: Изменение только имени и описания клиента через admin API стирает его секрет - видно по последующему чтению и
+      аутентификации клиента.
+RWB-0130:
+  pattern: Лимит размера тела
+  checks:
+  - REST-REQUEST-SIZE-LIMIT
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/14734
+    product: NestJS
+    closed: '2025-03-04'
+    summary: Отдельный лимит размера тела для одного маршрута ломал разбор тела во всех остальных
+RWB-0131:
+  pattern: Отсутствует обязательный параметр
+  checks:
+  - REST-REQUIRED-PARAM-MISSING
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/52076
+    fix: https://github.com/keycloak/keycloak/pull/52082
+    product: Keycloak
+    closed: '2026-10-02'
+    summary: Запрос на действие регистрации без данных формы (GET или пустой POST) вызывает внутреннее исключение и общую
+      страницу ошибки вместо валидации.
+  - url: https://github.com/nestjs/nest/issues/5688
+    product: NestJS
+    closed: '2020-11-12'
+    summary: Глобальная валидация не применяется к телу в контроллере, созданном через generic-фабрику — невалидные данные
+      принимаются.
+RWB-0132:
+  pattern: Защитные HTTP-заголовки
+  checks:
+  - REST-SECURITY-HEADERS
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/13401
+    product: NestJS
+    closed: '2025-02-09'
+    summary: При исключениях из глобального префикса маршрутов middleware перестаёт выполняться на всех маршрутах
+  - url: https://github.com/nestjs/nest/issues/13093
+    product: NestJS
+    closed: '2024-02-12'
+    summary: Middleware не вызывалось, если в его маршрутах указано несколько версий API
+  - url: https://github.com/nestjs/nest/issues/972
+    product: NestJS
+    closed: '2019-09-04'
+    summary: Middleware, зарегистрированный на все маршруты шаблоном '*' или '/', под одним из HTTP-адаптеров не срабатывал
+      — видно по ответу.
+RWB-0133:
+  pattern: Отсутствие чувствительных данных в ответах
+  checks:
+  - REST-SENSITIVE-DATA
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/52197
+    fix: https://github.com/keycloak/keycloak/pull/52731
+    product: Keycloak
+    closed: '2026-09-25'
+    summary: Новая версия Admin API отдавала открытый секрет клиента роли только на просмотр; v1 его маскировала
+RWB-0134:
+  pattern: Сортировка по неизвестному полю
+  checks:
+  - REST-SORT-INVALID-FIELD
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-53vv-xm9f-mm82
+    fix: https://github.com/TryGhost/Ghost/pull/30760
+    product: ghost
+    closed: '2026-10-07'
+    summary: Сортировка по скрытому полю password позволяла узнать порядок хешей паролей
+  - url: https://github.com/advisories/GHSA-9g87-32v6-3c2r
+    fix: https://github.com/payloadcms/payload/commit/a742140ab4fca3160f7f83e9e7d996552ffc3b5a
+    product: payload
+    closed: '2026-10-06'
+    summary: Сортировка по защищённым полям раскрывала сведения об их значениях.
+RWB-0135:
+  pattern: Контроль server-side URL fetch
+  checks:
+  - REST-SSRF-URL-FETCH
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-322m-ff4g-9vx9
+    fix: https://github.com/TryGhost/Ghost/pull/30918
+    product: ghost
+    closed: '2026-10-07'
+    summary: SSRF через подмену DNS между проверкой и подключением
+  - url: https://github.com/advisories/GHSA-r7f2-6fj8-6fg2
+    fix: https://github.com/TryGhost/Ghost/pull/30917
+    product: ghost
+    closed: '2026-10-07'
+    summary: Фильтр приватных IP обходится переходными IPv6-адресами
+  - url: https://github.com/advisories/GHSA-4233-jc72-56c5
+    fix: https://github.com/withastro/astro/pull/17752
+    product: '@astrojs/netlify'
+    closed: '2026-09-30'
+    summary: Allow-list источников изображений проверялся регуляркой без якорей — разрешённый хост в query пропускал любой
+      URL
+  - url: https://github.com/advisories/GHSA-r4gj-5m52-g5wh
+    fix: https://github.com/axios/axios/pull/11141
+    product: axios
+    closed: '2026-09-30'
+    summary: 'Запрет редиректов (maxRedirects: 0) не соблюдался одним из адаптеров HTTP-клиента — SSRF через редирект'
+  - url: https://github.com/advisories/GHSA-3pq3-5fj3-cg6v
+    fix: https://github.com/axios/axios/pull/11141
+    product: axios
+    closed: '2026-09-30'
+    summary: Путь HTTP/2 в HTTP-клиенте обходил настроенные DNS-проверку и прокси — SSRF
+  - url: https://github.com/advisories/GHSA-cjq9-62q9-8jv4
+    fix: https://github.com/vercel/next.js/commit/e002ad68bd676bb0ed0c87bb22e3590304763e0b
+    product: next
+    closed: '2026-10-07'
+    summary: Разрешённый удалённый хост с подконтрольным DNS ведёт к SSRF на внутренние адреса
+  - url: https://github.com/advisories/GHSA-pj5h-5q6c-3pfx
+    fix: https://github.com/payloadcms/payload/commit/ba5cf6ae20d27a2c15106cb37466419031f86e6d
+    product: payload
+    closed: '2026-10-07'
+    summary: Загрузка по внешнему URL пересылала учётные данные сессии на непроверенный адрес
+  - url: https://github.com/advisories/GHSA-qgvj-qcf8-xq73
+    fix: https://github.com/backstage/backstage/commit/0b0f6fc89b4eb4872c76a498abbe1dc65998bb6e
+    product: '@backstage/plugin-catalog-backend'
+    closed: '2026-10-07'
+    summary: Директивы-плейсхолдеры в сущности каталога заставляют сервер загрузить ресурс вне репозитория источника с учётными
+      данными интеграции.
+  - url: https://github.com/advisories/GHSA-m62c-5q34-f3cf
+    product: '@actual-app/sync-server'
+    closed: '2026-10-07'
+    summary: Allowlist CORS-прокси проверяет путь префиксом без границы сегмента — запросы к чужим приватным репозиториям
+      уходят с токеном сервера.
+  - url: https://github.com/advisories/GHSA-rpw4-54j3-4h4q
+    fix: https://github.com/beaugunderson/ip-address/commit/d03e960c7cc3179ef25c8a44b4f94dd499625546
+    product: ip-address
+    closed: '2026-09-28'
+    summary: Проверка link-local IPv6 признавала только fe80::/64 вместо fe80::/10 — фильтр SSRF пропускал fe81::1.
+  - url: https://github.com/advisories/GHSA-2vr4-cq9g-pvrc
+    fix: https://github.com/beaugunderson/ip-address/commit/ab3dc88bcf5374344168a2ba075ca7ac4ff257f8
+    product: ip-address
+    closed: '2026-09-28'
+    summary: Ни один классификатор не распознавал NAT64 local-use 64:ff9b:1::/48 — внутренние IPv4 через этот префикс проходили
+      фильтр SSRF.
+  - url: https://github.com/advisories/GHSA-cmhj-wh2f-9cgx
+    fix: https://github.com/decolua/9router/commit/c7d07448c58bec1200741de0b73305b860416b82
+    product: 9router
+    closed: '2026-09-23'
+    summary: Проверка URL изображения резолвила DNS отдельно от фактического запроса — DNS rebinding давал SSRF к внутренним
+      сервисам.
+  - url: https://github.com/advisories/GHSA-q5wm-mgqx-fv2f
+    product: n8n
+    closed: '2026-09-10'
+    summary: URL проверки учётных данных принимался без сверки с источником интеграции — секреты отправлялись на адрес атакующего.
+RWB-0136:
+  pattern: Статус ответа соответствует контракту
+  checks:
+  - REST-STATUS-CODE-CONTRACT
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/2360
+    product: NestJS
+    closed: '2019-06-06'
+    summary: Обработчик перенаправления под альтернативным HTTP-адаптером отдавал пустой 200 вместо 3xx — видно по ответу.
+RWB-0137:
+  pattern: Границы длины строки
+  checks:
+  - REST-STRING-LENGTH-BOUNDARIES
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/50903
+    fix: https://github.com/keycloak/keycloak/pull/51129
+    product: Keycloak
+    closed: '2026-08-10'
+    summary: Поле username на входе без ограничения длины целиком писалось в лог — раздувание логов одним запросом
+RWB-0138:
+  pattern: Несовпадение типа поля
+  checks:
+  - REST-TYPE-MISMATCH
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-48qf-xh34-q73r
+    fix: https://github.com/mariadb-corporation/mariadb-connector-nodejs/commit/2314c03b785db482599d2befd06f4992e5fc46b3
+    product: mariadb
+    closed: '2026-10-08'
+    summary: Объект с числовым length вместо массива в GeoJSON записывает неинициализированную память в БД
+RWB-0139:
+  pattern: Политика неизвестных полей
+  checks:
+  - REST-UNKNOWN-FIELDS
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/8066
+    product: NestJS
+    closed: '2021-09-10'
+    summary: При удалении неизвестных полей (whitelist) вместе с ними молча выбрасывается объявленный вложенный объект - ответ
+      {}.
+  - url: https://github.com/nestjs/nest/issues/417
+    product: NestJS
+    closed: '2018-02-15'
+    summary: Режим отсечения лишних полей не работал из-за старой зависимости — неизвестное поле проходило в ответ.
+RWB-0140:
+  pattern: Неподдерживаемый Content-Type запроса
+  checks:
+  - REST-UNSUPPORTED-CONTENT-TYPE
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/15022
+    product: NestJS
+    closed: '2025-05-05'
+    summary: Ошибка неверного Content-Type от HTTP-движка обходила фильтры исключений, ответ не в общей схеме
+  - url: https://github.com/keycloak/keycloak/issues/49964
+    fix: https://github.com/keycloak/keycloak/pull/51410
+    product: Keycloak
+    closed: '2026-08-07'
+    summary: Синтаксически неверный Content-Type даёт 500 вместо 400 на эндпоинтах токенов
+RWB-0141:
+  pattern: Атомарность ошибки валидации
+  checks:
+  - REST-VALIDATION-ATOMICITY
+  batch: pilot
+  bugs:
+  - url: https://github.com/strapi/strapi/issues/26674
+    fix: https://github.com/strapi/strapi/pull/26678
+    product: Strapi
+    closed: '2026-06-17'
+    summary: Загрузка файла больше 2 ГиБ возвращала ошибку определения MIME, но файл сохранялся
+RWB-0142:
+  pattern: Malformed credential is rejected
+  checks:
+  - SEC-AUTHN-MALFORMED
+  batch: pilot
+  bugs:
+  - url: https://github.com/jshttp/cookie/issues/35
+    fix: https://github.com/jshttp/cookie/commit/b15be80bb80f5425900dc6643363138622857864
+    product: cookie
+    closed: '2015-06-19'
+    summary: Отсутствующая или некорректная cookie роняет обработчик
+  - url: https://github.com/keycloak/keycloak/issues/50791
+    fix: https://github.com/keycloak/keycloak/pull/50925
+    product: Keycloak
+    closed: '2026-07-16'
+    summary: Basic-аутентификация клиента без пароля вызывала NullPointerException вместо 401
+  - url: https://github.com/keycloak/keycloak/issues/49969
+    fix: https://github.com/keycloak/keycloak/pull/50020
+    product: Keycloak
+    closed: '2026-06-16'
+    summary: JWT с alg null, без alg или с пустым заголовком даёт 500 вместо 401
+RWB-0143:
+  pattern: Protected operation rejects missing credentials
+  checks:
+  - SEC-AUTHN-MISSING
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-6wjp-v33h-5cvq
+    product: praisonai
+    closed: '2026-10-08'
+    summary: Конфигурация по умолчанию открывает API без аутентификации и с CORS * с credentials
+  - url: https://github.com/advisories/GHSA-472h-9c5j-prrr
+    fix: https://github.com/backstage/backstage/commit/9df92923ac32558bb80edeceafd8de780c44e218
+    product: '@backstage/plugin-proxy-backend'
+    closed: '2026-10-07'
+    summary: Исключение из аутентификации для родительского пути распространялось на вложенный защищённый путь
+  - url: https://github.com/advisories/GHSA-59h8-w5q6-mfmp
+    fix: https://github.com/triggerdotdev/trigger.dev/pull/4250
+    product: trigger.dev
+    closed: '2026-10-02'
+    summary: Запись в realtime-стрим выполнения без аутентификации по предсказуемому ID — проверяется запросом без токена.
+  - url: https://github.com/advisories/GHSA-x5c9-v98j-722r
+    fix: https://github.com/decolua/9router/commit/da667836cc7584bea0edd893de1d590c9ea279dc
+    product: 9router
+    closed: '2026-09-23'
+    summary: Сервер доверяет запросам с loopback-адреса без ключа; за обратным прокси на том же хосте все внешние запросы
+      выглядят локальными — 200 без ключа.
+RWB-0144:
+  pattern: Authorization is rechecked for asynchronous job access
+  checks:
+  - SEC-AUTHZ-ASYNC-JOB
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-7hfw-grcm-cqm6
+    fix: https://github.com/backstage/backstage/commit/0253c50673f2832b0b1e9f73348186434e7bd09e
+    product: '@backstage/plugin-scaffolder-backend'
+    closed: '2026-10-07'
+    summary: Список фоновых задач показывает метаданные задач вне политики видимости.
+RWB-0145:
+  pattern: Authorization context is respected by caches
+  checks:
+  - SEC-AUTHZ-CACHE-ISOLATION
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-2jfj-6hjv-fm6j
+    fix: https://github.com/nodejs/undici/commit/b6c5a00252c37da9dd2db9bead053bb843e1f988
+    product: undici
+    closed: '2026-09-29'
+    summary: Общий HTTP-кэш сохранял ответы с Set-Cookie и отдавал чужую cookie другим пользователям.
+RWB-0146:
+  pattern: User without required permission cannot invoke operation
+  checks:
+  - SEC-AUTHZ-FUNCTION
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/52753
+    fix: https://github.com/keycloak/keycloak/commit/c043345206a4c5fa4cff752b172fa5fb2313e74e
+    product: Keycloak
+    closed: '2026-09-29'
+    summary: Админ с правом view-users получает 200, но без realm-ролей пользователя - регрессия видна по ответу API.
+  - url: https://github.com/nestjs/nest/issues/879
+    product: NestJS
+    closed: '2018-08-22'
+    summary: Guard на методе родительского контроллера не применялся к маршруту наследника — защищённый маршрут открыт.
+  - url: https://github.com/advisories/GHSA-88h9-xgvx-hvf2
+    fix: https://github.com/grpc/grpc-node/commit/6cf64b596da03f1942a6b168998f0670217a99c4
+    product: '@grpc/grpc-js-xds'
+    closed: '2026-09-28'
+    summary: RBAC gRPC при нечувствительном к регистру сравнении применял префиксное совпадение имени метода — правило одного
+      метода действовало на другой.
+RWB-0147:
+  pattern: Authorization is enforced for every method
+  checks:
+  - SEC-AUTHZ-METHOD-MATRIX
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-pp95-gc86-jq6q
+    fix: https://github.com/triggerdotdev/trigger.dev/pull/4199
+    product: trigger.dev
+    closed: '2026-10-02'
+    summary: POST-действие повтора запуска не проверяло ни пользователя, ни организацию, хотя GET того же маршрута проверял
+RWB-0148:
+  pattern: Bulk endpoint enforces ownership per item
+  checks:
+  - SEC-BOLA-BULK
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/28161
+    fix: https://github.com/directus/directus/pull/28162
+    product: Directus
+    closed: '2026-09-11'
+    summary: Массовые PATCH/DELETE не требовали аутентификации, одиночные требовали
+  - url: https://github.com/advisories/GHSA-5ffh-6f9q-5hhr
+    fix: https://github.com/Unleash/unleash/commit/43e8db37b846921c8a94db58b44935ecbd15d9d1
+    product: unleash-server
+    closed: '2026-09-22'
+    summary: Права проверяются по проекту из URL, а ID стратегий из тела пишутся без проверки принадлежности — запись в чужой
+      проект и без аудита.
+RWB-0149:
+  pattern: User cannot delete another owner’s resource
+  checks:
+  - SEC-OWNERSHIP-DELETE
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-x3mg-q38v-m562
+    fix: https://github.com/TryGhost/Ghost/commit/cf2f718a67faa342c27989b701554ddd63862165
+    product: ghost
+    closed: '2026-10-07'
+    summary: Пользователь с ролью автора удаляет чужие посты и страницы.
+RWB-0150:
+  pattern: User cannot read another owner’s resource
+  checks:
+  - SEC-OWNERSHIP-READ
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-8xcj-9hfr-fh9j
+    fix: https://github.com/Unleash/unleash/commit/2dc6ac0e8ba524ec7a2e9bc96a0e01d9d6f5a35a
+    product: unleash-server
+    closed: '2026-09-22'
+    summary: Клонирование фичи проверяет права только на целевой проект — копия раскрывает настройки фичи из проекта, недоступного
+      на чтение.
+RWB-0151:
+  pattern: Indirect resource references preserve authorization
+  checks:
+  - SEC-OWNERSHIP-REFERENCE-INDIRECT
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-6q6j-f24j-p477
+    fix: https://github.com/TryGhost/Ghost/pull/28297
+    product: ghost
+    closed: '2026-10-07'
+    summary: Ссылка in_reply_to_id на скрытый комментарий позволяла участнику получить недоступный ему комментарий
+  - url: https://github.com/keycloak/keycloak/issues/51061
+    fix: https://github.com/keycloak/keycloak/pull/51063
+    product: Keycloak
+    closed: '2026-07-27'
+    summary: Параметризованный scope с именем пользователя клал в токен атрибуты чужого пользователя без проверки прав
+  - url: https://github.com/advisories/GHSA-4qpv-39hg-f7fx
+    fix: https://github.com/jhb-software/payload-plugins/pull/159
+    product: '@jhb.software/payload-alt-text-plugin'
+    closed: '2026-09-10'
+    summary: Эндпоинт плагина принимал collection и id и читал/обновлял документы в обход правил доступа коллекции
+  - url: https://github.com/advisories/GHSA-7c34-32v3-j575
+    fix: https://github.com/payloadcms/payload/commit/94059cf4bc6170ce88453015c0c6551329ae3982
+    product: payload
+    closed: '2026-10-06'
+    summary: Читаемая коллекция со связью раскрывает сведения о защищённых документах связанной коллекции через relationship-запрос.
+  - url: https://github.com/advisories/GHSA-72h8-wp98-7hch
+    fix: https://github.com/Unleash/unleash/commit/7bb2829fc40791aa478e8ffca149c11b0f9cb05a
+    product: unleash-server
+    closed: '2026-09-22'
+    summary: Проверка прав без await всегда проходит; чтение вложенного ресурса игнорирует проект из пути — IDOR между проектами.
+  - url: https://github.com/advisories/GHSA-pq6c-vh67-xpm3
+    product: n8n
+    closed: '2026-09-10'
+    summary: Назначение стриминга логов ссылалось на учётные данные по ID без проверки доступа — расшифрованный секрет чужого
+      проекта уходил на адрес атакующего.
+RWB-0152:
+  pattern: User cannot modify another owner’s resource
+  checks:
+  - SEC-OWNERSHIP-UPDATE
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-f7hx-52q9-hcrf
+    fix: https://github.com/payloadcms/payload/commit/36fa9af73dd04fa59f4b4a06d11454538c4c1409
+    product: payload
+    closed: '2026-10-07'
+    summary: Вспомогательный эндпоинт упорядочивания менял документы в обход прав
+RWB-0153:
+  pattern: User cannot grant self a higher role
+  checks:
+  - SEC-ROLE-SELF-ASSIGN
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-4pvx-fwjj-8gpc
+    fix: https://github.com/TryGhost/Ghost/pull/30764
+    product: ghost
+    closed: '2026-10-07'
+    summary: Редактор мог назначать другим свою роль, не имея права её назначать
+  - url: https://github.com/advisories/GHSA-p96c-xwx8-3cqj
+    fix: https://github.com/payloadcms/payload/commit/19b58692d20d3947f31124bf7a88ac14a5ebf02e
+    product: '@payloadcms/plugin-multi-tenant'
+    closed: '2026-10-07'
+    summary: Пользователь мог добавить себе членство в чужих арендаторах через поле массива арендаторов
+RWB-0154:
+  pattern: Client cannot add scopes by request parameter
+  checks:
+  - SEC-SCOPE-EXTRA-UNTRUSTED
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/52785
+    fix: https://github.com/keycloak/keycloak/pull/52822
+    product: Keycloak
+    closed: '2026-09-21'
+    summary: Device flow молча отбрасывал неразрешённый scope вместо ошибки invalid_scope, как в других flow
+  - url: https://github.com/keycloak/keycloak/issues/49952
+    fix: https://github.com/keycloak/keycloak/pull/49953
+    product: Keycloak
+    closed: '2026-06-26'
+    summary: Обмен токенов отклоняет scope, разрешённый для клиента обмена
+  - url: https://github.com/keycloak/keycloak/issues/49388
+    fix: https://github.com/keycloak/keycloak/pull/49399
+    product: Keycloak
+    closed: '2026-05-29'
+    summary: Динамические scope отклонялись в одном из grant type (CIBA), хотя работали в других
+RWB-0155:
+  pattern: Token without required scope is denied
+  checks:
+  - SEC-SCOPE-MISSING
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-cq7v-rfgc-5c7v
+    fix: https://github.com/backstage/backstage/commit/40346245c53e1bf26dee56601e95c5c4ab9cc124
+    product: '@backstage/backend-defaults'
+    closed: '2026-10-07'
+    summary: Сервисная учётка с ограничением «только чтение» выполняет запись через пути делегирования между плагинами.
+RWB-0156:
+  pattern: Client cannot assign resource to another tenant
+  checks:
+  - SEC-TENANT-CREATE
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-qxpp-qjg8-x4jv
+    fix: https://github.com/triggerdotdev/trigger.dev/pull/4199
+    product: trigger.dev
+    closed: '2026-10-02'
+    summary: Повтор запуска брал целевое окружение из тела запроса без проверки принадлежности — запись в чужой тенант
+  - url: https://github.com/advisories/GHSA-xhm9-gwgw-3q2q
+    fix: https://github.com/payloadcms/payload/commit/b8fc06a18afb6974dc07f95ac1e541c716e5926b
+    product: '@payloadcms/plugin-multi-tenant'
+    closed: '2026-10-07'
+    summary: Пользователь одного арендатора мог создать запись в другом арендаторе
+RWB-0157:
+  pattern: Tenant A cannot read tenant B data
+  checks:
+  - SEC-TENANT-READ
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-cqr2-h44g-v75v
+    product: n8n
+    closed: '2026-09-10'
+    summary: Эндпоинты назначений ролей проверяли право управлять ролями, но не видимость проекта — раскрытие участников (имена,
+      email) любого проекта.
+RWB-0158:
+  pattern: Tenant filter cannot be bypassed in list/search
+  checks:
+  - SEC-TENANT-SEARCH
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-9325-vq29-gp3v
+    fix: https://github.com/backstage/backstage/commit/2d5d3e77d630455d6d48cfa8f31fd3c126fd6f29
+    product: '@backstage/plugin-search-backend, @backstage/plugin-search-backend-module-elasticsearch'
+    closed: '2026-10-07'
+    summary: Пользователь с политикой DENY на тип документов получает их в поиске при бэкенде Elasticsearch/OpenSearch.
+  - url: https://github.com/advisories/GHSA-65xw-2v52-jhxc
+    product: n8n
+    closed: '2026-09-10'
+    summary: Список активных workflow и push-события об активации отдавались всем участникам без фильтра по доступу.
+RWB-0159:
+  pattern: Tenant A cannot mutate tenant B data
+  checks:
+  - SEC-TENANT-WRITE
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-4672-hwv6-gq62
+    fix: https://github.com/triggerdotdev/trigger.dev/pull/4316
+    product: trigger.dev
+    closed: '2026-10-02'
+    summary: Ключ любого окружения проекта мог отменить деплой другого окружения (включая prod), хотя чтение было изолировано
+RWB-0160:
+  pattern: Token for another audience is rejected
+  checks:
+  - SEC-TOKEN-AUDIENCE
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-g74q-6g2f-874x
+    fix: https://github.com/tinacms/tinacms/pull/7168
+    product: '@tinacms/auth, next-tinacms-azure'
+    closed: '2026-09-17'
+    summary: Идентификатор приложения брался из запроса, токен любого пользователя чужого приложения принимался сайтом
+  - url: https://github.com/advisories/GHSA-cw9w-vv67-hf73
+    fix: https://github.com/n8n-io/n8n/pull/37122
+    product: n8n
+    closed: '2026-09-10'
+    summary: Refresh-токен не был привязан к ресурсу согласия — обновление с другим resource давало токен к нему
+  - url: https://github.com/advisories/GHSA-q333-f498-w2x7
+    fix: https://github.com/backstage/backstage/commit/ed9034cacd9def3b3674f0a764fe992f751e204d
+    product: '@backstage/plugin-auth-backend-module-cloudflare-access-provider'
+    closed: '2026-10-07'
+    summary: Провайдер аутентификации не проверял аудиторию токена
+RWB-0161:
+  pattern: Expired access token is rejected
+  checks:
+  - SEC-TOKEN-EXPIRED
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-x937-hj6v-793p
+    fix: https://github.com/nearform/fast-jwt/commit/fc1ddbbe5ce38066ba2cea0b0ce0233932757167
+    product: fast-jwt
+    closed: '2026-10-08'
+    summary: Кэш верификатора принимает просроченный JWT без iat
+  - url: https://github.com/advisories/GHSA-687g-22h4-j4w4
+    fix: https://github.com/nearform/fast-jwt/commit/c0fb5b88b4c88ff2bdd194ca2c713599ad9e38b6
+    product: fast-jwt
+    closed: '2026-10-08'
+    summary: Бесконечный допуск по часам отключает проверку exp и nbf
+  - url: https://github.com/keycloak/keycloak/issues/49909
+    fix: https://github.com/keycloak/keycloak/pull/49930
+    product: Keycloak
+    closed: '2026-06-12'
+    summary: Просроченный токен на эндпоинте регистрации клиентов даёт 500 вместо 401
+RWB-0162:
+  pattern: Protected operation rejects unauthenticated requests
+  checks:
+  - SECURITY-AUTH-REQUIRED
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/718
+    product: NestJS
+    closed: '2018-05-25'
+    summary: Middleware аутентификации, привязанный к контроллеру, не срабатывал при глобальном префиксе — маршрут без проверки
+      токена.
+RWB-0163:
+  pattern: 'Границы массивов: minItems, maxItems, uniqueItems'
+  checks:
+  - VAL-ARRAY-ITEMS-BOUNDARIES
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/52776
+    fix: https://github.com/keycloak/keycloak/pull/53052
+    product: Keycloak
+    closed: '2026-10-06'
+    summary: Обязательный многозначный атрибут с пустым элементом среди выбранных значений не проходил валидацию
+RWB-0164:
+  pattern: Чувствительность к регистру идентификаторов, email и enum соответствует контракту
+  checks:
+  - VAL-CASE-SENSITIVITY
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-hmp2-4m7g-22cv
+    fix: https://github.com/backstage/backstage/commit/11c1384c0649b8ab26391c6a4e4f34b80ab0d188
+    product: '@backstage/plugin-scaffolder-backend'
+    closed: '2026-10-07'
+    summary: Ограничения на действия шаблона обходятся вариацией регистра (CWE-178) — запуск запрещённого действия через API.
+RWB-0165:
+  pattern: Чрезмерно вложенный JSON отклоняется без деградации сервиса
+  checks:
+  - VAL-DEEP-NESTING
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-qhr7-859c-m2p7
+    fix: https://github.com/juliangruber/brace-expansion/commit/1efee7c397c191da6287a78ec19512476a966a7b
+    product: brace-expansion
+    closed: '2026-09-29'
+    summary: Глубоко вложенные фигурные скобки в шаблоне исчерпывают стек и роняют процесс уже на 6 КБ входа.
+  - url: https://github.com/advisories/GHSA-6j4f-fj2g-mc7p
+    fix: https://github.com/juliangruber/brace-expansion/commit/0bcbfc0a5928c3073d48f42999d1ce4fc1c42fbc
+    product: brace-expansion
+    closed: '2026-09-29'
+    summary: Разбор списков в brace-шаблоне рекурсивен и использует push.apply — 29 КБ шаблона исчерпывают стек и роняют процесс.
+RWB-0166:
+  pattern: Опущенные необязательные поля получают задокументированные значения по умолчанию
+  checks:
+  - VAL-DEFAULT-VALUES
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/12818
+    product: NestJS
+    closed: '2023-11-23'
+    summary: После обновления фреймворка незаданный boolean-параметр query стал undefined вместо false
+  - url: https://github.com/keycloak/keycloak/issues/50882
+    fix: https://github.com/keycloak/keycloak/pull/51029
+    product: Keycloak
+    closed: '2026-07-20'
+    summary: Явный запрос scope, уже назначенного клиенту по умолчанию, давал 500 (дубликат ключа)
+  - url: https://github.com/keycloak/keycloak/issues/50807
+    fix: https://github.com/keycloak/keycloak/pull/50842
+    product: Keycloak
+    closed: '2026-07-16'
+    summary: При динамической регистрации поле scope заменяло, а не дополняло базовые scope realm
+RWB-0167:
+  pattern: Взаимозависимые поля валидируются совместно
+  checks:
+  - VAL-DEPENDENT-FIELDS
+  batch: pilot
+  bugs:
+  - url: https://github.com/strapi/strapi/issues/27421
+    fix: https://github.com/strapi/strapi/pull/27423
+    product: Strapi
+    closed: '2026-08-21'
+    summary: Взаимоисключающие операции в одном запросе приняты, одна молча отброшена
+RWB-0168:
+  pattern: Неожиданный тип корня JSON отклоняется
+  checks:
+  - VAL-JSON-TOP-LEVEL-TYPE
+  batch: pilot
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/52798
+    fix: https://github.com/keycloak/keycloak/pull/52799
+    product: Keycloak
+    closed: '2026-09-23'
+    summary: POST с телом null или пустым вызывал NPE и 500 вместо 400
+RWB-0169:
+  pattern: Массив с очень большим числом элементов отклоняется или обрабатывается в пределах лимитов
+  checks:
+  - VAL-LARGE-COLLECTION-PAYLOAD
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-jp82-f5mq-hwhp
+    fix: https://github.com/lxsmnsyc/seroval/commit/ac0163e420ac7dcbbefac4d069bcefad300a4851
+    product: seroval
+    closed: '2026-10-05'
+    summary: Маленький сериализованный payload с большим полем length выделяет огромный типизированный массив — исчерпание
+      памяти и блокировка event loop.
+RWB-0170:
+  pattern: Синтаксически некорректный JSON отклоняется
+  checks:
+  - VAL-MALFORMED-JSON
+  batch: pilot
+  bugs:
+  - url: https://github.com/expressjs/body-parser/issues/119
+    fix: https://github.com/expressjs/body-parser/commit/8f4e3457c358a44c80df862decdf11bf06a178e6
+    product: body-parser
+    closed: '2015-09-07'
+    summary: Разные виды невалидного JSON дают разные ошибки
+  - url: https://github.com/nestjs/nest/issues/422
+    product: NestJS
+    closed: '2018-02-15'
+    summary: Ошибка разбора невалидного JSON обходила фильтр исключений — ответ не в модели ошибок приложения.
+RWB-0171:
+  pattern: Ошибка во вложенном объекте указывает точный путь к полю
+  checks:
+  - VAL-NESTED-OBJECT-ERRORS
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/4418
+    product: NestJS
+    closed: '2020-03-25'
+    summary: Ошибка валидации во вложенном массиве объектов возвращает 400 с пустым списком ошибок.
+RWB-0172:
+  pattern: Массивы в query передаются в задокументированном формате
+  checks:
+  - VAL-QUERY-ARRAY-FORMAT
+  batch: pilot
+  bugs:
+  - url: https://github.com/expressjs/express/issues/7178
+    product: Express
+    closed: '2026-04-14'
+    summary: Массив из одного элемента в query разбирается по-разному в зависимости от окружения
+  - url: https://github.com/expressjs/express/issues/7147
+    product: Express
+    closed: '2026-05-11'
+    summary: Повторяющийся query-параметр больше 20 раз превращается в объект
+  - url: https://github.com/nestjs/nest/issues/14486
+    product: NestJS
+    closed: '2025-01-23'
+    summary: После обновления фреймворка array[]=a&array[]=b разбиралось в ключ «array[]» вместо массива array
+  - url: https://github.com/expressjs/express/issues/5688
+    product: Express
+    closed: '2024-05-29'
+    summary: Массив в query с индексом больше 20 разбирался как объект с числовыми ключами
+RWB-0173:
+  pattern: Дублирующиеся query-параметры обрабатываются однозначно
+  checks:
+  - VAL-QUERY-PARAM-POLLUTION
+  batch: pilot
+  bugs:
+  - url: https://github.com/expressjs/body-parser/issues/687
+    fix: https://github.com/expressjs/body-parser/pull/691
+    product: body-parser
+    closed: '2026-01-07'
+    summary: Повторяющиеся ключи в urlencoded-теле стали разбираться как объект
+  - url: https://github.com/expressjs/express/issues/6966
+    product: Express
+    closed: '2026-01-05'
+    summary: Повторяющиеся ключи в urlencoded-теле разбираются как объект
+RWB-0174:
+  pattern: Спецсимволы, emoji и управляющие символы сохраняются или отклоняются корректно
+  checks:
+  - VAL-SPECIAL-CHARACTERS
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/1734
+    product: NestJS
+    closed: '2019-03-26'
+    summary: Ответ TCP-транспорта с не-ASCII символами ломал кадрирование сообщений (длина в символах, а не байтах) — видно
+      по ошибке у клиента.
+RWB-0175:
+  pattern: Форматы строк (email, uuid, uri, date, phone) проверяются
+  checks:
+  - VAL-STRING-FORMAT
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-h3mg-xc3c-68pw
+    fix: https://github.com/beaugunderson/ip-address/commit/469ead1231b4cc059f2150c626e1e0c2895c0134
+    product: ip-address
+    closed: '2026-09-29'
+    summary: Валидатор IPv6 строит диагностику пропорционально входу — одна длинная строка съедает сотни МБ и роняет процесс.
+RWB-0176:
+  pattern: Пробелы по краям и строки из пробелов обрабатываются согласованно
+  checks:
+  - VAL-WHITESPACE-HANDLING
+  batch: pilot
+  bugs:
+  - url: https://github.com/directus/directus/issues/28037
+    fix: https://github.com/directus/directus/pull/28038
+    product: Directus
+    closed: '2026-08-05'
+    summary: 'Проверка зарезервированного префикса не обрезала пробелы: '' directus_test'' проходило и сохранялось как directus_test'
+RWB-0177:
+  pattern: Установление соединения требует аутентификации
+  checks:
+  - WS-HANDSHAKE-AUTH
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-gg6r-gp4c-89hp
+    fix: https://github.com/triggerdotdev/trigger.dev/pull/4236
+    product: trigger.dev
+    closed: '2026-10-02'
+    summary: Служебный Socket.IO namespace принимал секрет по умолчанию из исходников и отдавал расшифрованные переменные
+      окружения
+RWB-0178:
+  pattern: Некорректные сообщения не рвут соединение без ответа
+  checks:
+  - WS-MALFORMED-MESSAGE
+  batch: pilot
+  bugs:
+  - url: https://github.com/nestjs/nest/issues/3127
+    product: NestJS
+    closed: '2019-10-10'
+    summary: В WebSocket-шлюзе валидация тела сообщения молча пропускается без особой опции — невалидные данные принимаются.
+  - url: https://github.com/nestjs/nest/issues/683
+    product: NestJS
+    closed: '2018-05-25'
+    summary: Строка вместо JSON в сообщении WebSocket роняла сервер.
+RWB-0179:
+  pattern: Подписки и сообщения авторизуются по каждому каналу
+  checks:
+  - WS-SUBSCRIPTION-AUTHZ
+  batch: pilot
+  bugs:
+  - url: https://github.com/advisories/GHSA-89vx-jh4q-vg3w
+    fix: https://github.com/deepstreamIO/deepstream.io/commit/1c2adde6581c53ef47e204364bc740bc3c2e2e2a
+    product: '@deepstream/server'
+    closed: '2026-09-22'
+    summary: Действие PATCH_MULTI не описано в карте правил — по умолчанию разрешается, любой пользователь пишет в любую запись
+      по WebSocket.

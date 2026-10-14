@@ -1,0 +1,41 @@
+checks:
+- id: SEC-AUTHN-SCHEMES-SUPPORTED
+  status: draft
+  title: Все задокументированные схемы Authorization принимаются на своих эндпоинтах
+  category: security
+  protocols:
+  - rest
+  kind: positive
+  priority: P2
+  tags:
+  - positive
+  - authn
+  - compatibility
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Контракт заявляет несколько схем аутентификации (Basic, Bearer, DPoP, API-ключ).
+  steps:
+  - action: Вызвать каждый эндпоинт с каждой задокументированной схемой и валидными учётными данными.
+  - action: Вызвать с незаявленной схемой.
+  expected:
+  - Заявленные схемы принимаются.
+  - Неподдерживаемая схема — 401 с WWW-Authenticate.
+  applicability:
+    when:
+    - Заявлено больше одной схемы.
+    skip_when:
+    - Одна схема.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - RFC 9110 §11.6.2
+  - 'Real-world bug: RWB-0036'

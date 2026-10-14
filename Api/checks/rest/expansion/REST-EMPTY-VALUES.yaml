@@ -12,6 +12,7 @@ checks:
   - boundary
   - validation
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -19,6 +20,10 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Полностью пустое тело при JSON Content-Type
+    notes: 'Real-world bug: RWB-0115 (expressjs/express#5959)'
+  - action: Пустые и пробельные строки как элементы массива; неверный статус 409 вместо 400
+    notes: 'Real-world bug: RWB-0115 (keycloak/keycloak#50039)'
   expected:
   - пустые значения принимаются только если допускаются контрактом
   applicability:
@@ -37,4 +42,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0115'

@@ -13,6 +13,7 @@ checks:
   - validation
   - negative
   - rest
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -22,6 +23,14 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Добавить служебные флаги защиты, снятие которых отключает другие проверки
+    notes: 'Real-world bug: RWB-0121 (keycloak/keycloak#52488)'
+  - action: 'Добавить варианты: точечные пути и операторы хранилища, обход полевых прав на конкретном бэкенде хранения'
+    notes: 'Real-world bug: RWB-0121 (GHSA-4ww4-68q3-h7g5)'
+  - action: Учётные поля (password) в общем эндпоинте изменения пользователя при полевом запрете
+    notes: 'Real-world bug: RWB-0121 (GHSA-fx49-4h83-wjv9)'
+  - action: Глобальные флаги безопасности в объекте настроек и проверка последствий для доступа
+    notes: 'Real-world bug: RWB-0121 (GHSA-vmjq-hvgq-2wv4)'
   expected:
   - role/owner/status/balance нельзя менять через неразрешённые поля payload
   applicability:
@@ -42,4 +51,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0121'

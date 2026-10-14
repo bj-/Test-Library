@@ -13,6 +13,7 @@ checks:
   - negative
   - security
   - authn
+  - real-world-bug
   - smoke
   - pr
   - ci
@@ -24,6 +25,8 @@ checks:
   steps:
   - action: Call a protected operation using a token whose expiry is in the past.
     notes: 'Matrix axis: Authentication; scenario: Expired token. Use isolated synthetic identities and data.'
+  - action: Токен без iat, использованный до истечения (прогретый кэш проверки), повторно после exp
+    notes: 'Real-world bug: RWB-0161 (GHSA-x937-hj6v-793p)'
   expected:
   - Reject the request according to policy; no protected read or mutation occurs.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
@@ -48,3 +51,4 @@ checks:
     likelihood: high
   references:
   - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model
+  - 'Real-world bug: RWB-0161'

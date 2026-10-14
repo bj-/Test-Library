@@ -12,6 +12,7 @@ checks:
   - contract
   - boundary
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -20,6 +21,10 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Добавить удаление вложенного свойства в diff/patch, которое не должно трактоваться как удаление объекта
+    notes: 'Real-world bug: RWB-0127 (directus/directus#27877)'
+  - action: null удаляет поле, PUT без поля очищает его; проверять фактическое применение для атрибутов безопасности
+    notes: 'Real-world bug: RWB-0127 (keycloak/keycloak#51213)'
   expected:
   - меняются только указанные поля; null/remove соответствует формату
   applicability:
@@ -39,4 +44,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0127'

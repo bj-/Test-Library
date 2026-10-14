@@ -14,6 +14,7 @@ checks:
   - security
   - negative
   - injection
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -25,6 +26,16 @@ checks:
   - action: 'Подставить в path, query, body и заголовки: '' OR ''1''=''1, ''; --, UNION SELECT, boolean- и time-based payload
       (pg_sleep, WAITFOR).'
   - action: Сравнить ответы и время с контрольным запросом.
+  - action: Добавить нагрузки, рассчитанные на экранирование обратным слэшем (\\'), — ломаются при режиме удвоения кавычек
+    notes: 'Real-world bug: RWB-0089 (GHSA-r3rv-jm3r-62q2)'
+  - action: Инъекция в имени поля (ключе JSON), а не в значении; связано с REST-MASS-ASSIGNMENT
+    notes: 'Real-world bug: RWB-0089 (GHSA-v6pj-gxxw-phfw)'
+  - action: Инъекция в имени поля сортировки (ORDER BY не параметризуется); связано с REST-SORT-INVALID-FIELD
+    notes: 'Real-world bug: RWB-0089 (GHSA-r223-96jv-q533)'
+  - action: Имена полей, операторы и join-параметры динамических фильтров (зависит от адаптера БД)
+    notes: 'Real-world bug: RWB-0089 (GHSA-v49j-62m6-pgrr)'
+  - action: Инъекция в имена параметров/полей фильтра, а не только в значения
+    notes: 'Real-world bug: RWB-0089 (GHSA-wmw4-mw6x-6vfm)'
   expected:
   - 'Полезная нагрузка не исполняется: нет изменения поведения, данных, времени ответа или ошибок интерпретатора.'
   - Ответ — штатная ошибка валидации или обычный результат с данными, трактованными как литерал.
@@ -48,6 +59,7 @@ checks:
     likelihood: medium
   references:
   - OWASP Web Security Testing Guide
+  - 'Real-world bug: RWB-0089'
 - id: INJ-NOSQL
   status: approved
   title: NoSQL-инъекция операторами запросов не исполняется
@@ -63,6 +75,7 @@ checks:
   - security
   - negative
   - injection
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -97,6 +110,7 @@ checks:
     likelihood: medium
   references:
   - OWASP Web Security Testing Guide
+  - 'Real-world bug: RWB-0084'
 - id: INJ-OS-COMMAND
   status: approved
   title: Инъекция команд ОС не исполняется
@@ -112,6 +126,7 @@ checks:
   - security
   - negative
   - injection
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -120,6 +135,12 @@ checks:
   - Параметр может попадать в shell, конвертеры файлов или системные утилиты.
   steps:
   - action: Подставить ; id, | whoami, `sleep 10`, $(sleep 10), && ping.
+  - action: Без метасимволов оболочки — интерпретатор и флаг выполнения кода в разрешённых аргументах execFile
+    notes: 'Real-world bug: RWB-0085 (GHSA-hf57-cqmx-p4gr)'
+  - action: Конфигурация серверного генератора/сборщика из пользовательских данных (allowlist ключей)
+    notes: 'Real-world bug: RWB-0085 (GHSA-8w7q-29mw-gf5c)'
+  - action: 'Символы конца строки (включая U+2028/2029) в связке с # в аргументах, экранируемых библиотекой'
+    notes: 'Real-world bug: RWB-0085 (GHSA-pqg4-j6r4-53mv)'
   expected:
   - 'Полезная нагрузка не исполняется: нет изменения поведения, данных, времени ответа или ошибок интерпретатора.'
   - Ответ — штатная ошибка валидации или обычный результат с данными, трактованными как литерал.
@@ -142,6 +163,7 @@ checks:
     likelihood: medium
   references:
   - OWASP Web Security Testing Guide
+  - 'Real-world bug: RWB-0085'
 - id: INJ-TEMPLATE-SSTI
   status: approved
   title: Инъекция в серверные шаблоны не исполняется
@@ -157,6 +179,7 @@ checks:
   - security
   - negative
   - injection
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -165,6 +188,8 @@ checks:
   - Пользовательские данные попадают в шаблоны писем, документов или уведомлений.
   steps:
   - action: 'Сохранить {{7*7}}, ${7*7}, <%= 7*7 %>, #{7*7} и вызвать генерацию письма или документа.'
+  - action: 'Добавить подмену типа: объект вместо строки шаблона'
+    notes: 'Real-world bug: RWB-0091 (GHSA-8r5x-fm3f-whwj)'
   expected:
   - В результате буквальная строка, а не 49.
   - Нет ошибок шаблонизатора в ответе.
@@ -186,6 +211,7 @@ checks:
     likelihood: medium
   references:
   - OWASP Web Security Testing Guide
+  - 'Real-world bug: RWB-0091'
 - id: INJ-STORED-XSS
   status: approved
   title: Сохранённые данные с HTML/JS не создают XSS у потребителей API
@@ -286,6 +312,7 @@ checks:
   - negative
   - injection
   - files
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -295,6 +322,10 @@ checks:
   - Параметр задаёт имя файла, путь, шаблон или ключ объекта в хранилище.
   steps:
   - action: Передать ../../etc/passwd, ..\..\windows\win.ini, %2e%2e%2f, двойное кодирование, абсолютные пути, null byte.
+  - action: Директивы включения (include/snippets) в загружаемой разметке и её конфигурации
+    notes: 'Real-world bug: RWB-0086 (GHSA-f7v3-xhm6-w245)'
+  - action: Целевой путь переименования/перемещения (newPath) и соответствие операции требуемому праву (rename = delete)
+    notes: 'Real-world bug: RWB-0086 (GHSA-9gfj-28hw-jchp)'
   expected:
   - Доступ только к разрешённым объектам.
   - Ответ не содержит содержимого системных файлов.
@@ -317,6 +348,7 @@ checks:
     likelihood: medium
   references:
   - OWASP Web Security Testing Guide
+  - 'Real-world bug: RWB-0086'
 - id: INJ-LOG-FORGING
   status: approved
   title: Пользовательские данные не позволяют подделывать записи журналов
@@ -333,6 +365,7 @@ checks:
   - negative
   - injection
   - observability
+  - real-world-bug
   - regression
   - nightly
   preconditions:
@@ -356,6 +389,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0083'
 - id: INJ-PROTOTYPE-POLLUTION
   status: approved
   title: Специальные ключи __proto__ и constructor не меняют поведение сервера
@@ -369,6 +404,7 @@ checks:
   - security
   - negative
   - injection
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -378,6 +414,25 @@ checks:
   steps:
   - action: 'Отправить {"__proto__": {"isAdmin": true}}, {"constructor": {"prototype": {...}}} в теле и query.'
   - action: Выполнить последующий запрос другим пользователем.
+  - action: Добавить GraphQL-алиасы __proto__ (не только ключи JSON-тела)
+    notes: 'Real-world bug: RWB-0087 (directus/directus#28209)'
+  - action: Добавить алиасы GraphQL как источник специальных ключей при слиянии ответов подграфов
+    notes: 'Real-world bug: RWB-0087 (GHSA-7mx3-vvmw-hjmv)'
+  - action: Подмена прототипа одного объекта запроса (без глобального загрязнения) и 5xx на ключе constructor в словарях
+    notes: 'Real-world bug: RWB-0087 (GHSA-gcgf-fh7c-8gf2)'
+  - action: Добавить пути через унаследованные методы (toString, valueOf, hasOwnProperty) в PATCH-операциях, в обход блок-листа
+    notes: 'Real-world bug: RWB-0087 (GHSA-2mhw-wcx5-v3xj)'
+  - action: Бинарные форматы сериализации (MessagePack, CBOR), не только JSON
+    notes: 'Real-world bug: RWB-0087 (GHSA-8hq7-ggx2-cc6m)'
+  - action: Публичные операции начальной настройки (first-register), доступные без аутентификации
+    notes: 'Real-world bug: RWB-0087 (GHSA-97rh-rhh2-7vjv)'
+  - action: Эндпоинты импорта (CSV/JSON с точечными путями в заголовках колонок)
+    notes: 'Real-world bug: RWB-0087 (GHSA-qf28-8hc6-vwrp)'
+  - action: __proto__ в значении поля, которое сервер использует как ключ (type/id JSON:API, included), а не в имени ключа
+    notes: 'Real-world bug: RWB-0087 (GHSA-325j-mg25-8q58)'
+  - action: Отложенное (second-order) загрязнение из ранее сохранённых имён; ограничения только в UI проверять прямым запросом
+      к API
+    notes: 'Real-world bug: RWB-0087 (GHSA-679f-58pq-4v2c)'
   expected:
   - Ключи отклоняются или игнорируются.
   - Последующие запросы не получают изменённых свойств.
@@ -397,6 +452,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0087'
 - id: INJ-UNSAFE-DESERIALIZATION
   status: approved
   title: Небезопасная десериализация пользовательских данных невозможна
@@ -493,6 +550,7 @@ checks:
   - negative
   - injection
   - filtering
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -501,6 +559,18 @@ checks:
   - API принимает язык выражений фильтрации.
   steps:
   - action: Сформировать фильтры по скрытым полям, с вложенными связями, с функциями и подзапросами.
+  - action: Добавить фильтр по скрытым полям как оракул подбора секрета (без инъекции синтаксиса)
+    notes: 'Real-world bug: RWB-0082 (GHSA-v6q3-xqxm-6f5v)'
+  - action: Добавить синтаксис поисковых движков (RediSearch TAG/TEXT) и фильтры векторных хранилищ в RAG
+    notes: 'Real-world bug: RWB-0082 (GHSA-5x6v-p487-7qh2)'
+  - action: Пользовательский SQL-подобный DSL — инъекция через позиции идентификаторов (имена функций) с обходом фильтра тенанта
+    notes: 'Real-world bug: RWB-0082 (GHSA-9q4r-4842-93vw)'
+  - action: Сегменты пути к вложенным полям JSON в фильтре, а не только значения
+    notes: 'Real-world bug: RWB-0082 (GHSA-pj7x-6wpf-pgvp)'
+  - action: Фильтр по скрытым полям через полиморфные связи как оракул подбора
+    notes: 'Real-world bug: RWB-0082 (GHSA-fpww-c55p-cjv6)'
+  - action: Параметр логического оператора (filterOperator=OR) в комбинации с обязательным серверным фильтром видимости/арендатора
+    notes: 'Real-world bug: RWB-0082 (GHSA-xf65-r35x-wmmv)'
   expected:
   - Фильтрация по непубличным полям запрещена.
   - Результат не расширяет видимость данных.
@@ -520,6 +590,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0082'
 - id: INJ-REDOS
   status: approved
   title: Пользовательский ввод не вызывает катастрофический backtracking в regex
@@ -536,12 +608,41 @@ checks:
   - negative
   - hardening
   - costly
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Поля валидируются регулярными выражениями или поиск поддерживает regex.
   steps:
   - action: Отправить строки вида aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa! против уязвимых паттернов (email, url).
+  - action: 'data: URL и другие нестандартные схемы в параметрах с URL; заодно — ограничение допустимых схем'
+    notes: 'Real-world bug: RWB-0088 (GHSA-c29m-xwm3-cm6r)'
+  - action: Патологический хост в Location редиректа при server-side загрузке URL
+    notes: 'Real-world bug: RWB-0088 (GHSA-mghh-pgcx-3jjj)'
+  - action: Поля даты/времени с длинной дробной частью секунд
+    notes: 'Real-world bug: RWB-0088 (GHSA-6h2x-m376-mqjq)'
+  - action: Пользователь задаёт сам шаблон (pathFilters), а не только данные под серверный regex
+    notes: 'Real-world bug: RWB-0088 (GHSA-jx63-h26r-8cph)'
+  - action: Заголовки запроса (User-Agent), разбираемые до маршрутизации, — в том числе на несуществующих путях
+    notes: 'Real-world bug: RWB-0088 (GHSA-68jq-fhch-4xq4)'
+  - action: Заголовок Content-Type multipart и параметр boundary
+    notes: 'Real-world bug: RWB-0088 (GHSA-2g7p-5934-q4w7)'
+  - action: ReDoS при анализе содержимого файла (заголовок SVG/изображения), в том числе скачанного по URL, а не только в
+      полях запроса
+    notes: 'Real-world bug: RWB-0088 (GHSA-gjj5-9665-rwrc)'
+  - action: email-адреса и почтовые заголовки (комментарии RFC 5322, длинные строки без '@') — квадратичный парсер, а не только
+      regex
+    notes: 'Real-world bug: RWB-0088 (GHSA-prgh-xp8r-p3m5)'
+  - action: glob/brace-шаблоны в параметрах поиска — квадратичное раскрытие, а не regex
+    notes: 'Real-world bug: RWB-0088 (GHSA-q2hr-2g5m-vwhr)'
+  - action: Рендеринг Markdown/разметки пользователя (автоссылки) — квадратичный разбор, а не regex
+    notes: 'Real-world bug: RWB-0088 (GHSA-253c-mchw-3w2r)'
+  - action: Незавершённая HTML-разметка в контенте с серверным разбором — зависание парсера, не regex
+    notes: 'Real-world bug: RWB-0088 (GHSA-f67j-2jqw-jpq7)'
+  - action: Сверхлинейный разбор сериализованного формата (индексы вне границ), не только регулярные выражения
+    notes: 'Real-world bug: RWB-0088 (GHSA-9rgm-9g3h-6x36)'
+  - action: Оператор фильтра, принимающий сырой regex от клиента; проверять на каждом драйвере БД/окружении
+    notes: 'Real-world bug: RWB-0088 (GHSA-jgm3-qmp2-c4p7)'
   expected:
   - Время ответа остаётся в пределах бюджета, CPU не насыщается.
   applicability:
@@ -558,6 +659,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0088'
 - id: INJ-CSV-FORMULA
   status: approved
   title: Экспорт в CSV/XLSX нейтрализует формулы
@@ -611,6 +714,7 @@ checks:
   - negative
   - injection
   - hardening
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -620,6 +724,30 @@ checks:
   steps:
   - action: Передать http://169.254.169.254/, http://localhost, внутренние DNS-имена, IPv6, десятичную запись IP, редирект
       на внутренний адрес, file://, gopher://.
+  - action: URL спрятан в base64/JSON сегменте пути; слепой SSRF с побочным каналом через статус ответа
+    notes: 'Real-world bug: RWB-0090 (GHSA-q8hw-4fvp-9rwv)'
+  - action: Адрес задаётся заголовком запроса, сервер прикладывает к исходящему вызову свои учётные данные
+    notes: 'Real-world bug: RWB-0090 (GHSA-2h44-8472-frjj)'
+  - action: URL приходит не из параметра запроса, а из конфигурации в пользовательском источнике (манифест, репозиторий)
+    notes: 'Real-world bug: RWB-0090 (GHSA-q38j-6vcm-2f5m)'
+  - action: Параметр базового URL сторонней интеграции - проверять не только доступ к внутренней сети, но и утечку серверного
+      токена интеграции на подконтрольный внешний адрес
+    notes: 'Real-world bug: RWB-0090 (GHSA-g734-fhp4-7mfp)'
+  - action: Хост/адрес проверяется по allowlist уже на эндпоинте регистрации (запись), а не только там, где его потом используют
+    notes: 'Real-world bug: RWB-0090 (keycloak/keycloak#52167)'
+  - action: allowlist типов/схем источника должен применяться и при фоновой обработке, и для ссылок, найденных внутри принятого
+      источника
+    notes: 'Real-world bug: RWB-0090 (GHSA-pcmq-25r3-5w9v)'
+  - action: Код языка/локали, подставляемый в шаблон URL серверной загрузки
+    notes: 'Real-world bug: RWB-0090 (GHSA-xvq9-wjp8-hwqf)'
+  - action: Фрагмент хоста (регион, поддомен) из параметра — символы '#', ':', '/', '@' и утечка пересылаемых учётных данных
+    notes: 'Real-world bug: RWB-0090 (GHSA-6mwv-4mrm-5p3m)'
+  - action: Доменное имя, резолвящееся во внутренний/метаданных адрес (wildcard-DNS), — не только IP-литералы
+    notes: 'Real-world bug: RWB-0090 (GHSA-798p-78g2-v556)'
+  - action: Вложенные ссылки в загружаемых документах ($ref) и записи IPv4-mapped IPv6, DNS-имена, редиректы
+    notes: 'Real-world bug: RWB-0090 (GHSA-65h7-9wrw-629c)'
+  - action: Расхождение парсеров URL — Unicode-пробелы (U+00A0, U+FEFF) перед // превращают относительный путь в внешний хост
+    notes: 'Real-world bug: RWB-0090 (GHSA-f6mr-pjwc-34m4)'
   expected:
   - Запросы к внутренним адресам и неразрешённым схемам блокируются, в том числе после редиректа и DNS rebinding.
   applicability:
@@ -640,3 +768,44 @@ checks:
     likelihood: medium
   references:
   - OWASP API Security Top 10
+  - 'Real-world bug: RWB-0090'
+- id: INJ-LLM-GENERATED-ACTIONS
+  status: draft
+  title: Код и вызовы инструментов, сгенерированные LLM по вводу пользователя, не выполняют опасных действий
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - injection
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - API передаёт текст пользователя в LLM, которая генерирует код или вызовы инструментов, исполняемые сервером.
+  steps:
+  - action: Отправить prompt injection с просьбой прочитать данные с URL атакующего или внутреннего адреса, выполнить команду,
+      прочитать файл.
+  expected:
+  - Сгенерированный код не делает исходящих запросов и не выходит из песочницы; опасные конструкции отклоняются по allowlist.
+  applicability:
+    when:
+    - Есть исполнение результата LLM.
+    skip_when:
+    - LLM не используется.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: critical
+    likelihood: medium
+  references:
+  - OWASP API10:2023
+  - OWASP Top 10 for LLM — LLM01
+  - CWE-94
+  - 'Real-world bug: RWB-0046'

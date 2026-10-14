@@ -1,0 +1,41 @@
+checks:
+- id: SEC-ROLE-ADMIN-SELF-TARGET
+  status: draft
+  title: Административная операция над собственной учёткой обрабатывается по политике без 5xx
+  category: security
+  protocols:
+  - rest
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - authz
+  - roles-scopes
+  - error-handling
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Есть делегированный администратор (права на группу, организацию), который сам входит в администрируемое множество.
+  steps:
+  - action: От имени делегированного администратора вызвать над собой сброс пароля, изменение ролей, блокировку, удаление.
+  expected:
+  - Явное разрешение или 403 по документированной политике.
+  - 5xx нет; права не повышаются.
+  applicability:
+    when:
+    - Есть делегированное администрирование.
+    skip_when:
+    - Только глобальный администратор.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - OWASP API5:2023
+  - 'Real-world bug: RWB-0005'

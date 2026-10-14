@@ -267,6 +267,7 @@ checks:
   - authn
   - session
   - token-lifecycle
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -276,6 +277,8 @@ checks:
   - Есть операция logout.
   steps:
   - action: Войти, выполнить запрос, выйти, повторить запрос с тем же access и refresh токеном или cookie.
+  - action: Выход после отзыва согласия — отзыв refresh-токена не должен падать, сессия завершается
+    notes: 'Real-world bug: RWB-0059 (keycloak/keycloak#50629)'
   expected:
   - Запросы после выхода отклоняются в пределах задокументированного окна.
   applicability:
@@ -295,6 +298,8 @@ checks:
   risk:
     impact: critical
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0059'
 - id: AUTH-PASSWORD-CHANGE-REVOKES
   status: approved
   title: Смена или сброс пароля завершает другие сессии
@@ -350,12 +355,15 @@ checks:
   - authn
   - rate-limiting
   - costly
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Есть вход по паролю.
   steps:
   - action: Выполнить N неудачных попыток для одного аккаунта, с одного IP по разным аккаунтам, с ротацией заголовков X-Forwarded-For.
+  - action: refresh токена или SSO по cookie из существующей сессии не должен сбрасывать блокировку
+    notes: 'Real-world bug: RWB-0056 (keycloak/keycloak#49960)'
   expected:
   - Срабатывает блокировка, задержка или CAPTCHA по политике.
   - Ротация X-Forwarded-For не обходит ограничение.
@@ -374,6 +382,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0056'
 - id: AUTH-USER-ENUMERATION
   status: approved
   title: Ответы входа, регистрации и восстановления не раскрывают существование аккаунта
@@ -628,6 +638,7 @@ checks:
   - negative
   - authn
   - validation
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -636,6 +647,9 @@ checks:
   steps:
   - action: Установить пароль короче минимума, из словаря утечек, совпадающий с логином, очень длинный (1000+ символов), с
       unicode.
+  - action: Режим с ограниченным криптопровайдером (FIPS), пароль короче его внутреннего минимума — ошибка политики, а не
+      5xx; проверить все пути (смена, сброс, обязательное обновление)
+    notes: 'Real-world bug: RWB-0062 (keycloak/keycloak#51674)'
   expected:
   - Слабые пароли отклоняются сервером независимо от клиента.
   - Очень длинный пароль не вызывает деградации (DoS хеширования).
@@ -654,6 +668,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0062'
 - id: AUTH-PASSWORD-RESET-TOKEN
   status: approved
   title: Токен сброса пароля одноразовый, ограничен по времени и привязан к пользователю
@@ -750,6 +766,7 @@ checks:
   - positive
   - session
   - hardening
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -758,6 +775,10 @@ checks:
   - Аутентификация через cookie.
   steps:
   - action: Войти и проанализировать Set-Cookie.
+  - action: Добавить синтаксическую корректность Max-Age/Expires, в том числе при больших и нулевых сроках
+    notes: 'Real-world bug: RWB-0057 (jshttp/cookie#103)'
+  - action: Добавить Max-Age/Expires по настройке на всех cookie аутентификации, включая обновление токена
+    notes: 'Real-world bug: RWB-0057 (strapi/strapi#26723)'
   expected:
   - Secure и HttpOnly установлены, SameSite=Lax или Strict (или None с обоснованием), Domain не шире необходимого, срок жизни
     по политике.
@@ -777,6 +798,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0057'
 - id: AUTH-CSRF
   status: approved
   title: Изменяющие операции с cookie-аутентификацией защищены от CSRF
@@ -834,6 +857,7 @@ checks:
   - negative
   - authn
   - token-lifecycle
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -842,6 +866,12 @@ checks:
   - Используются API-ключи.
   steps:
   - action: Вызвать операцию вне прав ключа, отозвать ключ и повторить, проверить что ключ не возвращается в ответах повторно.
+  - action: Секрет клиента OAuth после ротации и отключения функции — старый не должен работать
+    notes: 'Real-world bug: RWB-0055 (keycloak/keycloak#50855)'
+  - action: Ключ как поле документа пользователя в обычных чтениях и списках
+    notes: 'Real-world bug: RWB-0055 (GHSA-238x-w2j9-gwwr)'
+  - action: Создание/отзыв ключа для чужой учётной записи (владение ключом)
+    notes: 'Real-world bug: RWB-0055 (GHSA-2q76-m6w6-qgc6)'
   expected:
   - Права ключа соблюдаются, отозванный ключ отклоняется, секрет виден только при создании.
   applicability:
@@ -860,6 +890,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0055'
 - id: AUTH-SESSION-TIMEOUT
   status: approved
   title: Сессия истекает после простоя и абсолютного срока
@@ -874,12 +906,15 @@ checks:
   - negative
   - session
   - costly
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Политика тайм-аутов сессии известна.
   steps:
   - action: Не выполнять запросов дольше idle-тайм-аута; держать сессию дольше абсолютного срока с активностью.
+  - action: Добавить проверку продления при активности (в inbox №21 — AUTH-SESSION-SLIDING-RENEWAL)
+    notes: 'Real-world bug: RWB-0063 (expressjs/session#340)'
   expected:
   - Сессия истекает по обоим правилам.
   applicability:
@@ -896,6 +931,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0063'
 - id: AUTH-CONCURRENT-SESSIONS
   status: approved
   title: Лимит одновременных сессий и устройств соблюдается
@@ -946,6 +983,7 @@ checks:
   - security
   - negative
   - authn
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -956,6 +994,8 @@ checks:
   steps:
   - action: Вызвать чувствительную операцию токеном после первого фактора; повторно использовать подтверждение для другой
       операции.
+  - action: Добавить сохранение требования MFA после refresh и при наследовании ролей
+    notes: 'Real-world bug: RWB-0060 (directus/directus#28152)'
   expected:
   - Операция отклоняется без второго фактора; подтверждение привязано к операции.
   applicability:
@@ -975,6 +1015,8 @@ checks:
   risk:
     impact: critical
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0060'
 - id: AUTH-OAUTH-REDIRECT-STATE
   status: approved
   title: OAuth/OIDC flow проверяет redirect_uri, state и PKCE
@@ -988,6 +1030,7 @@ checks:
   - security
   - negative
   - authn
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -996,6 +1039,10 @@ checks:
   - API выступает OAuth-сервером или клиентом.
   steps:
   - action: Подменить redirect_uri (поддомен, путь, параметры), опустить state, использовать чужой code, опустить code_verifier.
+  - action: 'Позитивный вариант: адрес из allowlist должен приниматься (регрессия ложного отказа), в т. ч. после обновления'
+    notes: 'Real-world bug: RWB-0061 (directus/directus#26237)'
+  - action: Клиенты, зарегистрированные динамически/через метаданные, — те же ограничения redirect_uri
+    notes: 'Real-world bug: RWB-0061 (keycloak/keycloak#49456)'
   expected:
   - redirect_uri сравнивается точно; без state и PKCE обмен отклоняется; code одноразовый.
   applicability:
@@ -1016,6 +1063,7 @@ checks:
     likelihood: medium
   references:
   - RFC 6749, RFC 7636, OAuth 2.0 Security BCP
+  - 'Real-world bug: RWB-0061'
 - id: AUTH-LOGOUT-CLEARS-COOKIE
   status: approved
   title: Выход снимает cookie сессии на клиенте
@@ -1078,6 +1126,7 @@ checks:
   - authn
   - validation
   - enumeration
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -1089,6 +1138,8 @@ checks:
       записи телефона (+7/8, скобки, дефисы).
   - action: Те же варианты - в создании учётки (если есть) и в фильтрах поиска по идентификатору.
   - action: Сравнить с ограничениями формата в контракте и ТЗ.
+  - action: Одинаковая нормализация не только при входе, но и в проверках согласия и прав
+    notes: 'Real-world bug: RWB-0058 (keycloak/keycloak#53138)'
   expected:
   - Фактическое поведение зафиксировано тестом (обрезает или отвергает, учитывает регистр или нет).
   - Нормализация одинакова при входе, создании и поиске; не противоречит формату из контракта (если контракт требует format
@@ -1113,3 +1164,418 @@ checks:
   references:
   - RFC 5321
   - docs/decisions/0002-expected-behavior-sources.md
+  - 'Real-world bug: RWB-0058'
+- id: AUTH-TOKEN-INTROSPECTION
+  status: draft
+  title: Интроспекция токена возвращает актуальное состояние и те же claims, что в токене
+  category: security
+  protocols:
+  - rest
+  kind: positive
+  priority: P2
+  tags:
+  - positive
+  - authn
+  - token-lifecycle
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервер авторизации поддерживает интроспекцию (RFC 7662).
+  steps:
+  - action: Получить токены разных типов (access, refresh, обменённый, делегированный) и интроспектировать каждый от имени
+      клиента-владельца.
+  - action: Сравнить claims токена и ответа (sub, act, scope, exp, aud).
+  - action: Интроспектировать отозванный и истёкший токен.
+  expected:
+  - Действующий токен — active true, значимые claims совпадают с токеном.
+  - Отозванный или истёкший — active false без лишних атрибутов.
+  applicability:
+    when:
+    - Есть эндпоинт интроспекции.
+    skip_when:
+    - Интроспекция не поддерживается.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - RFC 7662 §2.2
+  - RFC 8693 §4.1
+  - 'Real-world bug: RWB-0010'
+- id: AUTH-SESSION-NOT-BEFORE-LOGIN
+  status: draft
+  title: Анонимный запрос не получает cookie сессии и не создаёт серверную сессию
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P3
+  tags:
+  - security
+  - session
+  - hardening
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Аутентификация на cookie-сессиях.
+  steps:
+  - action: Сделать несколько анонимных запросов к разным маршрутам (в том числе публичным и несуществующим).
+  - action: Проверить Set-Cookie и число серверных сессий.
+  expected:
+  - До входа нет Set-Cookie сессии и серверной сессии.
+  applicability:
+    when:
+    - Cookie-сессии.
+    skip_when:
+    - Сессия нужна до входа по ТЗ (корзина
+    - CSRF)
+    - это задокументировано.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - OWASP Session Management Cheat Sheet
+  - 'Real-world bug: RWB-0011'
+- id: AUTH-REFRESH-PRESERVES-SCOPE
+  status: draft
+  title: Refresh без параметра scope сохраняет scope исходной авторизации
+  category: security
+  protocols:
+  - rest
+  kind: positive
+  priority: P2
+  tags:
+  - positive
+  - authn
+  - token-lifecycle
+  - roles-scopes
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - OAuth 2.0 / OIDC с refresh-токенами.
+  steps:
+  - action: Войти со scope (например, openid profile), обновить токен без scope, сравнить scope старого и нового токена.
+  - action: Вызвать UserInfo и защищённые ресурсы новым токеном; запросить refresh с расширенным scope.
+  expected:
+  - Scope совпадает с исходным; UserInfo отвечает 200.
+  - Расширение scope при refresh отклоняется (invalid_scope).
+  applicability:
+    when:
+    - Есть refresh-токены.
+    skip_when:
+    - Нет OAuth.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - RFC 6749 §6
+  - OpenID Connect Core §12
+  - 'Real-world bug: RWB-0018'
+- id: AUTH-MFA-UNENROLLED-ERROR
+  status: draft
+  title: Ошибка шага второго фактора у пользователя без зарегистрированного фактора — обычная 4xx
+  category: security
+  protocols:
+  - rest
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - authn
+  - error-handling
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Включён вход со вторым или беспарольным фактором (passkey, OTP).
+  steps:
+  - action: Идентифицировать пользователя без фактора (или с удалённым на сервере ключом) и пройти шаг фактора с ошибкой.
+  - action: То же для пользователя с фактором; сравнить ответы.
+  expected:
+  - Обычная ошибка входа 4xx, как у пользователя с фактором; 5xx нет.
+  - Ответы не раскрывают, есть ли у пользователя фактор.
+  applicability:
+    when:
+    - Есть MFA или вход без пароля.
+    skip_when:
+    - Только пароль.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - CWE-755
+  - 'Real-world bug: RWB-0019'
+- id: AUTH-OAUTH-PAR
+  status: draft
+  title: Pushed Authorization Request действует как прямой запрос авторизации и не ограничивает длительность входа
+  category: security
+  protocols:
+  - rest
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - authn
+  - token-lifecycle
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервер поддерживает PAR (RFC 9126) или request object.
+  steps:
+  - action: Выполнить один запрос авторизации (prompt, max_age, acr_values, ui_locales) напрямую и через PAR; сравнить поведение.
+  - action: Получить request_uri, погасить сразу, пройти вход дольше срока request_uri (MFA, required actions), завершить.
+  - action: Повторно погасить request_uri после срока.
+  expected:
+  - Параметры из PAR учитываются так же, как в прямом запросе.
+  - Долгий вход завершается выдачей кода; повторное погашение просроченного request_uri отклоняется.
+  applicability:
+    when:
+    - Есть PAR или request object.
+    skip_when:
+    - Нет OAuth-сервера.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - RFC 9126 §2.2
+  - §4
+  - 'Real-world bug: RWB-0020'
+- id: AUTH-GENERATED-SECRET-STRENGTH
+  status: draft
+  title: Сгенерированные сервером секреты имеют стойкость не ниже требуемой алгоритмом
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - hardening
+  - authn
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервер генерирует секреты (секрет клиента, ключ HMAC, API-ключ).
+  steps:
+  - action: Сгенерировать секреты при каждом алгоритме подписи (HS256, HS384, HS512); оценить длину и алфавит.
+  - action: Сгенерировать серию секретов и проверить отсутствие повторов и предсказуемости.
+  expected:
+  - Энтропия не меньше размера выхода хэша (HS512 — 512 бит, около 86 буквенно-цифровых символов).
+  applicability:
+    when:
+    - Сервер генерирует секреты.
+    skip_when:
+    - Секреты задаются только извне.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - RFC 7518 §3.2
+  - CWE-331
+  - 'Real-world bug: RWB-0034'
+- id: AUTH-TOKEN-RESERVED-CLAIMS
+  status: draft
+  title: Пользовательские поля не переопределяют зарезервированные claims токена
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - authn
+  - token-lifecycle
+  - privilege-escalation
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - В токен при входе включаются поля профиля пользователя.
+  steps:
+  - action: Записать в доступные пользователю поля значения с именами sub, iss, aud, exp, roles и т. п.; войти и декодировать
+      токен.
+  expected:
+  - Зарезервированные claims формирует только сервер; пользовательские значения их не меняют.
+  applicability:
+    when:
+    - Токен содержит данные профиля.
+    skip_when:
+    - Непрозрачные токены без профиля.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: critical
+    likelihood: low
+  references:
+  - RFC 7519 §4.1
+  - CWE-915
+  - 'Real-world bug: RWB-0038'
+- id: AUTH-OAUTH-RESOURCE-INDICATOR
+  status: draft
+  title: Индикатор ресурса, не соответствующий аудитории клиента, даёт 400 invalid_target
+  category: security
+  protocols:
+  - rest
+  kind: negative
+  priority: P3
+  tags:
+  - negative
+  - authn
+  - error-handling
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервер авторизации поддерживает resource indicators (RFC 8707).
+  steps:
+  - action: Запросить токен с resource (URL и URN), не входящим в аудитории клиента.
+  expected:
+  - 400 с error invalid_target; токен не выдаётся.
+  applicability:
+    when:
+    - Есть resource indicators.
+    skip_when:
+    - Не поддерживаются.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: low
+  references:
+  - RFC 8707 §2
+  - RFC 6749 §5.2
+  - 'Real-world bug: RWB-0039'
+- id: AUTH-EXTERNAL-IDP-UNVERIFIED-EMAIL
+  status: draft
+  title: Вход через внешний IdP не связывается с учёткой по неподтверждённому email
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P0
+  tags:
+  - security
+  - authn
+  - privilege-escalation
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Включён вход через внешний OAuth/OIDC-провайдер; учётка ищется по email; есть тестовый IdP.
+  steps:
+  - action: Создать локальную учётку с email X; в тестовом IdP завести пользователя с email X и email_verified false (и без
+      признака).
+  - action: Войти через провайдера; проверить, под какой учёткой выдана сессия; повторить для каждого пути получения email
+      (профиль, ID-токен, сырой ответ).
+  expected:
+  - Без подтверждённого email вход отклоняется или создаётся отдельная учётка; связывание — только после подтверждения владельцем.
+  applicability:
+    when:
+    - Есть вход через внешний IdP.
+    skip_when:
+    - Нет федеративного входа.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: critical
+    likelihood: medium
+  references:
+  - OpenID Connect Core 1.0 §5.1
+  - §5.7
+  - OWASP API2:2023
+  - CWE-287
+  - 'Real-world bug: RWB-0041'
+- id: AUTH-TOKEN-SENDER-CONSTRAINED
+  status: draft
+  title: Обмен и обновление токена сохраняют привязку к отправителю (DPoP, mTLS)
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - authn
+  - token-lifecycle
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Токены привязаны к ключу клиента (cnf.jkt, cnf.x5t#S256).
+  steps:
+  - action: Передать привязанный токен в token exchange и выполнить refresh без доказательства владения ключом.
+  - action: Проверить claim cnf нового токена; вызвать ресурс новым токеном без доказательства.
+  expected:
+  - Обмен и refresh требуют доказательство; новый токен тоже привязан, иначе отказ.
+  applicability:
+    when:
+    - Есть DPoP или mTLS-привязка.
+    skip_when:
+    - Только bearer-токены.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - RFC 9449
+  - RFC 8705
+  - RFC 8693
+  - 'Real-world bug: RWB-0044'

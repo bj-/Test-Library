@@ -54,6 +54,7 @@ checks:
   - security
   - negative
   - hardening
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -62,6 +63,9 @@ checks:
   - Известен стек (Spring, .NET, Node, Django).
   steps:
   - action: Запросить /actuator, /debug, /metrics, /env, /swagger, /graphiql, /.git, /admin, /console, /heapdump.
+  - action: Служебный сервер доступен по сети (0.0.0.0) и с wildcard CORS — проверить доступность не с loopback и ответ на
+      preflight с чужим Origin
+    notes: 'Real-world bug: RWB-0075 (GHSA-jmg2-rcxh-w8q3)'
   expected:
   - Служебные эндпоинты закрыты или требуют аутентификации в соответствии с политикой окружения.
   applicability:
@@ -80,6 +84,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0075'
 - id: HARD-VERSION-DISCLOSURE
   status: approved
   title: Ответы не раскрывают версии ПО и инфраструктуры
@@ -130,6 +136,7 @@ checks:
   - negative
   - contract
   - privacy
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -138,6 +145,12 @@ checks:
   - Схемы ответов описаны в контракте.
   steps:
   - action: Сравнить фактические поля ответов со схемой для всех ролей.
+  - action: 'Вариант для токенов: состав claims по политике проверить для каждого типа grant, а не только основного'
+    notes: 'Real-world bug: RWB-0076 (keycloak/keycloak#51137)'
+  - action: Ответы о фоновых задачах (статус, шаги, журнал) — без секретов контекста выполнения
+    notes: 'Real-world bug: RWB-0076 (GHSA-g2v8-7jhw-pp8p)'
+  - action: Ответы auth-эндпоинтов (refresh, reset, verify), обходящие общую фильтрацию полей
+    notes: 'Real-world bug: RWB-0076 (GHSA-xgv3-crq2-6f69)'
   expected:
   - 'Нет недокументированных полей: внутренних id, флагов, хешей паролей, служебных метаданных.'
   applicability:
@@ -158,6 +171,7 @@ checks:
     likelihood: medium
   references:
   - OWASP API Security Top 10
+  - 'Real-world bug: RWB-0076'
 - id: HARD-ID-PREDICTABILITY
   status: approved
   title: Предсказуемые идентификаторы не позволяют собрать данные перебором
@@ -213,6 +227,7 @@ checks:
   - negative
   - versioning
   - hardening
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -222,6 +237,9 @@ checks:
   steps:
   - action: Вызвать ту же операцию через /v0, /v1, /beta, /internal, старые хосты.
   - action: Сравнить авторизацию и валидацию с текущей версией.
+  - action: Устаревший маршрут доверяет описанию сущности из тела запроса - сравнить объём выдачи с актуальной операцией при
+      подменённых атрибутах
+    notes: 'Real-world bug: RWB-0079 (GHSA-r9ph-3637-55px)'
   expected:
   - Устаревшие версии отключены или защищены не слабее текущей.
   applicability:
@@ -242,6 +260,7 @@ checks:
     likelihood: medium
   references:
   - OWASP API Security Top 10
+  - 'Real-world bug: RWB-0079'
 - id: HARD-METHOD-OVERRIDE
   status: approved
   title: Заголовки переопределения метода не обходят авторизацию
@@ -293,6 +312,7 @@ checks:
   - security
   - negative
   - injection
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -301,6 +321,8 @@ checks:
   - API формирует абсолютные ссылки (сброс пароля, Location, pagination links).
   steps:
   - action: Отправить запрос с поддельными Host, X-Forwarded-Host, X-Forwarded-Proto, Forwarded.
+  - action: Сервис без аутентификации — Host проверяется по allowlist; совпадения Origin с Host недостаточно
+    notes: 'Real-world bug: RWB-0078 (GHSA-fm8p-53ww-hf6w)'
   expected:
   - Ссылки строятся из доверенной конфигурации, а не из заголовков клиента.
   applicability:
@@ -319,6 +341,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0078'
 - id: HARD-CACHE-POISONING
   status: approved
   title: Неключевые заголовки не отравляют общий кэш
@@ -412,12 +436,20 @@ checks:
   - negative
   - resilience
   - costly
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Сервис вызывает внешние API.
   steps:
   - action: Через заглушку внешнего API вернуть некорректную схему, огромный ответ, редирект, инъекции в полях.
+  - action: Добавить сбои на уровне соединения и протокола у внешнего узла (обрыв, не тот протокол) — не только некорректные
+      ответы
+    notes: 'Real-world bug: RWB-0080 (GHSA-542g-h47m-68v8)'
+  - action: Тяжёлый для разбора ответ внешнего сервера (ReDoS/квадратичный парсер), а не только неверные данные
+    notes: 'Real-world bug: RWB-0080 (GHSA-c475-qrg2-pj4r)'
+  - action: Компрессионная бомба в ответе внешнего сервиса
+    notes: 'Real-world bug: RWB-0080 (GHSA-3xpg-4rpp-hhhm)'
   expected:
   - Сервис отклоняет или санитизирует данные, не следует редиректам слепо, ограничивает размер.
   applicability:
@@ -436,6 +468,7 @@ checks:
     likelihood: medium
   references:
   - OWASP API Security Top 10
+  - 'Real-world bug: RWB-0080'
 - id: HARD-EXPENSIVE-OPERATION-LIMITS
   status: approved
   title: Дорогие операции ограничены по ресурсам
@@ -452,12 +485,21 @@ checks:
   - negative
   - rate-limiting
   - costly
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Есть экспорт, отчёты, поиск, массовые операции.
   steps:
   - action: Запросить максимальный limit, широкий период, тяжёлые фильтры, параллельные экспорты.
+  - action: Усиление памяти при разборе URL (числовые ключи параметров)
+    notes: 'Real-world bug: RWB-0077 (GHSA-ff3f-86qr-9cv3)'
+  - action: Сверхдлинный пароль на auth-эндпоинтах (в том числе для несуществующего пользователя)
+    notes: 'Real-world bug: RWB-0077 (GHSA-477h-4r7f-fvrx)'
+  - action: Алгоритмическая сложность парсеров ввода — плоский вход с большим числом элементов при нулевой вложенности
+    notes: 'Real-world bug: RWB-0077 (GHSA-rj75-hqrm-r3gf)'
+  - action: YAML с алиасами и merge-ключами (включая пустые отображения) — стоимость разбора ограничена
+    notes: 'Real-world bug: RWB-0077 (GHSA-r3ph-w7gj-g6xm)'
   expected:
   - Действуют лимиты на размер, время и параллельность; сервис доступен другим клиентам.
   applicability:
@@ -476,6 +518,7 @@ checks:
     likelihood: medium
   references:
   - OWASP API Security Top 10
+  - 'Real-world bug: RWB-0077'
 - id: HARD-SENSITIVE-DATA-IN-URL
   status: approved
   title: Персональные данные и секреты не передаются в URL
@@ -512,3 +555,177 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+- id: SEC-FAIL-CLOSED-INPUT
+  status: draft
+  title: Неожиданный тип, пустое или отсутствующее поле проверки безопасности ведёт к отказу, а не к пропуску проверки
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authz
+  - validation
+  - hardening
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Поле запроса или токена участвует в проверке доступа или политики (claim, scope, client_id, role, тип аутентификатора,
+    алгоритм).
+  steps:
+  - action: Подставить в каждое такое поле значение другого JSON-типа — число, boolean, объект, массив.
+  - action: Отправить запрос без поля, с пустой строкой и с null при настроенной политике.
+  - action: Выполнить операцию, которую поле должно ограничивать.
+  expected:
+  - Запрос отклоняется (400/401/403); проверка не пропускается.
+  - Значение не копируется в выдаваемые токены и ответы.
+  applicability:
+    when:
+    - Политики или проверки доступа опираются на данные клиента.
+    skip_when:
+    - Решение о доступе не зависит от входных полей.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: critical
+    likelihood: medium
+  references:
+  - OWASP Top 10:2025 A10 (fail-open при исключительных условиях)
+  - CWE-636
+  - 'Real-world bug: RWB-0006'
+- id: HARD-SLOW-CLIENT-LIMITS
+  status: draft
+  title: Медленные и неполные запросы и непрочитанные ответы не накапливаются без ограничения
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - hardening
+  - resilience
+  - costly
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервис принимает соединения (HTTP, WebSocket, TCP) от недоверенных клиентов; разрешены нагрузочные проверки стенда.
+  steps:
+  - action: Открыть много соединений, объявить длину сообщения и отправить его часть (slowloris).
+  - action: Слать запросы, не читая ответы; наблюдать память и доступность для обычного клиента.
+  expected:
+  - Неполные сообщения и простаивающие соединения закрываются по таймауту; число соединений и буферы ограничены.
+  - Обычные клиенты обслуживаются.
+  applicability:
+    when:
+    - Публичный сервис.
+    skip_when:
+    - Нагрузочные проверки запрещены на стенде.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP API4:2023
+  - CWE-400
+  - 'Real-world bug: RWB-0024'
+- id: SEC-READONLY-MODE-ENFORCED
+  status: draft
+  title: Режим только для чтения запрещает изменения любым запросом, а не по первому ключевому слову
+  category: security
+  protocols:
+  - rest
+  - graphql
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - authz
+  - injection
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Пользователь задаёт запросы сам (SQL, GraphQL, выражения) в режиме или с ролью только для чтения.
+  steps:
+  - action: Отправить запрос, начинающийся как чтение, но с побочным эффектом — функции с записью, составные запросы после
+      комментария, изменение последовательностей.
+  - action: Для GraphQL — mutation после незначащих символов (запятые, BOM, комментарии) или в документе с несколькими операциями.
+  expected:
+  - Любое изменение отклоняется; данные не меняются.
+  - Тип операции определяется по AST или хранилищем (read-only транзакция), а не разбором текста.
+  applicability:
+    when:
+    - Есть пользовательские запросы с режимом только чтения.
+    skip_when:
+    - Нет пользовательских запросов.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: critical
+    likelihood: low
+  references:
+  - OWASP API5:2023
+  - CWE-863
+  - CWE-184
+  - 'Real-world bug: RWB-0028'
+- id: HARD-CLIENT-IP-TRUSTED-PROXIES
+  status: draft
+  title: IP клиента определяется по цепочке доверенных прокси одинаково на всех маршрутах
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - hardening
+  - rate-limiting
+  - audit
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервис за обратными прокси; IP клиента используется в rate limit, аудите или allowlist.
+  steps:
+  - action: Отправить запросы с X-Forwarded-For из разного числа адресов (1, N, N+2, с поддельным первым).
+  - action: Повторить на маршрутах разных модулей; посмотреть IP в ответе, журнале или срабатывании лимита.
+  expected:
+  - Берётся адрес, добавленный последним доверенным прокси; поддельные левые записи игнорируются.
+  - IP одинаков на всех маршрутах; адрес прокси не выдаётся за клиента.
+  applicability:
+    when:
+    - Есть прокси и логика по IP.
+    skip_when:
+    - IP клиента не используется.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - RFC 7239
+  - CWE-348
+  - 'Real-world bug: RWB-0030'

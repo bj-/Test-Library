@@ -52,6 +52,7 @@ checks:
   tags:
   - contract
   - data-integrity
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -59,6 +60,8 @@ checks:
   - Операции записи возвращают ресурс.
   steps:
   - action: Создать/изменить ресурс и сравнить ответ с GET.
+  - action: Поле-связь, заданное альтернативным идентификатором, на нестандартном эндпоинте ресурса — 200 без применения
+    notes: 'Real-world bug: RWB-0101 (strapi/strapi#26606)'
   expected:
   - Поля и значения совпадают, кроме задокументированных вычисляемых асинхронно.
   applicability:
@@ -76,6 +79,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0101'
 - id: RES-UPDATE-MISSING
   status: approved
   title: Изменение несуществующего ресурса не создаёт его неявно
@@ -127,6 +132,7 @@ checks:
   - negative
   - data-integrity
   - security
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -135,6 +141,8 @@ checks:
   - У ресурса есть неизменяемые поля (владелец, тип, дата создания, номер).
   steps:
   - action: Попытаться изменить каждое неизменяемое поле через PUT, PATCH и вложенные объекты.
+  - action: Добавить служебные поля синглтона настроек
+    notes: 'Real-world bug: RWB-0103 (directus/directus#28131)'
   expected:
   - Изменение отклоняется или игнорируется по контракту; значение не меняется.
   applicability:
@@ -153,6 +161,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0103'
 - id: RES-SERVER-GENERATED-FIELDS
   status: approved
   title: Клиент не может задать серверные поля (id, createdAt, status, version)
@@ -167,6 +177,7 @@ checks:
   - negative
   - data-integrity
   - security
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -175,6 +186,8 @@ checks:
   - Есть серверные поля.
   steps:
   - action: Передать серверные поля при создании.
+  - action: Добавить путь загрузки файла (multipart) и повторную внутреннюю запись
+    notes: 'Real-world bug: RWB-0105 (directus/directus#28207)'
   expected:
   - Значения клиента отклоняются или игнорируются; сервер задаёт собственные.
   applicability:
@@ -193,6 +206,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0105'
 - id: RES-TIMESTAMPS
   status: approved
   title: Метки времени создания и изменения ведут себя корректно
@@ -206,6 +221,7 @@ checks:
   tags:
   - contract
   - data-integrity
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -213,6 +229,8 @@ checks:
   - Ресурс содержит createdAt/updatedAt.
   steps:
   - action: Создать ресурс, изменить его, выполнить запрос без изменений.
+  - action: Добавить проверку меток времени для всех альтернативных путей создания (resumable-загрузка и др.)
+    notes: 'Real-world bug: RWB-0106 (directus/directus#28042)'
   expected:
   - createdAt не меняется; updatedAt растёт только при изменении; время в задокументированной зоне и формате.
   applicability:
@@ -230,6 +248,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0106'
 - id: RES-REFERENTIAL-INTEGRITY
   status: approved
   title: Ссылка на несуществующий или чужой связанный ресурс отклоняется
@@ -244,6 +264,7 @@ checks:
   - negative
   - data-integrity
   - authz
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -252,6 +273,8 @@ checks:
   - Ресурс ссылается на другие ресурсы по id.
   steps:
   - action: Создать ресурс со ссылкой на несуществующий, удалённый и принадлежащий другому пользователю объект.
+  - action: Обе ссылки существуют, но не связаны между собой; интерфейс ограничивает выбор, API — нет (см. REQ-CROSS-CLIENT-CONSISTENCY)
+    notes: 'Real-world bug: RWB-0104 (keycloak/keycloak#50178)'
   expected:
   - Ссылки отклоняются; чужой объект не раскрывается через сообщение об ошибке.
   applicability:
@@ -270,6 +293,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0104'
 - id: RES-DELETE-WITH-DEPENDENTS
   status: approved
   title: Удаление ресурса с зависимыми объектами выполняется по правилам каскада
@@ -283,6 +308,7 @@ checks:
   tags:
   - negative
   - data-integrity
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -291,6 +317,9 @@ checks:
   - Есть зависимые объекты.
   steps:
   - action: Удалить родительский ресурс с дочерними.
+  - action: Добавить проверку зависимых операций после удаления (выдача токена, вычисление прав), в том числе при закэшированной
+      конфигурации
+    notes: 'Real-world bug: RWB-0102 (keycloak/keycloak#51589)'
   expected:
   - Каскадное удаление или отказ строго по контракту; нет висячих ссылок.
   applicability:
@@ -309,6 +338,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0102'
 - id: RES-SOFT-DELETE-VISIBILITY
   status: approved
   title: Мягко удалённые ресурсы не видны в обычных операциях
@@ -470,6 +501,7 @@ checks:
   tags:
   - boundary
   - data-integrity
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -477,6 +509,12 @@ checks:
   - Есть bulk-операции.
   steps:
   - action: Отправить пустой пакет, пакет максимального размера, max+1, с дубликатами.
+  - action: Добавить дубликаты и несуществующие ID в массовой операции и сравнение поведения ролей
+    notes: 'Real-world bug: RWB-0100 (directus/directus#27863)'
+  - action: Пустой список ключей не означает «все записи»
+    notes: 'Real-world bug: RWB-0100 (directus/directus#27514)'
+  - action: Добавить пустой список в массовой операции и сравнение ответа для разных ролей
+    notes: 'Real-world bug: RWB-0100 (directus/directus#26754)'
   expected:
   - Лимиты соблюдаются; результат по каждому элементу задокументирован.
   applicability:
@@ -494,6 +532,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0100'
 - id: RES-ARCHIVE-RESTORE
   status: approved
   title: Архивирование и восстановление сохраняют данные и связи
@@ -529,3 +569,242 @@ checks:
   risk:
     impact: low
     likelihood: medium
+- id: RES-DRAFT-PUBLISH-FIDELITY
+  status: draft
+  title: Публикация черновика переносит все изменения и не ломает связи других объектов
+  category: resources
+  protocols:
+  - rest
+  - graphql
+  kind: positive
+  priority: P2
+  tags:
+  - positive
+  - data-integrity
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Ресурсы имеют черновик и опубликованную версию; есть упорядоченные связи, в том числе между типами с разными режимами
+    (локализация, draft/publish).
+  steps:
+  - action: Опубликовать A со связями на B и C в порядке B, C; в черновике изменить поля и порядок; опубликовать повторно.
+  - action: Изменить и опубликовать B; прочитать опубликованную версию A по REST и GraphQL.
+  - action: Связать ресурсы разных режимов и опубликовать каждую сторону.
+  expected:
+  - Опубликованная версия совпадает с черновиком, включая порядок связей.
+  - Публикация B не удаляет его из связей A; публикация между типами с разными режимами успешна.
+  applicability:
+    when:
+    - Есть жизненный цикл черновик/публикация.
+    skip_when:
+    - Нет версий публикации.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Здравый смысл — публикация есть копия черновика
+  - 'Real-world bug: RWB-0015'
+- id: RES-RELATION-ORDER-STABLE
+  status: draft
+  title: Изменение связанного ресурса не меняет ручной порядок связей у другой стороны
+  category: resources
+  protocols:
+  - rest
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - data-integrity
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Упорядоченная связь (one-to-many, many-to-one, ссылка на себя) с ручным порядком.
+  steps:
+  - action: Задать у родителя порядок детей B, A; изменить и сохранить ребёнка A, не трогая порядок; прочитать родителя.
+  expected:
+  - Порядок детей у родителя прежний.
+  applicability:
+    when:
+    - Есть ручной порядок связей.
+    skip_when:
+    - Порядок связей не хранится.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - Здравый смысл
+  - 'Real-world bug: RWB-0016'
+- id: RES-LARGE-RELATION-SET
+  status: draft
+  title: Тысячи связанных объектов не дают 5xx из-за лимитов СУБД на параметры запроса
+  category: resources
+  protocols:
+  - rest
+  kind: boundary
+  priority: P3
+  tags:
+  - boundary
+  - reliability
+  - error-handling
+  - costly
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - У объекта могут быть тысячи связей (члены группы, составные роли, теги).
+  steps:
+  - action: Создать больше 2100 связей и выполнить чтение и изменение, использующие их; по возможности на всех поддерживаемых
+      СУБД.
+  expected:
+  - Операции успешны (сервер разбивает выборку) или документированный лимит с 4xx; 5xx нет.
+  applicability:
+    when:
+    - Есть связи «многие ко многим» без жёсткого лимита.
+    skip_when:
+    - Число связей ограничено контрактом.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - Лимиты СУБД — MSSQL 2100 параметров
+  - Oracle 1000 в IN; CWE-770
+  - 'Real-world bug: RWB-0022'
+- id: RES-CACHE-KEY-COMPLETENESS
+  status: draft
+  title: Серверный кэш различает ответы по всем значимым параметрам и по типу ресурса
+  category: resources
+  protocols:
+  - rest
+  kind: positive
+  priority: P2
+  tags:
+  - positive
+  - caching
+  - data-integrity
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервер кэширует ответы GET или объекты по id.
+  steps:
+  - action: Выполнить GET с одним значением query-параметра, затем с другим; сравнить ответы и признак кэша.
+  - action: Создать ресурсы двух типов с одинаковым id, прочитать каждый дважды, сравнить с данными без кэша.
+  expected:
+  - Ответ соответствует своим параметрам; второй запрос с другим параметром — промах кэша.
+  - Каждый эндпоинт возвращает свой ресурс.
+  applicability:
+    when:
+    - Есть серверный кэш.
+    skip_when:
+    - Кэша нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - RFC 9111 §4
+  - 'Real-world bug: RWB-0023'
+- id: RES-EXPORT-IMPORT-ROUNDTRIP
+  status: draft
+  title: Данные, выгруженные API, принимаются им же обратно без изменений
+  category: resources
+  protocols:
+  - rest
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - data-integrity
+  - compatibility
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - API отдаёт экспорт или снапшот (данные, схема, конфигурация) и принимает его на импорт.
+  steps:
+  - action: Выгрузить экспорт с особыми значениями (максимальная длина, null, большие числа) и отправить без изменений на
+      импорт в тот же и в другой экземпляр.
+  expected:
+  - Импорт проходит без ошибок; результат совпадает с исходным, особые значения перенесены.
+  applicability:
+    when:
+    - Есть экспорт и импорт.
+    skip_when:
+    - Нет импорта.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Здравый смысл
+  - 'Real-world bug: RWB-0029'
+- id: RES-SYSTEM-OBJECT-PROTECTED
+  status: draft
+  title: Встроенные системные объекты защищены от удаления и изменения при любой конфигурации
+  category: resources
+  protocols:
+  - rest
+  kind: negative
+  priority: P2
+  tags:
+  - negative
+  - business-logic
+  - hardening
+  - error-handling
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Есть служебные объекты (системный клиент, роль по умолчанию, администратор); имена или расположение настраиваемы.
+  steps:
+  - action: Отправить DELETE и PUT на служебный объект через каждую версию API.
+  - action: Повторить при нестандартной конфигурации (переименованный служебный tenant или realm); прочитать объект.
+  expected:
+  - Отказ 400/403/409 с понятным кодом, одинаковым во всех версиях API; объект не изменён.
+  applicability:
+    when:
+    - Есть системные объекты.
+    skip_when:
+    - —
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - RFC 9457
+  - 'Real-world bug: RWB-0035'

@@ -52,6 +52,7 @@ checks:
   - observability
   - audit
   - security
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -60,6 +61,12 @@ checks:
   - Есть журнал аудита.
   steps:
   - action: Выполнить вход, смену прав, удаление, экспорт, неуспешные попытки доступа.
+  - action: Добавить отказы на всех ветках проверок выдачи токена, а не только успешные действия
+    notes: 'Real-world bug: RWB-0092 (keycloak/keycloak#52568)'
+  - action: Несколько событий в одном запросе — проверить, что тип и детали каждого не перезаписаны
+    notes: 'Real-world bug: RWB-0092 (keycloak/keycloak#52257)'
+  - action: Добавить матрицу ролей (включая администратора тенанта) и путей загрузки при проверке инициатора в событиях
+    notes: 'Real-world bug: RWB-0092 (directus/directus#26242)'
   expected:
   - Запись содержит кто, что, когда, откуда, результат; журнал недоступен для изменения пользователем.
   applicability:
@@ -78,6 +85,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0092'
 - id: OBS-TRACE-PROPAGATION
   status: approved
   title: Контекст трассировки принимается и передаётся дальше
@@ -129,6 +138,7 @@ checks:
   - contract
   - observability
   - hardening
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -136,6 +146,9 @@ checks:
   - Есть liveness/readiness.
   steps:
   - action: Запросить health при норме и при недоступной зависимости; запросить без аутентификации.
+  - action: Доступность health без аутентификации при глобальном префиксе/версии и что исключение не расширяется на соседние
+      маршруты
+    notes: 'Real-world bug: RWB-0093 (nestjs/nest#11442)'
   expected:
   - Readiness отражает зависимости; публичный ответ не содержит версий, хостов и секретов.
   applicability:
@@ -153,3 +166,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0093'

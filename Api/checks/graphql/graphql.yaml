@@ -369,3 +369,44 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+- id: GQL-EQUIVALENT-SELECTION-FORMS
+  status: draft
+  title: Эквивалентные формы выбора полей GraphQL дают одинаковые данные
+  category: graphql
+  protocols:
+  - graphql
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - contract
+  - data-integrity
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Схема с union или interface, полями-связями и аргументами вложенных полей.
+  steps:
+  - action: Запросить одни поля напрямую, через inline-фрагмент, через именованный фрагмент и под алиасом (в том числе два
+      алиаса одного поля с разными аргументами) на разной глубине.
+  - action: Выполнить один вложенный фильтр связи в запросе по id и в запросе списка.
+  expected:
+  - Значения одинаковы во всех формах; оба запроса с вложенным фильтром успешны и одинаково отфильтрованы.
+  applicability:
+    when:
+    - GraphQL API.
+    skip_when:
+    - Нет GraphQL.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - GraphQL spec §5.5 (Fragments)
+  - Field Alias
+  - 'Real-world bug: RWB-0014'

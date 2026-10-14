@@ -1,0 +1,41 @@
+checks:
+- id: SEC-AUTHZ-ROLE-POSITIVE-MATRIX
+  status: draft
+  title: Разрешённая операция работает для каждой роли с правом, а не только для администратора
+  category: security
+  protocols:
+  - generic
+  kind: positive
+  priority: P1
+  tags:
+  - positive
+  - authz
+  - roles-scopes
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Есть матрица прав (ТЗ или контракт) с несколькими ролями, включая ограниченные (фильтры видимости, ограничения полей).
+  steps:
+  - action: Выполнить каждую операцию под каждой ролью, которой она разрешена матрицей.
+  - action: Сравнить результат с ожидаемым для роли (данные в пределах прав).
+  expected:
+  - 2xx и данные в пределах прав роли.
+  - Ни одной 5xx или ложного 403 у ролей с правом.
+  applicability:
+    when:
+    - Больше одной роли с правами на операции.
+    skip_when:
+    - Единственная роль.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - Матрица прав ТЗ; тесты только под администратором не покрывают ветки ограниченных ролей
+  - 'Real-world bug: RWB-0004'

@@ -13,6 +13,7 @@ checks:
   - negative
   - security
   - authz
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -23,6 +24,11 @@ checks:
   steps:
   - action: Submit a bulk request containing resources owned by the caller and by another user.
     notes: 'Matrix axis: Resource ownership; scenario: Mixed-owner batch. Use isolated synthetic identities and data.'
+  - action: Добавить аутентификацию массового варианта (не только владение по элементам)
+    notes: 'Real-world bug: RWB-0148 (directus/directus#28161)'
+  - action: Операции порядка/сортировки и привязки со списком ID в теле при проверке прав по родителю из пути; сверять все
+      «соседние» операции одного ресурса
+    notes: 'Real-world bug: RWB-0148 (GHSA-5ffh-6f9q-5hhr)'
   expected:
   - Each item is authorized independently or the whole batch fails atomically as documented; unauthorized items are not read
     or mutated.
@@ -47,3 +53,4 @@ checks:
     likelihood: medium
   references:
   - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model
+  - 'Real-world bug: RWB-0148'

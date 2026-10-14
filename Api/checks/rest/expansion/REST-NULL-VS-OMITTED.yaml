@@ -13,6 +13,7 @@ checks:
   - validation
   - contract
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -21,6 +22,9 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Явный null для секрета/служебного поля в PATCH запускает побочную операцию (перегенерацию) - проверить, что она
+      идёт через те же правила, что и штатная операция
+    notes: 'Real-world bug: RWB-0122 (keycloak/keycloak#51527)'
   expected:
   - каждый вариант соответствует правилам required/nullable/type
   applicability:
@@ -40,4 +44,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0122'

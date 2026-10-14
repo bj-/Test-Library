@@ -13,6 +13,7 @@ checks:
   - negative
   - security
   - authn
+  - real-world-bug
   - smoke
   - pr
   - ci
@@ -24,6 +25,14 @@ checks:
   steps:
   - action: Request protected operation without Authorization credentials.
     notes: 'Matrix axis: Authentication; scenario: No credentials. Use isolated synthetic identities and data.'
+  - action: Защищённый путь под публичным префиксом — правила по самому длинному совпадению
+    notes: 'Real-world bug: RWB-0143 (GHSA-472h-9c5j-prrr)'
+  - action: Маршруты совместимости со старыми клиентами и ingest-эндпоинты (стримы, события) — проверять так же, как основные;
+      вместе с предсказуемыми ID
+    notes: 'Real-world bug: RWB-0143 (GHSA-59h8-w5q6-mfmp)'
+  - action: Проверка без учётных данных через каждый путь развёртывания (прокси, балансировщик) — исключения для loopback/внутренних
+      адресов не должны срабатывать на внешний трафик
+    notes: 'Real-world bug: RWB-0143 (GHSA-x5c9-v98j-722r)'
   expected:
   - Reject according to documented auth policy; no protected data or internal details are returned.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
@@ -48,3 +57,4 @@ checks:
     likelihood: high
   references:
   - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model
+  - 'Real-world bug: RWB-0143'

@@ -13,6 +13,7 @@ checks:
   - validation
   - contract
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -21,6 +22,8 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: 'Массивоподобный объект ({length: N}) или строка на месте вложенного массива; проверить прочитанное значение'
+    notes: 'Real-world bug: RWB-0138 (GHSA-48qf-xh34-q73r)'
   expected:
   - неверный тип обрабатывается по контракту без неожиданного coercion
   applicability:
@@ -40,4 +43,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0138'

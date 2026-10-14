@@ -12,6 +12,7 @@ checks:
   - negative
   - contract
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -20,6 +21,10 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: 'Добавить ложный конфликт: обновление с собственными значениями уникального (составного) ключа'
+    notes: 'Real-world bug: RWB-0114 (directus/directus#27986)'
+  - action: Обновление со своим же уникальным значением и корректный код при конфликте
+    notes: 'Real-world bug: RWB-0114 (directus/directus#26997)'
   expected:
   - конфликт обработан документированно, второй уникальный ресурс не создаётся
   applicability:
@@ -39,4 +44,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0114'

@@ -13,6 +13,7 @@ checks:
   - negative
   - boundary
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -21,6 +22,8 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Неподдерживаемое значение внутри списка — отклонить запрос или отбросить элемент, по документации
+    notes: 'Real-world bug: RWB-0116 (keycloak/keycloak#50362)'
   expected:
   - допустимые значения принимаются, неизвестные обрабатываются по контракту
   applicability:
@@ -40,4 +43,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0116'

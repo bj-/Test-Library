@@ -13,6 +13,7 @@ checks:
   - negative
   - validation
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -20,6 +21,9 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: При политике «отбросить неизвестные» проверить, что объявленные вложенные объекты и их поля сохраняются (сравнить
+      отправленное и прочитанное)
+    notes: 'Real-world bug: RWB-0139 (nestjs/nest#8066)'
   expected:
   - reject/ignore/preserve соответствует контракту; нет mass assignment
   applicability:
@@ -38,4 +42,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0139'
