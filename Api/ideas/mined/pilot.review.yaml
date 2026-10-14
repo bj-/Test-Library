@@ -1,0 +1,330 @@
+# Ревью кандидатов партии pilot (шаги 6–7, docs/BUG_MINING_PLAN.md).
+#
+# Шаг 6 (Claude): new-паттерны склеены в идеи (clusters); для каждой — предложение: accept (новая запись draft
+# с предложенным ID в указанном файле) или reject (с причиной). Пруфы к существующим (extends/covered) берутся из
+# batches/*.out.jsonl автоматически.
+# Шаг 7 (человек): поменять decision / check_id / file кластера; неверные совпадения пруфов — в proofs.exclude
+# (ID бага), вариант пруфа без нового шага — в proofs.no_variant. Затем: cluster.py (пересобрать pilot.md) и
+# apply_proofs.py.
+#
+# decision: accept | reject | pending
+batch: pilot
+clusters:
+- key: filter-operator-type-matrix
+  decision: accept
+  check_id: REST-FILTER-OPERATOR-TYPE-MATRIX
+  file: checks/rest/pagination.yaml
+  bugs: [directus/directus#28303, directus/directus#28256]
+  idea: Матрица «оператор фильтра × тип поля»; допустимые операторы принимаются для типа и подтипов, результат совпадает с эталонным отбором по полному списку
+- key: filter-equivalent-forms
+  decision: accept
+  check_id: REST-FILTER-EQUIVALENT-FORMS
+  file: checks/rest/pagination.yaml
+  bugs: [strapi/strapi#27235]
+  idea: Логически эквивалентные фильтры (плоская форма, вложенные $and/$or) дают одинаковый ответ
+- key: deferred-failure
+  decision: accept
+  check_id: VAL-DEFERRED-FAILURE
+  file: checks/rest/input-validation.yaml
+  bugs: [keycloak/keycloak#53456]
+  idea: Данные, принятые при записи, не вызывают 5xx в зависимых операциях (чтение, поиск, экспорт, политика)
+- key: role-positive-matrix
+  decision: accept
+  check_id: SEC-AUTHZ-ROLE-POSITIVE-MATRIX
+  file: checks/security/access-control/SEC-AUTHZ-ROLE-POSITIVE-MATRIX.yaml
+  bugs: [directus/directus#28285]
+  idea: Разрешённая операция работает для каждой роли с правом, а не только для администратора (позитивная матрица прав)
+- key: admin-self-target
+  decision: accept
+  check_id: SEC-ROLE-ADMIN-SELF-TARGET
+  file: checks/security/access-control/SEC-ROLE-ADMIN-SELF-TARGET.yaml
+  bugs: [keycloak/keycloak#50136]
+  idea: Делегированный администратор над собственной учёткой — явное разрешение или 403 по политике, без 5xx
+- key: fail-closed-input
+  decision: accept
+  check_id: SEC-FAIL-CLOSED-INPUT
+  file: checks/security/api-hardening.yaml
+  bugs: [keycloak/keycloak#53140, keycloak/keycloak#50719]
+  idea: Неожиданный тип, пустое или отсутствующее поле, участвующее в проверке безопасности, приводит к отказу, а не к пропуску проверки (fail-closed)
+- key: request-context-isolation
+  decision: accept
+  check_id: CONC-REQUEST-CONTEXT-ISOLATION
+  file: checks/common/concurrency.yaml
+  bugs: [nestjs/nest#17007, nestjs/nest#16989, nestjs/nest#505]
+  idea: Параллельные запросы разных пользователей получают только свой контекст и свой ответ (в том числе через общий канал к нижележащему сервису)
+- key: parallel-independent-no-5xx
+  decision: accept
+  check_id: CONC-PARALLEL-INDEPENDENT
+  file: checks/common/concurrency.yaml
+  bugs: [keycloak/keycloak#50286]
+  idea: Параллельные независимые запросы одной операции выполняются без 5xx (общая кэшированная конфигурация)
+- key: response-foreign-data
+  decision: accept
+  check_id: PRIV-RESPONSE-FOREIGN-DATA
+  file: checks/security/privacy.yaml
+  bugs: [GHSA-j22f-vq7h-c4qm]
+  idea: Ответ не содержит фрагментов данных других запросов и памяти процесса (общие буферы сериализации)
+- key: token-introspection
+  decision: accept
+  check_id: AUTH-TOKEN-INTROSPECTION
+  file: checks/security/authentication-session.yaml
+  bugs: [keycloak/keycloak#53029, keycloak/keycloak#51552]
+  idea: Интроспекция (RFC 7662) — active true для действующих токенов каждого типа с теми же claims, false для отозванных и истёкших
+- key: no-session-before-login
+  decision: accept
+  check_id: AUTH-SESSION-NOT-BEFORE-LOGIN
+  file: checks/security/authentication-session.yaml
+  bugs: [expressjs/session#239]
+  idea: Анонимный запрос без входа не получает cookie сессии и не создаёт серверную сессию
+- key: file-transform-limits
+  decision: accept
+  check_id: FILE-TRANSFORM-LIMITS
+  file: checks/rest/files.yaml
+  bugs: [directus/directus#28103]
+  idea: Лимит трансформации файла на лету (размер, формат) не отклоняет допустимые комбинации и отклоняет превышение, в том числе на промежуточном шаге
+- key: http-version-parity
+  decision: accept
+  check_id: HTTP-VERSION-PARITY
+  file: checks/rest/http-protocol.yaml
+  bugs: [expressjs/express#6580, expressjs/express#5678]
+  idea: Запросы по HTTP/2 и с предложением Upgrade h2c обслуживаются так же, как по HTTP/1.1; соединение не сбрасывается, процесс не падает
+- key: gql-equivalent-selection
+  decision: accept
+  check_id: GQL-EQUIVALENT-SELECTION-FORMS
+  file: checks/graphql/graphql.yaml
+  bugs: [directus/directus#28060, directus/directus#27772, directus/directus#26232]
+  idea: Прямой выбор, inline- и именованные фрагменты, алиасы, вложенные аргументы в запросе по id и в списке дают одинаковые данные
+- key: draft-publish-fidelity
+  decision: accept
+  check_id: RES-DRAFT-PUBLISH-FIDELITY
+  file: checks/common/resource-lifecycle.yaml
+  bugs: [strapi/strapi#26786, strapi/strapi#26473, strapi/strapi#26804]
+  idea: Публикация черновика переносит все изменения (включая связи и их порядок), не удаляет объект из связей других и работает между типами с разными режимами
+- key: relation-order-stable
+  decision: accept
+  check_id: RES-RELATION-ORDER-STABLE
+  file: checks/common/resource-lifecycle.yaml
+  bugs: [strapi/strapi#26615]
+  idea: Изменение связанного ресурса не меняет ручной порядок связей у другой стороны
+- key: email-link-cross-session
+  decision: accept
+  check_id: BIZ-EMAIL-LINK-CROSS-SESSION
+  file: checks/common/business-logic.yaml
+  bugs: [keycloak/keycloak#52604, keycloak/keycloak#51088]
+  idea: Ссылка-действие из письма работает в другом браузере/сессии и после перезапуска сервиса (или понятная ошибка, но не 5xx), во всех вариантах настройки потока
+- key: refresh-preserves-scope
+  decision: accept
+  check_id: AUTH-REFRESH-PRESERVES-SCOPE
+  file: checks/security/authentication-session.yaml
+  bugs: [keycloak/keycloak#52574]
+  idea: Refresh без параметра scope сохраняет scope исходной авторизации (RFC 6749 §6)
+- key: mfa-unenrolled-error
+  decision: accept
+  check_id: AUTH-MFA-UNENROLLED-ERROR
+  file: checks/security/authentication-session.yaml
+  bugs: [keycloak/keycloak#52464]
+  idea: Ошибка шага второго фактора у пользователя без зарегистрированного фактора — обычная 4xx, как у пользователя с фактором, без 5xx
+- key: claim-mapper-dropped
+  decision: reject
+  bugs: [keycloak/keycloak#52087]
+  idea: Claim из маппера атрибута сохраняется в токене при нестандартном значении
+  reason: Специфично для конфигурации мапперов Keycloak; общая часть (claims выпускаемого токена) — в AUTH-TOKEN-RESERVED-CLAIMS
+- key: oauth-par
+  decision: accept
+  check_id: AUTH-OAUTH-PAR
+  file: checks/security/authentication-session.yaml
+  bugs: [keycloak/keycloak#51761, keycloak/keycloak#49255]
+  idea: PAR (RFC 9126) — параметры через request_uri действуют как в прямом запросе; срок request_uri ограничивает погашение, а не длительность входа
+- key: spnego-mutual-auth
+  decision: reject
+  bugs: [keycloak/keycloak#51559]
+  idea: SPNEGO с взаимной аутентификацией возвращает ответный токен в WWW-Authenticate
+  reason: Kerberos/SPNEGO вне нашего стека и типовых API; вернуться, если появится продукт с Negotiate
+- key: encryption-key-rotation
+  decision: accept
+  check_id: RESIL-ENCRYPTION-KEY-ROTATION
+  file: checks/common/resilience.yaml
+  bugs: [directus/directus#26734]
+  idea: Значение, которое не удаётся расшифровать после смены ключа, не ломает чтение и сохранение остальных данных
+- key: large-relation-set
+  decision: accept
+  check_id: RES-LARGE-RELATION-SET
+  file: checks/common/resource-lifecycle.yaml
+  bugs: [keycloak/keycloak#51510]
+  idea: Тысячи связанных объектов не дают 5xx из-за лимитов СУБД на параметры запроса (2100 MSSQL, 1000 в IN Oracle)
+- key: cache-key-completeness
+  decision: accept
+  check_id: RES-CACHE-KEY-COMPLETENESS
+  file: checks/common/resource-lifecycle.yaml
+  bugs: [nestjs/nest#13058, directus/directus#26929]
+  idea: Серверный кэш различает ответы по всем значимым параметрам запроса и по типу ресурса при одинаковых id
+- key: dynamic-scopes-flags
+  decision: reject
+  bugs: [keycloak/keycloak#51437]
+  idea: Параметризованные scope принимаются при любой комбинации включённых функций
+  reason: Специфично для флагов функций Keycloak; разбор scope в целом покрыт SEC-SCOPE-*
+- key: slow-client-limits
+  decision: accept
+  check_id: HARD-SLOW-CLIENT-LIMITS
+  file: checks/security/api-hardening.yaml
+  bugs: [GHSA-96h4-vgxj-gvm2]
+  idea: Незавершённые сообщения (slowloris) и непрочитанные ответы не накапливаются без ограничения; таймауты, лимит соединений, backpressure
+- key: recreated-identity
+  decision: accept
+  check_id: SEC-AUTHZ-RECREATED-IDENTITY
+  file: checks/security/access-control/SEC-AUTHZ-RECREATED-IDENTITY.yaml
+  bugs: [keycloak/keycloak#51398]
+  idea: Права и согласия не переходят к пересозданному пользователю с тем же логином; привязка к неизменяемому id
+- key: field-selection
+  decision: accept
+  check_id: CONTRACT-FIELD-SELECTION
+  file: checks/common/contract.yaml
+  bugs: [directus/directus#26596]
+  idea: Выбор полей (fields, sparse fieldsets) возвращает ровно запрошенные поля с правильными значениями, включая ключ и вложенные связи
+- key: absolute-url-base-path
+  decision: accept
+  check_id: HTTP-ABSOLUTE-URL-BASE-PATH
+  file: checks/rest/http-protocol.yaml
+  bugs: [directus/directus#26236]
+  idea: Абсолютные URL, которые формирует сервер (Location, callback, ссылки в письмах), учитывают публичный базовый путь
+- key: readonly-mode
+  decision: accept
+  check_id: SEC-READONLY-MODE-ENFORCED
+  file: checks/security/api-hardening.yaml
+  bugs: [GHSA-mwwr-p57h-56pf, GHSA-5648-rgj9-v224]
+  idea: Режим «только чтение» для пользовательских запросов (SQL, GraphQL) запрещает любые изменения, а не проверяет первое ключевое слово
+- key: export-import-roundtrip
+  decision: accept
+  check_id: RES-EXPORT-IMPORT-ROUNDTRIP
+  file: checks/common/resource-lifecycle.yaml
+  bugs: [directus/directus#26235]
+  idea: Данные и снапшоты, выгруженные API, принимаются им же обратно без изменений (round-trip)
+- key: client-ip-trusted-proxies
+  decision: accept
+  check_id: HARD-CLIENT-IP-TRUSTED-PROXIES
+  file: checks/security/api-hardening.yaml
+  bugs: [expressjs/express#2569, expressjs/express#2550]
+  idea: IP клиента определяется по X-Forwarded-For с учётом числа доверенных прокси, одинаково на всех маршрутах и модулях
+- key: malformed-file-structure
+  decision: accept
+  check_id: FILE-MALFORMED-STRUCTURE
+  file: checks/rest/files.yaml
+  bugs: [GHSA-8j4c-6x6g-rq3j]
+  idea: Повреждённый файл (некорректные размеры блоков) при разборе метаданных даёт 4xx, а не падение процесса
+- key: rpc-error-propagation
+  decision: accept
+  check_id: ASYNC-RPC-ERROR-PROPAGATION
+  file: checks/common/async-integration.yaml
+  bugs: [nestjs/nest#10113]
+  idea: Ошибка обработчика в схеме запрос-ответ через брокер возвращается вызывающему в документированном формате, а не таймаутом
+- key: message-validation
+  decision: accept
+  check_id: ASYNC-MESSAGE-VALIDATION
+  file: checks/common/async-integration.yaml
+  bugs: [nestjs/nest#5974]
+  idea: Входящие сообщения брокера валидируются по схеме так же, как HTTP-запросы
+- key: generated-secret-strength
+  decision: accept
+  check_id: AUTH-GENERATED-SECRET-STRENGTH
+  file: checks/security/authentication-session.yaml
+  bugs: [keycloak/keycloak#49793]
+  idea: Сгенерированные сервером секреты (HMAC-ключи, секреты клиентов) имеют энтропию не ниже требуемой алгоритмом
+- key: system-object-protected
+  decision: accept
+  check_id: RES-SYSTEM-OBJECT-PROTECTED
+  file: checks/common/resource-lifecycle.yaml
+  bugs: [keycloak/keycloak#50796, keycloak/keycloak#49674]
+  idea: Встроенные (системные) объекты защищены от удаления и изменения при любой конфигурации, понятной ошибкой одинаково во всех версиях API
+- key: authn-schemes-supported
+  decision: accept
+  check_id: SEC-AUTHN-SCHEMES-SUPPORTED
+  file: checks/security/access-control/SEC-AUTHN-SCHEMES-SUPPORTED.yaml
+  bugs: [keycloak/keycloak#49611]
+  idea: Все задокументированные схемы Authorization принимаются на своих эндпоинтах; неподдерживаемые — 401 с WWW-Authenticate
+- key: upload-key-collision
+  decision: accept
+  check_id: FILE-UPLOAD-KEY-COLLISION
+  file: checks/rest/files.yaml
+  bugs: [GHSA-7vg8-29qx-jgj8]
+  idea: Загрузка не перезаписывает чужой файл с тем же именем или ключом хранилища
+- key: token-reserved-claims
+  decision: accept
+  check_id: AUTH-TOKEN-RESERVED-CLAIMS
+  file: checks/security/authentication-session.yaml
+  bugs: [GHSA-66wr-7vmr-p5jq]
+  idea: Пользовательские поля профиля не переопределяют зарезервированные claims токена (sub, iss, aud, exp, roles)
+- key: oauth-resource-indicator
+  decision: accept
+  check_id: AUTH-OAUTH-RESOURCE-INDICATOR
+  file: checks/security/authentication-session.yaml
+  bugs: [keycloak/keycloak#49077]
+  idea: Индикатор ресурса (RFC 8707), не соответствующий аудитории клиента, даёт 400 invalid_target
+- key: event-path-same-rules
+  decision: accept
+  check_id: ASYNC-EVENT-PATH-SAME-RULES
+  file: checks/common/async-integration.yaml
+  bugs: [GHSA-c36c-cf6r-ghgj, GHSA-gp6m-x9vw-5c5x]
+  idea: Событийный путь (вебхук, событие) применяет те же фильтры и границы доступа, что и плановая синхронизация
+- key: external-idp-unverified-email
+  decision: accept
+  check_id: AUTH-EXTERNAL-IDP-UNVERIFIED-EMAIL
+  file: checks/security/authentication-session.yaml
+  bugs: [GHSA-xm5q-p7w3-x6cp, GHSA-826h-28h9-65hg, GHSA-6j36-r6pr-59x4]
+  idea: Вход через внешний IdP не связывается с существующей учёткой по неподтверждённому email (email_verified=false или нет признака)
+- key: identity-proof-of-possession
+  decision: accept
+  check_id: SEC-IDENTITY-PROOF-OF-POSSESSION
+  file: checks/security/access-control/SEC-IDENTITY-PROOF-OF-POSSESSION.yaml
+  bugs: [GHSA-jg6q-3qfh-r9f8]
+  idea: Заявленная клиентом идентичность (кошелёк, DID, account id) без доказательства владения не даёт прав и льгот
+- key: confused-deputy
+  decision: accept
+  check_id: SEC-CONFUSED-DEPUTY
+  file: checks/security/access-control/SEC-CONFUSED-DEPUTY.yaml
+  bugs: [GHSA-29gx-h2m3-xw44, GHSA-r9v2-gg2j-22q5]
+  idea: Действия во внешней системе от имени пользователя — только с его правами; нет отката на сервисные учётные данные, прокси к стороннему API пропускает только нужные операции
+- key: sender-constrained-tokens
+  decision: accept
+  check_id: AUTH-TOKEN-SENDER-CONSTRAINED
+  file: checks/security/authentication-session.yaml
+  bugs: [keycloak/keycloak#50963]
+  idea: Обмен и обновление токена сохраняют привязку к отправителю (DPoP, mTLS) или требуют доказательство владения ключом
+- key: status-matches-effect
+  decision: accept
+  check_id: ERR-STATUS-MATCHES-EFFECT
+  file: checks/common/errors.yaml
+  bugs: [keycloak/keycloak#48904]
+  idea: Код ответа соответствует фактическому результату; при 5xx — состояние не изменено (или явное сообщение о частичном выполнении)
+- key: llm-generated-actions
+  decision: accept
+  check_id: INJ-LLM-GENERATED-ACTIONS
+  file: checks/security/injection.yaml
+  bugs: [GHSA-w7x8-q2gp-5cgg]
+  idea: Код и вызовы инструментов, сгенерированные LLM по вводу пользователя, не выполняют исходящих запросов и опасных операций (prompt injection)
+- key: clone-field-permissions
+  decision: accept
+  check_id: SEC-CLONE-FIELD-PERMISSIONS
+  file: checks/security/access-control/SEC-CLONE-FIELD-PERMISSIONS.yaml
+  bugs: [GHSA-vc4h-q48j-5hcx]
+  idea: Копирование/клонирование ресурса соблюдает полевые права чтения и создания; отключённое дублирование недоступно
+- key: aborted-upload-cleanup
+  decision: accept
+  check_id: FILE-ABORTED-UPLOAD-CLEANUP
+  file: checks/rest/files.yaml
+  bugs: [GHSA-3pph-fpjx-jg34]
+  idea: Прерванная загрузка не оставляет данных в хранилище и не учитывается в квоте
+- key: published-schema-valid
+  decision: accept
+  check_id: CONTRACT-PUBLISHED-SCHEMA-VALID
+  file: checks/common/contract.yaml
+  bugs: [strapi/strapi#27395]
+  idea: Опубликованные сервисом описания (OpenAPI, JSON Schema, MCP tools, SDL) валидны в заявленном диалекте и проходят строгий валидатор
+- key: sse-stream
+  decision: accept
+  check_id: ASYNC-SSE-STREAM
+  file: checks/common/async-integration.yaml
+  bugs: [nestjs/nest#17098]
+  idea: Потоковый ответ SSE работает для всех методов (включая POST с телом), отдаёт text/event-stream и события до закрытия клиентом
+proofs:
+  exclude: []
+  no_variant: []

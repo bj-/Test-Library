@@ -49,6 +49,21 @@ python tools/mining/enrich.py  --batch pilot              # шаг 2b: тест�
 Подводные камни (Windows): в PowerShell `[IO.File]` берёт пути от каталога процесса, а не от `cd` — только
 абсолютные пути или Edit/Write; `git push` может вернуть код 255 при успехе — проверять `git rev-parse HEAD origin/main`.
 
+## Кластеры и ревью (шаги 6–7)
+
+1. **Кластеризация (Claude).** `new`-паттерны склеиваются в идеи в `ideas/mined/<batch>.review.yaml`: ключ,
+   баги, идея, предложение `accept` (ID и файл новой записи) или `reject` (причина).
+2. `python tools/mining/cluster.py --batch <batch>` — проверка review-файла (каждый `new` ровно в одном кластере,
+   ID не занят) и сборка `ideas/mined/<batch>.md`: новые идеи и «Пруфы к существующим» с номерами `RWB-*`.
+3. **Ревью (человек)** по `<batch>.md`; правки — в review-файле: `decision`, `check_id`, `file` кластера,
+   неверное совпадение пруфа — ID бага в `proofs.exclude`, вариант без нового шага — в `proofs.no_variant`.
+   Затем снова `cluster.py`.
+4. `python tools/mining/apply_proofs.py --batch <batch> --dry-run`, затем без `--dry-run`: записи с пруфами
+   получают метку `real-world-bug`, `Real-world bug: RWB-NNNN` и шаги-варианты (`extends`), трассировка —
+   в `traceability/real-world-bugs.yaml`. Записи принятых кластеров пишет Claude (`status: draft`) до запуска;
+   без них — `--proofs-only`. Повторный запуск безопасен.
+5. `validate_library.py`, `build_catalog.py`.
+
 ## Бережная нагрузка на источники
 
 Параметры — `politeness` в `sources.yaml`:
