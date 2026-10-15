@@ -2,8 +2,9 @@
 """Evaluation of a mining batch (stage 7 of docs/BUG_MINING_PLAN.md): metrics by source + accuracy sample.
 
 Usage (from Api/):
-  evaluate.py --batch pilot      metrics -> stdout (Markdown, for REPORT.md),
-                                 manual accuracy sample -> ideas/mined/<batch>.accuracy.md (if absent)
+  evaluate.py --batch pilot      metrics -> stdout (Markdown, for REPORT.md)
+
+The manual accuracy sample (sample()) is built into Excel by accuracy.py.
 
 Metrics: idea yield per 100 collected bugs, API share, proofs, accepted on review, proof coverage by category,
 out-of-scope bin. Cost is taken from mining/budget.md by hand: /usage has no machine-readable form.
@@ -91,31 +92,15 @@ def metrics(batch: str) -> str:
     return "\n".join(out)
 
 
-def accuracy_sample(batch: str) -> str:
-    sources = load_sources(batch)
+def sample(batch: str) -> tuple[list[dict], list[dict]]:
+    """Accuracy sample (stable, seed SEED): half api / half out_of_scope for triage, extends+covered for matching."""
     results = load_results(batch)
     rnd = random.Random(SEED)
     api = [r for r in results if r["verdict"] == "api"]
     oos = [r for r in results if r["verdict"] == "out_of_scope"]
     triage = rnd.sample(api, SAMPLE_TRIAGE // 2) + rnd.sample(oos, SAMPLE_TRIAGE // 2)
     matched = rnd.sample([r for r in api if r["match"]["type"] != "new"], SAMPLE_MATCH)
-    out = [f"# Точность LLM-шагов: ручная выборка партии `{batch}`", "",
-           "Этап 7 плана (`docs/BUG_MINING_PLAN.md`), цель — не меньше 85 % верных. Сгенерировано",
-           f"`tools/mining/evaluate.py` (seed {SEED}). В колонке «Верно» поставить `да` или `нет` (и кратко, почему).", "",
-           f"## Триаж и абстракция ({len(triage)}: половина API, половина вне области)", "",
-           "Верно, если решение «API / вне области» правильное, а для API паттерн не додумывает того, чего нет в баге.", "",
-           "| # | Баг | Решение | Обоснование / паттерн | Верно |", "|---|---|---|---|---|"]
-    for i, r in enumerate(triage, 1):
-        what = (f"API: {r['pattern']['title']}" if r["verdict"] == "api" else f"вне области (`{r['oos_class']}`)")
-        out.append(f"| {i} | [{r['id']}]({sources[r['id']]['url']}) | {what} | {r['reason'].replace('|', '/')} | |")
-    out += ["", f"## Сопоставление с библиотекой ({len(matched)})", "",
-            "Верно, если баг действительно относится к записи (covered — уже покрыт, extends — новый вариант той же записи).",
-            "", "| # | Баг | Тип | Запись | Заметка | Верно |", "|---|---|---|---|---|---|"]
-    for i, r in enumerate(matched, 1):
-        m = r["match"]
-        out.append(f"| {i} | [{r['id']}]({sources[r['id']]['url']}) | {m['type']} | `{m['check_id']}` |"
-                   f" {(m.get('note') or '—').replace('|', '/')} | |")
-    return "\n".join(out) + "\n"
+    return triage, matched
 
 
 def main() -> int:
@@ -124,10 +109,6 @@ def main() -> int:
     ap.add_argument("--batch", default="pilot")
     args = ap.parse_args()
     print(metrics(args.batch))
-    path = MINED / f"{args.batch}.accuracy.md"
-    if not path.exists():  # keep manual marks
-        path.write_text(accuracy_sample(args.batch), encoding="utf-8")
-        print(f"\nвыборка для ручной проверки -> {path}", file=sys.stderr)
     return 0
 
 

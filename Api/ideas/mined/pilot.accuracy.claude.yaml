@@ -1,0 +1,84 @@
+# Первый проход Claude по выборке точности партии pilot (ADR 0005, ACCURACY-REVIEW.md), 2026-10-15.
+# Сверка с первоисточником (filtered.jsonl: заголовок и тело бага), а не повтор ответа LLM.
+# verdict: ok — совпадает; doubt — сомнение; wrong — не совпадает. quote — выдержка из бага.
+# Строки: T<n> — раздел «Триаж и абстракция», M<n> — «Сопоставление»; номера как в выборке evaluate.py (seed 7).
+T1: {verdict: ok, quote: "accepted a user-controlled regex pattern through pathFilters and compiled it into a RegExp without complexity validation… can block the Node.js event loop", why: "Суть и ожидание совпадают"}
+T2: {verdict: ok, quote: "A client can alias fields to constructor, __proto__ or prototype… wrote a subgraph-supplied value over Function.prototype.call, breaking every subsequent request", why: "Совпадает"}
+T3: {verdict: ok, quote: "creating a client with an empty string in redirectUris… 409 Conflict with a misleading Duplicate resource error… should be consistent across all supported databases", why: "Совпадает; «пробельные элементы» в паттерне — небольшое расширение сверх бага"}
+T4: {verdict: ok, quote: "region: kiro-canary.local:8443# … the request forwards the submitted Kiro API key as an Authorization: Bearer header", why: "Совпадает"}
+T5: {verdict: ok, quote: "The signingCertificate is public and does not need to be stripped… Get a saml client via v2", why: "Совпадает"}
+T6: {verdict: doubt, quote: "A validation issue allowed… Webmentions, to be abused by an unauthenticated user to make limited HTTP requests to hosts in the Ghost server's internal network (CWE-367, CWE-918)", why: "SSRF — верно, но «DNS rebinding / проверка в момент подключения» в тексте нет: выведено только из метки CWE-367 (TOCTOU)"}
+T7: {verdict: ok, quote: "An SSRF vulnerability in the webhooks feature allowed staff users to probe internal hosts", why: "Совпадает; «при создании и при отправке» — разумное уточнение ожидания"}
+T8: {verdict: ok, quote: "express crashing when using node internal http2 module on sending any request", why: "Совпадает"}
+T9: {verdict: ok, quote: "Refreshing only checked that the requested resource was registered, not that it matched the original grant", why: "Совпадает; invalid_target — по RFC 8707"}
+T10: {verdict: ok, quote: "never bounds the element count… a tiny payload can name any allocation size, and it runs synchronously", why: "Совпадает"}
+T11: {verdict: ok, quote: "If my body is \"bad\" an Error is sent, but if my body is \"{bad\" a SyntaxError is sent", why: "Совпадает; «одинаковый статус 400» — уточнение ожидания"}
+T12: {verdict: ok, quote: "PATCH a client with an explicit null for the secret… the old secret is destroyed without a grace period", why: "Совпадает"}
+T13: {verdict: doubt, quote: "if there's a long running connection that wasn't handled by that socket.io adapter, we now block forever (on application shutdown)", why: "Пересказ верный, но триаж спорный: зависание остановки видно по процессу, а не запросами к API"}
+T14: {verdict: ok, quote: "MCP tools/list advertises draft-07 JSON Schema, making all tools uncallable from strict 2020-12 clients", why: "Совпадает"}
+T15: {verdict: doubt, quote: "Staff users with permission to view staff invites were able to discover the secret token of pending invites (CWE-203, CWE-943)", why: "Способ «фильтр по скрытому полю как оракул» в тексте не назван — выведен из CWE-943/203; правдоподобно, но не подтверждено"}
+T16: {verdict: ok, quote: "It is only possible to create realm extensions using Bearer or DPop… Expected: a different authorisation scheme (e.g. Basic Auth)", why: "Совпадает"}
+T17: {verdict: ok, quote: "sending an invalid (e.g. expired) token to …/clients-registrations/openid-connect… returns with a 500 response", why: "Совпадает"}
+T18: {verdict: ok, quote: "the session cookie is being set for uninitialized sessions even when saveUninitialized is disabled if rolling is enabled", why: "Совпадает"}
+T19: {verdict: ok, quote: "countAll… leads to SELECT * FROM <table> LIMIT 100 instead of SELECT COUNT(*)", why: "Совпадает"}
+T20: {verdict: ok, quote: "a nested populate derived from a filter can be silently discarded depending on… filter nesting depth", why: "Совпадает"}
+T21: {verdict: ok, quote: "Token refresh and password reset responses could return fields that the requesting user did not have access to", why: "Совпадает"}
+T22: {verdict: ok, quote: "SQL injection targeting a specific field path shape and operators… a readable collection has a json field", why: "Совпадает"}
+T23: {verdict: ok, quote: "race condition, where save is called before session is touched, which… makes session expiration time not updated", why: "Совпадает"}
+T24: {verdict: doubt, quote: "Fastify CORS not working after running nest update (только код запуска, без запросов и ответов)", why: "Паттерн «Политика CORS» слишком общий; данных мало — ближе к insufficient-data"}
+T25: {verdict: ok, quote: "returns a 500 when you at the same time apply a filter that targets a related collection type, and sort by Status", why: "Совпадает"}
+T26: {verdict: ok, quote: "Given a prior same-process prototype-pollution primitive… Axios does not create the prototype pollution source", why: "Вне области верно: клиентская библиотека, нужен примитив в процессе"}
+T27: {verdict: ok, quote: "The app works fine, but when I run e2e tests, it fails", why: "Вне области верно: тестовое окружение"}
+T28: {verdict: ok, quote: "Each time you send a message, it binds once. This callback function is called N+1 times… memory leak?", why: "Вне области (memory) верно"}
+T29: {verdict: ok, quote: "the following deprecation warning is printed… metadata passed to @Module() is directly mutated", why: "Вне области верно: предупреждение в тестах"}
+T30: {verdict: ok, quote: "custom session store… TypeError: Object function save()… has no method 'apply'", why: "Вне области верно: сбой интеграции со своим хранилищем"}
+T31: {verdict: ok, quote: "Since attacker-controlled creation of sparse arrays is so difficult, this vulnerability is very difficult to exploit", why: "Вне области допустимо: сериализатор, практически неэксплуатируемо"}
+T32: {verdict: ok, quote: "can cause large memory allocation in a consuming browser/runtime… the browser tab running out of memory", why: "Вне области верно: клиентская сторона"}
+T33: {verdict: wrong, quote: "curl localhost:3000/test-res-bug -v — You will get an empty response body back, instead of the expected \"hello world\"", why: "Видно снаружи: эндпоинт отдаёт пустое тело вместо данных — это api (ответ отправляется раньше обработчика), а не внутреннее поведение адаптера"}
+T34: {verdict: ok, quote: "the component briefly expands to an excessive height and then snaps back", why: "Вне области (ui) верно"}
+T35: {verdict: ok, quote: "TypeScript will not suggest these operators (they resolve to never)", why: "Вне области верно: типы SDK"}
+T36: {verdict: ok, quote: "SWC builder emits output to dist/src/ instead of dist/", why: "Вне области (build) верно"}
+T37: {verdict: ok, quote: "vm2… allowlist pre-check… substring match on the original package name", why: "Вне области верно: песочница"}
+T38: {verdict: ok, quote: "the middleware ran twice… if you were to connect to this via another device on your LAN, this problem disappears", why: "Вне области верно: второй запрос браузера, не баг"}
+T39: {verdict: ok, quote: "spuriously logs the warning… A minimal reproducer is currently pending", why: "Вне области верно: предупреждение в логе, мало данных"}
+T40: {verdict: ok, quote: "custom logger continuously logs that same message… until there is a stack trace", why: "Вне области верно: логгер"}
+T41: {verdict: ok, quote: "Error: 'app.router' is deprecated! … at NestApplication.listen", why: "Вне области верно: ошибка запуска после обновления"}
+T42: {verdict: ok, quote: "NodeVM exposes the host util module to the sandbox… getCallSites() returns the host process's full call stack", why: "Вне области верно: песочница"}
+T43: {verdict: ok, quote: "fields… are typed non-null against nullable DB columns… compile errors", why: "Вне области верно: типы"}
+T44: {verdict: ok, quote: "isPathAllowedForModule… raw string prefix test", why: "Вне области верно: песочница"}
+T45: {verdict: doubt, quote: "some routes are not working anymore due to… This 100 limitation is not in the change log… Can this value be configurable?", why: "Маршруты перестают отвечать — видно через API; но данных о проявлении мало, это скорее запрос на настройку. Спорно"}
+T46: {verdict: ok, quote: "In Middleware, the req.url is always / … in Controller, the req.url is correct", why: "Вне области верно: внутреннее поле запроса"}
+T47: {verdict: ok, quote: "In path-to-regexp v0.1.10, encountering an object can cause the program to crash", why: "Вне области верно: ошибка использования при запуске"}
+T48: {verdict: ok, quote: "fields in @directus/sdk/@directus/types don't match actual database/runtime nullability", why: "Вне области верно: типы SDK"}
+T49: {verdict: ok, quote: "Under very constrained circumstances… a very large serialized string", why: "Вне области допустимо"}
+T50: {verdict: ok, quote: "[x] Documentation issue or request… couldn't find any HTTPS examples", why: "Вне области (docs) верно"}
+M1: {verdict: ok, quote: "gRPC server streaming endpoints that throw errors… unhandledRejection crashing the application", why: "GRPC-STREAM-TERMINATION подходит"}
+M2: {verdict: ok, quote: "published Admin REST OpenAPI specification declares the response… as an array of UserRepresentation, although the endpoints return groups", why: "COMPAT-IMPLEMENTATION-MATCHES-CONTRACT — ровно это"}
+M3: {verdict: ok, quote: "When a TokenInterceptorException error is thrown, no event is logged", why: "OBS-AUDIT-TRAIL подходит"}
+M4: {verdict: ok, quote: "I get ECONNREFUSED… when the service is down… I cannot handle the error", why: "RESIL-DEPENDENCY-DOWN подходит"}
+M5: {verdict: doubt, quote: "were able to discover the secret token of pending invites (CWE-943)", why: "Привязка к INJ-FILTER-EXPRESSION держится на выведенном способе (фильтр как оракул) — см. T15"}
+M6: {verdict: doubt, quote: "Any staff-level user was able to determine the relative ordering of other staff users' hashed passwords", why: "Сортировка как оракул — правдоподобно (CWE-203/943), запись подходит; «алиасы и составные выражения» в варианте додуманы"}
+M7: {verdict: wrong, quote: "As soon as there is more than one item in version array, the middleware does not get called", why: "REST-SECURITY-HEADERS — про защитные заголовки, а баг — middleware вообще не вызывается на нескольких версиях; ближе к версионированию (REST-API-VERSION-COMPATIBILITY) или к отдельной записи"}
+M8: {verdict: doubt, quote: "incomplete DOCTYPE… the HTML parser enters an infinite synchronous loop, pegging CPU utilization at 100%", why: "INJ-REDOS — про regex; бесконечный цикл парсера точнее в HARD-EXPENSIVE-OPERATION-LIMITS"}
+M9: {verdict: ok, quote: "validates only the hostname string and never resolves DNS", why: "INJ-SSRF-PARAMETERS подходит"}
+M10: {verdict: ok, quote: "an authenticated user could manage MCP API keys outside their intended account", why: "AUTH-API-KEY-LIFECYCLE подходит"}
+M11: {verdict: ok, quote: "a token refresh from an already-authenticated session on the same account resets the lockout state", why: "AUTH-BRUTE-FORCE-PROTECTION подходит"}
+M12: {verdict: doubt, quote: "addressparser parses one shape of address in O(n^2) time… blocks the event loop for roughly 7 seconds", why: "Квадратичный парсер, не regex: точнее HARD-EXPENSIVE-OPERATION-LIMITS, чем INJ-REDOS (как M8)"}
+M13: {verdict: ok, quote: "on a single event, test1, the server will provide 2 responses", why: "BIZ-SIDE-EFFECTS-ONCE подходит"}
+M14: {verdict: ok, quote: "may cause the backend to contact unintended destinations and disclose Sentry integration credentials", why: "INJ-SSRF-PARAMETERS подходит"}
+M15: {verdict: ok, quote: "each key becoming a column name… wrote the key out unescaped", why: "INJ-SQL подходит"}
+M16: {verdict: ok, quote: "the clientID comes from the request and is never compared to the site's own configured TinaCloud app id", why: "SEC-TOKEN-AUDIENCE подходит"}
+M17: {verdict: ok, quote: "in FIPS mode… a password whose length is under the minimum mandated by FIPS there is an internal error", why: "AUTH-PASSWORD-POLICY подходит"}
+M18: {verdict: ok, quote: "over WebSocket an invalid limit such as -5 is silently accepted, whereas the same request over REST returns a 400", why: "REQ-CROSS-CLIENT-CONSISTENCY подходит"}
+M19: {verdict: wrong, quote: "Area: login/ui… The problem only occurs when using the keycloak.v2 login theme", why: "Это баг интерфейса (тема входа), а не API — ошибка триажа; сопоставление с VAL-ARRAY-ITEMS-BOUNDARIES поэтому тоже неверно"}
+M20: {verdict: ok, quote: "it does not verify that the caller can access the source project", why: "SEC-OWNERSHIP-READ подходит"}
+M21: {verdict: ok, quote: "maxTotalMergeKeys does not count empty mappings… O(N * K) work", why: "HARD-EXPENSIVE-OPERATION-LIMITS подходит"}
+M22: {verdict: doubt, quote: "Dynamic scopes can be request using CIBA… the dynamic scope is considered as invalid", why: "Баг позитивный (законный scope отклоняется), а SEC-SCOPE-EXTRA-UNTRUSTED — негативная запись про лишние scope; связь натянута"}
+M23: {verdict: ok, quote: "a tiny payload can name any allocation size", why: "VAL-LARGE-COLLECTION-PAYLOAD подходит"}
+M24: {verdict: ok, quote: "a value beginning with / can produce a scheme-relative URL… Location: //evil.example.com", why: "REST-OPEN-REDIRECT подходит"}
+M25: {verdict: ok, quote: "A file created through the TUS resumable-upload endpoint never gets its uploaded_on column populated", why: "RES-TIMESTAMPS подходит"}
+M26: {verdict: ok, quote: "I try to update a oneToMany relation field on a user entry, I get a 200 status, even though the data is NOT updated", why: "RES-CREATE-RESPONSE-MATCHES-READ подходит"}
+M27: {verdict: ok, quote: "fileFilter… FileIntercepter is completely ignoring this", why: "FILE-UPLOAD-TYPE-VALIDATION — ровно это"}
+M28: {verdict: ok, quote: "A readable collection could expose information about protected documents in a related collection", why: "SEC-OWNERSHIP-REFERENCE-INDIRECT подходит"}
+M29: {verdict: ok, quote: "in sort: 'position', the query worked well. But product_tags.sort does not work", why: "REST-FILTER-SORT-COMPOSITION подходит"}
+M30: {verdict: ok, quote: "getAsset() masks the storage-layer failure as a bare 403", why: "RESIL-DEPENDENCY-DOWN подходит"}
