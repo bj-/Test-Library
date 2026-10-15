@@ -39,6 +39,8 @@ _Составлено 2026-10-15 (bj, Claude). Решение о масштаб�
 в промпт. Имя сессии — `Выгрузка багов — <id> b-NN`, по нему называется отчёт.
 
 ```powershell
+# Это три ПРИМЕРА, а не последовательность. Один источник — не больше одной сессии одновременно:
+# первая и вторая строки вместе дали бы две сессии keycloak на одну пачку.
 # по вкладке Windows Terminal на источник
 powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-sessions.ps1 keycloak ghsa-pip ghsa-maven ghsa-go
 # в текущем окне, один источник
