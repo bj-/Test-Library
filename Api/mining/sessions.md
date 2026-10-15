@@ -31,57 +31,61 @@ _Составлено 2026-10-15 (bj, Claude). Решение о масштаб�
 
 ## Запуск
 
-Одна команда — одна пачка: сессия обрабатывает её, коммитит и пишет, сколько багов осталось. Следующую пачку
-лучше запускать в новой сессии, то есть той же командой ещё раз. В открытой сессии можно сделать `/clear` и
-отправить тот же промпт. Скопировать и запустить в PowerShell:
+Одна сессия — одна пачка. Сессия обрабатывает её, коммитит, пишет отчёт и сообщает, сколько осталось; следующая
+пачка — новый запуск. `/clear` вместо нового запуска не использовать: у пачки должны быть своё имя сессии и
+свой отчёт.
+
+Запускает скрипт: он выбирает имя пачки (следующая `b-NN` или недоделанная), создаёт ID сессии и передаёт оба
+в промпт. Имя сессии — `Выгрузка багов — <id> b-NN`, по нему называется отчёт.
 
 ```powershell
-cd C:\git\Test-Library; claude -n "Выгрузка багов — <id>" --permission-mode auto "Выгрузка багов, источник <id>: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."
-```
-
-Несколько источников сразу, по вкладке Windows Terminal на каждый:
-
-```powershell
+# по вкладке Windows Terminal на источник
 powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-sessions.ps1 keycloak ghsa-pip ghsa-maven ghsa-go
+# в текущем окне, один источник
+powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-sessions.ps1 -Here keycloak
+# внутренняя сессия
 powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-sessions.ps1 -Internal
 ```
 
 `-ExecutionPolicy Bypass` нужен потому, что на машине политика `Restricted` и `.ps1` напрямую не запускается.
-Сессии открываются в режиме `auto` — как в текущей работе.
+Сессии открываются в режиме `auto` — как в текущей работе. Скрипт печатает и саму команду `claude …` — её можно
+скопировать и запустить вручную.
 
-Отчёты: сессии сбора отчёты не пишут. Сводку по выгрузке за день делает внутренняя сессия в своём отчёте.
+**Отчёты — по каждой сессии** (решение пользователя, 2026-10-15). Сессия сбора делает одну пачку и закрывается,
+поэтому пишет `[DAILY]` и `[FINAL]` (как у пачек пилота, например `2026-10-14 - Выгрузка багов -  p-10`). Внутренняя
+сессия пишет `[DAILY]` по своей работе, сводку по выгрузке за день — по отдельному запросу.
 
 ## Сессии сбора — список (по ожидаемой отдаче, сверху важнее)
 
 Оценка: раз — сколько собрать; пачек — после фильтра. Для GHSA доля API в пилоте — 70–80 %, для продуктов — 30–50 %.
 
-| # | Источник | Что | Собрать | Пачек ≈ | Промпт / команда |
+| # | Источник | Что | Собрать | Пачек ≈ | Запуск |
 |---|---|---|---|---|---|
-| 1 | `keycloak` | история глубже пилота | 600 (−200 пилота) | 4–5 | `claude -n "Выгрузка багов — keycloak" --permission-mode auto "Выгрузка багов, источник keycloak: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
-| 2 | `ghsa-pip` | GHSA, Python | 250 | 3 | `claude -n "Выгрузка багов — ghsa-pip" --permission-mode auto "Выгрузка багов, источник ghsa-pip: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
-| 3 | `ghsa-maven` | GHSA, Java | 250 | 3 | `claude -n "Выгрузка багов — ghsa-maven" --permission-mode auto "Выгрузка багов, источник ghsa-maven: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
-| 4 | `ghsa-go` | GHSA, Go | 250 | 3 | `claude -n "Выгрузка багов — ghsa-go" --permission-mode auto "Выгрузка багов, источник ghsa-go: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
-| 5 | `directus` | история глубже пилота | 450 (−150) | 2–3 | `claude -n "Выгрузка багов — directus" --permission-mode auto "Выгрузка багов, источник directus: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
-| 6 | `ghsa-composer` | GHSA, PHP | 200 | 2–3 | `claude -n "Выгрузка багов — ghsa-composer" --permission-mode auto "Выгрузка багов, источник ghsa-composer: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
-| 7 | `ghsa-rubygems` | GHSA, Ruby | 200 | 2–3 | `claude -n "Выгрузка багов — ghsa-rubygems" --permission-mode auto "Выгрузка багов, источник ghsa-rubygems: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
-| 8 | `ghsa-nuget` | GHSA, .NET | 150 | 2 | `claude -n "Выгрузка багов — ghsa-nuget" --permission-mode auto "Выгрузка багов, источник ghsa-nuget: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
-| 9 | `kubernetes` | apiserver, api-machinery, auth | 200 | 2–3 | `claude -n "Выгрузка багов — kubernetes" --permission-mode auto "Выгрузка багов, источник kubernetes: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
-| 10 | `hasura` | GraphQL Engine | 200 | 2 | `claude -n "Выгрузка багов — hasura" --permission-mode auto "Выгрузка багов, источник hasura: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
-| 11 | `postgrest` | PostgREST (REST поверх PostgreSQL) | 150 | 2 | `claude -n "Выгрузка багов — postgrest" --permission-mode auto "Выгрузка багов, источник postgrest: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
-| 12 | `strapi` | история глубже пилота | 450 (−150) | 1–2 | `claude -n "Выгрузка багов — strapi" --permission-mode auto "Выгрузка багов, источник strapi: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
-| 13 | `supabase-auth` | Supabase Auth (GoTrue) | 120 | 1–2 | `claude -n "Выгрузка багов — supabase-auth" --permission-mode auto "Выгрузка багов, источник supabase-auth: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
-| 14 | `kong` | API-шлюз | 150 | 2 | `claude -n "Выгрузка багов — kong" --permission-mode auto "Выгрузка багов, источник kong: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
-| 15 | `apollo-server` | GraphQL | 120 | 1–2 | `claude -n "Выгрузка багов — apollo-server" --permission-mode auto "Выгрузка багов, источник apollo-server: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
-| 16 | `graphql-js` | GraphQL | 100 | 1 | `claude -n "Выгрузка багов — graphql-js" --permission-mode auto "Выгрузка багов, источник graphql-js: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
-| 17 | `grpc-go` | gRPC | 120 | 1–2 | `claude -n "Выгрузка багов — grpc-go" --permission-mode auto "Выгрузка багов, источник grpc-go: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
-| 18 | `grpc-java` | gRPC | 120 | 1–2 | `claude -n "Выгрузка багов — grpc-java" --permission-mode auto "Выгрузка багов, источник grpc-java: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
-| 19 | `grpc-node` | gRPC | 100 | 1 | `claude -n "Выгрузка багов — grpc-node" --permission-mode auto "Выгрузка багов, источник grpc-node: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
-| 20 | `grpc-gateway` | gRPC ↔ REST | 100 | 1 | `claude -n "Выгрузка багов — grpc-gateway" --permission-mode auto "Выгрузка багов, источник grpc-gateway: обработай очередную пачку по Api/mining/sessions.md, раздел «Сессия сбора»."` |
+| 1 | `keycloak` | история глубже пилота | 600 (−200 пилота) | 4–5 | `start-sessions.ps1 keycloak` |
+| 2 | `ghsa-pip` | GHSA, Python | 250 | 3 | `start-sessions.ps1 ghsa-pip` |
+| 3 | `ghsa-maven` | GHSA, Java | 250 | 3 | `start-sessions.ps1 ghsa-maven` |
+| 4 | `ghsa-go` | GHSA, Go | 250 | 3 | `start-sessions.ps1 ghsa-go` |
+| 5 | `directus` | история глубже пилота | 450 (−150) | 2–3 | `start-sessions.ps1 directus` |
+| 6 | `ghsa-composer` | GHSA, PHP | 200 | 2–3 | `start-sessions.ps1 ghsa-composer` |
+| 7 | `ghsa-rubygems` | GHSA, Ruby | 200 | 2–3 | `start-sessions.ps1 ghsa-rubygems` |
+| 8 | `ghsa-nuget` | GHSA, .NET | 150 | 2 | `start-sessions.ps1 ghsa-nuget` |
+| 9 | `kubernetes` | apiserver, api-machinery, auth | 200 | 2–3 | `start-sessions.ps1 kubernetes` |
+| 10 | `hasura` | GraphQL Engine | 200 | 2 | `start-sessions.ps1 hasura` |
+| 11 | `postgrest` | PostgREST (REST поверх PostgreSQL) | 150 | 2 | `start-sessions.ps1 postgrest` |
+| 12 | `strapi` | история глубже пилота | 450 (−150) | 1–2 | `start-sessions.ps1 strapi` |
+| 13 | `supabase-auth` | Supabase Auth (GoTrue) | 120 | 1–2 | `start-sessions.ps1 supabase-auth` |
+| 14 | `kong` | API-шлюз | 150 | 2 | `start-sessions.ps1 kong` |
+| 15 | `apollo-server` | GraphQL | 120 | 1–2 | `start-sessions.ps1 apollo-server` |
+| 16 | `graphql-js` | GraphQL | 100 | 1 | `start-sessions.ps1 graphql-js` |
+| 17 | `grpc-go` | gRPC | 120 | 1–2 | `start-sessions.ps1 grpc-go` |
+| 18 | `grpc-java` | gRPC | 120 | 1–2 | `start-sessions.ps1 grpc-java` |
+| 19 | `grpc-node` | gRPC | 100 | 1 | `start-sessions.ps1 grpc-node` |
+| 20 | `grpc-gateway` | gRPC ↔ REST | 100 | 1 | `start-sessions.ps1 grpc-gateway` |
 
 Всего ≈ 4000 собранных → ≈ 2700 после фильтра → ≈ 35–40 пачек. По замерам пилота это ≈ 20–25 % недели.
 Если лимит останется — ниже «Если останется лимит».
 
-Перед каждой командой из таблицы — `cd C:\git\Test-Library;`.
+Запуск из таблицы — полностью `powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-sessions.ps1 <id>`.
 
 Сколько сессий держать одновременно — решает человек. Удобно 4–6: каждая пачка занимает 15–30 минут,
 и за выводом проще следить. Ограничений на одновременную работу источников нет.
@@ -101,7 +105,8 @@ powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-se
    - `collect.py` упал с «ни одна метка не подошла» — показать список меток человеку и закончить.
    - Вывод `filter.py` показать: сколько осталось и по каким причинам отброшено.
 3. `python tools/mining/batch.py index` — справочник библиотеки: внутренняя сессия добавляет записи.
-4. **Имя пачки** — следующее после последнего `build/mining/<id>/batches/b-NN.ids`; первая — `b-01`.
+4. **Имя пачки** — из промпта (его выбрал `start-sessions.ps1`). Если в промпте его нет — следующее после
+   последнего `build/mining/<id>/batches/b-NN.ids`, первая — `b-01`.
    Есть `b-NN.ids` без `b-NN.out.jsonl` — значит, прошлая сессия не закончила эту пачку: доделать её, `make` не
    запускать.
    Иначе `python tools/mining/batch.py make --batch <id> --name b-NN --n 80`. Если вышло 0 багов, источник исчерпан:
@@ -115,19 +120,25 @@ powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-se
    Затем `python tools/mining/batch.py stats --batch <id>`.
 7. Промпт не менять. Если триаж кажется неверным для целого класса багов, написать человеку.
 8. `python tools/mining/commit_batch.py --batch <id> --name b-NN` — коммит только файлов пачки и попытка push.
-9. **Итог одной строкой:** пачка, багов, API, new / extends / covered, сколько осталось. Затем либо
-   «запусти ту же команду снова», либо «источник исчерпан».
+9. **Отчёты** `[DAILY]` и `[FINAL]` по `AI-Memory/CONVENTIONS.md`, раздел «Отчёты по сессиям»:
+   - файлы `C:\Git\reports\AI\YYYY-MM-DD - <имя сессии> [DAILY].md` и `[FINAL].md`, символы `: ? * " < > | / \`
+     в имени → `-`;
+   - первая строка `Сессия: <ID сессии из промпта>`; без ID в промпте — спросить человека, не угадывать;
+   - разделы «Для совещания» (3–5 пунктов простым языком: источник, сколько багов, сколько про API, что нового),
+     «Сделано» (пачка, `check`, коммит), «Проблемы и блокеры», «Дальше» (сколько осталось у источника);
+   - образец — `2026-10-14 - Выгрузка багов -  p-10 [FINAL].md`;
+   - git: `git -C C:\Git\reports pull --rebase -q`, затем `add` и `commit --only` только своих двух файлов, `push`.
+     Репозиторий отчётов тоже общий для сессий. Ошибка `index.lock` — подождать 10 с и повторить.
+10. **Итог одной строкой:** пачка, багов, API, new / extends / covered, сколько осталось. Затем либо
+   «запусти `start-sessions.ps1 <id>` снова», либо «источник исчерпан». Последней строкой — предложить
+   `/rename [Archive] <имя сессии>`.
 
 Подводные камни Windows: в PowerShell `[IO.File]` берёт пути от каталога процесса — использовать только абсолютные
 пути или Write; в heredoc обратные слэши портятся — `Path.as_posix()`.
 
 ## Внутренняя сессия
 
-Промпт:
-
-```powershell
-cd C:\git\Test-Library; claude -n "Выгрузка багов — внутренняя" --permission-mode auto "Внутренняя сессия выгрузки багов: работай по Api/mining/sessions.md, раздел «Внутренняя сессия». Начни с пункта 1."
-```
+Запуск — `start-sessions.ps1 -Internal` (имя «Выгрузка багов — внутренняя», ID сессии в промпте).
 
 Задачи по порядку важности. Каждый пункт можно давать отдельной командой («сделай пункт 3»).
 
@@ -153,7 +164,8 @@ cd C:\git\Test-Library; claude -n "Выгрузка багов — внутре�
    источникам — в `STATUS.md`: какие источники стоит копать дальше.
 7. **Новые типы источников** (сборщика пока нет): GitLab (gitlab.com, issues GitLab CE), Jira (Apache:
    Kafka REST, Camel, CXF). Сначала план, затем `collect.py`.
-8. **Дневной отчёт** — по команде человека: что собрано и обработано за день во всех сессиях.
+8. **Отчёты.** `[DAILY]` своей сессии — по команде человека. Сводка по выгрузке за день во всех сессиях —
+   по отдельному запросу.
 
 ## Если останется лимит
 
