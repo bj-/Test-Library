@@ -53,6 +53,7 @@ Google Таблицы). Внутри три листа: «Как заполня�
 
 ```bash
 cd Api
+pip install -r requirements-generator.txt          # один раз: PyYAML, jsonschema, openpyxl
 python tools/mining/accuracy.py build --batch pilot   # пересобрать xlsx (отметки человека сохраняются)
 python tools/mining/accuracy.py score --batch pilot   # точность по разделам
 ```
