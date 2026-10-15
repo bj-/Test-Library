@@ -27,7 +27,9 @@ DECISIONS = {"accept", "reject", "pending"}
 PRODUCTS = {
     "nestjs-nest": "NestJS", "express": "Express", "express-session": "express-session",
     "body-parser": "body-parser", "jshttp-cookie": "cookie", "keycloak": "Keycloak", "strapi": "Strapi",
-    "directus": "Directus",
+    "directus": "Directus", "kubernetes": "Kubernetes", "supabase-auth": "Supabase Auth", "postgrest": "PostgREST",
+    "hasura": "Hasura", "kong": "Kong", "grpc-go": "grpc-go", "grpc-java": "grpc-java", "grpc-node": "grpc-node",
+    "grpc-gateway": "grpc-gateway", "graphql-js": "graphql-js", "apollo-server": "Apollo Server",
 }
 # Variant prefixes written by the matching step; the rest of the note becomes a test step.
 VARIANT_PREFIX = re.compile(r"^(Добавить( вариант| вектор)?|Обратный вариант|Вариант( транспорта| с редиректом)?)\s*:\s*",

@@ -12,8 +12,12 @@ import sys
 import time
 import urllib.error
 import urllib.request
+from pathlib import Path
 
 API = "https://api.github.com"
+# Last request time of all collector processes on this machine: parallel sessions (one per source) share
+# github.com and the token, so together they keep min_interval_s as a single client.
+PACE_FILE = Path("build/mining/.github-pace")
 
 
 class StopCollection(Exception):
@@ -42,10 +46,30 @@ class GitHub:
         self.requests = 0
 
     def _pace(self) -> None:
-        wait = self.p.get("min_interval_s", 1.5) - (time.monotonic() - self._last)
-        if wait > 0:
-            time.sleep(wait)
-        self._last = time.monotonic()
+        lock = PACE_FILE.with_suffix(".lock")
+        PACE_FILE.parent.mkdir(parents=True, exist_ok=True)
+        while True:
+            try:
+                fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+                break
+            except FileExistsError:
+                try:
+                    if time.time() - lock.stat().st_mtime > 30:  # left by a killed process
+                        lock.unlink()
+                except FileNotFoundError:
+                    pass
+                time.sleep(0.2)
+        try:  # reserve the next slot under the lock, wait for it outside
+            try:
+                last = float(PACE_FILE.read_text() or 0)
+            except (FileNotFoundError, ValueError):
+                last = 0.0
+            self._last = max(time.time(), max(last, self._last) + self.p.get("min_interval_s", 1.5))
+            PACE_FILE.write_text(str(self._last))
+        finally:
+            os.close(fd)
+            lock.unlink()
+        time.sleep(max(0.0, self._last - time.time()))
 
     def _wait_until(self, reset_epoch: float, why: str) -> None:
         wait = max(0.0, reset_epoch - time.time()) + 5

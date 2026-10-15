@@ -4,7 +4,7 @@
 Usage: filter.py [--batch pilot] [--allow-no-fix] [--sources mining/sources.yaml]
 Run from Api/. Keeps fixed bugs only (merged PR or fixing commit; advisories are kept as published;
 sources with allow_no_fix also keep issues closed as COMPLETED, marked fix_evidence: closed-completed),
-drops excluded labels, feature/question titles and per-source exclude_title (framework internals, build) —
+drops records of other batches, excluded labels, feature/question titles and per-source exclude_title (framework internals, build) —
 except records already answered by an LLM batch, so re-filtering never orphans results; dedups by id, cleans and truncates bodies.
 Prints drop reasons per source; the same numbers go to filter_stats.json.
 """
@@ -18,6 +18,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from batch import processed_ids  # noqa: E402
 from library import load_yaml, setup_console  # noqa: E402
 
 TITLE_DROP = re.compile(r"(?i)^\s*(\[(feature|feat|question|docs?|rfc|proposal)\b|feature request|question\b|"
@@ -54,6 +55,10 @@ def main() -> int:
     seen, kept = set(), []
     answered = {json.loads(line)["id"] for f in (base / "batches").glob("*.out.jsonl")
                 for line in f.open(encoding="utf-8") if line.strip()}
+    other = set()  # issued or answered in other batches (a deeper pass over a pilot source)
+    for d in Path("build/mining").glob("*/batches"):
+        if d.parent != base:
+            other |= processed_ids(d.parent)
     stats: dict[str, Counter] = defaultdict(Counter)
 
     for raw in sorted((base / "raw").glob("*.jsonl")):
@@ -66,6 +71,8 @@ def main() -> int:
             reason = None
             if r["id"] in seen:
                 reason = "дубль"
+            elif r["id"] in other:
+                reason = "уже в другой партии"
             elif r["kind"] == "issue" and r["state_reason"] in ("NOT_PLANNED", "DUPLICATE"):
                 reason = f"закрыт как {r['state_reason'].lower().replace('_', ' ')}"
             elif (r["kind"] == "issue" and not (r["fix"]["prs"] or r["fix"]["commits"])

@@ -2,6 +2,7 @@
 """Step 1 of bug mining: collect closed bugs from sources.yaml into build/mining/<batch>/raw/.
 
 Usage: collect.py [--batch pilot] [--source ID ...] [--sources mining/sources.yaml]
+A batch named after a source (--batch ghsa-pip) collects only that source.
 Run from Api/. Resumable: a finished source is skipped (state.json), an unfinished one continues
 from the saved cursor. Requests are sequential and paced (politeness in sources.yaml).
 """
@@ -191,6 +192,8 @@ def main() -> int:
         state_path.write_text(json.dumps(states, ensure_ascii=False, indent=1), encoding="utf-8")
     _state_saver = save
 
+    if not args.source and args.batch in {s["id"] for s in cfg["sources"]}:
+        args.source = [args.batch]  # batch per source (scaling, one session per source)
     gh = GitHub(cfg["politeness"])
     for src in cfg["sources"]:
         if args.source and src["id"] not in args.source:

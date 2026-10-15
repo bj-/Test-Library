@@ -6,7 +6,12 @@
 # exclude_labels — к шаблонам из defaults добавляются шаблоны источника.
 # exclude_title — предфильтр до LLM по заголовку (внутренности фреймворка, сборка); калибровка на пилоте:
 #   у nest и express отсекает 28 багов вне области, API-баги не теряются (build/mining/pilot/REPORT.md).
-# max_items — сколько issue сохранить в raw после отбора по меткам (до фильтра).
+# max_items — сколько issue сохранить в raw после отбора по меткам (до фильтра). У источников пилота при
+#   масштабировании увеличен (keycloak 200 → 600, strapi и directus 150 → 450): уже обработанное в пилоте
+#   отсекает filter.py («уже в другой партии»), остаётся более старая история.
+#
+# Масштабирование (ADR 0005): партия = источник (--batch <id>), одна сессия Claude — один источник,
+# порядок и промпты — mining/sessions.md.
 
 politeness:
   # Бережная нагрузка на серверы источников, чтобы не получить бан.
@@ -65,17 +70,17 @@ sources:
     include_labels: '(?i)^kind/bug$'
     require_labels: '(?i)^area/(authentication|oidc|token|login|account|admin/api|core|authorization|user-profile|brute)'
     exclude_labels: '(?i)^area/(admin/ui|account/ui|ui|docs|dist|testsuite|ci)'
-    max_items: 200
+    max_items: 600
   - id: strapi
     type: github
     repo: strapi/strapi
     exclude_labels: '(?i)admin|design|i18n.?ui|cli|upgrade'
-    max_items: 150
+    max_items: 450
   - id: directus
     type: github
     repo: directus/directus
     exclude_labels: '(?i)^app$|studio|frontend|extension.?sdk'
-    max_items: 150
+    max_items: 450
   - id: ghsa-npm
     type: ghsa
     ecosystem: npm
@@ -83,3 +88,85 @@ sources:
     # ReDoS и ресурсы, SSRF, инъекции, раскрытие данных, open redirect.
     cwes: [639, 284, 285, 862, 863, 287, 306, 384, 613, 640, 915, 1321, 1333, 400, 770, 918, 89, 943, 78, 94, 200, 209, 601, 352]
     max_items: 200
+  # --- Масштабирование после пилота (ADR 0005) ---
+  - id: ghsa-pip
+    type: ghsa
+    ecosystem: pip
+    cwes: [639, 284, 285, 862, 863, 287, 306, 384, 613, 640, 915, 1321, 1333, 400, 770, 918, 89, 943, 78, 94, 200, 209, 601, 352]
+    max_items: 250
+  - id: ghsa-maven
+    type: ghsa
+    ecosystem: maven
+    cwes: [639, 284, 285, 862, 863, 287, 306, 384, 613, 640, 915, 1321, 1333, 400, 770, 918, 89, 943, 78, 94, 200, 209, 601, 352]
+    max_items: 250
+  - id: ghsa-go
+    type: ghsa
+    ecosystem: go
+    cwes: [639, 284, 285, 862, 863, 287, 306, 384, 613, 640, 915, 1321, 1333, 400, 770, 918, 89, 943, 78, 94, 200, 209, 601, 352]
+    max_items: 250
+  - id: ghsa-rubygems
+    type: ghsa
+    ecosystem: rubygems
+    cwes: [639, 284, 285, 862, 863, 287, 306, 384, 613, 640, 915, 1321, 1333, 400, 770, 918, 89, 943, 78, 94, 200, 209, 601, 352]
+    max_items: 200
+  - id: ghsa-composer
+    type: ghsa
+    ecosystem: composer
+    cwes: [639, 284, 285, 862, 863, 287, 306, 384, 613, 640, 915, 1321, 1333, 400, 770, 918, 89, 943, 78, 94, 200, 209, 601, 352]
+    max_items: 200
+  - id: ghsa-nuget
+    type: ghsa
+    ecosystem: nuget
+    cwes: [639, 284, 285, 862, 863, 287, 306, 384, 613, 640, 915, 1321, 1333, 400, 770, 918, 89, 943, 78, 94, 200, 209, 601, 352]
+    max_items: 150
+  - id: kubernetes
+    type: github
+    repo: kubernetes/kubernetes
+    include_labels: '(?i)^kind/bug$'
+    require_labels: '(?i)^(sig/(api-machinery|auth)|area/(api|api-validation|apiserver))$'
+    max_items: 200
+  - id: supabase-auth
+    type: github
+    repo: supabase/auth
+    max_items: 120
+  - id: postgrest
+    type: github
+    repo: PostgREST/postgrest
+    max_items: 150
+  - id: hasura
+    type: github
+    repo: hasura/graphql-engine
+    exclude_labels: '(?i)console|^c/(console|cli)'
+    max_items: 200
+  - id: kong
+    type: github
+    repo: Kong/kong
+    exclude_labels: '(?i)manager|^area/(cli|docs)'
+    max_items: 150
+  - id: grpc-go
+    type: github
+    repo: grpc/grpc-go
+    max_items: 120
+  - id: grpc-java
+    type: github
+    repo: grpc/grpc-java
+    max_items: 120
+  - id: grpc-node
+    type: github
+    repo: grpc/grpc-node
+    max_items: 100
+  - id: grpc-gateway
+    type: github
+    repo: grpc-ecosystem/grpc-gateway
+    allow_no_fix: true
+    max_items: 100
+  - id: graphql-js
+    type: github
+    repo: graphql/graphql-js
+    allow_no_fix: true
+    max_items: 100
+  - id: apollo-server
+    type: github
+    repo: apollographql/apollo-server
+    allow_no_fix: true
+    max_items: 120
