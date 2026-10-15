@@ -6,6 +6,7 @@ Usage (from Api/):
   batch.py make  --name cal-01 --n 20         next unprocessed records -> build/mining/<batch>/batches/<name>.md
   batch.py check --name cal-01                validate <name>.out.jsonl against the batch and taxonomy
   batch.py stats                              progress of the batch: processed, verdicts, match types
+  batch.py remaining                          records not yet issued to a batch (-1 before collection)
 Options: --batch pilot (default).
 """
 from __future__ import annotations
@@ -140,6 +141,16 @@ def cmd_check(args) -> int:
     return 1 if errors else 0
 
 
+def cmd_remaining(args) -> None:
+    """Records not yet issued to a batch; -1 before collection (no filtered.jsonl). For start-sessions.ps1 -Loop."""
+    base = MINING / args.batch
+    if not (base / "filtered.jsonl").exists():
+        print(-1)
+        return
+    done = processed_ids(base)
+    print(sum(1 for line in (base / "filtered.jsonl").open(encoding="utf-8") if json.loads(line)["id"] not in done))
+
+
 def cmd_stats(args) -> None:
     base = MINING / args.batch
     total = sum(1 for _ in (base / "filtered.jsonl").open(encoding="utf-8"))
@@ -156,12 +167,12 @@ def cmd_stats(args) -> None:
 def main() -> int:
     setup_console()
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("cmd", choices=["index", "make", "check", "stats"])
+    ap.add_argument("cmd", choices=["index", "make", "check", "stats", "remaining"])
     ap.add_argument("--batch", default="pilot")
     ap.add_argument("--name")
     ap.add_argument("--n", type=int, default=20)
     args = ap.parse_args()
-    return {"index": cmd_index, "make": cmd_make, "check": cmd_check, "stats": cmd_stats}[args.cmd](args) or 0
+    return {"index": cmd_index, "make": cmd_make, "check": cmd_check, "stats": cmd_stats, "remaining": cmd_remaining}[args.cmd](args) or 0
 
 
 if __name__ == "__main__":

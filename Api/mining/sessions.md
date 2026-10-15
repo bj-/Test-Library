@@ -49,6 +49,24 @@ powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-se
 powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-sessions.ps1 -Internal
 ```
 
+**Режим `-Loop` — без ручных перезапусков.** Скрипт открывает вкладку на источник, и в ней сессии идут подряд,
+пачка за пачкой, пока источник не кончится:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-sessions.ps1 -Loop keycloak ghsa-pip ghsa-maven ghsa-go
+```
+
+- Каждая пачка — отдельная неинтерактивная сессия `claude -p`: своё имя, свой ID, свой коммит и свои отчёты.
+  Вывод сессий пишется во вкладку и в `build/mining/<id>/loop.log`.
+- Цикл останавливается сам в трёх случаях:
+  - источник исчерпан;
+  - пачка не доделана — лимит GitHub, ошибка или нужен ответ человека; причина — в выводе и в отчёте;
+  - пройдено 15 пачек (`-MaxBatches`).
+  После остановки на недоделанной пачке тот же запуск продолжит её.
+- Вопросы в этом режиме сессия не задаёт: если нужно решение, пишет его в итог и в отчёт и останавливается.
+- Пока цикл источника идёт, другой запуск этого источника не делать — ни обычный, ни `-Loop`.
+- `-Here -Loop <id …>` — то же в текущем окне, источники по очереди.
+
 `-ExecutionPolicy Bypass` нужен потому, что на машине политика `Restricted` и `.ps1` напрямую не запускается.
 Сессии открываются в режиме `auto` — как в текущей работе. Скрипт печатает и саму команду `claude …` — её можно
 скопировать и запустить вручную.
@@ -100,7 +118,8 @@ powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-se
    `checkout`, `add .`. Не править `docs/STATUS.md`, `mining/budget.md`, `checks/`, `ideas/`,
    `mining/prompts/`, `mining/sources.yaml`. Если что-то из этого нужно поправить, написать человеку.
 2. **Сбор, если его ещё не было.** В `build/mining/<id>/state.json` у источника нет `"done": true`, или нет
-   `filtered.jsonl`, — выполнить по очереди, долгие команды в фоне:
+   `filtered.jsonl`, — выполнить по очереди. Не в фоне (в режиме `-Loop` сессия неинтерактивная и фоновых задач
+   не дождётся): каждую команду — с тайм-аутом 10 минут и повторять, пока не завершится, скрипты возобновляемы:
    `python tools/mining/collect.py --batch <id>` → `python tools/mining/filter.py --batch <id>` →
    `python tools/mining/enrich.py --batch <id>`.
    - Код выхода 2 — остановка по лимиту GitHub: сказать человеку и закончить.
