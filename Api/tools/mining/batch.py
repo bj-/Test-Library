@@ -24,6 +24,7 @@ TESTS_LIMIT = 1200
 OOS_CLASSES = {"build", "ui", "memory", "perf-internal", "docs", "framework-internal", "usage", "insufficient-data",
                "client-lib", "other"}
 MATCH_TYPES = {"covered", "extends", "new"}
+IDEA_MARKS = {"UI", "UI web", "UI desktop", "UI mobile", "DB"}  # ideas beyond the API library (inbox)
 PROTOCOLS = {"rest", "grpc", "graphql", "websocket", "generic"}
 MINING = Path("build/mining")
 
@@ -102,6 +103,9 @@ def cmd_check(args) -> int:
         seen.add(r.get("id"))
         if r.get("id") not in ids:
             errors.append(f"{where}: id не из партии")
+        for idea in r.get("ideas") or []:
+            if not isinstance(idea, dict) or idea.get("mark") not in IDEA_MARKS or not idea.get("text"):
+                errors.append(f"{where}: ideas — нужны mark из {sorted(IDEA_MARKS)} и text")
         if r.get("verdict") == "out_of_scope":
             if r.get("oos_class") not in OOS_CLASSES:
                 errors.append(f"{where}: oos_class {r.get('oos_class')!r}")
@@ -145,6 +149,7 @@ def cmd_stats(args) -> None:
     print("verdict:", dict(Counter(r["verdict"] for r in rows)))
     print("вне области:", dict(Counter(r["oos_class"] for r in rows if r["verdict"] == "out_of_scope")))
     print("сопоставление:", dict(Counter(r["match"]["type"] for r in rows if r["verdict"] == "api")))
+    print("идеи UI/DB:", dict(Counter(i["mark"] for r in rows for i in r.get("ideas") or [])))
     print("категории:", dict(Counter(r["pattern"]["category"] for r in rows if r["verdict"] == "api")))
 
 

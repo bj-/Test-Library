@@ -115,7 +115,8 @@ powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-se
    `taxonomy/categories.yaml`, `taxonomy/tags.yaml` и файл пачки `build/mining/<id>/batches/b-NN.md`.
    - Файл пачки читать кусками по ~1300 строк. Ответы по каждому куску писать в отдельный файл в scratchpad,
      затем склеить в `batches/b-NN.out.jsonl`: UTF-8 без BOM, одна строка на баг, порядок как в пачке.
-   - Идеи проверок, которые не вошли в паттерны, дописывать в `build/mining/<id>/ideas.md` с ID бага.
+   - Идеи UI и БД/SQL — в поле `ideas` ответа (промпт, п. 4). Прочие идеи вне паттернов — в
+     `build/mining/<id>/ideas.md` с ID бага.
 6. `python tools/mining/batch.py check --batch <id> --name b-NN` — должно быть N/N и 0 ошибок; ошибки исправить.
    Затем `python tools/mining/batch.py stats --batch <id>`.
 7. Промпт не менять. Если триаж кажется неверным для целого класса багов, написать человеку.
@@ -153,7 +154,8 @@ powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-se
    - Итог — до шагов 6–7 по новым источникам. Если снова ниже 85 % — сообщить человеку.
    - Промпт триажа меняется только при остановленных сессиях сбора.
 3. **Шаги 6–7 по готовым источникам.** Источник готов, когда все пачки обработаны.
-   - Сначала собрать в inbox идеи из `build/mining/<id>/ideas.md` и поля `ui_idea` багов `ui` (пометка `UI`).
+   - Сначала собрать в inbox идеи из `build/mining/<id>/ideas.md` и поля `ideas` (UI, DB) всех багов источника,
+     с пометкой из `mark` и ссылкой на баг.
    - Затем кластеры: `ideas/mined/<id>.review.yaml` → `cluster.py --batch <id>` → `ideas/mined/<id>.md`.
    - Ревью решений делает человек (ADR 0005, п. 5) — показать ему таблицу и дождаться ответа.
    - Затем записи draft, `apply_proofs.py --batch <id>`, `validate_library.py`, `build_catalog.py`.
