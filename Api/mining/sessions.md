@@ -153,7 +153,7 @@ powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-se
    - Итог — до шагов 6–7 по новым источникам. Если снова ниже 85 % — сообщить человеку.
    - Промпт триажа меняется только при остановленных сессиях сбора.
 3. **Шаги 6–7 по готовым источникам.** Источник готов, когда все пачки обработаны.
-   - Сначала собрать идеи из `build/mining/<id>/ideas.md` в inbox.
+   - Сначала собрать в inbox идеи из `build/mining/<id>/ideas.md` и поля `ui_idea` багов `ui` (пометка `UI`).
    - Затем кластеры: `ideas/mined/<id>.review.yaml` → `cluster.py --batch <id>` → `ideas/mined/<id>.md`.
    - Ревью решений делает человек (ADR 0005, п. 5) — показать ему таблицу и дождаться ответа.
    - Затем записи draft, `apply_proofs.py --batch <id>`, `validate_library.py`, `build_catalog.py`.
