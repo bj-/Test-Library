@@ -4,7 +4,7 @@
 |---|---|
 | Модуль | <Модуль, например BFF-Admin-Auth> |
 | Тип | implementation \| contract \| requirements (+ security) |
-| Серьёзность | critical \| major \| minor \| trivial |
+| Серьёзность | critical \| major \| minor \| trivial <если проблема недопустима в проде — «(на stage/prod — major/critical)», `bugs.md`, «Классификация»> |
 | Приоритет | <ставит команда> |
 | Статус | new |
 | Стенд | <baseUrl>, версия <если известна; «старше контракта X» - перепроверить на актуальной> |
