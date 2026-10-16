@@ -28,6 +28,9 @@ checks:
     notes: 'Real-world bug: RWB-0203 (GHSA-v5g5-wwmp-jppw)'
   - action: Отозвать refresh-токен и перезапустить сервис — отметка отзыва сохраняется в персистентном хранилище
     notes: inbox №159
+  - action: Отозвать access-токен, полученный через обмен токенов, от имени клиента, который его получил, и проверить, что
+      отзыв успешен и интроспекция даёт active:false
+    notes: 'Real-world bug: RWB-0203 (keycloak/keycloak#43218)'
   expected:
   - Revoked credentials are rejected within the documented revocation propagation window; no protected side effect occurs.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

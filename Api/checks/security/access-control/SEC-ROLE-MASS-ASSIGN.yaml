@@ -24,6 +24,9 @@ checks:
   steps:
   - action: Submit privileged fields such as role, isAdmin, scopes, tenantId, or ownerId in create/update payloads.
     notes: 'Matrix axis: Roles/Scopes; scenario: Privileged field injection. Use isolated synthetic identities and data.'
+  - action: Изменить поле групп при PUT/PATCH пользователя через альтернативный API (SCIM) от администратора без права на
+      членство и проверить 403
+    notes: 'Real-world bug: RWB-0248 (keycloak/keycloak#47536)'
   expected:
   - Untrusted fields cannot change effective authorization, ownership, or tenant binding.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

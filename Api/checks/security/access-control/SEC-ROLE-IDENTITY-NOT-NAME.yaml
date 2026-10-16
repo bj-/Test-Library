@@ -1,0 +1,42 @@
+checks:
+- id: SEC-ROLE-IDENTITY-NOT-NAME
+  status: draft
+  title: Ограничения системных ролей применяются по идентичности роли, а не по имени
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - authz
+  - roles-scopes
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Есть системные (административные) роли с ограничениями назначения и пользовательские роли с произвольными именами.
+  steps:
+  - action: Создать пользовательскую роль с именем системной (admin) в другой области и назначить её пользователю от имени
+      учётки с правом управления пользователями.
+  - action: Назначить настоящую системную роль той же учёткой.
+  expected:
+  - Пользовательская роль назначается по правилам её области; ограничения действуют только на настоящую системную роль (по
+    id и области).
+  applicability:
+    when:
+    - Есть системные роли с ограничениями.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - Смежные — SEC-ROLE-SELF-ASSIGN, SEC-ROLE-LOW-TO-HIGH, AUTH-EXTERNAL-ID-EXACT-MATCH
+  - 'Real-world bug: RWB-0350'

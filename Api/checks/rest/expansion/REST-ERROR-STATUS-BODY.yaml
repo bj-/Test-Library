@@ -30,6 +30,8 @@ checks:
   - action: Запросить встраивание несуществующей связи и проверить, что подсказка в ошибке описывает выполненный поиск, а
       не предлагает перезагрузить кэш
     notes: 'Real-world bug: RWB-0339 (PostgREST/postgrest#2569)'
+  - action: Отправить password grant с неверным паролем и проверить статус 400 при error=invalid_grant по RFC 6749 §5.2
+    notes: 'Real-world bug: RWB-0339 (keycloak/keycloak#45812)'
   expected:
   - HTTP status и machine-readable code не противоречат друг другу
   applicability:

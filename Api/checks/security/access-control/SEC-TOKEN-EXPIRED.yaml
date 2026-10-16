@@ -27,6 +27,8 @@ checks:
     notes: 'Matrix axis: Authentication; scenario: Expired token. Use isolated synthetic identities and data.'
   - action: Токен без iat, использованный до истечения (прогретый кэш проверки), повторно после exp
     notes: 'Real-world bug: RWB-0161 (GHSA-x937-hj6v-793p)'
+  - action: Передать просроченный ID-токен в параметре claim_token запроса разрешения и ожидать отказ
+    notes: 'Real-world bug: RWB-0161 (keycloak/keycloak#46716)'
   expected:
   - Reject the request according to policy; no protected read or mutation occurs.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

@@ -12,6 +12,7 @@ checks:
   - negative
   - validation
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -19,6 +20,8 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Разобрать JSON ответа и payload выданного токена строгим парсером — дублирующихся ключей нет
+    notes: 'Real-world bug: RWB-0355 (keycloak/keycloak#45250)'
   expected:
   - обработка duplicate keys детерминирована и не обходит validation/authz
   applicability:
@@ -37,4 +40,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0355'

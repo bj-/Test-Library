@@ -25,6 +25,12 @@ checks:
   - action: Вызвать задокументированные ошибки в каждой поддерживаемой версии API (заголовок версии) и проверить наличие машиночитаемого
       кода
     notes: 'Real-world bug: RWB-0315 (supabase/auth#1631)'
+  - action: Отправить на эндпоинт интроспекции неверные учётные данные клиента и проверить error=invalid_client по RFC 7662
+      §2.3
+    notes: 'Real-world bug: RWB-0315 (keycloak/keycloak#48721)'
+  - action: Отправить запрос на эндпоинты token и backchannel-аутентификации без client_assertion от клиента с private_key_jwt
+      и ожидать error=invalid_client
+    notes: 'Real-world bug: RWB-0315 (keycloak/keycloak#43270)'
   expected:
   - Код ошибки совпадает с документацией и не зависит от языка сообщения.
   applicability:

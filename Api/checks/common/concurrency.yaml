@@ -124,12 +124,15 @@ checks:
   - concurrency
   - data-integrity
   - costly
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Есть удаление и изменение.
   steps:
   - action: Одновременно удалить и изменить ресурс многократно.
+  - action: Удалять правила доступа параллельно с запросами оценки разрешений и проверять, что оценка не возвращает 5xx
+    notes: 'Real-world bug: RWB-0354 (keycloak/keycloak#45561)'
   expected:
   - Ресурс либо удалён, либо изменён; нет 5xx и восстановления удалённого.
   applicability:
@@ -146,6 +149,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0354'
 - id: CONC-DOUBLE-SUBMIT
   status: approved
   title: Двойная отправка формы не создаёт дубликат операции
@@ -295,6 +300,11 @@ checks:
   - action: Отправить N параллельных запросов создания независимых объектов (разные ключи); повторить серию несколько раз.
   - action: Отправить множество параллельных запросов GraphQL сразу после изменения схемы или прав (сброса кэша схемы)
     notes: 'Real-world bug: RWB-0008 (directus/directus#24239)'
+  - action: 'Отправить параллельно несколько первых запросов одного ресурса с Accept-Encoding: gzip на холодном кэше и проверить,
+      что все получают 200 с телом'
+    notes: 'Real-world bug: RWB-0008 (keycloak/keycloak#53238)'
+  - action: Параллельно удалить несколько независимых арендаторов и ожидать успешные ответы без 5xx
+    notes: 'Real-world bug: RWB-0008 (keycloak/keycloak#46172)'
   expected:
   - Все запросы завершаются успехом или ожидаемой бизнес-ошибкой; 5xx и обрывов нет.
   applicability:

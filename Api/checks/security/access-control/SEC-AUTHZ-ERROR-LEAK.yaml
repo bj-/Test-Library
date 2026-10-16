@@ -27,6 +27,11 @@ checks:
   - action: Запросить несуществующие ресурсы с именами, далёкими от существующих, и проверить, что подсказка не называет ресурсы,
       недоступные пользователю
     notes: 'Real-world bug: RWB-0340 (PostgREST/postgrest#4675)'
+  - action: Отправить от пользователя без прав запрос к существующему объекту с данными, не проходящими валидацию, и проверить
+      403, а не 400
+    notes: 'Real-world bug: RWB-0340 (keycloak/keycloak#48143)'
+  - action: Запросить несуществующий и существующий объект от пользователя без права на список и проверить одинаковый 403
+    notes: 'Real-world bug: RWB-0340 (keycloak/keycloak#46010)'
   expected:
   - Error body, headers, and timing do not disclose sensitive fields or existence beyond the documented policy.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

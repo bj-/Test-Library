@@ -15,6 +15,7 @@ checks:
   - negative
   - authn
   - token-lifecycle
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -24,6 +25,11 @@ checks:
   - Используются JWT access-токены.
   steps:
   - action: 'Взять валидный токен, установить alg: none, удалить подпись, отправить запрос.'
+  - action: Отправить JWT с alg=none на каждый эндпоинт с Bearer-аутентификацией (в том числе userinfo) и проверить 401, а
+      не 5xx
+    notes: 'Real-world bug: RWB-0352 (keycloak/keycloak#48744)'
+  - action: Передать неподписанный JWT в параметре ссылки-действия и ожидать 4xx без 5xx и без исключения в журнале
+    notes: 'Real-world bug: RWB-0352 (keycloak/keycloak#48137)'
   expected:
   - Запрос отклоняется как неаутентифицированный.
   applicability:
@@ -43,6 +49,8 @@ checks:
   risk:
     impact: critical
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0352'
 - id: AUTH-JWT-ALG-CONFUSION
   status: approved
   title: Подмена алгоритма RS256 на HS256 с публичным ключом не принимается
@@ -153,6 +161,8 @@ checks:
   - JWT.
   steps:
   - action: Сформировать токены с nbf в будущем, iat в будущем, без exp, с exp на границе допуска рассинхронизации часов.
+  - action: Отправить assertion с iat в прошлом в пределах настроенного максимального возраста и ожидать, что оно принимается
+    notes: 'Real-world bug: RWB-0291 (keycloak/keycloak#46303)'
   expected:
   - Недействительные по времени токены отклоняются; допуск часов соответствует политике.
   applicability:
@@ -302,6 +312,9 @@ checks:
   - action: Удалить пользователя администратором и выполнить выход с его ещё не истёкшим токеном — выход завершается успешно
       или не мешает клиенту завершить сеанс, сессии пользователя недействительны
     notes: 'Real-world bug: RWB-0059 (supabase/auth#1550)'
+  - action: Выполнить выход по id_token_hint без cookie сразу после входа и проверить, что следующий вход создаёт новую сессию
+      аутентификации, а не продолжает прежнюю
+    notes: 'Real-world bug: RWB-0059 (keycloak/keycloak#43853)'
   expected:
   - Запросы после выхода отклоняются в пределах задокументированного окна.
   applicability:
@@ -403,6 +416,12 @@ checks:
     notes: inbox №19
   - action: Перебирать коды доступа и приглашения без авторизации — 429 после серии неверных
     notes: inbox №36
+  - action: Сделать неудачные попытки, дождаться сброса счётчика по времени, повторить и проверить, что счётчик и время последней
+      ошибки ведут себя как в первом цикле
+    notes: 'Real-world bug: RWB-0056 (keycloak/keycloak#46634)'
+  - action: Несколько раз войти с верным паролем при превышенном лимите сессий и проверить, что учётка не блокируется защитой
+      от перебора
+    notes: 'Real-world bug: RWB-0056 (keycloak/keycloak#44474)'
   expected:
   - Срабатывает блокировка, задержка или CAPTCHA по политике.
   - Ротация X-Forwarded-For не обходит ограничение.
@@ -457,6 +476,9 @@ checks:
   - action: Сравнить регистрацию на существующий идентификатор и вход на несуществующий по коду, телу, заголовкам и времени
       ответа; проверить, что код фактически не отправлен
     notes: inbox №40
+  - action: Отправить неверный пароль для отключённой учётки через каждый поток входа (форма, password grant) и проверить
+      одинаковую ошибку без раскрытия статуса
+    notes: 'Real-world bug: RWB-0193 (keycloak/keycloak#46517)'
   expected:
   - Тела, статусы и время ответа неразличимы в пределах допуска.
   applicability:
@@ -827,6 +849,9 @@ checks:
   - Cookie-сессии.
   steps:
   - action: Получить сессию до входа, войти, сравнить идентификаторы; использовать старый идентификатор.
+  - action: Войти пользователем A, затем в том же клиенте с той же cookie сессии аутентификации войти пользователем B и проверить,
+      что sid токенов B отличается от A
+    notes: 'Real-world bug: RWB-0191 (keycloak/keycloak#46239)'
   expected:
   - После входа выдаётся новый идентификатор, старый не аутентифицирован.
   applicability:
@@ -1041,6 +1066,8 @@ checks:
     notes: 'Real-world bug: RWB-0063 (expressjs/session#340)'
   - action: Создать множество сессий без закрытия и проверить, что простаивающие удаляются по таймауту
     notes: 'Real-world bug: RWB-0063 (GHSA-52jp-gj8w-j6xh)'
+  - action: Создать сессию с «запомнить меня», выключить эту настройку и проверить, что сессия истекает по обычному сроку
+    notes: 'Real-world bug: RWB-0063 (keycloak/keycloak#43328)'
   expected:
   - Сессия истекает по обоим правилам.
   applicability:
@@ -1188,6 +1215,12 @@ checks:
     notes: 'Real-world bug: RWB-0061 (GHSA-4r8w-73jc-3m7q)'
   - action: После завершённого OAuth-входа отправить callback с пустым state и проверить отказ
     notes: 'Real-world bug: RWB-0061 (GHSA-phg3-3g28-wq9v)'
+  - action: Зарегистрировать redirect_uri со * сразу после имени хоста и отправить redirect_uri с тем же префиксом в другом
+      домене (app.example.com.evil.com) — должен быть отклонён
+    notes: 'Real-world bug: RWB-0061 (keycloak/keycloak#48430)'
+  - action: Сохранить клиент с корректным redirect URI через административный API — принимается; отказ — только для адресов,
+      нарушающих политику, с указанием отвергнутого значения
+    notes: 'Real-world bug: RWB-0061 (keycloak/keycloak#51315)'
   expected:
   - redirect_uri сравнивается точно; без state и PKCE обмен отклоняется; code одноразовый.
   applicability:
@@ -1428,6 +1461,9 @@ checks:
   steps:
   - action: Войти со scope (например, openid profile), обновить токен без scope, сравнить scope старого и нового токена.
   - action: Вызвать UserInfo и защищённые ресурсы новым токеном; запросить refresh с расширенным scope.
+  - action: Обновить offline refresh-токен с параметром scope без offline_access, завершить онлайн-сессию и проверить, что
+      новый access-токен принимается userinfo
+    notes: 'Real-world bug: RWB-0018 (keycloak/keycloak#47776)'
   expected:
   - Scope совпадает с исходным; UserInfo отвечает 200.
   - Расширение scope при refresh отклоняется (invalid_scope).
@@ -1513,6 +1549,9 @@ checks:
   - action: Выполнить один запрос авторизации (prompt, max_age, acr_values, ui_locales) напрямую и через PAR; сравнить поведение.
   - action: Получить request_uri, погасить сразу, пройти вход дольше срока request_uri (MFA, required actions), завершить.
   - action: Повторно погасить request_uri после срока.
+  - action: Включить у клиента требование request_uri only и отправить PAR без request_uri — запрос должен быть принят по
+      RFC 9126 §2.1
+    notes: 'Real-world bug: RWB-0020 (keycloak/keycloak#46926)'
   expected:
   - Параметры из PAR учитываются так же, как в прямом запросе.
   - Долгий вход завершается выдачей кода; повторное погашение просроченного request_uri отклоняется.
@@ -1737,6 +1776,11 @@ checks:
   - action: Отправить DPoP-токен на собственные эндпоинты сервера авторизации без DPoP-доказательства и с доказательством
       другого ключа и проверить 401
     notes: 'Real-world bug: RWB-0044 (GHSA-v9xq-2mvm-x8xc)'
+  - action: Запросить токены по implicit и hybrid flow у клиента с обязательной привязкой DPoP и проверить отказ unauthorized_client
+    notes: 'Real-world bug: RWB-0044 (keycloak/keycloak#48428)'
+  - action: Повторно отправить тот же DPoP-proof с iat в будущем в пределах допуска рассинхрона часов и ожидать отказ как
+      повтор
+    notes: 'Real-world bug: RWB-0044 (keycloak/keycloak#43505)'
   expected:
   - Обмен и refresh требуют доказательство; новый токен тоже привязан, иначе отказ.
   applicability:
@@ -1866,6 +1910,9 @@ checks:
   steps:
   - action: Предъявить сертификат с нестандартно сформированным CN — несколько CN, имя другого пользователя внутри значения,
       экранированные разделители.
+  - action: Передать через прокси цепочку клиентских сертификатов длиннее настроенной — используются первые N, аутентификация
+      по сертификату проходит
+    notes: 'Real-world bug: RWB-0187 (keycloak/keycloak#46647)'
   expected:
   - Отказ или имя, совпадающее с фактическим полем сертификата; вход под другим пользователем невозможен.
   applicability:
@@ -2956,3 +3003,199 @@ checks:
   references:
   - Смежная — AUTH-SESSION-FIXATION
   - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
+- id: AUTH-MULTISTEP-LOGIN-STATE-RECHECK
+  status: draft
+  title: Последний шаг многошагового входа перепроверяет состояние пользователя и клиента
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Вход в несколько шагов — обязательные действия, второй фактор, согласие, выбор организации.
+  steps:
+  - action: Начать вход, отключить пользователя через административный API и завершить оставшиеся шаги.
+  - action: Начать вход, отключить клиента и отправить логин и пароль.
+  expected:
+  - Понятная ошибка «отключён»; токен и сессия не выдаются; 5xx нет.
+  applicability:
+    when:
+    - Есть многошаговый вход.
+    skip_when:
+    - Вход в один шаг.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - Смежные — AUTH-ACCOUNT-STATE-ALL-SCHEMES, SEC-AUTHZ-REVOKE-ROLE
+  - 'Real-world bug: RWB-0343'
+- id: AUTH-PRE-ACCOUNT-TAKEOVER
+  status: draft
+  title: Незавершённая регистрация на чужой email не даёт входа после подтверждения владельцем
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - session
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Регистрация с подтверждением email; можно держать сессию регистрации открытой. Нужны тестовый почтовый ящик и два клиента.
+  steps:
+  - action: Зарегистрироваться на email владельца и держать сессию живой; от имени владельца сбросить пароль, подтвердить
+      email и войти; обновить страницу в сессии регистранта.
+  expected:
+  - Сессия регистранта не получает входа в аккаунт; подтверждение и сброс завершают чужие незавершённые сессии регистрации.
+  applicability:
+    when:
+    - Есть регистрация с подтверждением email.
+    skip_when:
+    - Нет самостоятельной регистрации.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - Pre-account takeover (Sudhodanan, Paverd, 2022)
+  - Смежные — AUTH-PASSWORD-CHANGE-REVOKES, BIZ-EMAIL-LINK-CROSS-SESSION
+  - 'Real-world bug: RWB-0344'
+- id: AUTH-LOGIN-PARAMS-PRESERVED
+  status: draft
+  title: Параметры первого шага входа действуют через все шаги
+  category: security
+  protocols:
+  - generic
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - authn
+  - session
+  - real-world-bug
+  - regression
+  preconditions:
+  - Вход в несколько шагов; первый шаг принимает параметры — remember me, locale, scope, prompt.
+  steps:
+  - action: Пройти вход с rememberMe и другими параметрами через промежуточный шаг (выбор организации, второй фактор); проверить
+      cookie и тип сессии.
+  expected:
+  - Параметры сохраняются через все шаги и влияют на результат, если протокол предусматривает их сохранение.
+  applicability:
+    when:
+    - Есть многошаговый вход с параметрами.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Смежные — AUTH-SESSION-TIMEOUT, AUTH-COOKIE-ATTRIBUTES
+  - 'Real-world bug: RWB-0347'
+- id: AUTH-TOKEN-EXCHANGE-DEFAULT-SCOPE
+  status: draft
+  title: Обмен токена без scope выдаёт области по документированному правилу для запросившего клиента
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - roles-scopes
+  - token-lifecycle
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервер поддерживает обмен токенов (RFC 8693).
+  steps:
+  - action: Выполнить обмен токена клиентом-посредником без scope и сравнить scope результата с настройками этого клиента
+      и исходного токена.
+  expected:
+  - Scope — по документированному правилу для клиента, запросившего обмен; областей исходного или другого клиента сверх правила
+    нет.
+  applicability:
+    when:
+    - Есть token exchange.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - RFC 8693 §2.1
+  - Смежные — AUTH-REFRESH-PRESERVES-SCOPE, SEC-SCOPE-EXTRA-UNTRUSTED
+  - 'Real-world bug: RWB-0348'
+- id: AUTH-OIDC-LOGOUT-WITHOUT-SESSION
+  status: draft
+  title: Выход по OIDC без активной сессии завершается перенаправлением по правилам
+  category: security
+  protocols:
+  - generic
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - session
+  - real-world-bug
+  - regression
+  preconditions:
+  - Есть RP-Initiated Logout (OIDC).
+  steps:
+  - action: Вызвать выход с валидным id_token_hint и зарегистрированным post_logout_redirect_uri без активной сессии (истекла,
+      offline-доступ, внешний IdP).
+  - action: Повторить с незарегистрированным post_logout_redirect_uri.
+  expected:
+  - Без ошибки перенаправление на зарегистрированный URI; незарегистрированный отклоняется.
+  applicability:
+    when:
+    - Есть OIDC-выход.
+    skip_when:
+    - Нет OIDC.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - OpenID Connect RP-Initiated Logout 1.0 §2, §3
+  - Смежная — AUTH-LOGOUT-INVALIDATES
+  - 'Real-world bug: RWB-0351'

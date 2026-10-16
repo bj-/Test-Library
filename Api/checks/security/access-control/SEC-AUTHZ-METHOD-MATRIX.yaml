@@ -55,6 +55,12 @@ checks:
   - action: Пользователем с правом чтения одного ключа открыть подписку на изменения с открытым диапазоном и проверить отказ
       или события только по разрешённому ключу
     notes: 'Real-world bug: RWB-0147 (GHSA-xg4h-6gfc-h4m8)'
+  - action: Запросить токен со scope, на который настроена политика, каждым типом гранта (code, password, client_credentials,
+      refresh) и проверить, что политика срабатывает во всех
+    notes: 'Real-world bug: RWB-0147 (keycloak/keycloak#46933)'
+  - action: Для каждого типа условия политики клиента (тип доступа, scope, тип гранта) запросить токен и проверить, что исполнитель
+      политики применён к ответу
+    notes: 'Real-world bug: RWB-0147 (keycloak/keycloak#45740)'
   expected:
   - GET/POST/PUT/PATCH/DELETE and other supported methods each enforce their declared permissions.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

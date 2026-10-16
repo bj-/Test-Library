@@ -24,6 +24,9 @@ checks:
     notes: 'Real-world bug: RWB-0036 (strapi/strapi#24669)'
   - action: Передать схему bearer в нижнем регистре — принимается (схема регистронезависима, RFC 9110 §11.1)
     notes: inbox №29
+  - action: Вызвать эндпоинт регистрации и отмены регистрации узла клиента с учётными данными в теле формы (client_secret_post,
+      client_secret_jwt) и проверить успех, как при Basic
+    notes: 'Real-world bug: RWB-0036 (keycloak/keycloak#48628)'
   expected:
   - Заявленные схемы принимаются.
   - Неподдерживаемая схема — 401 с WWW-Authenticate.

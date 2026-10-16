@@ -136,6 +136,31 @@ RWB-0003:
     product: Kong
     closed: '2021-01-07'
     summary: Принятая настройка с null в полях ломает обработку запроса — пустой ответ.
+  - url: https://github.com/keycloak/keycloak/issues/46132
+    fix: https://github.com/keycloak/keycloak/pull/47684
+    product: Keycloak
+    closed: '2026-04-13'
+    summary: Пустой атрибут, отображаемый в числовой claim, даёт 500 при входе
+  - url: https://github.com/keycloak/keycloak/issues/44455
+    fix: https://github.com/keycloak/keycloak/pull/44457
+    product: Keycloak
+    closed: '2025-12-01'
+    summary: Сочетание маппера address и маппера во вложенный claim даёт 500 при выдаче токена
+  - url: https://github.com/keycloak/keycloak/issues/43331
+    fix: https://github.com/keycloak/keycloak/pull/43353
+    product: Keycloak
+    closed: '2025-10-10'
+    summary: После включения и выключения режима расширенных прав чтение пользователя даёт 500
+  - url: https://github.com/keycloak/keycloak/issues/47063
+    fix: https://github.com/keycloak/keycloak/pull/47269
+    product: Keycloak
+    closed: '2026-03-23'
+    summary: Перегенерация секрета клиента даёт NPE, если существует политика с условием по контексту изменяющего
+  - url: https://github.com/keycloak/keycloak/issues/44156
+    fix: https://github.com/keycloak/keycloak/pull/44188
+    product: Keycloak
+    closed: '2025-11-14'
+    summary: Шаг второго фактора перед идентификацией пользователя даёт NPE и блокирует вход администратора
 RWB-0004:
   pattern: Разрешённая операция работает для каждой роли с правом, а не только для администратора (позитивная матрица прав)
   checks:
@@ -205,6 +230,16 @@ RWB-0004:
     closed: '2026-04-15'
     summary: Пользователю с условными правами (тот же создатель, та же роль) вспомогательный запрос по документу отвечает
       403
+  - url: https://github.com/keycloak/keycloak/issues/43883
+    fix: https://github.com/keycloak/keycloak/pull/44009
+    product: Keycloak
+    closed: '2025-11-10'
+    summary: Создание групповой политики требует manage-clients при выключенной FGAP v1
+  - url: https://github.com/keycloak/keycloak/issues/43736
+    fix: https://github.com/keycloak/keycloak/pull/43789
+    product: Keycloak
+    closed: '2025-10-29'
+    summary: Администратор с правами только на группы получает 500 при просмотре пользователя
 RWB-0005:
   pattern: Делегированный администратор над собственной учёткой — явное разрешение или 403 по политике, без 5xx
   checks:
@@ -291,6 +326,16 @@ RWB-0006:
     closed: '2026-08-28'
     summary: Проверка прав на смену родителя выполняется только при parent_project_id > 0 — значение 0 отвязывает проект без
       прав администратора
+  - url: https://github.com/keycloak/keycloak/issues/46718
+    fix: https://github.com/keycloak/keycloak/pull/46967
+    product: Keycloak
+    closed: '2026-03-10'
+    summary: Обмен токена v1 с audience при FGAP v2 даёт 500 вместо отказа
+  - url: https://github.com/keycloak/keycloak/issues/43723
+    fix: https://github.com/keycloak/keycloak/pull/43727
+    product: Keycloak
+    closed: '2025-10-28'
+    summary: Регистрация WebAuthn без аттестации принимается, хотя политика требует аттестацию
 RWB-0007:
   pattern: Параллельные запросы разных пользователей получают только свой контекст и свой ответ (в том числе через общий канал
     к нижележащему сервису)
@@ -352,6 +397,16 @@ RWB-0008:
     product: Directus
     closed: '2025-02-25'
     summary: Параллельные GraphQL-запросы после сброса кэша схемы каждый строят схему, процесс падает по памяти
+  - url: https://github.com/keycloak/keycloak/issues/53238
+    fix: https://github.com/keycloak/keycloak/pull/53239
+    product: Keycloak
+    closed: '2026-10-15'
+    summary: Параллельные первые запросы одного ресурса со сжатием получают 404
+  - url: https://github.com/keycloak/keycloak/issues/46172
+    fix: https://github.com/keycloak/keycloak/commit/498898018d6389eba53874cebf56aa7108daeac1
+    product: Keycloak
+    closed: '2026-05-28'
+    summary: Одновременное удаление нескольких областей даёт 500 из-за ошибки БД
 RWB-0009:
   pattern: Ответ не содержит фрагментов данных других запросов и памяти процесса (общие буферы сериализации)
   checks:
@@ -561,6 +616,12 @@ RWB-0017:
     product: Keycloak
     closed: '2026-07-28'
     summary: Ссылка подтверждения email, открытая в новом браузере после перезапуска сервера, давала 500
+  - url: https://github.com/keycloak/keycloak/issues/44488
+    fix: https://github.com/keycloak/keycloak/commit/d73b1f926f3398367666c96995e924b6ac77533a
+    product: Keycloak
+    closed: '2026-01-28'
+    summary: После действия «сменить email», запущенного приложением, возврат в приложение идёт на callback без параметров
+      OIDC
 RWB-0018:
   pattern: Refresh без параметра scope сохраняет scope исходной авторизации (RFC 6749 §6)
   checks:
@@ -572,6 +633,11 @@ RWB-0018:
     product: Keycloak
     closed: '2026-09-16'
     summary: Access-токен после refresh терял scope openid, если его не повторили в запросе — UserInfo ломался
+  - url: https://github.com/keycloak/keycloak/issues/47776
+    fix: https://github.com/keycloak/keycloak/pull/47777
+    product: Keycloak
+    closed: '2026-04-10'
+    summary: Обновление offline-токена с scope без offline_access выдаёт токен онлайн-сессии
 RWB-0019:
   pattern: Ошибка шага второго фактора у пользователя без зарегистрированного фактора — обычная 4xx, как у пользователя с
     фактором, без 5xx
@@ -601,6 +667,11 @@ RWB-0020:
     product: Keycloak
     closed: '2026-06-22'
     summary: Параметр prompt=create, переданный через PAR, игнорировался
+  - url: https://github.com/keycloak/keycloak/issues/46926
+    fix: https://github.com/keycloak/keycloak/pull/46930
+    product: Keycloak
+    closed: '2026-06-02'
+    summary: Эндпоинт PAR требует request_uri из настройки, предназначенной для эндпоинта авторизации
 RWB-0021:
   pattern: Значение, которое не удаётся расшифровать после смены ключа, не ломает чтение и сохранение остальных данных
   checks:
@@ -794,6 +865,11 @@ RWB-0026:
     product: PostgREST
     closed: '2024-02-15'
     summary: Пользовательский формат ответа через агрегат работал только при select=*
+  - url: https://github.com/keycloak/keycloak/issues/46296
+    fix: https://github.com/keycloak/keycloak/pull/46993
+    product: Keycloak
+    closed: '2026-03-12'
+    summary: Краткое представление в поиске пользователей возвращает атрибуты
 RWB-0027:
   pattern: Абсолютные URL, которые формирует сервер (Location, callback, ссылки в письмах), учитывают публичный базовый путь
   checks:
@@ -810,6 +886,11 @@ RWB-0027:
     product: Supabase Auth
     closed: '2026-05-26'
     summary: В шаблонах писем-уведомлений недоступна переменная адреса сайта, ссылки и картинки в письмах битые
+  - url: https://github.com/keycloak/keycloak/issues/43166
+    fix: https://github.com/keycloak/keycloak/pull/43193
+    product: Keycloak
+    closed: '2025-10-14'
+    summary: За обратным прокси backend-адрес теряет базовый путь из X-Forwarded-Prefix
 RWB-0028:
   pattern: Режим «только чтение» для пользовательских запросов (SQL, GraphQL) запрещает любые изменения, а не проверяет первое
     ключевое слово
@@ -892,6 +973,11 @@ RWB-0029:
     product: Strapi
     closed: '2026-03-19'
     summary: Изменение повторяемого компонента с id из ответа чтения отклоняется ValidationError Invalid key id
+  - url: https://github.com/keycloak/keycloak/issues/43867
+    fix: https://github.com/keycloak/keycloak/pull/43969
+    product: Keycloak
+    closed: '2025-11-13'
+    summary: Экспорт настроек после включения функции не принимается импортом из-за автоматически созданного объекта
 RWB-0030:
   pattern: IP клиента определяется по X-Forwarded-For с учётом числа доверенных прокси, одинаково на всех маршрутах и модулях
   checks:
@@ -1056,6 +1142,11 @@ RWB-0035:
     product: Directus
     closed: '2025-10-28'
     summary: Системные поля можно изменить через API полей
+  - url: https://github.com/keycloak/keycloak/issues/47923
+    fix: https://github.com/keycloak/keycloak/pull/47924
+    product: Keycloak
+    closed: '2026-04-13'
+    summary: Один из встроенных клиентов не защищён от удаления в отличие от остальных
 RWB-0036:
   pattern: Все задокументированные схемы Authorization принимаются на своих эндпоинтах; неподдерживаемые — 401 с WWW-Authenticate
   checks:
@@ -1072,6 +1163,16 @@ RWB-0036:
     product: Strapi
     closed: '2026-01-09'
     summary: Обновление токена игнорирует refresh-токен из httpOnly cookie и отвечает 400 Missing refresh token
+  - url: https://github.com/keycloak/keycloak/issues/48628
+    fix: https://github.com/keycloak/keycloak/pull/48633
+    product: Keycloak
+    closed: '2026-05-04'
+    summary: Эндпоинт регистрации узла не видит учётные данные клиента в теле формы
+  - url: https://github.com/keycloak/keycloak/issues/44940
+    fix: https://github.com/keycloak/keycloak/pull/44941
+    product: Keycloak
+    closed: '2025-12-16'
+    summary: Аутентификация клиента по X.509 вызывает NPE в аутентификаторе по JWT при отсутствии client assertion
 RWB-0037:
   pattern: Загрузка не перезаписывает чужой файл с тем же именем или ключом хранилища
   checks:
@@ -1272,6 +1373,16 @@ RWB-0044:
     product: Duende.IdentityServer
     closed: '2024-10-28'
     summary: Локальные эндпоинты сервера авторизации принимают DPoP-токен без проверки claim cnf
+  - url: https://github.com/keycloak/keycloak/issues/48428
+    fix: https://github.com/keycloak/keycloak/pull/48457
+    product: Keycloak
+    closed: '2026-05-05'
+    summary: При обязательном DPoP токены выдаются через implicit/hybrid flow без привязки
+  - url: https://github.com/keycloak/keycloak/issues/43505
+    fix: https://github.com/keycloak/keycloak/pull/43638
+    product: Keycloak
+    closed: '2025-10-22'
+    summary: Повтор DPoP-proof не обнаруживается в окне допустимого рассинхрона часов
 RWB-0045:
   pattern: Код ответа соответствует фактическому результату; при 5xx — состояние не изменено (или явное сообщение о частичном
     выполнении)
@@ -1373,6 +1484,11 @@ RWB-0049:
     product: PostgREST
     closed: '2023-01-20'
     summary: Описание OpenAPI указывало внешний ключ на представление вместо исходной таблицы
+  - url: https://github.com/keycloak/keycloak/issues/46015
+    fix: https://github.com/keycloak/keycloak/pull/46016
+    product: Keycloak
+    closed: '2026-02-16'
+    summary: Опубликованная спецификация OpenAPI содержит путь с двумя одноимёнными параметрами
 RWB-0050:
   pattern: Потоковый ответ SSE работает для всех методов (включая POST с телом), отдаёт text/event-stream и события до закрытия
     клиентом
@@ -1507,6 +1623,16 @@ RWB-0056:
     product: Keycloak
     closed: '2026-06-16'
     summary: Обновление токена из существующей сессии сбрасывает блокировку после перебора
+  - url: https://github.com/keycloak/keycloak/issues/46634
+    fix: https://github.com/keycloak/keycloak/pull/47248
+    product: Keycloak
+    closed: '2026-07-02'
+    summary: Счётчик защиты от перебора теряет время последней ошибки после сброса
+  - url: https://github.com/keycloak/keycloak/issues/44474
+    fix: https://github.com/keycloak/keycloak/pull/53795
+    product: Keycloak
+    closed: '2026-10-10'
+    summary: Отказ по лимиту сессий засчитывается как неудачный вход и блокирует учётку
 RWB-0057:
   pattern: Сессионные cookie имеют Secure, HttpOnly, SameSite и узкие Domain/Path
   checks:
@@ -1574,6 +1700,11 @@ RWB-0059:
     product: Umbraco.CMS
     closed: '2024-10-22'
     summary: При явном выходе серверная сессия завершается не полностью
+  - url: https://github.com/keycloak/keycloak/issues/43853
+    fix: https://github.com/keycloak/keycloak/pull/43872
+    product: Keycloak
+    closed: '2025-10-31'
+    summary: Выход по id_token_hint без cookie оставляет сессию аутентификации, которая переиспользуется при следующем входе
 RWB-0060:
   pattern: Операции, требующие второго фактора, недоступны без него
   checks:
@@ -1655,6 +1786,16 @@ RWB-0061:
     product: hatchet
     closed: '2026-09-21'
     summary: После OAuth-входа state очищается в пустую строку и пустой state принимается
+  - url: https://github.com/keycloak/keycloak/issues/48430
+    fix: https://github.com/keycloak/keycloak/pull/48793
+    product: Keycloak
+    closed: '2026-05-12'
+    summary: Шаблон redirect_uri со * после хоста принимает чужие домены
+  - url: https://github.com/keycloak/keycloak/issues/51315
+    fix: https://github.com/keycloak/keycloak/pull/53018
+    product: Keycloak
+    closed: '2026-10-14'
+    summary: Политика безопасности клиента отклоняет корректный https redirect URI
 RWB-0062:
   pattern: Политика паролей применяется на сервере
   checks:
@@ -1682,6 +1823,11 @@ RWB-0063:
     product: mcp
     closed: '2026-07-30'
     summary: Сессии транспорта никогда не истекают, флуд initialize исчерпывает память
+  - url: https://github.com/keycloak/keycloak/issues/43328
+    fix: https://github.com/keycloak/keycloak/pull/43355
+    product: Keycloak
+    closed: '2025-10-14'
+    summary: Сессии с «запомнить меня» сохраняют продлённый срок после выключения настройки
 RWB-0064:
   pattern: Одноразовые промокоды, бонусы и приглашения нельзя использовать повторно
   checks:
@@ -2162,6 +2308,11 @@ RWB-0075:
     product: Steeltoe.Management.Endpoint, Steeltoe.Management.EndpointCore
     closed: '2026-07-02'
     summary: Маскирование в служебном эндпоинте окружения смотрит только на имя ключа и пропускает строки подключения с паролями
+  - url: https://github.com/keycloak/keycloak/issues/44132
+    fix: https://github.com/keycloak/keycloak/pull/44197
+    product: Keycloak
+    closed: '2026-01-28'
+    summary: Preview-функция scripts включена по умолчанию
 RWB-0076:
   pattern: Ответы не содержат внутренних полей сверх контракта
   checks:
@@ -2217,6 +2368,11 @@ RWB-0076:
     product: AutoQueryable
     closed: '2025-02-20'
     summary: Поля, помеченные недоступными для выбора, всё равно отдаются через параметр выбора полей
+  - url: https://github.com/keycloak/keycloak/issues/47036
+    fix: https://github.com/keycloak/keycloak/pull/48466
+    product: Keycloak
+    closed: '2026-04-27'
+    summary: Поиск пользователя для совместного доступа возвращает полный профиль и различает существование кодом
 RWB-0077:
   pattern: Дорогие операции ограничены по ресурсам
   checks:
@@ -2710,6 +2866,11 @@ RWB-0083:
     product: Keycloak
     closed: '2026-09-04'
     summary: Неаутентифицированный запрос с %0A в client_id создаёт в логе поддельные записи.
+  - url: https://github.com/keycloak/keycloak/issues/47681
+    fix: https://github.com/keycloak/keycloak/pull/49304
+    product: Keycloak
+    closed: '2026-06-08'
+    summary: client_id с ANSI-последовательностями попадает в журнал событий без нейтрализации
 RWB-0084:
   pattern: NoSQL-инъекция операторами запросов не исполняется
   checks:
@@ -3661,6 +3822,11 @@ RWB-0090:
     product: DotNetNuke.Core
     closed: '2025-04-09'
     summary: 'Обход прежнего исправления SSRF: без аутентификации сервер выполняет GET к произвольным адресам'
+  - url: https://github.com/keycloak/keycloak/issues/45694
+    fix: https://github.com/keycloak/keycloak/pull/46300
+    product: Keycloak
+    closed: '2026-02-24'
+    summary: Точка с запятой в managementUrl превращает дописываемый путь в matrix-параметр и позволяет SSRF
 RWB-0091:
   pattern: Инъекция в серверные шаблоны не исполняется
   checks:
@@ -3809,6 +3975,16 @@ RWB-0092:
     product: Directus
     closed: '2026-04-16'
     summary: Сохранение версии создаёт записи активности и ревизий, хотя журналирование коллекции отключено
+  - url: https://github.com/keycloak/keycloak/issues/48645
+    fix: https://github.com/keycloak/keycloak/pull/48646
+    product: Keycloak
+    closed: '2026-06-26'
+    summary: События аудита по приглашениям в организацию без объекта и деталей
+  - url: https://github.com/keycloak/keycloak/issues/46792
+    fix: https://github.com/keycloak/keycloak/pull/46793
+    product: Keycloak
+    closed: '2026-03-03'
+    summary: Удаление через admin API v2 не создаёт событие аудита
 RWB-0093:
   pattern: Health-эндпоинты отражают состояние и не раскрывают детали
   checks:
@@ -3882,6 +4058,11 @@ RWB-0094:
     product: thorsten/phpmyfaq
     closed: '2026-08-12'
     summary: Символы % и _ не экранируются в LIKE поиска пользователей — перечисление всех
+  - url: https://github.com/keycloak/keycloak/issues/44678
+    fix: https://github.com/keycloak/keycloak/pull/46594
+    product: Keycloak
+    closed: '2026-03-10'
+    summary: Поиск членов организации не экранирует _ и % и не поддерживает *
 RWB-0095:
   pattern: Общее число элементов согласовано с суммой страниц
   checks:
@@ -3903,6 +4084,11 @@ RWB-0095:
     product: PostgREST
     closed: '2023-09-16'
     summary: 'Фильтр по наличию вложенного ресурса вместе с Prefer: count=exact даёт ошибку «column does not exist»'
+  - url: https://github.com/keycloak/keycloak/issues/45219
+    fix: https://github.com/keycloak/keycloak/pull/45421
+    product: Keycloak
+    closed: '2026-01-16'
+    summary: count?exact=true и список с exact=true возвращают разное число пользователей
 RWB-0096:
   pattern: Задержка ключевых операций в пределах SLO при обычной нагрузке
   checks:
@@ -3934,6 +4120,21 @@ RWB-0096:
     product: Strapi
     closed: '2026-05-11'
     summary: Подсчёт документов для главной страницы выполняет дорогое самосоединение на больших таблицах
+  - url: https://github.com/keycloak/keycloak/issues/47157
+    fix: https://github.com/keycloak/keycloak/pull/47160
+    product: Keycloak
+    closed: '2026-03-25'
+    summary: Эндпоинт эффективных ролей перебирает все роли клиента, задержка растёт с их числом
+  - url: https://github.com/keycloak/keycloak/issues/47139
+    fix: https://github.com/keycloak/keycloak/commit/3c0c94f1d681b2e9563d3ca59631c5cff43af1d2
+    product: Keycloak
+    closed: '2026-03-23'
+    summary: Сохранение потока аутентификации при сотнях областей занимает до 13 минут из-за перезагрузки ролей
+  - url: https://github.com/keycloak/keycloak/issues/46542
+    fix: https://github.com/keycloak/keycloak/pull/46545
+    product: Keycloak
+    closed: '2026-03-23'
+    summary: Обновление динамической области доступа при 10 000 клиентов занимает больше 100 секунд
 RWB-0097:
   pattern: Размер ответов разумен и не растёт неограниченно
   checks:
@@ -4093,6 +4294,21 @@ RWB-0101:
     product: PostgREST
     closed: '2025-03-17'
     summary: Сортировка вложенных и основных ресурсов игнорируется в представлении ответа на PATCH и DELETE
+  - url: https://github.com/keycloak/keycloak/issues/44586
+    fix: https://github.com/keycloak/keycloak/pull/44587
+    product: Keycloak
+    closed: '2025-12-03'
+    summary: Admin API v2 при создании и изменении сохраняет только часть полей
+  - url: https://github.com/keycloak/keycloak/issues/44403
+    fix: https://github.com/keycloak/keycloak/pull/45309
+    product: Keycloak
+    closed: '2026-01-12'
+    summary: Динамическая регистрация игнорирует запрошенный token_endpoint_auth_method
+  - url: https://github.com/keycloak/keycloak/issues/48432
+    fix: https://github.com/keycloak/keycloak/pull/48885
+    product: Keycloak
+    closed: '2026-05-12'
+    summary: Кэшированное представление клиента возвращает значение одного флага вместо другого
 RWB-0102:
   pattern: Удаление ресурса с зависимыми объектами выполняется по правилам каскада
   checks:
@@ -4120,6 +4336,11 @@ RWB-0102:
     product: Kong
     closed: '2021-10-05'
     summary: После удаления upstream с именем хоста сервиса запросы к сервису навсегда дают 503.
+  - url: https://github.com/keycloak/keycloak/issues/43516
+    fix: https://github.com/keycloak/keycloak/pull/43566
+    product: Keycloak
+    closed: '2025-10-31'
+    summary: Удаление клиента при миллионах сессий длится дольше жизни токена и завершается 401
 RWB-0103:
   pattern: Неизменяемые поля нельзя изменить после создания
   checks:
@@ -4131,6 +4352,11 @@ RWB-0103:
     product: Directus
     closed: '2026-08-21'
     summary: Идентификатор экземпляра в настройках меняется через PATCH
+  - url: https://github.com/keycloak/keycloak/issues/47733
+    fix: https://github.com/keycloak/keycloak/pull/47805
+    product: Keycloak
+    closed: '2026-04-20'
+    summary: Обновление по внутреннему id в пути перезаписывает неизменяемый alias
 RWB-0104:
   pattern: Ссылка на несуществующий или чужой связанный ресурс отклоняется
   checks:
@@ -4327,6 +4553,11 @@ RWB-0108:
     product: Kubernetes
     closed: '2026-06-10'
     summary: Сервер продолжает слать запросы вебхуку на экземпляр, удалённый из эндпоинтов, по старым TCP-соединениям
+  - url: https://github.com/keycloak/keycloak/issues/43561
+    fix: https://github.com/keycloak/keycloak/pull/43580
+    product: Keycloak
+    closed: '2025-10-20'
+    summary: В одном из режимов запуска сервер не завершается мягко по SIGTERM, клиенты получают таймауты
 RWB-0109:
   pattern: Отказ некритичной зависимости не ломает основной функционал
   checks:
@@ -4441,6 +4672,11 @@ RWB-0114:
     product: Supabase Auth
     closed: '2025-06-16'
     summary: Повторное приглашение уже приглашённого пользователя даёт 500 из-за нарушения уникального ключа email
+  - url: https://github.com/keycloak/keycloak/issues/45747
+    fix: https://github.com/keycloak/keycloak/pull/46024
+    product: Keycloak
+    closed: '2026-02-13'
+    summary: Можно создать несколько IdP с одинаковым issuer, что ломает определение пользователей
 RWB-0115:
   pattern: Пустые объект, массив и строка
   checks:
@@ -5036,6 +5272,11 @@ RWB-0131:
     product: Apollo Server
     closed: '2017-06-28'
     summary: POST без тела передаётся в выполнение GraphQL без query и вызывает исключение
+  - url: https://github.com/keycloak/keycloak/issues/48459
+    fix: https://github.com/keycloak/keycloak/pull/48478
+    product: Keycloak
+    closed: '2026-04-30'
+    summary: Обновление роли без имени даёт 500
 RWB-0132:
   pattern: Защитные HTTP-заголовки
   checks:
@@ -5086,6 +5327,11 @@ RWB-0133:
     product: froxlor/froxlor
     closed: '2026-08-18'
     summary: Ответы API get и listing содержат хэши паролей и TOTP-секреты
+  - url: https://github.com/keycloak/keycloak/issues/45728
+    fix: https://github.com/keycloak/keycloak/pull/45796
+    product: Keycloak
+    closed: '2026-01-28'
+    summary: Неаутентифицированный эндпоинт конфигурации консоли отдаёт секрет клиента, если клиент сделан конфиденциальным
 RWB-0134:
   pattern: Сортировка по неизвестному полю
   checks:
@@ -5302,6 +5548,11 @@ RWB-0136:
     product: Kubernetes
     closed: '2025-06-25'
     summary: Список с resourceVersion из будущего и limit даёт 500 с сообщением хранилища вместо документированного 504
+  - url: https://github.com/keycloak/keycloak/issues/44540
+    fix: https://github.com/keycloak/keycloak/pull/44541
+    product: Keycloak
+    closed: '2025-12-02'
+    summary: Создание клиента в admin API v2 возвращает 200 вместо 201
 RWB-0137:
   pattern: Границы длины строки
   checks:
@@ -5451,6 +5702,21 @@ RWB-0142:
     product: PostgREST
     closed: '2025-05-13'
     summary: JWT с ролью, которой нет на сервере, даёт 400 вместо 401, как остальные ошибки JWT
+  - url: https://github.com/keycloak/keycloak/issues/46848
+    fix: https://github.com/keycloak/keycloak/pull/46849
+    product: Keycloak
+    closed: '2026-03-23'
+    summary: DPoP-доказательство с jwk неподдерживаемого типа даёт 500
+  - url: https://github.com/keycloak/keycloak/issues/46669
+    fix: https://github.com/keycloak/keycloak/pull/46670
+    product: Keycloak
+    closed: '2026-03-03'
+    summary: Федеративное утверждение клиента без найденного клиента вызывает NullPointerException
+  - url: https://github.com/keycloak/keycloak/issues/45003
+    fix: https://github.com/keycloak/keycloak/pull/45320
+    product: Keycloak
+    closed: '2026-01-12'
+    summary: client_assertion с несовпадающими iss и sub прерывает аутентификацию без состояния и вызывает NPE
 RWB-0143:
   pattern: Protected operation rejects missing credentials
   checks:
@@ -5936,6 +6202,16 @@ RWB-0147:
     product: snipe/snipe-it
     closed: '2026-08-19'
     summary: Просмотр записи обслуживания не проверяет права, в отличие от остальных действий контроллера
+  - url: https://github.com/keycloak/keycloak/issues/46933
+    fix: https://github.com/keycloak/keycloak/pull/46937
+    product: Keycloak
+    closed: '2026-03-06'
+    summary: Условие политики клиента по scope не проверяется для password grant
+  - url: https://github.com/keycloak/keycloak/issues/45740
+    fix: https://github.com/keycloak/keycloak/pull/46283
+    product: Keycloak
+    closed: '2026-02-19'
+    summary: Условие политики по типу клиента не срабатывает при запросе токена
 RWB-0148:
   pattern: Bulk endpoint enforces ownership per item
   checks:
@@ -6319,6 +6595,11 @@ RWB-0152:
     product: Umbraco.Cms
     closed: '2026-03-11'
     summary: Редактор назначает домены узлам контента, к которым у него нет доступа
+  - url: https://github.com/keycloak/keycloak/issues/46658
+    fix: https://github.com/keycloak/keycloak/pull/46789
+    product: Keycloak
+    closed: '2026-03-03'
+    summary: SCIM PUT изменяет объект по id из тела, а не из пути
 RWB-0153:
   pattern: User cannot grant self a higher role
   checks:
@@ -6527,6 +6808,11 @@ RWB-0158:
     product: code.gitea.io/gitea
     closed: '2026-07-21'
     summary: Списки запусков и заданий на уровне организации отдают данные всех репозиториев без проверки прав на каждый
+  - url: https://github.com/keycloak/keycloak/issues/48324
+    fix: https://github.com/keycloak/keycloak/pull/48385
+    product: Keycloak
+    closed: '2026-05-04'
+    summary: Админский фильтр поиска тикетов отбрасывает ограничение по серверу ресурсов и портит кэш
 RWB-0159:
   pattern: Tenant A cannot mutate tenant B data
   checks:
@@ -6587,6 +6873,11 @@ RWB-0160:
     product: github.com/obot-platform/obot
     closed: '2026-09-18'
     summary: Токен, выпущенный для другого ресурса, принимается основным API
+  - url: https://github.com/keycloak/keycloak/issues/46717
+    fix: https://github.com/keycloak/keycloak/pull/46943
+    product: Keycloak
+    closed: '2026-03-09'
+    summary: UMA-грант принимает ID-токен, выданный другому клиенту
 RWB-0161:
   pattern: Expired access token is rejected
   checks:
@@ -6613,6 +6904,11 @@ RWB-0161:
     product: org.apache.camel:camel-keycloak
     closed: '2026-07-06'
     summary: Проверка токена не включает проверку exp и nbf
+  - url: https://github.com/keycloak/keycloak/issues/46716
+    fix: https://github.com/keycloak/keycloak/commit/63bf73362bf50635295f55d6aea260a4f7989eaa
+    product: Keycloak
+    closed: '2026-03-09'
+    summary: Выдача RPT по UMA принимает просроченный ID-токен в claim_token
 RWB-0162:
   pattern: Protected operation rejects unauthenticated requests
   checks:
@@ -6777,6 +7073,16 @@ RWB-0166:
     product: PostgREST
     closed: '2023-04-28'
     summary: Вставка с missing=default и вычисляемой колонкой в списке колонок давала ошибку «колонка не существует»
+  - url: https://github.com/keycloak/keycloak/issues/44785
+    fix: https://github.com/keycloak/keycloak/pull/44943
+    product: Keycloak
+    closed: '2026-01-07'
+    summary: Атрибут со значением по умолчанию, недоступный пользователю, блокирует первый вход через внешний IdP
+  - url: https://github.com/keycloak/keycloak/issues/44807
+    fix: https://github.com/keycloak/keycloak/commit/f9d20b84be19d57f3eb2e3b26ba682f7cbad4882
+    product: Keycloak
+    closed: '2026-01-12'
+    summary: Пустые необязательные поля области доступа сохраняются пустыми строками вместо значений по умолчанию
 RWB-0167:
   pattern: Взаимозависимые поля валидируются совместно
   checks:
@@ -6969,6 +7275,11 @@ RWB-0175:
     product: Kubernetes
     closed: '2025-10-10'
     summary: Расписание cron вида «TZ=0» вызывает панику сервера и разрыв потока вместо ошибки валидации
+  - url: https://github.com/keycloak/keycloak/issues/46192
+    fix: https://github.com/keycloak/keycloak/pull/46536
+    product: Keycloak
+    closed: '2026-02-23'
+    summary: Настройки почты принимают некорректные адреса отправителя и reply-to
 RWB-0176:
   pattern: Пробелы по краям и строки из пробелов обрабатываются согласованно
   checks:
@@ -7187,6 +7498,11 @@ RWB-0187:
     product: org.springframework.security:spring-security-web
     closed: '2026-06-10'
     summary: Нестандартный CN сертификата клиента приводил к чтению неверного имени пользователя
+  - url: https://github.com/keycloak/keycloak/issues/46647
+    fix: https://github.com/keycloak/keycloak/pull/46652
+    product: Keycloak
+    closed: '2026-02-28'
+    summary: Цепочка сертификатов из заголовка прокси длиннее настройки вызывает ошибку
 RWB-0188:
   pattern: Ограничение доступа по списку адресов и подсетей работает на границах подсети для IPv4 и IPv6 — адреса вне разрешённой
     подсети получают отказ
@@ -7362,6 +7678,11 @@ RWB-0191:
     product: org.springframework:spring-webflux
     closed: '2026-06-09'
     summary: 'Фиксация сессии: известный ID сессии сохранялся после входа'
+  - url: https://github.com/keycloak/keycloak/issues/46239
+    fix: https://github.com/keycloak/keycloak/pull/46578
+    product: Keycloak
+    closed: '2026-03-06'
+    summary: Повторно использованная cookie сессии аутентификации привязывает токены второго пользователя к сессии первого
 RWB-0192:
   pattern: Refresh, ID или сервисный токен не принимается как access-токен
   checks:
@@ -7412,6 +7733,11 @@ RWB-0193:
     product: Umbraco.Cms
     closed: '2025-01-21'
     summary: По кодам ответа и времени API управления можно определить существование учётки
+  - url: https://github.com/keycloak/keycloak/issues/46517
+    fix: https://github.com/keycloak/keycloak/pull/46607
+    product: Keycloak
+    closed: '2026-03-31'
+    summary: Разные ошибки для отключённой учётки с неверным паролем в разных потоках входа
 RWB-0194:
   pattern: Авторизация применяется на уровне полей и вложенных резолверов
   checks:
@@ -7606,6 +7932,11 @@ RWB-0202:
     product: Supabase Auth
     closed: '2024-04-15'
     summary: 'Вход через linkedin_oidc падает с 500: ожидаемый issuer не совпадает с фактическим issuer провайдера'
+  - url: https://github.com/keycloak/keycloak/issues/45590
+    fix: https://github.com/keycloak/keycloak/pull/45591
+    product: Keycloak
+    closed: '2026-01-20'
+    summary: Issuer внешнего IdP читается из другого поля конфигурации, проверка iss не работает
 RWB-0203:
   pattern: Revoked token cannot be reused
   checks:
@@ -7617,6 +7948,11 @@ RWB-0203:
     product: org.keycloak:keycloak-services
     closed: '2026-05-28'
     summary: Отозванный refresh-токен снова принимается после перезапуска сервера — видно по ответу эндпоинта токенов
+  - url: https://github.com/keycloak/keycloak/issues/43218
+    fix: https://github.com/keycloak/keycloak/pull/43245
+    product: Keycloak
+    closed: '2025-10-07'
+    summary: Access-токен, полученный обменом токенов, нельзя отозвать через эндпоинт отзыва
 RWB-0204:
   pattern: Token with invalid signature is rejected
   checks:
@@ -7638,6 +7974,11 @@ RWB-0204:
     product: PostgREST
     closed: '2025-04-16'
     summary: После смены секрета подписи JWT с перезагрузкой конфигурации ранее закэшированные токены продолжают приниматься
+  - url: https://github.com/keycloak/keycloak/issues/44217
+    fix: https://github.com/keycloak/keycloak/pull/44393
+    product: Keycloak
+    closed: '2025-11-25'
+    summary: JWT authorization grant при отключённой проверке подписи провайдера — нужен явный отказ
 RWB-0205:
   pattern: Размер и частота сообщений ограничены
   checks:
@@ -8245,6 +8586,11 @@ RWB-0244:
       Magick.NET-Q8-OpenMP-x64, Magick.NET-Q8-arm64, Magick.NET-Q8-x64, Magick.NET-Q8-x86
     closed: '2026-02-24'
     summary: 'Кодировщики PostScript и HTML не экранируют данные из файла: внедрение PostScript-кода и HTML'
+  - url: https://github.com/keycloak/keycloak/issues/48241
+    fix: https://github.com/keycloak/keycloak/pull/48276
+    product: Keycloak
+    closed: '2026-04-21'
+    summary: Настраиваемый текст встраивается в JavaScript страницы без экранирования
 RWB-0245:
   pattern: Контекст трассировки принимается и передаётся дальше
   checks:
@@ -8289,6 +8635,11 @@ RWB-0246:
     product: activestorage
     closed: '2024-02-27'
     summary: 'Отдача файлов шла с Set-Cookie сессии и Cache-Control: public, прокси мог закэшировать чужую сессию'
+  - url: https://github.com/keycloak/keycloak/issues/46750
+    fix: https://github.com/keycloak/keycloak/pull/46979
+    product: Keycloak
+    closed: '2026-03-09'
+    summary: Ответ-ошибка userinfo без заголовков запрета кэширования
 RWB-0247:
   pattern: Low-privilege role cannot perform privileged action
   checks:
@@ -8359,6 +8710,11 @@ RWB-0248:
     product: camaleon_cms
     closed: '2025-03-14'
     summary: Операция смены пароля пропускала все параметры через permit!, позволяя повысить роль
+  - url: https://github.com/keycloak/keycloak/issues/47536
+    fix: https://github.com/keycloak/keycloak/pull/47616
+    product: Keycloak
+    closed: '2026-04-01'
+    summary: Обновление пользователя через SCIM меняет членство в группах без права на членство
 RWB-0249:
   pattern: Lower role cannot invoke higher-role route via alternate method
   checks:
@@ -8739,6 +9095,11 @@ RWB-0279:
     product: Kong
     closed: '2021-08-24'
     summary: Объект с весом 0 есть в списке, но чтение по ключу даёт 404.
+  - url: https://github.com/keycloak/keycloak/issues/43718
+    fix: https://github.com/keycloak/keycloak/pull/43743
+    product: Keycloak
+    closed: '2025-10-28'
+    summary: При регистрации с email вместо логина и запрете редактировать email атрибут email не сохраняется
 RWB-0280:
   pattern: Согласование Accept
   checks:
@@ -8921,6 +9282,11 @@ RWB-0291:
     product: github.com/zitadel/zitadel
     closed: '2026-09-11'
     summary: JWT внешнего IdP без exp принимается бессрочно
+  - url: https://github.com/keycloak/keycloak/issues/46303
+    fix: https://github.com/keycloak/keycloak/pull/46391
+    product: Keycloak
+    closed: '2026-02-17'
+    summary: Assertion внешнего IdP с iat на 5 минут в прошлом всегда отклоняется, настройки допуска не помогают
 RWB-0292:
   pattern: Одноразовый код нельзя использовать повторно и после выдачи нового
   checks:
@@ -8943,6 +9309,11 @@ RWB-0293:
     product: github.com/cloudreve/Cloudreve/v4
     closed: '2026-09-22'
     summary: Проверка и списание квоты хранилища неатомарны
+  - url: https://github.com/keycloak/keycloak/issues/48040
+    fix: https://github.com/keycloak/keycloak/pull/48064
+    product: Keycloak
+    closed: '2026-04-15'
+    summary: Превышение общего лимита сессий при непревышенном лимите клиента даёт ошибку входа
 RWB-0294:
   pattern: Каждый RPC сервиса требует аутентификационные метаданные
   checks:
@@ -9250,6 +9621,11 @@ RWB-0314:
     product: Supabase Auth
     closed: '2024-09-11'
     summary: В payload хука отправки письма для смены email поле токена пустое
+  - url: https://github.com/keycloak/keycloak/issues/47452
+    fix: https://github.com/keycloak/keycloak/pull/47712
+    product: Keycloak
+    closed: '2026-04-02'
+    summary: Описание развёрнутой политики не возвращается API
 RWB-0315:
   pattern: Машиночитаемые коды ошибок стабильны и задокументированы
   checks:
@@ -9261,6 +9637,21 @@ RWB-0315:
     product: Supabase Auth
     closed: '2024-08-15'
     summary: Ошибка неверных учётных данных при выбранной версии API приходит без машиночитаемого кода
+  - url: https://github.com/keycloak/keycloak/issues/48721
+    fix: https://github.com/keycloak/keycloak/pull/48945
+    product: Keycloak
+    closed: '2026-05-15'
+    summary: Интроспекция при ошибке аутентификации клиента возвращает неверный код ошибки
+  - url: https://github.com/keycloak/keycloak/issues/43270
+    fix: https://github.com/keycloak/keycloak/pull/43281
+    product: Keycloak
+    closed: '2025-10-08'
+    summary: Запрос CIBA без client assertion у клиента с private_key_jwt получает unauthorized_client вместо invalid_client
+  - url: https://github.com/keycloak/keycloak/issues/43269
+    fix: https://github.com/keycloak/keycloak/pull/43281
+    product: Keycloak
+    closed: '2025-10-08'
+    summary: Запрос токена без client assertion у клиента с private_key_jwt получает unauthorized_client вместо invalid_client
 RWB-0316:
   pattern: Поля extensions ошибки GraphQL (code и пользовательские) присутствуют по документированной структуре ровно в одном
     месте — без копий во вложенных объектах (exception, originalError)
@@ -9365,6 +9756,11 @@ RWB-0324:
     closed: '2026-10-13'
     summary: Fallback локализации добавляет присланные клиентом синтетические имена культур в глобальный кэш — неограниченный
       рост памяти без аутентификации
+  - url: https://github.com/keycloak/keycloak/issues/53999
+    fix: https://github.com/keycloak/keycloak/pull/54012
+    product: Keycloak
+    closed: '2026-10-15'
+    summary: Параметр языка из запроса без проверки записывается в cookie ответа
 RWB-0325:
   pattern: Gauge-метрики с известными границами остаются в них и согласуются с фактическим состоянием после сбоев и восстановления
     — например, доступные соединения в пределах от 0 до размера пула при обрывах и переподключениях к БД
@@ -9522,6 +9918,11 @@ RWB-0336:
     product: PostgREST
     closed: '2025-02-21'
     summary: Запрос к несуществующему ресурсу с параметром вложения возвращает 400 «нет связи» вместо 404
+  - url: https://github.com/keycloak/keycloak/issues/48806
+    fix: https://github.com/keycloak/keycloak/pull/48807
+    product: Keycloak
+    closed: '2026-05-25'
+    summary: Эндпоинт отключённой функции отвечает 500 вместо 404
 RWB-0337:
   pattern: Запрос страницы за последней возвращает пустой результат без ошибки
   checks:
@@ -9586,6 +9987,11 @@ RWB-0339:
     product: PostgREST
     closed: '2022-12-15'
     summary: Подсказка ошибки «связь не найдена» предлагала перезагрузить кэш вместо указания на опечатку
+  - url: https://github.com/keycloak/keycloak/issues/45812
+    fix: https://github.com/keycloak/keycloak/pull/46528
+    product: Keycloak
+    closed: '2026-02-25'
+    summary: password grant при invalid_grant отвечает 401 вместо 400
 RWB-0340:
   pattern: Authorization failures do not disclose protected data
   checks:
@@ -9598,3 +10004,217 @@ RWB-0340:
     closed: '2026-03-06'
     summary: Подсказка «Perhaps you meant the table» подбирается с большим нечётким расстоянием и раскрывает имена таблиц,
       на которые у пользователя нет прав
+  - url: https://github.com/keycloak/keycloak/issues/48143
+    fix: https://github.com/keycloak/keycloak/pull/48198
+    product: Keycloak
+    closed: '2026-04-20'
+    summary: Проверка прав после политики даёт 400 вместо 403 и раскрывает существование клиента
+  - url: https://github.com/keycloak/keycloak/issues/46010
+    fix: https://github.com/keycloak/keycloak/pull/46056
+    product: Keycloak
+    closed: '2026-02-13'
+    summary: Admin API v2 возвращает 404 вместо 403 для несуществующего клиента без права на список
+RWB-0341:
+  pattern: URI, которые формирует сервер (otpauth, ссылки в письмах, Location, redirect), кодируют значения по правилам своей
+    части (пробел — %20 в пути, + только в query по форме) — после декодирования значение совпадает с исходным
+  checks:
+  - CONTRACT-GENERATED-URI-ENCODING
+  batch: keycloak
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/52296
+    fix: https://github.com/keycloak/keycloak/pull/52299
+    product: Keycloak
+    closed: '2026-10-13'
+    summary: Сервер формирует otpauth-URI с неверным кодированием пробела
+RWB-0342:
+  pattern: Обязательный шаг процесса (подтверждение email, смена пароля, настройка второго фактора) не назначается пользователю,
+    который не может его выполнить (нет email, нет нужного канала), — законная операция не блокируется невыполнимым шагом;
+    позитивная пара к BIZ-WORKFLOW-STEP-SKIP
+  checks:
+  - BIZ-IMPOSSIBLE-STEP-NOT-ASSIGNED
+  batch: keycloak
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/48634
+    fix: https://github.com/keycloak/keycloak/pull/49574
+    product: Keycloak
+    closed: '2026-06-02'
+    summary: Обязательное подтверждение email назначается пользователю без email и блокирует получение токена
+RWB-0343:
+  pattern: Если во время многошагового входа (обязательные действия, второй фактор, согласие) пользователя или клиента отключили,
+    последний шаг проверяет их состояние заново — понятная ошибка «отключён», токен не выдаётся, 5xx нет
+  checks:
+  - AUTH-MULTISTEP-LOGIN-STATE-RECHECK
+  batch: keycloak
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/48487
+    fix: https://github.com/keycloak/keycloak/pull/50246
+    product: Keycloak
+    closed: '2026-06-23'
+    summary: Отключённый во время входа пользователь получает токен в implicit/hybrid flow
+  - url: https://github.com/keycloak/keycloak/issues/46738
+    fix: https://github.com/keycloak/keycloak/pull/46878
+    product: Keycloak
+    closed: '2026-03-09'
+    summary: Отключение клиента во время входа приводит к 500 при отправке формы
+RWB-0344:
+  pattern: Регистрация на чужой email с живой незавершённой сессией не даёт входа в аккаунт после того, как владелец сбросил
+    пароль и подтвердил email, — подтверждение и сброс завершают чужие незавершённые сессии регистрации (pre-account takeover)
+  checks:
+  - AUTH-PRE-ACCOUNT-TAKEOVER
+  batch: keycloak
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/48206
+    fix: https://github.com/keycloak/keycloak/pull/48208
+    product: Keycloak
+    closed: '2026-04-20'
+    summary: Ожидающая сессия регистрации злоумышленника завершается входом после подтверждения email жертвой
+  - url: https://github.com/keycloak/keycloak/issues/45568
+    fix: https://github.com/keycloak/keycloak/pull/47538
+    product: Keycloak
+    closed: '2026-04-17'
+    summary: Ожидающая сессия регистрации злоумышленника завершается входом после сброса пароля и подтверждения email жертвой
+RWB-0345:
+  pattern: Операция, где тип ресурса задан в пути (/{type}/{id}), находит идентификатор среди объектов указанного типа для
+    каждого поддерживаемого типа — позитивная матрица по типам; объект другого типа с тем же id не подставляется
+  checks:
+  - RES-TYPED-PATH-LOOKUP
+  batch: keycloak
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/48094
+    fix: https://github.com/keycloak/keycloak/pull/48099
+    product: Keycloak
+    closed: '2026-04-15'
+    summary: Активация процесса для типа CLIENTS ищет объект среди пользователей
+RWB-0346:
+  pattern: Выданные токены остаются действительными после перезапуска сервера (и между экземплярами) — идентификатор ключа
+    подписи (kid) стабилен, ключ публикуется в JWKS, интроспекция и userinfo принимают токен до истечения
+  checks:
+  - RESIL-TOKENS-SURVIVE-RESTART
+  batch: keycloak
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/47495
+    fix: https://github.com/keycloak/keycloak/pull/47752
+    product: Keycloak
+    closed: '2026-04-07'
+    summary: kid симметричного ключа меняется при перезапуске, выданные токены перестают проверяться
+RWB-0347:
+  pattern: Параметры входа, заданные на первом шаге (запомнить меня, locale, scope, prompt), сохраняются через все шаги аутентификации
+    (выбор организации, второй фактор) и влияют на результат — длительная сессия и cookie remember me при rememberMe
+  checks:
+  - AUTH-LOGIN-PARAMS-PRESERVED
+  batch: keycloak
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/47017
+    fix: https://github.com/keycloak/keycloak/pull/47023
+    product: Keycloak
+    closed: '2026-06-10'
+    summary: Флаг remember me теряется при входе с шагом выбора организации
+RWB-0348:
+  pattern: Обмен токена (RFC 8693) без явного scope выдаёт области по умолчанию клиента, запросившего обмен, по документированному
+    правилу — не области исходного или другого клиента
+  checks:
+  - AUTH-TOKEN-EXCHANGE-DEFAULT-SCOPE
+  batch: keycloak
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/45716
+    fix: https://github.com/keycloak/keycloak/commit/0981d2411c73e52c961f36efacef83005270f463
+    product: Keycloak
+    closed: '2026-05-18'
+    summary: При обмене токенов с включёнными динамическими областями берутся области по умолчанию не того клиента
+RWB-0349:
+  pattern: Итог нескольких правил над одним значением в одном запросе (маппинг групп и ролей при входе, правила скидок, политики)
+    детерминирован и соответствует документированному приоритету — повтор операции даёт тот же результат
+  checks:
+  - BIZ-RULES-DETERMINISTIC
+  batch: keycloak
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/44480
+    fix: https://github.com/keycloak/keycloak/commit/37f2488441f1103db6900cb29546c437e05b306e
+    product: Keycloak
+    closed: '2025-11-26'
+    summary: Два правила в одном запросе по-разному решают о членстве в группе, итог зависит от порядка их выполнения
+RWB-0350:
+  pattern: Ограничения системных и административных ролей применяются по идентичности роли (id, область), а не по совпадению
+    имени — пользовательская роль с таким же именем назначается законно, настоящая административная — по правилам
+  checks:
+  - SEC-ROLE-IDENTITY-NOT-NAME
+  batch: keycloak
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/43578
+    fix: https://github.com/keycloak/keycloak/commit/2b785425fa17d54bb8b72eb2dc7f46284c9a6dab
+    product: Keycloak
+    closed: '2025-10-23'
+    summary: Клиентская роль с именем admin в обычной области ограничена как роль администратора сервера
+RWB-0351:
+  pattern: Выход по OIDC (RP-Initiated Logout) без активной сессии на сервере — истекла, offline-доступ, вход через внешний
+    IdP — с валидным id_token_hint и зарегистрированным post_logout_redirect_uri завершается перенаправлением на него без
+    ошибки; недоверенный URI по-прежнему отклоняется
+  checks:
+  - AUTH-OIDC-LOGOUT-WITHOUT-SESSION
+  batch: keycloak
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/46379
+    fix: https://github.com/keycloak/keycloak/pull/46479
+    product: Keycloak
+    closed: '2026-02-27'
+    summary: Выход без SSO-сессии после входа через внешний IdP завершается ошибкой
+RWB-0352:
+  pattern: JWT с alg=none отклоняется
+  checks:
+  - AUTH-JWT-ALG-NONE
+  batch: keycloak
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/48744
+    fix: https://github.com/keycloak/keycloak/pull/48798
+    product: Keycloak
+    closed: '2026-05-12'
+    summary: JWT с alg=none на Bearer-эндпоинте даёт 500 вместо 401
+  - url: https://github.com/keycloak/keycloak/issues/48137
+    fix: https://github.com/keycloak/keycloak/pull/48374
+    product: Keycloak
+    closed: '2026-04-22'
+    summary: JWT без подписи в параметре ссылки-действия даёт NullPointerException и засоряет журнал
+RWB-0353:
+  pattern: Каждый флаг сущности влияет на поведение так, как описано
+  checks:
+  - BIZ-FLAG-EFFECT-MATRIX
+  batch: keycloak
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/44257
+    fix: https://github.com/keycloak/keycloak/pull/44687
+    product: Keycloak
+    closed: '2025-12-09'
+    summary: Включение service account при изменении через DCR не создаёт служебного пользователя
+RWB-0354:
+  pattern: Параллельные удаление и изменение не оставляют ресурс в противоречивом состоянии
+  checks:
+  - CONC-DELETE-VS-UPDATE
+  batch: keycloak
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/45561
+    fix: https://github.com/keycloak/keycloak/pull/45563
+    product: Keycloak
+    closed: '2026-01-28'
+    summary: Оценка разрешений даёт 500, если политики удаляются параллельно
+RWB-0355:
+  pattern: Дублирующиеся ключи JSON
+  checks:
+  - REST-JSON-DUPLICATE-KEYS
+  batch: keycloak
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/45250
+    fix: https://github.com/keycloak/keycloak/pull/45423
+    product: Keycloak
+    closed: '2026-01-15'
+    summary: ID-токен содержит claim address дважды
+RWB-0356:
+  pattern: Семантика PUT
+  checks:
+  - REST-PUT-REPLACEMENT
+  batch: keycloak
+  bugs:
+  - url: https://github.com/keycloak/keycloak/issues/44163
+    fix: https://github.com/keycloak/keycloak/pull/44166
+    product: Keycloak
+    closed: '2025-11-12'
+    summary: Выключение рабочего процесса полным представлением отклоняется валидацией, а имя пропадает

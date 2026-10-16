@@ -39,6 +39,12 @@ checks:
     notes: 'Real-world bug: RWB-0142 (PostgREST/postgrest#3926)'
   - action: Отправить подписанный токен с ролью, которой нет на сервере, и проверить 401
     notes: 'Real-world bug: RWB-0142 (PostgREST/postgrest#3601)'
+  - action: Отправить DPoP-доказательство с jwk неподдерживаемого типа (kty) и проверить 400 invalid_dpop_proof, а не 5xx
+    notes: 'Real-world bug: RWB-0142 (keycloak/keycloak#46848)'
+  - action: Отправить федеративное client assertion, по которому не находится клиент, и ожидать invalid_client без 5xx
+    notes: 'Real-world bug: RWB-0142 (keycloak/keycloak#46669)'
+  - action: Отправить client_assertion с несовпадающими iss и sub и ожидать invalid_client без 5xx
+    notes: 'Real-world bug: RWB-0142 (keycloak/keycloak#45003)'
   expected:
   - Reject according to authentication policy; do not fall back to anonymous or weaker authentication.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

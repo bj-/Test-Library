@@ -27,6 +27,8 @@ checks:
   - action: Пройти вход через каждого встроенного OIDC-провайдера с актуальным значением iss его ID-токена — законный токен
       принимается
     notes: 'Real-world bug: RWB-0202 (supabase/auth#1533)'
+  - action: Настроить у внешнего провайдера issuer, отличный от iss его токенов, и проверить, что обмен токена и вход отклоняются
+    notes: 'Real-world bug: RWB-0202 (keycloak/keycloak#45590)'
   expected:
   - Token is rejected; untrusted identity cannot access protected resources.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

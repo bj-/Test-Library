@@ -387,6 +387,9 @@ checks:
     notes: 'Real-world bug: RWB-0244 (GHSA-7gww-x7fh-jf9j)'
   - action: Загрузить файл со строкой <script> в метаданных и запросить конвертацию в HTML; проверить экранирование в результате
     notes: 'Real-world bug: RWB-0244 (GHSA-rw6c-xp26-225v)'
+  - action: Сохранить в настраиваемом тексте (сообщение, заголовок) кавычку и </script> и проверить, что страница, встраивающая
+      его в JavaScript, экранирует значение для JS-контекста
+    notes: 'Real-world bug: RWB-0244 (keycloak/keycloak#48241)'
   expected:
   - 'API возвращает данные с Content-Type: application/json, не text/html.'
   - UI экранирует данные; URL-поля не принимают javascript:.
@@ -555,6 +558,9 @@ checks:
   - Доступ к логам тестового окружения.
   steps:
   - action: Передать значения с \n, \r, ANSI escape-последовательностями и поддельной строкой лога, ${jndi:ldap://...}.
+  - action: Отправить в параметре, который попадает в журнал, ANSI escape-последовательности (\u001b[32m) и управляющие символы
+      0–31 и проверить, что в журнале они экранированы
+    notes: 'Real-world bug: RWB-0083 (keycloak/keycloak#47681)'
   expected:
   - Записи в логе экранированы и не разбиваются на поддельные.
   - Lookup-выражения не исполняются.
@@ -1046,6 +1052,9 @@ checks:
     notes: 'Real-world bug: RWB-0090 (GHSA-vw42-752g-5mrp)'
   - action: Передать внутренний IPv4, вложенный в IPv6-адрес NAT64 (64:ff9b::/96), в параметрах с URL и URL вебхуков
     notes: inbox №149
+  - action: Задать URL, к которому сервер дописывает путь, с «;» или «?» в конце и проверить, что исходящий запрос не уходит
+      на произвольный путь
+    notes: 'Real-world bug: RWB-0090 (keycloak/keycloak#45694)'
   expected:
   - Запросы к внутренним адресам и неразрешённым схемам блокируются, в том числе после редиректа и DNS rebinding.
   applicability:

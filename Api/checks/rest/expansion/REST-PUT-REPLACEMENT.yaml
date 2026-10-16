@@ -11,6 +11,7 @@ checks:
   tags:
   - contract
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -19,6 +20,9 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Отправить полное представление ресурса, изменив только разрешённое поле, и проверить, что обновление принято,
+      а остальные поля сохранены
+    notes: 'Real-world bug: RWB-0356 (keycloak/keycloak#44163)'
   expected:
   - состояние после PUT соответствует полной модели запроса
   applicability:
@@ -38,4 +42,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0356'

@@ -140,6 +140,9 @@ checks:
   - action: Вывести экземпляр вызываемого вебхука из эндпоинтов сервиса и проверить, что сервер в пределах срока прекращает
       слать ему запросы по старым соединениям
     notes: 'Real-world bug: RWB-0108 (kubernetes/kubernetes#127335)'
+  - action: Повторить остановку по SIGTERM для каждого режима запуска сервиса (в том числе оптимизированного) и проверить,
+      что запросы не обрываются по таймауту
+    notes: 'Real-world bug: RWB-0108 (keycloak/keycloak#43561)'
   expected:
   - Нет ошибок сверх порога; длительные запросы завершаются.
   applicability:
@@ -362,3 +365,41 @@ checks:
   references:
   - Смежные — HARD-TLS-ONLY, RESIL-ENCRYPTION-KEY-ROTATION
   - 'Real-world bug: RWB-0219'
+- id: RESIL-TOKENS-SURVIVE-RESTART
+  status: draft
+  title: Выданные токены действуют после перезапуска сервера
+  category: resilience
+  protocols:
+  - generic
+  kind: reliability
+  priority: P2
+  tags:
+  - reliability
+  - token-lifecycle
+  - real-world-bug
+  - nightly
+  preconditions:
+  - Нужна возможность перезапустить сервер (и запустить второй экземпляр, если их несколько).
+  steps:
+  - action: Получить токен, перезапустить сервер, проверить токен интроспекцией и userinfo и сравнить kid с опубликованными
+      ключами.
+  expected:
+  - При неизменном ключевом материале kid стабилен и ключ есть в JWKS; токен принимается до истечения. Ротация ключа — по
+    документированной политике.
+  applicability:
+    when:
+    - Сервер выдаёт подписанные токены.
+    skip_when:
+    - Нет доступа к перезапуску стенда.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - RFC 7517 §4.5
+  - Смежная — RESIL-ENCRYPTION-KEY-ROTATION
+  - 'Real-world bug: RWB-0346'

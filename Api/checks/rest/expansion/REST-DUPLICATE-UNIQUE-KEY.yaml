@@ -30,6 +30,8 @@ checks:
     notes: 'Real-world bug: RWB-0114 (directus/directus#25784)'
   - action: Повторить приглашение на email пользователя, который уже приглашён и не принял приглашение
     notes: 'Real-world bug: RWB-0114 (supabase/auth#2057)'
+  - action: Создать два провайдера идентификации с одинаковым issuer и проверить, что второй отклонён 4xx
+    notes: 'Real-world bug: RWB-0114 (keycloak/keycloak#45747)'
   expected:
   - конфликт обработан документированно, второй уникальный ресурс не создаётся
   applicability:

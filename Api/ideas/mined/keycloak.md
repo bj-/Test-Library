@@ -6,8 +6,8 @@
 
 ## Сводка
 
-- Новых паттернов: 12 → идей: 10 (принять: 10, отклонить: 0, не решено: 0).
-- Пруфы к существующим: 92 багов → 66 записей; новых шагов-вариантов: 87.
+- Новых паттернов: 15 → идей: 13 (принять: 11, отклонить: 2, не решено: 0).
+- Пруфы к существующим: 89 багов → 65 записей; новых шагов-вариантов: 84.
 
 ## Новые идеи
 
@@ -25,6 +25,9 @@
 | 8 | accept | `AUTH-TOKEN-EXCHANGE-DEFAULT-SCOPE` (RWB-0348)<br>`checks/security/authentication-session.yaml` | Обмен токена (RFC 8693) без явного scope выдаёт области по умолчанию клиента, запросившего обмен, по документированному правилу — не области исходного или другого клиента | [keycloak/keycloak#45716](https://github.com/keycloak/keycloak/issues/45716) |
 | 9 | accept | `BIZ-RULES-DETERMINISTIC` (RWB-0349)<br>`checks/common/business-logic.yaml` | Итог нескольких правил над одним значением в одном запросе (маппинг групп и ролей при входе, правила скидок, политики) детерминирован и соответствует документированному приоритету — повтор операции даёт тот же результат | [keycloak/keycloak#44480](https://github.com/keycloak/keycloak/issues/44480) |
 | 10 | accept | `SEC-ROLE-IDENTITY-NOT-NAME` (RWB-0350)<br>`checks/security/access-control/SEC-ROLE-IDENTITY-NOT-NAME.yaml` | Ограничения системных и административных ролей применяются по идентичности роли (id, область), а не по совпадению имени — пользовательская роль с таким же именем назначается законно, настоящая административная — по правилам | [keycloak/keycloak#43578](https://github.com/keycloak/keycloak/issues/43578) |
+| 11 | accept | `AUTH-OIDC-LOGOUT-WITHOUT-SESSION` (RWB-0351)<br>`checks/security/authentication-session.yaml` | Выход по OIDC (RP-Initiated Logout) без активной сессии на сервере — истекла, offline-доступ, вход через внешний IdP — с валидным id_token_hint и зарегистрированным post_logout_redirect_uri завершается перенаправлением на него без ошибки; недоверенный URI по-прежнему отклоняется | [keycloak/keycloak#46379](https://github.com/keycloak/keycloak/issues/46379) |
+| 12 | reject | отклонено: Перекрёстное ревью (все три модели) — допустимость client_id ≠ sub зависит от модели доверия федерации (Kubernetes service accounts); правило не универсально и спорит с AUTH-CLIENT-ASSERTION-BINDING | Client assertion с client_id внутреннего клиента и внешним sub принимается | [keycloak/keycloak#48024](https://github.com/keycloak/keycloak/issues/48024) |
+| 13 | reject | отклонено: Перекрёстное ревью (Gemini, Qwen) — маркер «+» в webOrigins — специфика Keycloak; общая часть покрыта VAL-STRING-FORMAT | Специальное значение-маркер в поле URI принимается проверкой формата | [keycloak/keycloak#45587](https://github.com/keycloak/keycloak/issues/45587) |
 
 ## Пруфы к существующим
 
@@ -39,19 +42,13 @@
 | [keycloak/keycloak#46634](https://github.com/keycloak/keycloak/issues/46634) | extends | Сделать неудачные попытки, дождаться сброса счётчика по времени, повторить и проверить, что счётчик и время последней ошибки ведут себя как в первом цикле |
 | [keycloak/keycloak#44474](https://github.com/keycloak/keycloak/issues/44474) | extends | Несколько раз войти с верным паролем при превышенном лимите сессий и проверить, что учётка не блокируется защитой от перебора |
 
-### AUTH-CLIENT-ASSERTION-BINDING — Client assertion принимается только с ключом клиента, указанного в ней (RWB-0185, багов: 1)
-
-| Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
-|---|---|---|
-| [keycloak/keycloak#48024](https://github.com/keycloak/keycloak/issues/48024) | extends | Отправить client_credentials с федеративным client assertion, где client_id — внутренний клиент, а sub — внешний субъект, настроенный для этого клиента; токен выдаётся по настройке |
-
 ### AUTH-CLIENT-CERT-IDENTITY — Личность из сертификата клиента извлекается однозначно (RWB-0187, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
 | [keycloak/keycloak#46647](https://github.com/keycloak/keycloak/issues/46647) | extends | Передать через прокси цепочку клиентских сертификатов длиннее настроенной — используются первые N, аутентификация по сертификату проходит |
 
-### AUTH-JWT-ALG-NONE — JWT с alg=none отклоняется (RWB-0351, багов: 2)
+### AUTH-JWT-ALG-NONE — JWT с alg=none отклоняется (RWB-0352, багов: 2)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -64,11 +61,10 @@
 |---|---|---|
 | [keycloak/keycloak#46303](https://github.com/keycloak/keycloak/issues/46303) | extends | Отправить assertion с iat в прошлом в пределах настроенного максимального возраста и ожидать, что оно принимается |
 
-### AUTH-LOGOUT-INVALIDATES — После выхода токен и сессия недействительны (RWB-0059, багов: 2)
+### AUTH-LOGOUT-INVALIDATES — После выхода токен и сессия недействительны (RWB-0059, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
-| [keycloak/keycloak#46379](https://github.com/keycloak/keycloak/issues/46379) | extends | Вызвать выход с id_token_hint и post_logout_redirect_uri без активной сессии — перенаправление на post_logout_redirect_uri без ошибки |
 | [keycloak/keycloak#43853](https://github.com/keycloak/keycloak/issues/43853) | extends | Выполнить выход по id_token_hint без cookie сразу после входа и проверить, что следующий вход создаёт новую сессию аутентификации, а не продолжает прежнюю |
 
 ### AUTH-OAUTH-PAR — Pushed Authorization Request действует как прямой запрос авторизации и не ограничивает длительность входа (RWB-0020, багов: 1)
@@ -121,7 +117,7 @@
 |---|---|---|
 | [keycloak/keycloak#44488](https://github.com/keycloak/keycloak/issues/44488) | extends | Завершить действие по ссылке из письма, запущенное запросом авторизации, и проверить, что перенаправление на callback содержит code и state исходного запроса |
 
-### BIZ-FLAG-EFFECT-MATRIX — Каждый флаг сущности влияет на поведение так, как описано (RWB-0352, багов: 1)
+### BIZ-FLAG-EFFECT-MATRIX — Каждый флаг сущности влияет на поведение так, как описано (RWB-0353, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -133,7 +129,7 @@
 |---|---|---|
 | [keycloak/keycloak#48040](https://github.com/keycloak/keycloak/issues/48040) | extends | Превысить общий лимит через одного клиента и выполнить операцию через другого, у которого частный лимит не превышен, — проверить поведение по политике без 5xx |
 
-### CONC-DELETE-VS-UPDATE — Параллельные удаление и изменение не оставляют ресурс в противоречивом состоянии (RWB-0353, багов: 1)
+### CONC-DELETE-VS-UPDATE — Параллельные удаление и изменение не оставляют ресурс в противоречивом состоянии (RWB-0354, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -303,13 +299,13 @@
 |---|---|---|
 | [keycloak/keycloak#45812](https://github.com/keycloak/keycloak/issues/45812) | extends | Отправить password grant с неверным паролем и проверить статус 400 при error=invalid_grant по RFC 6749 §5.2 |
 
-### REST-JSON-DUPLICATE-KEYS — Дублирующиеся ключи JSON (RWB-0354, багов: 1)
+### REST-JSON-DUPLICATE-KEYS — Дублирующиеся ключи JSON (RWB-0355, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
 | [keycloak/keycloak#45250](https://github.com/keycloak/keycloak/issues/45250) | extends | Разобрать JSON ответа и payload выданного токена строгим парсером — дублирующихся ключей нет |
 
-### REST-PUT-REPLACEMENT — Семантика PUT (RWB-0355, багов: 1)
+### REST-PUT-REPLACEMENT — Семантика PUT (RWB-0356, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -447,10 +443,9 @@
 | [keycloak/keycloak#47063](https://github.com/keycloak/keycloak/issues/47063) | extends | Создать политику с условием по контексту изменяющего и вызвать служебные операции над объектом (перегенерация секрета); ожидать ответ без 5xx |
 | [keycloak/keycloak#44156](https://github.com/keycloak/keycloak/issues/44156) | extends | Сохранить поток входа, где шаг, требующий пользователя, стоит до его идентификации, и проверить, что вход отвечает контролируемой ошибкой без 5xx |
 
-### VAL-STRING-FORMAT — Форматы строк (email, uuid, uri, date, phone) проверяются (RWB-0175, багов: 2)
+### VAL-STRING-FORMAT — Форматы строк (email, uuid, uri, date, phone) проверяются (RWB-0175, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
 | [keycloak/keycloak#46192](https://github.com/keycloak/keycloak/issues/46192) | extends | Сохранить настройки почты с некорректными адресами отправителя и reply-to и проверить 400 |
-| [keycloak/keycloak#45587](https://github.com/keycloak/keycloak/issues/45587) | extends | Сохранить в поле URI документированное значение-маркер (webOrigins «+», «*») — принимается проверкой формата |
 

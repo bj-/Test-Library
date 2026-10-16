@@ -45,6 +45,8 @@ checks:
   - action: Назначить узлу контента вне разрешённой пользователю части дерева связанную настройку (домен) через отдельный
       эндпоинт и проверить 403
     notes: 'Real-world bug: RWB-0152 (GHSA-fpvf-fvp5-996r)'
+  - action: Отправить PUT на доступный ресурс с id другого ресурса в теле и проверить 400, другой ресурс не изменён
+    notes: 'Real-world bug: RWB-0152 (keycloak/keycloak#46658)'
   expected:
   - Deny the operation; persisted state of resource A remains unchanged.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

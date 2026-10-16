@@ -39,6 +39,9 @@ checks:
   - action: Запросить список на уровне организации и проверить, что он не содержит элементов из дочерних объектов, к которым
       у пользователя нет доступа
     notes: 'Real-world bug: RWB-0158 (GHSA-frpw-3h2q-4jj6)'
+  - action: Передать в список флаг или дополнительный фильтр (IS_ADMIN=true и т. п.) и проверить, что ограничение по родительскому
+      контейнеру (серверу ресурсов, проекту) сохраняется, а следующий запрос другого контейнера находит свои объекты
+    notes: 'Real-world bug: RWB-0158 (keycloak/keycloak#48324)'
   expected:
   - Returned items are limited to authorized tenant scope regardless of client-supplied filters.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

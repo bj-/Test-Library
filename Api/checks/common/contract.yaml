@@ -24,6 +24,8 @@ checks:
   - action: Execute a valid request and validate the response against the contract.
   - action: Проверить обязательные поля исходящего payload хука для каждого типа события
     notes: 'Real-world bug: RWB-0314 (supabase/auth#1744)'
+  - action: Развернуть объект с описанием в дескрипторе и проверить, что список типов и созданный объект возвращают это описание
+    notes: 'Real-world bug: RWB-0314 (keycloak/keycloak#47452)'
   expected:
   - Required fields are present.
   - Field types and constraints match the schema.
@@ -116,6 +118,9 @@ checks:
   - action: Запросить пользовательский формат ответа вместе с выбором части колонок или вычисляемых колонок и проверить, что
       формат применяется
     notes: 'Real-world bug: RWB-0026 (PostgREST/postgrest#3160)'
+  - action: Запросить список с параметром краткого представления и проверить отсутствие полей полного представления (атрибуты,
+      служебные поля)
+    notes: 'Real-world bug: RWB-0026 (keycloak/keycloak#46296)'
   expected:
   - Возвращаются запрошенные поля с теми же значениями, что в полном ответе; ключ есть, если запрошен или обязателен.
   - Поля сверх запрошенных не возвращаются (кроме обязательных по контракту).
@@ -219,3 +224,39 @@ checks:
   references:
   - Смежные — PAGE-NEXT-LINK-VALID, HTTP-ABSOLUTE-URL-BASE-PATH
   - inbox №60
+- id: CONTRACT-GENERATED-URI-ENCODING
+  status: draft
+  title: URI, которые формирует сервер, кодируют значения по правилам своей части
+  category: contract
+  protocols:
+  - generic
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - real-world-bug
+  - regression
+  preconditions:
+  - Сервер выдаёт URI со значениями пользователя — otpauth, ссылки в письмах, Location, redirect.
+  steps:
+  - action: Создать объекты со значениями с пробелом, +, &, /, кириллицей и получить URI, где они участвуют (путь, query,
+      fragment); разобрать URI.
+  expected:
+  - Каждая часть закодирована по правилам своей схемы (пробел — %20 в пути); после декодирования значение совпадает с исходным.
+  applicability:
+    when:
+    - Сервер формирует URI со значениями пользователя.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - RFC 3986 §2.1, §3.3
+  - Входящие URL — REST-PATH-PARAM-ENCODING, REST-QUERY-ENCODING
+  - 'Real-world bug: RWB-0341'

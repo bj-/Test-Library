@@ -23,6 +23,9 @@ checks:
   - action: 'Запросить публично кэшируемый ресурс (файл) с cookie сессии и проверить, что ответ с Cache-Control: public не
       содержит Set-Cookie'
     notes: 'Real-world bug: RWB-0246 (GHSA-8h22-8cf7-hq6g)'
+  - action: 'Вызвать эндпоинты с токенами (userinfo, token) с недействительными данными и проверить Cache-Control: no-store
+      в ответах-ошибках'
+    notes: 'Real-world bug: RWB-0246 (keycloak/keycloak#46750)'
   expected:
   - общий кэш не отдаёт данные другому субъекту; Cache-Control соответствует политике
   applicability:

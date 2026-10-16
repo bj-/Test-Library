@@ -202,6 +202,9 @@ checks:
     notes: inbox №230
   - action: Параллельно проверять остаток квоты и списывать — проверка и списание атомарны, квота не превышается
     notes: inbox №237
+  - action: Превысить общий лимит через одного клиента и выполнить операцию через другого, у которого частный лимит не превышен,
+      — проверить поведение по политике без 5xx
+    notes: 'Real-world bug: RWB-0293 (keycloak/keycloak#48040)'
   expected:
   - Граница соблюдается точно, параллельные запросы не превышают лимит.
   applicability:
@@ -490,6 +493,9 @@ checks:
   - action: Начать процесс в сессии A, открыть ссылку в сессии B (другие cookie), вернуться в A; повторить для каждого варианта
       потока.
   - action: Открыть ссылку новым клиентом без cookie после перезапуска сервиса.
+  - action: Завершить действие по ссылке из письма, запущенное запросом авторизации, и проверить, что перенаправление на callback
+      содержит code и state исходного запроса
+    notes: 'Real-world bug: RWB-0017 (keycloak/keycloak#44488)'
   expected:
   - Подтверждение учитывается одинаково во всех вариантах; процесс завершается.
   - Без исходной сессии — действие выполняется или понятная ошибка (ссылка истекла, войдите заново), но не 5xx.
@@ -678,6 +684,7 @@ checks:
   tags:
   - contract
   - business-logic
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -685,6 +692,9 @@ checks:
   - У сущности есть флаги (boolean-поля), меняющие поведение.
   steps:
   - action: Для каждого флага выполнить затрагиваемые операции при true и false и в комбинациях с другими флагами.
+  - action: Включить флаг изменением существующего объекта, а не при создании (в том числе через DCR), — зависимые объекты
+      создаются так же, при выключении — удаляются
+    notes: 'Real-world bug: RWB-0353 (keycloak/keycloak#44257)'
   expected:
   - Поведение соответствует описанию; флаг, который ни на что не влияет, — находка.
   applicability:
@@ -705,3 +715,80 @@ checks:
   references:
   - Чек-лист guru99 (пер. О. Алифановой)
   - inbox №79
+  - 'Real-world bug: RWB-0353'
+- id: BIZ-IMPOSSIBLE-STEP-NOT-ASSIGNED
+  status: draft
+  title: Невыполнимый обязательный шаг не назначается и не блокирует законную операцию
+  category: business-logic
+  protocols:
+  - generic
+  kind: positive
+  priority: P2
+  tags:
+  - positive
+  - business-logic
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Процесс назначает обязательные шаги — подтверждение email, смена пароля, второй фактор.
+  steps:
+  - action: Включить обязательный шаг и выполнить операцию (вход, выдача токена) пользователем, у которого нет нужного канала
+      (нет email или телефона).
+  expected:
+  - Невыполнимый шаг не назначается или применяется документированная альтернатива; законная операция не блокируется.
+  applicability:
+    when:
+    - Есть обязательные шаги процессов.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Позитивная пара к BIZ-WORKFLOW-STEP-SKIP
+  - 'Real-world bug: RWB-0342'
+- id: BIZ-RULES-DETERMINISTIC
+  status: draft
+  title: Итог нескольких правил над одним значением детерминирован
+  category: business-logic
+  protocols:
+  - generic
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - business-logic
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Несколько правил в одном запросе влияют на одно значение — маппинг групп и ролей при входе, скидки, политики.
+  steps:
+  - action: Настроить конфликтующие правила и повторить операцию несколько раз.
+  expected:
+  - Результат одинаков при каждом повторе и соответствует документированному приоритету; без документации — неоднозначность
+    фиксируется как находка.
+  applicability:
+    when:
+    - Есть несколько правил над одним значением.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - Смежные — ASYNC-EVENT-ORDERING, CONC-*
+  - 'Real-world bug: RWB-0349'

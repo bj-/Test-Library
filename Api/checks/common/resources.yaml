@@ -25,6 +25,9 @@ checks:
   - action: Read the resource by identifier.
   - action: Создать объект с нулевым значением поля, влияющего на выборку (вес 0), и прочитать его по ключу
     notes: 'Real-world bug: RWB-0279 (Kong/kong#7699)'
+  - action: Зарегистрировать пользователя при запрете редактировать атрибут, который служит логином, и проверить, что атрибут
+      сохранён и возвращается при чтении
+    notes: 'Real-world bug: RWB-0279 (keycloak/keycloak#43718)'
   expected:
   - Create returns the documented success result.
   - Read returns the created resource with expected values.
