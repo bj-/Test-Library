@@ -18,8 +18,7 @@ checks:
   steps:
   - action: Send a request using an unsupported method.
   expected:
-  - Documented status is returned
-  - typically 405 when the method is known but disallowed.
+  - Documented status is returned, typically 405 when the method is known but disallowed.
   - Allow lists supported methods when required by contract.
   applicability:
     when:

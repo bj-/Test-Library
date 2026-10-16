@@ -20,11 +20,8 @@ checks:
   steps:
   - action: Call RPC with invalid enum, invalid business value, or missing semantic requirement.
   expected:
-  - A consistent status is returned
-  - commonly INVALID_ARGUMENT for invalid arguments.
-  - No stack trace
-  - secrets
-  - or internal details are exposed.
+  - A consistent status is returned, commonly INVALID_ARGUMENT for invalid arguments.
+  - No stack trace, secrets, or internal details are exposed.
   applicability:
     when:
     - RPC has validated business fields.
@@ -58,11 +55,7 @@ checks:
   steps:
   - action: Trigger missing-resource, permission, invalid-argument, and state-conflict errors.
   expected:
-  - Documented status codes are used
-  - such as NOT_FOUND
-  - PERMISSION_DENIED
-  - INVALID_ARGUMENT
-  - or FAILED_PRECONDITION.
+  - Documented status codes are used, such as NOT_FOUND, PERMISSION_DENIED, INVALID_ARGUMENT, or FAILED_PRECONDITION.
   - Error details are stable within the contract.
   applicability:
     when:
@@ -92,9 +85,7 @@ checks:
   - regression
   - nightly
   preconditions:
-  - RPC uses server
-  - client
-  - or bidirectional streaming.
+  - RPC uses server, client, or bidirectional streaming.
   steps:
   - action: Open stream, exchange expected messages, and close according to contract.
   - action: Исключение в обработчике стрима — клиент получает ошибку, сервис после этого доступен

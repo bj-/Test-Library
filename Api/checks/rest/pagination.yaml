@@ -21,9 +21,7 @@ checks:
   steps:
   - action: Check minimum, default, maximum, and over-limit page sizes.
   expected:
-  - Values are accepted
-  - clamped
-  - or rejected as documented.
+  - Values are accepted, clamped, or rejected as documented.
   - No gaps or duplicates occur across pages when dataset is unchanged.
   applicability:
     when:

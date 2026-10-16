@@ -1091,8 +1091,7 @@ checks:
   - Ни одна зависимая операция не возвращает 5xx из-за ранее принятых данных.
   applicability:
     when:
-    - Есть операции
-    - использующие сохранённые поля объекта.
+    - Есть операции, использующие сохранённые поля объекта.
     skip_when:
     - Ресурс только хранится и читается без обработки.
   automation:
@@ -1105,8 +1104,7 @@ checks:
     impact: medium
     likelihood: medium
   references:
-  - OWASP ASVS V5 — валидация на входе
-  - а не при использовании
+  - OWASP ASVS V5 — валидация на входе, а не при использовании
   - 'Real-world bug: RWB-0003'
 - id: VAL-UPLOADED-SCHEMA-FORMATS
   status: draft

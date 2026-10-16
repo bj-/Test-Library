@@ -31,8 +31,7 @@ checks:
     when:
     - A response schema is defined.
     skip_when:
-    - The operation intentionally has no payload
-    - such as HTTP 204.
+    - The operation intentionally has no payload, such as HTTP 204.
   automation:
     level: full
     deterministic: true
@@ -67,9 +66,7 @@ checks:
   steps:
   - action: Add an unknown request field or inspect an extended response as applicable.
   expected:
-  - Unknown fields are rejected
-  - ignored
-  - or preserved exactly as documented.
+  - Unknown fields are rejected, ignored, or preserved exactly as documented.
   applicability:
     when:
     - The contract defines unknown-field handling.

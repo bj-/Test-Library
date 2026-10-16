@@ -1349,9 +1349,7 @@ checks:
     when:
     - Cookie-сессии.
     skip_when:
-    - Сессия нужна до входа по ТЗ (корзина
-    - CSRF)
-    - это задокументировано.
+    - Сессия нужна до входа по ТЗ (корзина, CSRF), это задокументировано.
   automation:
     level: full
     deterministic: true
@@ -1485,8 +1483,7 @@ checks:
     impact: medium
     likelihood: low
   references:
-  - RFC 9126 §2.2
-  - §4
+  - RFC 9126 §2.2, §4
   - 'Real-world bug: RWB-0020'
 - id: AUTH-GENERATED-SECRET-STRENGTH
   status: draft
@@ -1651,8 +1648,7 @@ checks:
     impact: critical
     likelihood: medium
   references:
-  - OpenID Connect Core 1.0 §5.1
-  - §5.7
+  - OpenID Connect Core 1.0 §5.1, §5.7
   - OWASP API2:2023
   - CWE-287
   - 'Real-world bug: RWB-0041'

@@ -76,9 +76,7 @@ checks:
   - No owner data leaks in response or side effects.
   applicability:
     when:
-    - Resource has an owner
-    - tenant
-    - or access restriction.
+    - Resource has an owner, tenant, or access restriction.
     skip_when:
     - Resource is intentionally public.
   automation:
