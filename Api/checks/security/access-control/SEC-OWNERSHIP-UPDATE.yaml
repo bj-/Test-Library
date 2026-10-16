@@ -26,6 +26,8 @@ checks:
     notes: 'Matrix axis: Resource ownership; scenario: Cross-owner update. Use isolated synthetic identities and data.'
   - action: Вспомогательные операции (reorder/move), меняющие поля документа в обход основного update
     notes: 'Real-world bug: RWB-0152 (GHSA-f7hx-52q9-hcrf)'
+  - action: Подменить идентификатор ресурса в параметре тела формы (article[id]) на ID чужого ресурса при изменении и удалении
+    notes: 'Real-world bug: RWB-0152 (GHSA-c273-c6vg-4pv5)'
   expected:
   - Deny the operation; persisted state of resource A remains unchanged.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

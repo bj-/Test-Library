@@ -36,6 +36,12 @@ checks:
     notes: 'Real-world bug: RWB-0151 (GHSA-72h8-wp98-7hch)'
   - action: Ссылка на секрет/учётные данные по ID в конфигурации, которую сервер использует при отправке наружу
     notes: 'Real-world bug: RWB-0151 (GHSA-pq6c-vh67-xpm3)'
+  - action: Передать в обновлении ресурса ID чужого связанного объекта плоским полем (*_id) вместо вложенного объекта и проверить,
+      что проверка владения одинакова для обеих форм
+    notes: 'Real-world bug: RWB-0151 (GHSA-87fh-rc96-6fr6)'
+  - action: Анонимно создать дочерний объект (комментарий) у ресурса в непубличном состоянии (черновик) и проверить отказ,
+      как при его чтении
+    notes: 'Real-world bug: RWB-0151 (GHSA-79m3-q3wh-c3qm)'
   expected:
   - Authorization is enforced for both parent and referenced child resources; no cross-owner association is created.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

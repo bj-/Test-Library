@@ -104,12 +104,15 @@ checks:
   tags:
   - positive
   - observability
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Используется распределённая трассировка.
   steps:
   - action: Отправить запрос с traceparent и проверить trace в системе трассировки.
+  - action: Отправить заголовок baggage с десятками тысяч пар и огромным значением и проверить, что время ответа не растёт
+    notes: 'Real-world bug: RWB-0245 (GHSA-p5f6-rccc-jv98)'
   expected:
   - Трасса связана с входящим контекстом; некорректный traceparent не ломает запрос.
   applicability:
@@ -126,6 +129,8 @@ checks:
   risk:
     impact: low
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0245'
 - id: OBS-HEALTH-ENDPOINTS
   status: approved
   title: Health-эндпоинты отражают состояние и не раскрывают детали
@@ -158,6 +163,8 @@ checks:
   - action: Сделать недоступным дополнительное хранилище части ресурсов и проверить, что health- и ready-эндпоинты сообщают
       о неисправности
     notes: 'Real-world bug: RWB-0093 (kubernetes/kubernetes#129417)'
+  - action: Запросить эндпоинты мониторинга компонентов и проверить, что в ответе нет паролей, токенов и ключей из их конфигурации
+    notes: 'Real-world bug: RWB-0093 (GHSA-pr7j-96cj-549h)'
   expected:
   - Readiness отражает зависимости; публичный ответ не содержит версий, хостов и секретов.
   applicability:

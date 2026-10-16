@@ -29,6 +29,11 @@ checks:
     notes: 'Real-world bug: RWB-0150 (GHSA-8xcj-9hfr-fh9j)'
   - action: Запросить сессии другого пользователя по его идентификатору через эндпоинт управления сессиями
     notes: 'Real-world bug: RWB-0150 (GHSA-vvhj-w2jq-263q)'
+  - action: Запросить ресурс, созданный гостем, по его идентификатору без токена гостя и с токеном другого гостя
+    notes: 'Real-world bug: RWB-0150 (GHSA-p6pv-q7rc-g4h9)'
+  - action: Анонимно запросить по ID объект, созданный другим анонимным пользователем, — пустой владелец не должен совпадать
+      с пустым текущим пользователем
+    notes: 'Real-world bug: RWB-0150 (GHSA-3ghg-3787-w2xr)'
   expected:
   - Deny or conceal the resource according to policy; response contains no owner data and no side effect occurs.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

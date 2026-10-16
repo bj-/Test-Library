@@ -6,8 +6,8 @@
 
 ## Сводка
 
-- Новых паттернов: 12 → идей: 8 (принять: 8, отклонить: 0, не решено: 0).
-- Пруфы к существующим: 153 багов → 54 записей; новых шагов-вариантов: 96.
+- Новых паттернов: 11 → идей: 7 (принять: 7, отклонить: 0, не решено: 0).
+- Пруфы к существующим: 154 багов → 55 записей; новых шагов-вариантов: 97.
 
 ## Новые идеи
 
@@ -18,11 +18,10 @@
 | 1 | accept | `SEC-ALT-REPRESENTATION-ACCESS` (RWB-0231)<br>`checks/security/access-control/SEC-ALT-REPRESENTATION-ACCESS.yaml` | Закрытый ресурс (неопубликованный, приватный, защищённый паролем доступа) недоступен ни через одно альтернативное представление — встраивание (embed), превью, дерево и вложенные списки, ленты, поиск, метаданные; правила доступа и публикации такие же, как у основного маршрута | [GHSA-qcj6-vxwx-4rqv](https://github.com/advisories/GHSA-qcj6-vxwx-4rqv), [GHSA-mqq5-j7w8-2hgh](https://github.com/advisories/GHSA-mqq5-j7w8-2hgh), [GHSA-5jm7-g527-m694](https://github.com/advisories/GHSA-5jm7-g527-m694) |
 | 2 | accept | `INJ-ARCHIVE-ENTRY-NAME-EVAL` (RWB-0232)<br>`checks/security/injection.yaml` | Имена файлов внутри загруженного пользователем содержимого (git-репозиторий, архив, пакет) с переводом строки, кавычками и выражениями кода (#{...}, ${...}, $(...)) при перечислении и обработке остаются текстом и не исполняются; отличие от FILE-FILENAME-SANITIZATION — имена внутри содержимого, а не имя загружаемого файла | [GHSA-pphf-gfrm-v32r](https://github.com/advisories/GHSA-pphf-gfrm-v32r), [GHSA-pfpr-3463-c6jh](https://github.com/advisories/GHSA-pfpr-3463-c6jh) |
 | 3 | accept | `AUTH-PROTOCOL-SESSION-OWNER-BINDING` (RWB-0233)<br>`checks/security/authentication-session.yaml` | Идентификатор протокольной сессии (Mcp-Session-Id, ID потока SSE, ID сессии в пути) привязан к аутентифицированному владельцу — чужой ID с другой учёткой или без неё даёт 403/404, существующий поток владельца не перехватывается и не переключается | [GHSA-5p9g-j988-pcwv](https://github.com/advisories/GHSA-5p9g-j988-pcwv), [GHSA-qvqr-5cv7-wh35](https://github.com/advisories/GHSA-qvqr-5cv7-wh35) |
-| 4 | accept | `AUTH-OAUTH-PUBLIC-CLIENT-CONSENT` (RWB-0234)<br>`checks/security/authentication-session.yaml` | Для публичного OAuth-клиента (без секрета) повторный запрос авторизации показывает экран согласия, а не выдаёт код автоматически по прошлому одобрению — иначе любой, кто знает client_id и разрешённый redirect_uri, получает код без участия пользователя (RFC 9700 §4.15) | [GHSA-7w2c-w47h-789w](https://github.com/advisories/GHSA-7w2c-w47h-789w) |
+| 4 | accept | `AUTH-OAUTH-PUBLIC-CLIENT-CONSENT` (RWB-0234)<br>`checks/security/authentication-session.yaml` | Для публичного OAuth-клиента (без секрета) повторный запрос авторизации показывает экран согласия, а не выдаёт код автоматически по прошлому одобрению — иначе любой, кто знает client_id и разрешённый redirect_uri, получает код без участия пользователя (RFC 8252 §8.6) | [GHSA-7w2c-w47h-789w](https://github.com/advisories/GHSA-7w2c-w47h-789w) |
 | 5 | accept | `HTTP-PATH-PREFIX-SEGMENT-BOUNDARY` (RWB-0235)<br>`checks/rest/http-protocol.yaml` | Правило по префиксу пути (статика /css, /js, исключения из аутентификации, маршрутизация прокси) соблюдает границу сегмента — /css-config.env, /cssbackup.sql, /js.env не попадают под правило /css/, /js/ | [GHSA-h2jq-g4cq-5ppq](https://github.com/advisories/GHSA-h2jq-g4cq-5ppq) |
-| 6 | accept | `HARD-SENDFILE-HEADERS-UNTRUSTED` (RWB-0236)<br>`checks/security/api-hardening.yaml` | Служебные заголовки отдачи файлов прокси (X-Sendfile-Type, X-Accel-Mapping, X-Accel-Redirect, X-Sendfile), присланные клиентом, игнорируются — ответ и доступ к путям такие же, как без них | [GHSA-r657-rxjc-j557](https://github.com/advisories/GHSA-r657-rxjc-j557) |
-| 7 | accept | `INJ-REFLECTED-XSS` (RWB-0237)<br>`checks/security/injection.yaml` | Параметры запроса (фильтр, поиск, сообщения об ошибке) не отражаются в HTML-ответе без экранирования по контексту; Content-Type соответствует содержимому; пара к INJ-STORED-XSS | [GHSA-cmh9-rx85-xj38](https://github.com/advisories/GHSA-cmh9-rx85-xj38) |
-| 8 | accept | `PRIV-IMPORT-URL-CREDENTIALS-NOT-STORED` (RWB-0238)<br>`checks/security/privacy.yaml` | Учётные данные из URL источника импорта или зеркалирования (https://user:token@host/...) после завершения импорта не сохраняются и не возвращаются в параметрах объекта (адрес источника, настройки зеркала, журнал задачи) | [GHSA-mmmm-chjf-jmvw](https://github.com/advisories/GHSA-mmmm-chjf-jmvw) |
+| 6 | accept | `INJ-REFLECTED-XSS` (RWB-0236)<br>`checks/security/injection.yaml` | Параметры запроса (фильтр, поиск, сообщения об ошибке) не отражаются в HTML-ответе без экранирования по контексту; Content-Type соответствует содержимому; пара к INJ-STORED-XSS | [GHSA-cmh9-rx85-xj38](https://github.com/advisories/GHSA-cmh9-rx85-xj38) |
+| 7 | accept | `PRIV-IMPORT-URL-CREDENTIALS-NOT-STORED` (RWB-0237)<br>`checks/security/privacy.yaml` | Учётные данные из URL источника импорта или зеркалирования (https://user:token@host/...) после завершения импорта не сохраняются и не возвращаются в параметрах объекта (адрес источника, настройки зеркала, журнал задачи) | [GHSA-mmmm-chjf-jmvw](https://github.com/advisories/GHSA-mmmm-chjf-jmvw) |
 
 ## Пруфы к существующим
 
@@ -61,7 +60,7 @@
 | [GHSA-9j94-67jr-4cqj](https://github.com/advisories/GHSA-9j94-67jr-4cqj) | extends | Выполнить выход параллельно с долгим запросом в той же сессии и после завершения обоих повторить запрос со старой cookie |
 | [GHSA-vpfw-47h7-xj4g](https://github.com/advisories/GHSA-vpfw-47h7-xj4g) | extends | _только пруф_: Тот же вариант, что у GHSA-9j94-67jr-4cqj в этой партии |
 
-### AUTH-PASSWORD-CHANGE-REVOKES — Смена или сброс пароля завершает другие сессии (RWB-0239, багов: 1)
+### AUTH-PASSWORD-CHANGE-REVOKES — Смена или сброс пароля завершает другие сессии (RWB-0238, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -105,7 +104,7 @@
 | [GHSA-wpv5-97wm-hp9c](https://github.com/advisories/GHSA-wpv5-97wm-hp9c) | extends | Отправить multipart-часть, блок заголовков которой не завершается пустой строкой и занимает мегабайты |
 | [GHSA-p543-xpfm-54cp](https://github.com/advisories/GHSA-p543-xpfm-54cp) | extends | Отправить multipart с преамбулой в сотни мегабайт перед первой границей |
 
-### FILE-RANGE-REQUESTS — Частичное скачивание через Range работает по контракту (RWB-0240, багов: 3)
+### FILE-RANGE-REQUESTS — Частичное скачивание через Range работает по контракту (RWB-0239, багов: 3)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -119,13 +118,13 @@
 |---|---|---|
 | [GHSA-3cx6-j9j4-54mp](https://github.com/advisories/GHSA-3cx6-j9j4-54mp) | extends | Создать серию приватных экспортов разными пользователями и проверить, что каждый скачивает только свой файл |
 
-### FILE-UPLOAD-SIZE-LIMIT — Лимит размера загружаемого файла соблюдается (RWB-0241, багов: 1)
+### FILE-UPLOAD-SIZE-LIMIT — Лимит размера загружаемого файла соблюдается (RWB-0240, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
 | [GHSA-8vqr-qjwx-82mw](https://github.com/advisories/GHSA-8vqr-qjwx-82mw) | extends | Отправить загрузку multipart chunked-кодированием без Content-Length сверх лимита |
 
-### GQL-COMPLEXITY-LIMIT — Стоимость запроса ограничена (поля, списки, first/last) (RWB-0242, багов: 1)
+### GQL-COMPLEXITY-LIMIT — Стоимость запроса ограничена (поля, списки, first/last) (RWB-0241, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -137,7 +136,7 @@
 |---|---|---|
 | [GHSA-ghmh-q25g-gxxx](https://github.com/advisories/GHSA-ghmh-q25g-gxxx) | covered | _только пруф_: Авторизация на уровне полей и резолверов — ровно проверка записи |
 
-### GRPC-METADATA-MALFORMED — Некорректные и чрезмерные метаданные отклоняются (RWB-0243, багов: 1)
+### GRPC-METADATA-MALFORMED — Некорректные и чрезмерные метаданные отклоняются (RWB-0242, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -192,7 +191,7 @@
 |---|---|---|
 | [GHSA-8j3g-f24p-4mpw](https://github.com/advisories/GHSA-8j3g-f24p-4mpw) | extends | Отправить при рукопожатии WebSocket непрерывный поток заголовков без завершения и проверить закрытие по лимиту |
 
-### HTTP-URL-LENGTH-LIMIT — Очень длинный URL отклоняется контролируемо (RWB-0244, багов: 1)
+### HTTP-URL-LENGTH-LIMIT — Очень длинный URL отклоняется контролируемо (RWB-0243, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -285,7 +284,7 @@
 | [GHSA-5rv5-xj5j-3484](https://github.com/advisories/GHSA-5rv5-xj5j-3484) | extends | _только пруф_: Тот же вариант, что GHSA-33mh-2634-fwr2 в этой партии |
 | [GHSA-hm5p-x4rq-38w4](https://github.com/advisories/GHSA-hm5p-x4rq-38w4) | extends | Передать абсолютный URL в поле-идентификаторе, которое сервер подставляет в путь запроса к внешнему API, и проверить, что запрос с серверными заголовками не уходит на чужой хост |
 
-### INJ-STORED-XSS — Сохранённые данные с HTML/JS не создают XSS у потребителей API (RWB-0245, багов: 1)
+### INJ-STORED-XSS — Сохранённые данные с HTML/JS не создают XSS у потребителей API (RWB-0244, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -304,7 +303,7 @@
 |---|---|---|
 | [GHSA-pr7j-96cj-549h](https://github.com/advisories/GHSA-pr7j-96cj-549h) | extends | Запросить эндпоинты мониторинга компонентов и проверить, что в ответе нет паролей, токенов и ключей из их конфигурации |
 
-### OBS-TRACE-PROPAGATION — Контекст трассировки принимается и передаётся дальше (RWB-0246, багов: 1)
+### OBS-TRACE-PROPAGATION — Контекст трассировки принимается и передаётся дальше (RWB-0245, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -342,7 +341,7 @@
 | [GHSA-w9pc-fmgc-vxvw](https://github.com/advisories/GHSA-w9pc-fmgc-vxvw) | extends | Отправить multipart с одним текстовым полем (без filename) размером в сотни мегабайт |
 | [GHSA-rrqh-93c8-j966](https://github.com/advisories/GHSA-rrqh-93c8-j966) | extends | Отправить сообщение больше лимита на эндпоинт с проверкой формата и убедиться по времени ответа, что лимит проверяется до разбора |
 
-### REST-SENSITIVE-CACHE-CONTROL — Кэширование чувствительных ответов (RWB-0247, багов: 1)
+### REST-SENSITIVE-CACHE-CONTROL — Кэширование чувствительных ответов (RWB-0246, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -368,6 +367,12 @@
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
 | [GHSA-33qg-7wpp-89cq](https://github.com/advisories/GHSA-33qg-7wpp-89cq) | extends | Отправить cookie сессии в незащищённом формате (без шифрования и подписи) и проверить, что она отклоняется |
+
+### SEC-INTERNAL-CONTROL-PARAMS — Заголовки и параметры подключения клиента не задают внутренние управляющие параметры операции (RWB-0180, багов: 1)
+
+| Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
+|---|---|---|
+| [GHSA-r657-rxjc-j557](https://github.com/advisories/GHSA-r657-rxjc-j557) | extends | Отправить на маршрут, отдаваемый через X-Sendfile/X-Accel-Redirect за прокси, заголовки X-Sendfile-Type и X-Accel-Mapping с подобранным отображением путей и проверить, что ответ и доступ к закрытым путям такие же, как без них |
 
 ### SEC-OWNERSHIP-DELETE — User cannot delete another owner’s resource (RWB-0149, багов: 1)
 
@@ -396,7 +401,7 @@
 |---|---|---|
 | [GHSA-c273-c6vg-4pv5](https://github.com/advisories/GHSA-c273-c6vg-4pv5) | extends | Подменить идентификатор ресурса в параметре тела формы (article[id]) на ID чужого ресурса при изменении и удалении |
 
-### SEC-ROLE-LOW-TO-HIGH — Low-privilege role cannot perform privileged action (RWB-0248, багов: 3)
+### SEC-ROLE-LOW-TO-HIGH — Low-privilege role cannot perform privileged action (RWB-0247, багов: 3)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -404,7 +409,7 @@
 | [GHSA-v46j-h43h-rwrm](https://github.com/advisories/GHSA-v46j-h43h-rwrm) | covered | _только пруф_: Механизм не описан — запись проверяет описанное следствие |
 | [GHSA-f68m-q26r-64f6](https://github.com/advisories/GHSA-f68m-q26r-64f6) | covered | _только пруф_: Запись проверяет привилегированные операции от низкой роли |
 
-### SEC-ROLE-MASS-ASSIGN — Mass assignment cannot elevate privileges (RWB-0249, багов: 1)
+### SEC-ROLE-MASS-ASSIGN — Mass assignment cannot elevate privileges (RWB-0248, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -428,7 +433,7 @@
 |---|---|---|
 | [GHSA-c32j-vqhx-rx3x](https://github.com/advisories/GHSA-c32j-vqhx-rx3x) | extends | Подписать токен HMAC пустым ключом, указав kid несуществующего ключа, и отправить его |
 
-### SEC-VERTICAL-ESCALATION — Lower role cannot invoke higher-role route via alternate method (RWB-0250, багов: 1)
+### SEC-VERTICAL-ESCALATION — Lower role cannot invoke higher-role route via alternate method (RWB-0249, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -440,7 +445,7 @@
 |---|---|---|
 | [GHSA-735f-pc8j-v9w8](https://github.com/advisories/GHSA-735f-pc8j-v9w8) | extends | Отправить protobuf-сообщение с неизвестным полем из тысяч вложенных групп |
 
-### VAL-NUMBER-REPRESENTATION — Альтернативные записи чисел обрабатываются по контракту (RWB-0251, багов: 1)
+### VAL-NUMBER-REPRESENTATION — Альтернативные записи чисел обрабатываются по контракту (RWB-0250, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|

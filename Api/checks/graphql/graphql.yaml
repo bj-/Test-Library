@@ -84,6 +84,7 @@ checks:
   - negative
   - security
   - rate-limiting
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -92,6 +93,8 @@ checks:
   - Нет.
   steps:
   - action: 'Запросить большие списки с вложенными списками и first: 10000.'
+  - action: Отправить запрос с огромным числом комментариев и проверить, что срабатывает лимит токенов
+    notes: 'Real-world bug: RWB-0241 (GHSA-3h96-34p3-xm76)'
   expected:
   - Превышение стоимости отклоняется до выполнения.
   applicability:
@@ -110,6 +113,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0241'
 - id: GQL-ALIAS-BATCH-ABUSE
   status: approved
   title: Алиасы и batch-запросы не обходят rate limit

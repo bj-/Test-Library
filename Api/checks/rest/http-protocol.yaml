@@ -224,6 +224,8 @@ checks:
     notes: 'Real-world bug: RWB-0196 (GHSA-v3jc-474w-2wm6)'
   - action: Повторить отправку чрезмерных заголовков по HTTP/3
     notes: 'Real-world bug: RWB-0196 (GHSA-c2rx-5r8w-8xr2)'
+  - action: Отправить при рукопожатии WebSocket непрерывный поток заголовков без завершения и проверить закрытие по лимиту
+    notes: 'Real-world bug: RWB-0196 (GHSA-8j3g-f24p-4mpw)'
   expected:
   - Ответ 431 или 400, без 5xx и разрыва без ответа.
   applicability:
@@ -254,12 +256,16 @@ checks:
   tags:
   - boundary
   - hardening
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Есть query или path параметры.
   steps:
   - action: Отправить URL длиной 8KB, 16KB и 64KB.
+  - action: Отправить URL максимальной допустимой длины и проверить, что сервер не отражает его в заголовках ответа без ограничения
+      размера
+    notes: 'Real-world bug: RWB-0243 (GHSA-m875-3xf6-mf78)'
   expected:
   - Ответ 414 или задокументированная ошибка без 5xx.
   applicability:
@@ -276,6 +282,8 @@ checks:
   risk:
     impact: low
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0243'
 - id: HTTP-ACCEPT-LANGUAGE
   status: approved
   title: Язык сообщений определяется Accept-Language с fallback
@@ -552,8 +560,8 @@ checks:
   preconditions:
   - Заголовок может передаваться повторяющимися строками (группы при имперсонации, от аутентифицирующего прокси, списки).
   steps:
-  - action: Отправить запрос со 100, 500 и 1000 строками одного заголовка (общий размер в пределах документированного
-      лимита) по HTTP/1.1 и по HTTP/2.
+  - action: Отправить запрос со 100, 500 и 1000 строками одного заголовка (общий размер в пределах документированного лимита)
+      по HTTP/1.1 и по HTTP/2.
   expected:
   - Запрос в пределах лимита размера обслуживается одинаково по обеим версиям HTTP.
   - Если действует лимит числа строк, он задокументирован и одинаков для версий протокола; отказ — 431 с понятной причиной.
@@ -575,3 +583,42 @@ checks:
   - RFC 9110 §5.3 (повторяющиеся строки поля равноценны списку)
   - Позитивная пара к HTTP-HEADER-SIZE-LIMIT; паритет версий — HTTP-VERSION-PARITY; запись отказа в аудит — OBS-AUDIT-TRAIL
   - 'Real-world bug: RWB-0217'
+- id: HTTP-PATH-PREFIX-SEGMENT-BOUNDARY
+  status: draft
+  title: Правило по префиксу пути соблюдает границу сегмента
+  category: http-semantics
+  protocols:
+  - rest
+  kind: boundary
+  priority: P2
+  tags:
+  - boundary
+  - security
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Есть правила по префиксу пути — статика (/css, /js), исключения из аутентификации, маршрутизация прокси.
+  steps:
+  - action: Для каждого префикса запросить пути с тем же строковым началом без границы сегмента (/css-config.env, /cssbackup.sql,
+      /js.env, /public-admin) рядом с разрешёнными /css/…
+  expected:
+  - Пути без границы сегмента не попадают под правило — 404 или обычные проверки доступа.
+  applicability:
+    when:
+    - Есть правила по префиксу пути.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - RFC 3986 §3.3 (сегменты пути)
+  - Смежные — HTTP-TRAILING-SLASH-CASE, SEC-AUTHZ-PATH-RULE-PRECEDENCE
+  - 'Real-world bug: RWB-0235'

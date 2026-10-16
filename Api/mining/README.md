@@ -70,6 +70,8 @@ Claude работает с одним источником. План, списо
    ID не занят) и сборка `ideas/mined/<batch>.md`: новые идеи и «Пруфы к существующим» с номерами `RWB-*`.
 3. **Ревью (человек)** по `<batch>.md`; правки — в review-файле: `decision`, `check_id`, `file` кластера,
    неверное совпадение пруфа — ID бага в `proofs.exclude`, вариант без нового шага — в `proofs.no_variant`.
+   `new`-паттерн, который на ревью оказался вариантом существующей записи, — в `proofs.retarget` (`bug`, `check_id`,
+   `variant`, `note`) вместо кластера.
    Затем снова `cluster.py`.
 4. `python tools/mining/apply_proofs.py --batch <batch> --dry-run`, затем без `--dry-run`: записи с пруфами
    получают метку `real-world-bug`, `Real-world bug: RWB-NNNN` и шаги-варианты (`extends`), трассировка —

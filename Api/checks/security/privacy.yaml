@@ -207,3 +207,41 @@ checks:
   - OWASP API3:2023
   - CWE-226
   - 'Real-world bug: RWB-0009'
+- id: PRIV-IMPORT-URL-CREDENTIALS-NOT-STORED
+  status: draft
+  title: Учётные данные из URL источника импорта не сохраняются после завершения импорта
+  category: privacy
+  protocols:
+  - generic
+  kind: security
+  priority: P2
+  tags:
+  - privacy
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Есть импорт или зеркалирование по URL с учётными данными (https://user:token@host/...).
+  steps:
+  - action: Импортировать по URL с тестовыми учётными данными, дождаться завершения и прочитать через API параметры
+      объекта — адрес источника, настройки зеркала, журнал задачи.
+  expected:
+  - Учётные данные не сохранены и не возвращаются; адрес источника — без userinfo.
+  applicability:
+    when:
+    - Есть импорт по URL с учётными данными.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - OWASP API3:2023, CWE-522
+  - Смежные — HARD-SENSITIVE-DATA-IN-URL, OBS-NO-SECRETS-IN-LOGS
+  - 'Real-world bug: RWB-0237'

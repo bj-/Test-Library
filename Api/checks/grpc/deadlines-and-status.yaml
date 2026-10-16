@@ -197,6 +197,7 @@ checks:
   - negative
   - metadata
   - hardening
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -204,6 +205,9 @@ checks:
   - Нет.
   steps:
   - action: Передать метаданные с недопустимыми символами, -bin без base64, 1000 ключей, значения 64KB.
+  - action: Отправить метаданные цепочкой HEADERS и множества CONTINUATION-кадров суммарно сверх лимита, а также целые HPACK
+      с длинной цепочкой ведущих нулей
+    notes: 'Real-world bug: RWB-0242 (GHSA-496j-2rq6-j6cc)'
   expected:
   - RESOURCE_EXHAUSTED или INVALID_ARGUMENT без падения сервера.
   applicability:
@@ -221,6 +225,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0242'
 - id: GRPC-NOT-FOUND-ALREADY-EXISTS
   status: approved
   title: Отсутствующий и дублирующийся ресурс дают NOT_FOUND и ALREADY_EXISTS

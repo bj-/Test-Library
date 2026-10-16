@@ -1,0 +1,45 @@
+checks:
+- id: SEC-ALT-REPRESENTATION-ACCESS
+  status: draft
+  title: Закрытый ресурс недоступен ни через одно альтернативное представление
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - authz
+  - negative
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Ресурс может быть неопубликованным, приватным или защищённым паролем доступа.
+  - Кроме основного маршрута есть альтернативные представления — встраивание (embed), превью, дерево или вложенный список,
+    ленты (RSS, sitemap), поиск, метаданные, экспорт.
+  steps:
+  - action: Для неопубликованного, приватного и защищённого паролем ресурса запросить каждое альтернативное представление
+      анонимно и пользователем без доступа (с параметрами расширения ответа, например ?elements=true).
+  - action: Сравнить с ответом основного маршрута для того же ресурса.
+  expected:
+  - Ответ 403/404 или ресурс отсутствует в выдаче — как у основного маршрута; содержимое и метаданные не возвращаются.
+  applicability:
+    when:
+    - Есть закрытые ресурсы и альтернативные представления.
+    skip_when:
+    - Только основной маршрут.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP API1:2023
+  - Смежные — SEC-OWNERSHIP-READ, RES-SOFT-DELETE-VISIBILITY
+  - 'Real-world bug: RWB-0231'

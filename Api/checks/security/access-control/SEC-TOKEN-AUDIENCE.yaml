@@ -27,6 +27,8 @@ checks:
     notes: 'Real-world bug: RWB-0160 (GHSA-g74q-6g2f-874x)'
   - action: Смена resource/audience при refresh — refresh-токен привязан к исходному ресурсу
     notes: 'Real-world bug: RWB-0160 (GHSA-cw9w-vv67-hf73)'
+  - action: Отправить токен, выданный на хосте одного арендатора, на хост другого арендатора того же сервиса
+    notes: 'Real-world bug: RWB-0160 (GHSA-r3v7-5x4c-c69q)'
   expected:
   - Token is rejected unless its audience is explicitly accepted by policy.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

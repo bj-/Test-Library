@@ -24,6 +24,15 @@ checks:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
   - action: 'Добавить сочетание лимитов по маршрутам: особый лимит не ломает разбор тела на других'
     notes: 'Real-world bug: RWB-0130 (nestjs/nest#14734)'
+  - action: 'Отправить тело с Content-Encoding: gzip, которое после распаковки превышает лимит в сотни раз'
+    notes: 'Real-world bug: RWB-0130 (GHSA-2jc5-xhx8-qj6h)'
+  - action: Отправить тело application/x-www-form-urlencoded больше лимита и проверить отказ до чтения тела целиком
+    notes: 'Real-world bug: RWB-0130 (GHSA-6xw4-3v39-52mm)'
+  - action: Отправить multipart с одним текстовым полем (без filename) размером в сотни мегабайт
+    notes: 'Real-world bug: RWB-0130 (GHSA-w9pc-fmgc-vxvw)'
+  - action: Отправить сообщение больше лимита на эндпоинт с проверкой формата и убедиться по времени ответа, что лимит проверяется
+      до разбора
+    notes: 'Real-world bug: RWB-0130 (GHSA-rrqh-93c8-j966)'
   expected:
   - размеры около границы обрабатываются корректно; превышение безопасно отклоняется
   applicability:

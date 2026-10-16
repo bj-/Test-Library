@@ -81,6 +81,8 @@ def build_plan(batch: str, errors: list[str], drafts_written: bool = False) -> d
     next_no = max([int(k.split("-")[1]) for k in trace] + [0]) + 1
     exclude = set((review.get("proofs") or {}).get("exclude") or [])
     no_variant = set((review.get("proofs") or {}).get("no_variant") or [])
+    # new-pattern judged on review to be a variant of an existing record: {bug, check_id, variant}
+    retarget = {t["bug"]: t for t in (review.get("proofs") or {}).get("retarget") or []}
 
     def rwb_for(check_id: str) -> str:
         nonlocal next_no
@@ -89,7 +91,12 @@ def build_plan(batch: str, errors: list[str], drafts_written: bool = False) -> d
             next_no += 1
         return by_check[check_id]
 
-    clusters, seen = [], set()
+    clusters, seen = [], set(retarget)
+    for b, t in retarget.items():
+        if b not in results or results[b]["match"]["type"] != "new":
+            errors.append(f"retarget: {b} не new-паттерн партии")
+        if not t.get("check_id") or not t.get("variant"):
+            errors.append(f"retarget: {b} — нужны check_id и variant")
     for c in review.get("clusters") or []:
         key = c.get("key")
         if c.get("decision") not in DECISIONS:
@@ -117,6 +124,10 @@ def build_plan(batch: str, errors: list[str], drafts_written: bool = False) -> d
     proofs = defaultdict(list)
     for bug_id, r in results.items():
         m = r["match"]
+        if bug_id in retarget:
+            t = retarget[bug_id]
+            m = {"type": "extends", "check_id": t["check_id"], "variant": t["variant"],
+                 "note": t.get("note") or "Перенесено на ревью из new"}
         if m["type"] == "new" or bug_id in exclude:
             continue
         if m["check_id"] not in checks:

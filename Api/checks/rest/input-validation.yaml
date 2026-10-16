@@ -203,6 +203,8 @@ checks:
     notes: 'Real-world bug: RWB-0165 (GHSA-qhr7-859c-m2p7)'
   - action: Отправить XML с глубокой вложенностью, где каждый элемент объявляет новый уникальный префикс пространства имён
     notes: 'Real-world bug: RWB-0165 (GHSA-65r4-943x-97jj)'
+  - action: Отправить protobuf-сообщение с неизвестным полем из тысяч вложенных групп
+    notes: 'Real-world bug: RWB-0165 (GHSA-735f-pc8j-v9w8)'
   expected:
   - Запрос отклоняется контролируемой ошибкой 4xx.
   - Нет 5xx, переполнения стека или зависания; сервис продолжает отвечать.
@@ -410,6 +412,7 @@ checks:
   tags:
   - boundary
   - validation
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -418,6 +421,8 @@ checks:
   - Есть числовые поля.
   steps:
   - action: Отправить 1e3, 1.0 для integer, -0, ведущие нули 007, число строкой "5", NaN, Infinity, 2^53+1, 2^63, 2^64.
+  - action: Передать в числовое поле, которое сервер форматирует, значение 1e10000 и проверить время и размер ответа
+    notes: 'Real-world bug: RWB-0250 (GHSA-2j26-frm8-cmj9)'
   expected:
   - Каждое представление принимается или отклоняется однозначно по контракту.
   - Большие целые не теряют точность и не переполняются молча.
@@ -438,6 +443,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0250'
 - id: VAL-BOOLEAN-COERCION
   status: approved
   title: Неявное приведение типов для boolean не происходит

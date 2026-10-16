@@ -36,6 +36,12 @@ checks:
     notes: 'Real-world bug: RWB-0125 (GHSA-x2r2-rvhq-2mqv)'
   - action: 'Запросить путь с префиксом redirect: и внешним URL'
     notes: 'Real-world bug: RWB-0125 (GHSA-h3qp-gqrc-q736)'
+  - action: Передать в адресе возврата после входа протокол-относительный URL //host/path
+    notes: 'Real-world bug: RWB-0125 (GHSA-5jch-xhw4-r43v)'
+  - action: Передать адрес возврата с CR/LF и @ перед чужим хостом и пустой адрес возврата
+    notes: 'Real-world bug: RWB-0125 (GHSA-7pwc-wh6m-44q3)'
+  - action: Отправить не-GET запрос с истёкшей сессией и чужим Referer и проверить Location
+    notes: 'Real-world bug: RWB-0125 (GHSA-jp94-3292-c3xv)'
   expected:
   - разрешены только адреса по allowlist/политике
   applicability:

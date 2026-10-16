@@ -11,6 +11,7 @@ checks:
   tags:
   - security
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -19,6 +20,9 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: 'Запросить публично кэшируемый ресурс (файл) с cookie сессии и проверить, что ответ с Cache-Control: public не
+      содержит Set-Cookie'
+    notes: 'Real-world bug: RWB-0246 (GHSA-8h22-8cf7-hq6g)'
   expected:
   - общий кэш не отдаёт данные другому субъекту; Cache-Control соответствует политике
   applicability:
@@ -38,4 +42,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0246'

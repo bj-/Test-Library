@@ -44,6 +44,12 @@ checks:
   - action: Отправить SQL-инъекцию в имени поля (ключе метаданных) фильтра; повторить со значением, оканчивающимся обратным
       слэшем
     notes: 'Real-world bug: RWB-0089 (GHSA-2mfg-cc43-9pcj)'
+  - action: Передать SQL-полезную нагрузку в поисковом термине, который используется в сортировке по похожести, и сравнить
+      время ответа
+    notes: 'Real-world bug: RWB-0089 (GHSA-jvqq-cvh4-xm37)'
+  - action: Передать в значение, которое попадает в комментарий SQL-запроса (аннотации, теги журналирования запросов), последовательность
+      */ с SQL после неё
+    notes: 'Real-world bug: RWB-0089 (GHSA-hq7p-j377-6v63)'
   expected:
   - 'Полезная нагрузка не исполняется: нет изменения поведения, данных, времени ответа или ошибок интерпретатора.'
   - Ответ — штатная ошибка валидации или обычный результат с данными, трактованными как литерал.
@@ -157,6 +163,16 @@ checks:
   - action: Создать пользовательский скрипт (триггер, процедуру), вызывающий запуск процесса ОС через стандартную библиотеку,
       и проверить, что песочница его запрещает
     notes: 'Real-world bug: RWB-0085 (GHSA-x9f9-r4m8-9xc2)'
+  - action: Сохранить через API настройку с метасимволами оболочки и запустить операцию, которая использует эту настройку
+      в командной строке
+    notes: 'Real-world bug: RWB-0085 (GHSA-vp3w-52v9-q57f)'
+  - action: Загрузить файл, в поле метаданных которого метасимволы оболочки, и вызвать операцию распаковки или перечисления
+      содержимого
+    notes: 'Real-world bug: RWB-0085 (GHSA-88cv-mj24-8w3q)'
+  - action: Подставить метасимволы оболочки в имя файла, который сервер обрабатывает фоновой задачей
+    notes: 'Real-world bug: RWB-0085 (GHSA-6qjf-g333-pv38)'
+  - action: Загрузить файл, в имени которого метасимволы оболочки, на эндпоинт, обрабатывающий файл внешней утилитой
+    notes: 'Real-world bug: RWB-0085 (GHSA-4fvg-pwv7-v54g)'
   expected:
   - 'Полезная нагрузка не исполняется: нет изменения поведения, данных, времени ответа или ошибок интерпретатора.'
   - Ответ — штатная ошибка валидации или обычный результат с данными, трактованными как литерал.
@@ -214,6 +230,9 @@ checks:
     notes: 'Real-world bug: RWB-0091 (GHSA-3g44-3m7x-cgg2)'
   - action: Передать в поле, вычисляемое как выражение в ограниченном контексте, вызов метода без аргументов
     notes: 'Real-world bug: RWB-0091 (GHSA-9f52-rjqv-25qv)'
+  - action: Загрузить под учёткой без роли администратора файл конфигурации с шаблонным выражением в каталог, откуда сервер
+      читает определения, и вызвать операцию, которая его читает
+    notes: 'Real-world bug: RWB-0091 (GHSA-jjq7-m736-w977)'
   expected:
   - В результате буквальная строка, а не 49.
   - Нет ошибок шаблонизатора в ответе.
@@ -249,6 +268,7 @@ checks:
   - security
   - negative
   - injection
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -258,6 +278,9 @@ checks:
   steps:
   - action: 'Сохранить <script>alert(1)</script>, <img src=x onerror=...>, javascript: URL в текстовых и URL-полях.'
   - action: Прочитать данные через API и открыть в UI.
+  - action: Сохранить от имени администратора HTML-блок с script и обработчиками событий и проверить, что на публичной странице
+      они удалены
+    notes: 'Real-world bug: RWB-0244 (GHSA-533c-2vh9-4r86)'
   expected:
   - 'API возвращает данные с Content-Type: application/json, не text/html.'
   - UI экранирует данные; URL-поля не принимают javascript:.
@@ -279,6 +302,7 @@ checks:
     likelihood: medium
   references:
   - OWASP Web Security Testing Guide
+  - 'Real-world bug: RWB-0244'
 - id: INJ-HEADER-CRLF
   status: approved
   title: CRLF в значениях не позволяет внедрять заголовки ответа
@@ -352,6 +376,10 @@ checks:
     notes: 'Real-world bug: RWB-0086 (GHSA-9gfj-28hw-jchp)'
   - action: Отправить request-target без ведущего слэша с сегментами ../ и проверить, что файл вне каталога не отдаётся
     notes: 'Real-world bug: RWB-0086 (GHSA-5g75-477j-2c2f)'
+  - action: Передать в параметре языка или локали значение с ../ и абсолютным путём и проверить, что применяется язык по умолчанию
+    notes: 'Real-world bug: RWB-0086 (GHSA-2xmw-f8j8-wfxc)'
+  - action: Отправить данные, поле которых подставляется в шаблон пути выходного файла, с ../ в этом поле
+    notes: 'Real-world bug: RWB-0086 (GHSA-44hj-4m45-frj3)'
   expected:
   - Доступ только к разрешённым объектам.
   - Ответ не содержит содержимого системных файлов.
@@ -617,6 +645,8 @@ checks:
     notes: 'Real-world bug: RWB-0082 (GHSA-cmwh-w62w-r2mf)'
   - action: Передать в ключе фильтра путь к полю, скрытому из ответа, и сравнить выборки при разных значениях
     notes: 'Real-world bug: RWB-0082 (GHSA-mwpv-rg79-863c)'
+  - action: Передать в ключе параметра поиска имя служебного метода (instance_eval, send) вместо имени поля или оператора
+    notes: 'Real-world bug: RWB-0082 (GHSA-x485-rhg3-cqr4)'
   expected:
   - Фильтрация по непубличным полям запрещена.
   - Результат не расширяет видимость данных.
@@ -697,6 +727,42 @@ checks:
     notes: 'Real-world bug: RWB-0088 (GHSA-7cmj-v6x8-frvv)'
   - action: Повторить проверку ReDoS для каждой функции выражений с regex (matches, replaceMatches) и каждой версии API
     notes: 'Real-world bug: RWB-0088 (GHSA-fxj4-p9xp-37v5)'
+  - action: Отправить в поле, которое сервер экранирует как HTML, длинный повтор незакрытых тегов '<A '
+    notes: 'Real-world bug: RWB-0088 (GHSA-mhwm-jh88-3gjf)'
+  - action: Передать в параметр, который используется как CSS-селектор, незакрытую строку в кавычках и длинную цепочку hex-экранирований
+    notes: 'Real-world bug: RWB-0088 (GHSA-c4rq-3m3g-8wgx)'
+  - action: Отправить URI с длинной цепочкой разделителей под маршрут, заданный URI-шаблоном с explode-модификатором
+    notes: 'Real-world bug: RWB-0088 (GHSA-h27x-rffw-24p4)'
+  - action: Отправить в числовое поле, которое сервер выводит с разделителями разрядов, строку из десятков тысяч цифр
+    notes: 'Real-world bug: RWB-0088 (GHSA-cg4j-q9v8-6v38)'
+  - action: Отправить длинное патологическое значение в If-Match и If-None-Match к ресурсу, который отдаёт ETag
+    notes: 'Real-world bug: RWB-0088 (GHSA-mr3q-g2mv-mr4q)'
+  - action: Отправить multipart-часть с длинным патологическим заголовком Content-Disposition
+    notes: 'Real-world bug: RWB-0088 (GHSA-47m2-26rw-j2jw)'
+  - action: Отправить XML с числовой ссылкой на символ (&#…x…;) из тысяч цифр
+    notes: 'Real-world bug: RWB-0088 (GHSA-2rxp-v6pw-ch6m)'
+  - action: Отправить длинное патологическое значение в заголовке Authorization (схема Token) к защищённому эндпоинту
+    notes: 'Real-world bug: RWB-0088 (GHSA-vfg9-r3fq-jvx4)'
+  - action: Отправить параметры с длинными патологическими именами, которые сервер фильтрует перед записью в лог
+    notes: 'Real-world bug: RWB-0088 (GHSA-x76w-6vjr-8xgj)'
+  - action: Отправить длинные патологические значения в Accept-Encoding и Accept-Language
+    notes: 'Real-world bug: RWB-0088 (GHSA-cj83-2ww7-mvq7)'
+  - action: Отправить длинное патологическое значение в заголовке Forwarded
+    notes: 'Real-world bug: RWB-0088 (GHSA-54rr-7fvw-6x8f)'
+  - action: Отправить запрос с cookie и длинным патологическим X-Forwarded-Host
+    notes: 'Real-world bug: RWB-0088 (GHSA-p84v-45xj-wwqj)'
+  - action: Отправить длинный специально построенный заголовок If-None-Match и замерить время ответа
+    notes: 'Real-world bug: RWB-0088 (GHSA-8xww-x3g3-6jcv)'
+  - action: Отправить на эндпоинт скачивания длинный специально построенный заголовок Range и замерить время ответа
+    notes: 'Real-world bug: RWB-0088 (GHSA-65f5-mfpf-vfhj)'
+  - action: Отправить multipart с длинными атрибутами Content-Disposition частей, содержащими управляющие символы, и замерить
+      время ответа
+    notes: 'Real-world bug: RWB-0088 (GHSA-rqv2-275x-2jq5)'
+  - action: Передать в параметр с глобальным идентификатором объекта (gid://app/Model/id) длинное специально построенное имя
+      модели
+    notes: 'Real-world bug: RWB-0088 (GHSA-23c2-gwp5-pxw9)'
+  - action: Отправить в поле с санитизируемым HTML SVG-элемент с длинным специально построенным значением атрибута
+    notes: 'Real-world bug: RWB-0088 (GHSA-5x79-w82f-gw8w)'
   expected:
   - Время ответа остаётся в пределах бюджета, CPU не насыщается.
   applicability:
@@ -810,6 +876,16 @@ checks:
     notes: 'Real-world bug: RWB-0090 (GHSA-r56g-q4p6-m3p6)'
   - action: Указать внутренний адрес в заголовках адреса ответа (WS-Addressing ReplyTo, FaultTo)
     notes: 'Real-world bug: RWB-0090 (GHSA-whpp-xv3h-rwxf)'
+  - action: Передать в параметре, который сервер подставляет в путь исходящего запроса, протокол-относительный адрес //host/path
+    notes: 'Real-world bug: RWB-0090 (GHSA-33mh-2634-fwr2)'
+  - action: Отправить содержимое с директивой импорта (@import url(...)) на внутренний адрес и на внешний адрес с редиректом
+      на file://
+    notes: 'Real-world bug: RWB-0090 (GHSA-9pmc-p236-855h)'
+  - action: Отправить данные, поле которых подставляется в шаблон адреса исходящей доставки, с внутренним хостом в этом поле
+    notes: 'Real-world bug: RWB-0090 (GHSA-72f5-rr8c-r6gr)'
+  - action: Передать абсолютный URL в поле-идентификаторе, которое сервер подставляет в путь запроса к внешнему API, и проверить,
+      что запрос с серверными заголовками не уходит на чужой хост
+    notes: 'Real-world bug: RWB-0090 (GHSA-hm5p-x4rq-38w4)'
   expected:
   - Запросы к внутренним адресам и неразрешённым схемам блокируются, в том числе после редиректа и DNS rebinding.
   applicability:
@@ -915,3 +991,84 @@ checks:
   - CWE-94
   - Отличается от INJ-TEMPLATE-SSTI (шаблоны) и INJ-OS-COMMAND (подстановка ввода в команду ОС)
   - 'Real-world bug: RWB-0181'
+- id: INJ-ARCHIVE-ENTRY-NAME-EVAL
+  status: draft
+  title: Имена файлов внутри загруженного репозитория или архива не исполняются как код
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - injection
+  - files
+  - negative
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервис принимает git-репозиторий, архив или пакет и перечисляет или обрабатывает файлы внутри.
+  steps:
+  - action: Загрузить содержимое с файлами, имена которых содержат перевод строки, кавычки и выражения кода (#{...}, ${...},
+      $(...), `...`); вызвать операции, перечисляющие и обрабатывающие файлы.
+  expected:
+  - Список файлов корректен, имена возвращаются как текст; код не исполняется, побочных эффектов нет.
+  applicability:
+    when:
+    - Есть загрузка репозиториев или архивов.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - CWE-94, CWE-95
+  - Имя самого загружаемого файла — FILE-FILENAME-SANITIZATION
+  - 'Real-world bug: RWB-0232'
+- id: INJ-REFLECTED-XSS
+  status: draft
+  title: Параметры запроса не отражаются в HTML-ответе без экранирования
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - injection
+  - negative
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Эндпоинт возвращает HTML (админка, служебный веб-интерфейс, страница ошибки) и вставляет в него значения параметров.
+  steps:
+  - action: Передать в параметры (фильтр, поиск, сортировка, сообщение об ошибке) значения с <script>, закрывающими кавычками
+      и тегами, javascript-URL; проверить тело и Content-Type ответа.
+  expected:
+  - Значения экранированы по контексту (HTML, атрибут, JS, URL); Content-Type соответствует содержимому.
+  applicability:
+    when:
+    - Эндпоинт отдаёт HTML.
+    skip_when:
+    - Ответы только JSON/XML с корректным Content-Type.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - OWASP XSS Prevention Cheat Sheet, CWE-79
+  - Пара к INJ-STORED-XSS
+  - 'Real-world bug: RWB-0236'

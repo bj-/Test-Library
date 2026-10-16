@@ -11,6 +11,7 @@ checks:
   - boundary
   - files
   - validation
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -19,6 +20,8 @@ checks:
   - Есть загрузка файлов.
   steps:
   - action: Загрузить файлы размером max-1, max, max+1 байт и значительно больше.
+  - action: Отправить загрузку multipart chunked-кодированием без Content-Length сверх лимита
+    notes: 'Real-world bug: RWB-0240 (GHSA-8vqr-qjwx-82mw)'
   expected:
   - За лимитом ответ 413 или задокументированная ошибка без полной буферизации и 5xx.
   applicability:
@@ -37,6 +40,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0240'
 - id: FILE-UPLOAD-TYPE-VALIDATION
   status: approved
   title: Тип файла проверяется по содержимому, а не только по расширению
@@ -201,6 +206,9 @@ checks:
     notes: 'Real-world bug: RWB-0069 (GHSA-gm45-99xc-r7wv)'
   - action: Отправить deflate-бомбу в сжатом параметре запроса (SAMLRequest, SAMLResponse)
     notes: 'Real-world bug: RWB-0069 (GHSA-m69x-pw9p-7j3q)'
+  - action: Отправить сжатое сообщение протокола (SAMLRequest/SAMLResponse deflate), которое после распаковки превышает лимит
+      размера
+    notes: 'Real-world bug: RWB-0069 (GHSA-92rq-c8cf-prrq)'
   expected:
   - Обработка ограничена по размеру и времени; файлы не пишутся вне каталога.
   applicability:
@@ -240,6 +248,10 @@ checks:
   steps:
   - action: Отправить файл 0 байт, multipart без boundary, с неверным boundary, без части file, с несколькими файлами вместо
       одного.
+  - action: Отправить multipart-часть, блок заголовков которой не завершается пустой строкой и занимает мегабайты
+    notes: 'Real-world bug: RWB-0071 (GHSA-wpv5-97wm-hp9c)'
+  - action: Отправить multipart с преамбулой в сотни мегабайт перед первой границей
+    notes: 'Real-world bug: RWB-0071 (GHSA-p543-xpfm-54cp)'
   expected:
   - Ошибки 4xx по контракту без 5xx.
   applicability:
@@ -286,6 +298,11 @@ checks:
   - action: Манипуляция путём в URL статического контента (traversal, кодирование) приводит к файлу другой сущности, а права
       проверены по сущности из исходного пути; прогонять на внешнем хранилище
     notes: 'Real-world bug: RWB-0070 (GHSA-rg9r-hr7g-5gc2)'
+  - action: Получить подписанную ссылку на чувствительный файл, выйти и запросить её без сессии; проверить, что доступ запрещён
+      или срок ссылки — минуты
+    notes: 'Real-world bug: RWB-0070 (GHSA-3mvf-82qp-8qh5)'
+  - action: Скачать собственный файл через защищённый эндпоинт и повторить запрос по URL из Location без сессии
+    notes: 'Real-world bug: RWB-0070 (GHSA-767h-63j4-5226)'
   expected:
   - Доступ отклоняется во всех случаях.
   applicability:
@@ -354,12 +371,17 @@ checks:
   tags:
   - boundary
   - files
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Поддерживается Range.
   steps:
   - action: Запросить bytes=0-99, bytes=-100, диапазон за концом файла, множественные диапазоны.
+  - action: Отправить Range с тысячами перекрывающихся диапазонов 0-0 и проверить, что ответ — 416 или 200 без multipart
+    notes: 'Real-world bug: RWB-0239 (GHSA-x8cg-fq8g-mxfx)'
+  - action: Отправить специально построенный Range и проверить, что размер ответа не превышает размер ресурса многократно
+    notes: 'Real-world bug: RWB-0239 (GHSA-xj5v-6v4g-jfw6)'
   expected:
   - 206 с корректным Content-Range; некорректный диапазон — 416.
   applicability:
@@ -376,6 +398,8 @@ checks:
   risk:
     impact: low
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0239'
 - id: FILE-METADATA-STRIP
   status: approved
   title: Метаданные изображений с ПДн удаляются
@@ -517,6 +541,8 @@ checks:
   steps:
   - action: Загрузить файл с именем или ключом существующего файла другой коллекции или другого пользователя.
   - action: Скачать исходный файл.
+  - action: Создать серию приватных экспортов разными пользователями и проверить, что каждый скачивает только свой файл
+    notes: 'Real-world bug: RWB-0037 (GHSA-3cx6-j9j4-54mp)'
   expected:
   - Исходный файл не изменился; новому присвоен уникальный ключ или 409/403.
   applicability:

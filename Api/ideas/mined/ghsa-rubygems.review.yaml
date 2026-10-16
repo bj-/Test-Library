@@ -7,6 +7,11 @@
 # (ID бага), вариант пруфа без нового шага — в proofs.no_variant. Затем: cluster.py (пересобрать ghsa-rubygems.md) и
 # apply_proofs.py. Перекрёстное ревью другими LLM — reviewcheck.py (mining/README.md, шаги 6–7, п. 7).
 #
+# Перекрёстное ревью (2026-10-16): ChatGPT (reviewcheck.md) и Qwen — ghsa-rubygems.reviewcheck.answer-1.md, -2.md;
+# правило — mining/README.md, шаги 6–7, п. 7. Итог: №1, 2, 4, 8 — все accept (№4: ссылка исправлена на RFC 8252 §8.6,
+# как в первоисточнике); №3 — одной записью (Qwen, Claude; ChatGPT предлагал разбить); №5, 7 — accept (ChatGPT, Claude;
+# Qwen — reject как инфраструктура/UI), №7 — только для эндпоинтов с HTML-ответом; №6 — Claude согласился с Qwen:
+# тот же механизм, что SEC-INTERNAL-CONTROL-PARAMS, — вариант к ней (proofs.retarget).
 # decision: accept | reject | pending
 batch: ghsa-rubygems
 clusters:
@@ -33,19 +38,13 @@ clusters:
   check_id: AUTH-OAUTH-PUBLIC-CLIENT-CONSENT
   file: checks/security/authentication-session.yaml
   bugs: [GHSA-7w2c-w47h-789w]
-  idea: Для публичного OAuth-клиента (без секрета) повторный запрос авторизации показывает экран согласия, а не выдаёт код автоматически по прошлому одобрению — иначе любой, кто знает client_id и разрешённый redirect_uri, получает код без участия пользователя (RFC 9700 §4.15)
+  idea: Для публичного OAuth-клиента (без секрета) повторный запрос авторизации показывает экран согласия, а не выдаёт код автоматически по прошлому одобрению — иначе любой, кто знает client_id и разрешённый redirect_uri, получает код без участия пользователя (RFC 8252 §8.6)
 - key: static-prefix-segment-boundary
   decision: accept
   check_id: HTTP-PATH-PREFIX-SEGMENT-BOUNDARY
   file: checks/rest/http-protocol.yaml
   bugs: [GHSA-h2jq-g4cq-5ppq]
   idea: Правило по префиксу пути (статика /css, /js, исключения из аутентификации, маршрутизация прокси) соблюдает границу сегмента — /css-config.env, /cssbackup.sql, /js.env не попадают под правило /css/, /js/
-- key: sendfile-headers-untrusted
-  decision: accept
-  check_id: HARD-SENDFILE-HEADERS-UNTRUSTED
-  file: checks/security/api-hardening.yaml
-  bugs: [GHSA-r657-rxjc-j557]
-  idea: Служебные заголовки отдачи файлов прокси (X-Sendfile-Type, X-Accel-Mapping, X-Accel-Redirect, X-Sendfile), присланные клиентом, игнорируются — ответ и доступ к путям такие же, как без них
 - key: reflected-xss
   decision: accept
   check_id: INJ-REFLECTED-XSS
@@ -61,3 +60,8 @@ clusters:
 proofs:
   exclude: []
   no_variant: []
+  retarget:
+  - bug: GHSA-r657-rxjc-j557
+    check_id: SEC-INTERNAL-CONTROL-PARAMS
+    variant: Отправить на маршрут, отдаваемый через X-Sendfile/X-Accel-Redirect за прокси, заголовки X-Sendfile-Type и X-Accel-Mapping с подобранным отображением путей и проверить, что ответ и доступ к закрытым путям такие же, как без них
+    note: 'Перенесено на ревью из new: клиентские служебные заголовки отдачи файлов — тот же механизм (перекрёстное ревью, Qwen)'

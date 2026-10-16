@@ -285,6 +285,9 @@ checks:
   - action: Войти, выполнить запрос, выйти, повторить запрос с тем же access и refresh токеном или cookie.
   - action: Выход после отзыва согласия — отзыв refresh-токена не должен падать, сессия завершается
     notes: 'Real-world bug: RWB-0059 (keycloak/keycloak#50629)'
+  - action: Выполнить выход параллельно с долгим запросом в той же сессии и после завершения обоих повторить запрос со старой
+      cookie
+    notes: 'Real-world bug: RWB-0059 (GHSA-9j94-67jr-4cqj)'
   expected:
   - Запросы после выхода отклоняются в пределах задокументированного окна.
   applicability:
@@ -320,6 +323,7 @@ checks:
   - negative
   - authn
   - session
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -328,6 +332,8 @@ checks:
   - Пользователь с двумя активными сессиями.
   steps:
   - action: Сменить пароль в сессии A, выполнить запрос в сессии B.
+  - action: Сменить пароль пользователя от имени администратора и выполнить запрос в ранее открытой сессии пользователя
+    notes: 'Real-world bug: RWB-0238 (GHSA-438x-2p9v-g8h9)'
   expected:
   - Сессия B отклоняется или требует повторного входа по политике.
   applicability:
@@ -346,6 +352,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0238'
 - id: AUTH-BRUTE-FORCE-PROTECTION
   status: approved
   title: Перебор паролей ограничивается
@@ -837,6 +845,11 @@ checks:
   - Аутентификация через cookie.
   steps:
   - action: Выполнить POST/PUT/DELETE с чужого Origin, без CSRF-токена, с Content-Type text/plain и form-urlencoded.
+  - action: Отправить без CSRF-токена запросы к служебным эндпоинтам (предпросмотр, рендер), для которых защита могла быть
+      отключена
+    notes: 'Real-world bug: RWB-0190 (GHSA-f3qm-vfc3-jg6v)'
+  - action: Выполнить изменяющую операцию методом GET без CSRF-токена (переход по ссылке) и проверить, что состояние не изменилось
+    notes: 'Real-world bug: RWB-0190 (GHSA-8639-qx56-r428)'
   expected:
   - Запросы отклоняются; состояние не меняется.
   applicability:
@@ -932,6 +945,8 @@ checks:
   - action: Не выполнять запросов дольше idle-тайм-аута; держать сессию дольше абсолютного срока с активностью.
   - action: Добавить проверку продления при активности (в inbox №21 — AUTH-SESSION-SLIDING-RENEWAL)
     notes: 'Real-world bug: RWB-0063 (expressjs/session#340)'
+  - action: Создать множество сессий без закрытия и проверить, что простаивающие удаляются по таймауту
+    notes: 'Real-world bug: RWB-0063 (GHSA-52jp-gj8w-j6xh)'
   expected:
   - Сессия истекает по обоим правилам.
   applicability:
@@ -1777,8 +1792,8 @@ checks:
   preconditions:
   - Несколько способов аутентификации (токен, OIDC, сертификат клиента) и метод «кто я» или эквивалент.
   steps:
-  - action: Аутентифицироваться каждым способом с учёткой, у которой источник содержит UID, группы и дополнительные
-      атрибуты; запросить «кто я».
+  - action: Аутентифицироваться каждым способом с учёткой, у которой источник содержит UID, группы и дополнительные атрибуты;
+      запросить «кто я».
   expected:
   - Каждый атрибут, который источник содержит и который система обязана извлекать (по документации), присутствует и верен.
   - Одинакового набора у всех схем не требуется — различия должны быть задокументированы.
@@ -1799,3 +1814,87 @@ checks:
   references:
   - Смежные — AUTH-CLIENT-CERT-IDENTITY, AUTH-ACCOUNT-STATE-ALL-SCHEMES, SEC-AUTHN-SCHEMES-SUPPORTED
   - 'Real-world bug: RWB-0226'
+- id: AUTH-PROTOCOL-SESSION-OWNER-BINDING
+  status: draft
+  title: Идентификатор протокольной сессии привязан к аутентифицированному владельцу
+  category: security
+  protocols:
+  - rest
+  - websocket
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - session
+  - negative
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервер ведёт сессии по идентификатору в заголовке или пути (Mcp-Session-Id, ID потока SSE, ID сессии WebSocket).
+  steps:
+  - action: Открыть сессию пользователем A; пользователем B и без аутентификации выполнить операцию с ID сессии A.
+  - action: Пока поток владельца открыт, подключиться к потоку с ID сессии A с другого клиента.
+  expected:
+  - Чужой ID отклоняется (403/404); операции в контексте чужой сессии не выполняются.
+  - Поток владельца не переключается и не перехватывается (отказ 403/409).
+  applicability:
+    when:
+    - Есть сессии протокола по идентификатору.
+    skip_when:
+    - Протокол без состояния.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP API2:2023
+  - Model Context Protocol — Streamable HTTP, Session Management
+  - Смежные — AUTH-SESSION-FIXATION, SEC-OWNERSHIP-READ
+  - 'Real-world bug: RWB-0233'
+- id: AUTH-OAUTH-PUBLIC-CLIENT-CONSENT
+  status: draft
+  title: Повторная авторизация публичного OAuth-клиента не выполняется без участия пользователя
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - authn
+  - negative
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервис — OAuth authorization server с публичными клиентами (без секрета).
+  steps:
+  - action: Под пользователем, уже одобрившим публичного клиента, отправить запрос авторизации с его client_id и redirect_uri;
+      повторить для конфиденциального клиента.
+  expected:
+  - Для публичного клиента показывается экран согласия, код без участия пользователя не выдаётся.
+  - Для конфиденциального клиента автоматическое одобрение допустимо.
+  applicability:
+    when:
+    - Есть OAuth-сервер и публичные клиенты.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - RFC 8252 §8.6
+  - Смежная — AUTH-OAUTH-REDIRECT-STATE
+  - 'Real-world bug: RWB-0234'

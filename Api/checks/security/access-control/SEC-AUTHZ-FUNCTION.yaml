@@ -50,6 +50,11 @@ checks:
     notes: 'Real-world bug: RWB-0146 (GHSA-qvj8-gwpm-4x49)'
   - action: Выполнить операцию над объектом под пользователем с правом на операцию, но без права чтения этого объекта
     notes: 'Real-world bug: RWB-0146 (GHSA-mw82-xcg6-gx79)'
+  - action: Загрузить вложение в запись через отдельный эндпоинт вложений, когда политики запрещают изменение записи и загрузку
+      в это поле
+    notes: 'Real-world bug: RWB-0146 (GHSA-pqpw-cvm4-8mv9)'
+  - action: Отправить напрямую изменяющий запрос, право на который проверяется только при открытии формы
+    notes: 'Real-world bug: RWB-0146 (GHSA-8fq9-273g-6mrg)'
   expected:
   - Access is denied according to policy; no protected side effect occurs.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

@@ -67,6 +67,9 @@ checks:
     notes: 'Real-world bug: RWB-0068 (nestjs/nest#17695)'
   - action: Ошибка, возникшая асинхронно в обработчике, — ответ приходит без зависания и в общей модели
     notes: 'Real-world bug: RWB-0068 (nestjs/nest#373)'
+  - action: Вызвать ошибку СУБД в операции, выполняющей запрос пользователя (EXPLAIN), и проверить, что текст ошибки не содержит
+      значений из данных
+    notes: 'Real-world bug: RWB-0068 (GHSA-vf99-xw26-86g5)'
   expected:
   - Ответ в модели ошибок с correlation id.
   - Нет stack trace, SQL, путей файлов, версий библиотек и секретов.
