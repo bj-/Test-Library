@@ -17,8 +17,8 @@ python tools/validate_library.py .
 Ожидаемый результат для текущего архива:
 
 ```text
-Checks: 368 | Unique IDs: 368 | Profiles: 6
-Status: approved=320, draft=32, needs_clarification=16
+Checks: 631 | Unique IDs: 631 | Profiles: 6
+Status: approved=583, draft=32, needs_clarification=16
 JSON Schema validation: enabled
 Errors: 0 | Warnings: 0
 ```
