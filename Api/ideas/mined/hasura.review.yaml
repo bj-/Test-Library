@@ -1,0 +1,85 @@
+# Ревью кандидатов партии hasura (шаги 6–7, docs/BUG_MINING_PLAN.md, Api/mining/sessions.md — внутренняя сессия, п. 3).
+#
+# Шаг 6 (Claude, 2026-10-16): 16 new-паттернов склеены в 12 идей (clusters); для каждой — предложение: accept (новая
+# запись draft с предложенным ID в указанном файле) или reject (с причиной). Пруфы к существующим (extends/covered)
+# берутся из batches/*.out.jsonl автоматически.
+# Шаг 7 (человек): поменять decision / check_id / file кластера; неверные совпадения пруфов — в proofs.exclude
+# (ID бага), вариант пруфа без нового шага — в proofs.no_variant. Затем: cluster.py (пересобрать hasura.md) и
+# apply_proofs.py.
+#
+# decision: accept | reject | pending
+batch: hasura
+clusters:
+- key: jwt-valid-accepted
+  decision: accept
+  check_id: AUTH-JWT-VALID-ACCEPTED
+  file: checks/security/authentication-session.yaml
+  bugs: [hasura/graphql-engine#10774, hasura/graphql-engine#10733, hasura/graphql-engine#10243]
+  idea: Валидный токен принимается — подпись каждым поддерживаемым алгоритмом (включая EdDSA), JWKS с ключами неизвестного use рядом с ключом подписи, claims по настроенному пути (claims map) и значения по умолчанию; позитивная пара к AUTH-JWT-* и SEC-TOKEN-SIGNATURE
+- key: graphql-rest-endpoint-parity
+  decision: accept
+  check_id: GQL-REST-ENDPOINT-PARITY
+  file: checks/graphql/graphql.yaml
+  bugs: [hasura/graphql-engine#10799, hasura/graphql-engine#10512]
+  idea: Операция, опубликованная как REST-эндпоинт поверх GraphQL, выполняется так же, как исходный GraphQL-запрос — результат, побочные эффекты и контекст внешнего хука аутентификации (заголовки и тело)
+- key: telemetry-format
+  decision: accept
+  check_id: OBS-TELEMETRY-FORMAT
+  file: checks/common/observability.yaml
+  bugs: [hasura/graphql-engine#10868, hasura/graphql-engine#10472]
+  idea: Экспортируемая телеметрия (спаны, журналы OTLP) соответствует документированной структуре и семантическим соглашениям OpenTelemetry (span.kind CLIENT для обращений к БД и сервисам, поля записи журнала в body); нужен доступ к тестовому коллектору
+- key: ws-slow-consumer
+  decision: accept
+  check_id: WS-SLOW-CONSUMER-NO-SILENT-LOSS
+  file: checks/websocket/websocket.yaml
+  bugs: [hasura/graphql-engine#10860]
+  idea: Медленный клиент подписки не теряет сообщения молча — при переполнении очереди отправки он получает все записи или явный сигнал о потере
+- key: authz-rule-read-write-parity
+  decision: accept
+  check_id: SEC-AUTHZ-RULE-READ-WRITE-PARITY
+  file: checks/security/access-control/SEC-AUTHZ-RULE-READ-WRITE-PARITY.yaml
+  bugs: [hasura/graphql-engine#10762]
+  idea: Условие прав по связанной записи (в том числе по вычисляемому полю) действует во вставке, изменении и удалении так же, как в чтении
+- key: gateway-routing
+  decision: accept
+  check_id: GQL-GATEWAY-ROUTING
+  file: checks/graphql/graphql.yaml
+  bugs: [hasura/graphql-engine#10717]
+  idea: В объединённой схеме нескольких источников (remote schemas, федерация) каждое поле направляется в свой upstream, даже если типы источников совпадают и различаются только префиксом
+- key: relation-filter-no-duplicates
+  decision: accept
+  check_id: REST-FILTER-RELATION-NO-DUPLICATES
+  file: checks/rest/pagination.yaml
+  bugs: [hasura/graphql-engine#10238]
+  idea: Фильтр по полю связанной коллекции (один-ко-многим, в том числе внутри _or/_and) возвращает каждую подходящую запись ровно один раз
+- key: sort-multi-key-priority
+  decision: accept
+  check_id: PAGE-SORT-MULTI-KEY-PRIORITY
+  file: checks/rest/pagination-extra.yaml
+  bugs: [hasura/graphql-engine#10093]
+  idea: Сортировка по нескольким ключам применяется в заданном клиентом порядке приоритета; смена порядка ключей меняет порядок результатов
+- key: cache-explicit-purge
+  decision: accept
+  check_id: RES-CACHE-EXPLICIT-INVALIDATION
+  file: checks/common/resource-lifecycle.yaml
+  bugs: [hasura/graphql-engine#10055]
+  idea: Явный сброс кэша через API удаляет закэшированные ответы и сообщает их фактическое число; следующий запрос возвращает свежие данные
+- key: db-object-names
+  decision: accept
+  check_id: RES-DB-OBJECT-NAMES
+  file: checks/common/resource-lifecycle.yaml
+  bugs: [hasura/graphql-engine#10314]
+  idea: API, построенный по схеме БД, читает и пишет объекты с именами в верхнем регистре, со спецсимволами и совпадающими со встроенными типами (таблицы, столбцы, пользовательские типы)
+- key: authz-cross-source-rule
+  decision: reject
+  bugs: [hasura/graphql-engine#10457]
+  idea: Правило доступа с условием по таблице другого источника принимается и применяется
+  reason: Специфика конфигурации прав Hasura (несколько источников в метаданных); общая часть — задокументированная конфигурация прав работает — в SEC-AUTHZ-ROLE-POSITIVE-MATRIX
+- key: remote-schema-default-values
+  decision: reject
+  bugs: [hasura/graphql-engine#10759]
+  idea: Значения по умолчанию входных полей из introspection удалённой схемы разбираются по типу поля
+  reason: Внутренняя логика склейки схем Hasura (разбор defaultValue introspection при настройке ролей); тестом API продукта не воспроизводится без этой конфигурации
+proofs:
+  exclude: []
+  no_variant: []
