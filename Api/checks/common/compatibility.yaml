@@ -14,6 +14,7 @@ checks:
   - compatibility
   - contract
   - versioning
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -23,6 +24,12 @@ checks:
   - Контракт хранится в репозитории (OpenAPI, proto, GraphQL SDL).
   steps:
   - action: Сравнить контракт с предыдущим релизом инструментом diff (oasdiff, buf breaking, graphql-inspector).
+  - action: Обновить сервер до новой версии с неизменной конфигурацией и проверить, что он стартует без ошибок согласованности
+      конфигурации
+    notes: 'Real-world bug: RWB-0216 (hasura/graphql-engine#10867)'
+  - action: Снять схему API до и после обновления сервера при неизменной конфигурации и сравнить имена типов на несовместимые
+      изменения
+    notes: 'Real-world bug: RWB-0216 (hasura/graphql-engine#10864)'
   expected:
   - Ломающие изменения (удаление поля, смена типа, новое обязательное поле, удаление enum) отсутствуют или сопровождаются
     новой версией.
@@ -43,6 +50,8 @@ checks:
   risk:
     impact: critical
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0216'
 - id: COMPAT-IMPLEMENTATION-MATCHES-CONTRACT
   status: approved
   title: Реализация соответствует опубликованному контракту
@@ -76,6 +85,9 @@ checks:
     notes: 'Real-world bug: RWB-0067 (expressjs/express#2495)'
   - action: Документ discovery/метаданных как контракт — сверять объявленные возможности с фактическими
     notes: 'Real-world bug: RWB-0067 (keycloak/keycloak#49730)'
+  - action: Для каждого задокументированного флага запроса выполнить пример из документации с флагом и без него и проверить
+      заявленное различие поведения
+    notes: 'Real-world bug: RWB-0067 (hasura/graphql-engine#10707)'
   expected:
   - Все задокументированные операции существуют; ответы соответствуют схемам; нет недокументированных операций.
   applicability:

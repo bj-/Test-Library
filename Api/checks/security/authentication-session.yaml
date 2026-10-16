@@ -1717,3 +1717,46 @@ checks:
   references:
   - Дополняет AUTH-ACCOUNT-STATE-ALL-SCHEMES и GRPC-TLS-MTLS
   - 'Real-world bug: RWB-0187'
+- id: AUTH-JWT-VALID-ACCEPTED
+  status: draft
+  title: Валидный токен принимается при всех поддерживаемых алгоритмах, наборах ключей и настройках claims
+  category: security
+  protocols:
+  - generic
+  kind: positive
+  priority: P2
+  tags:
+  - positive
+  - authn
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Аутентификация по JWT; известны поддерживаемые алгоритмы подписи, источник ключей (JWKS) и настройка claims.
+  steps:
+  - action: Выпустить валидный токен каждым заявленным алгоритмом подписи (RS*, PS*, ES*, EdDSA, HS*) и вызвать защищённый
+      метод.
+  - action: Добавить в JWKS рядом с ключом подписи ключи другого или неизвестного use/kty и повторить.
+  - action: Передать claims по настроенному пути (claims map, вложенный namespace) и без необязательных claims — проверить
+      значения по умолчанию.
+  expected:
+  - Валидный токен принимается во всех вариантах; посторонние ключи в JWKS не мешают выбору ключа подписи.
+  - Роль и атрибуты берутся из настроенного пути, при отсутствии — значения по умолчанию из документации.
+  applicability:
+    when:
+    - Есть аутентификация по JWT.
+    skip_when:
+    - JWT не используется.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - RFC 7515, RFC 7517, RFC 8037 (EdDSA)
+  - Позитивная пара к AUTH-JWT-* и SEC-TOKEN-SIGNATURE
+  - 'Real-world bug: RWB-0206'

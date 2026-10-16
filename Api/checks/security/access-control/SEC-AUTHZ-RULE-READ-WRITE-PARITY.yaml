@@ -1,0 +1,45 @@
+checks:
+- id: SEC-AUTHZ-RULE-READ-WRITE-PARITY
+  status: draft
+  title: Условие прав по связанной записи действует в записи так же, как в чтении
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - authz
+  - negative
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Права задаются условиями на данные, в том числе по связанной записи или вычисляемому полю (row-level security,
+    permission rules).
+  steps:
+  - action: Задать роли условие по полю связанной записи (или по вычисляемому полю) и убедиться, что чтение чужих записей
+      запрещено.
+  - action: Попытаться вставить, изменить и удалить запись, которая не проходит то же условие, включая перенос записи
+      под чужую связанную запись.
+  expected:
+  - Вставка, изменение и удаление запрещены там же, где запрещено чтение; запрещённые изменения не применяются.
+  applicability:
+    when:
+    - Есть условные права на данные.
+    skip_when:
+    - Права только на уровне ролей и методов.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP API1:2023, API5:2023
+  - Дополняет SEC-OWNERSHIP-UPDATE и SEC-OWNERSHIP-DELETE
+  - 'Real-world bug: RWB-0210'

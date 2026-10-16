@@ -808,3 +808,86 @@ checks:
   references:
   - RFC 9457
   - 'Real-world bug: RWB-0035'
+- id: RES-CACHE-EXPLICIT-INVALIDATION
+  status: draft
+  title: Явный сброс кэша через API удаляет закэшированные ответы
+  category: resources
+  protocols:
+  - generic
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Есть кэш ответов и метод его сброса через API.
+  steps:
+  - action: Закэшировать несколько ответов, изменить данные, вызвать сброс кэша и повторить запросы.
+  expected:
+  - Следующие запросы возвращают свежие данные.
+  - Ответ на сброс сообщает фактическое число удалённых записей кэша.
+  applicability:
+    when:
+    - Есть явный сброс кэша.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - Дополняет RES-CACHE-KEY-COMPLETENESS
+  - 'Real-world bug: RWB-0214'
+- id: RES-DB-OBJECT-NAMES
+  status: draft
+  title: API по схеме БД работает с объектами в любом регистре, со спецсимволами и зарезервированными именами
+  category: resources
+  protocols:
+  - generic
+  kind: boundary
+  priority: P2
+  tags:
+  - boundary
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - API строится по схеме БД (автогенерация, интроспекция) или работает с объектами БД по их именам.
+  - Желательно — доступ к БД или её описанию (СУБД, collation, правила регистра идентификаторов); без него ожидание
+    по регистру — только по документации и фактическому поведению.
+  steps:
+  - action: Создать таблицы, столбцы и пользовательские типы с именами в верхнем и смешанном регистре, со спецсимволами
+      (пробел, дефис, кавычки, точка) и совпадающими со встроенными типами и ключевыми словами.
+  - action: Прочитать, создать, изменить и удалить записи через API; сравнить имена в схеме API, запросах и ответах с именами
+      в БД.
+  - action: Обратиться к объекту по имени в другом регистре.
+  expected:
+  - Все операции работают; имена сохраняют регистр на всём пути (БД → схема API → запрос → ответ), без молчаливой
+    нормализации.
+  - Обращение в другом регистре ведёт себя так, как сама БД (регистрозависимая или нет) и как описано в документации;
+    расхождение источников — находка.
+  applicability:
+    when:
+    - Есть API поверх схемы БД.
+    skip_when:
+    - Имена объектов БД не видны в API.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - SQL-стандарт — идентификаторы в кавычках (delimited identifiers)
+  - Значения данных в другом регистре — VAL-CASE-SENSITIVITY
+  - 'Real-world bug: RWB-0215'

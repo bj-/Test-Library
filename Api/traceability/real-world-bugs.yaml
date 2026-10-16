@@ -489,6 +489,10 @@ RWB-0029:
     product: Directus
     closed: '2026-04-15'
     summary: 'Применение снапшота схемы, выгруженного API, падало 500: длина nvarchar(max) выгружалась как -1'
+  - url: https://github.com/hasura/graphql-engine/issues/10324
+    product: Hasura
+    closed: '2024-08-06'
+    summary: Выгруженные метаданные с resource_version не принимаются операцией замены
 RWB-0030:
   pattern: IP клиента определяется по X-Forwarded-For с учётом числа доверенных прокси, одинаково на всех маршрутах и модулях
   checks:
@@ -717,6 +721,10 @@ RWB-0045:
     product: Keycloak
     closed: '2026-05-26'
     summary: DELETE realm через REST возвращает 500, хотя удаление в итоге выполняется.
+  - url: https://github.com/hasura/graphql-engine/issues/10662
+    product: Hasura
+    closed: '2025-02-21'
+    summary: 'Применение метаданных возвращает 500, хотя изменение применено: гонка с закрытием WebSocket-соединений'
 RWB-0046:
   pattern: Код и вызовы инструментов, сгенерированные LLM по вводу пользователя, не выполняют исходящих запросов и опасных
     операций (prompt injection)
@@ -763,6 +771,10 @@ RWB-0049:
     product: Strapi
     closed: '2026-09-08'
     summary: Опубликованные схемы инструментов не соответствуют заявленному диалекту JSON Schema
+  - url: https://github.com/hasura/graphql-engine/issues/10560
+    product: Hasura
+    closed: '2024-10-17'
+    summary: Introspection возвращает null в non-null поле isRepeatable, клиенты не разбирают схему
 RWB-0050:
   pattern: Потоковый ответ SSE работает для всех методов (включая POST с телом), отдаёт text/event-stream и события до закрытия
     клиентом
@@ -1039,6 +1051,10 @@ RWB-0067:
     product: Keycloak
     closed: '2026-09-30'
     summary: Опубликованная OpenAPI-схема описывает ответ как массив пользователей, а API возвращает группы.
+  - url: https://github.com/hasura/graphql-engine/issues/10707
+    product: Hasura
+    closed: '2025-03-20'
+    summary: Задокументированный флаг no_transaction в запросе run_sql игнорируется
 RWB-0068:
   pattern: Внутренняя ошибка сервера возвращается в общей модели без утечек
   checks:
@@ -1863,6 +1879,10 @@ RWB-0093:
     product: NestJS
     closed: '2023-05-22'
     summary: Исключение /health из auth-middleware перестало работать при глобальном префиксе и версионировании
+  - url: https://github.com/hasura/graphql-engine/issues/10721
+    product: Hasura
+    closed: '2025-04-22'
+    summary: Liveness-эндпоинт /healthz медленный, потому что зависит от проверки метаданных и схемы
 RWB-0094:
   pattern: Поиск со спецсимволами и wildcard не ломается и не расширяет выборку
   checks:
@@ -2202,6 +2222,18 @@ RWB-0115:
     product: Keycloak
     closed: '2026-06-22'
     summary: Пустая строка в массиве URI даёт 409 «дубликат» вместо 400 на одной из СУБД
+  - url: https://github.com/hasura/graphql-engine/issues/10322
+    product: Hasura
+    closed: '2024-07-22'
+    summary: При пустом массиве обновлений мутация возвращает объект вместо объявленного списка
+  - url: https://github.com/hasura/graphql-engine/issues/10239
+    product: Hasura
+    closed: '2024-12-16'
+    summary: Мутация update_many с пустым массивом возвращает объект вместо объявленного списка
+  - url: https://github.com/hasura/graphql-engine/issues/10135
+    product: Hasura
+    closed: '2024-07-29'
+    summary: update_*_many с пустым updates возвращает объект вместо списка
 RWB-0116:
   pattern: Допустимые и неизвестные enum
   checks:
@@ -2356,6 +2388,10 @@ RWB-0122:
     closed: '2026-08-18'
     summary: PATCH с явным null в поле секрета генерирует новый секрет в обход политики ротации - старый перестаёт работать
       сразу.
+  - url: https://github.com/hasura/graphql-engine/issues/10013
+    product: Hasura
+    closed: '2024-05-02'
+    summary: 'Запрос с "extensions": null отклоняется ошибкой разбора, без поля работает (регрессия)'
 RWB-0123:
   pattern: Числовые границы
   checks:
@@ -3781,6 +3817,10 @@ RWB-0194:
     product: org.springframework.graphql:spring-graphql
     closed: '2026-06-11'
     summary: Аннотации авторизации на методах в иерархии типов игнорировались для резолверов GraphQL
+  - url: https://github.com/hasura/graphql-engine/issues/10711
+    product: Hasura
+    closed: '2025-07-31'
+    summary: Роль, наследующая составную роль, обходит ограничения столбцов и строк
 RWB-0195:
   pattern: Число одновременных стримов и их длительность ограничены
   checks:
@@ -3948,3 +3988,146 @@ RWB-0205:
     product: org.http4s:http4s-blaze-server_2.12, org.http4s:http4s-blaze-server_2.13, org.http4s:http4s-blaze-server_3
     closed: '2026-07-24'
     summary: Фрагменты WebSocket-сообщения собираются без лимита общего размера и числа фрагментов
+RWB-0206:
+  pattern: Валидный токен принимается — подпись каждым поддерживаемым алгоритмом (включая EdDSA), JWKS с ключами неизвестного
+    use рядом с ключом подписи, claims по настроенному пути (claims map) и значения по умолчанию; позитивная пара к AUTH-JWT-*
+    и SEC-TOKEN-SIGNATURE
+  checks:
+  - AUTH-JWT-VALID-ACCEPTED
+  batch: hasura
+  bugs:
+  - url: https://github.com/hasura/graphql-engine/issues/10774
+    product: Hasura
+    closed: '2025-09-10'
+    summary: 'Регресс: корректный токен EdDSA с ключом Ed25519 из JWKS отклоняется'
+  - url: https://github.com/hasura/graphql-engine/issues/10733
+    product: Hasura
+    closed: '2025-05-29'
+    summary: Сервер не загружает соответствующий стандарту JWKS с нестандартным значением use и не принимает токены
+  - url: https://github.com/hasura/graphql-engine/issues/10243
+    product: Hasura
+    closed: '2024-05-28'
+    summary: JWT с нужным claim по настроенному пути отклоняется с ошибкой отсутствующей переменной сессии
+RWB-0207:
+  pattern: Операция, опубликованная как REST-эндпоинт поверх GraphQL, выполняется так же, как исходный GraphQL-запрос — результат,
+    побочные эффекты и контекст внешнего хука аутентификации (заголовки и тело)
+  checks:
+  - GQL-REST-ENDPOINT-PARITY
+  batch: hasura
+  bugs:
+  - url: https://github.com/hasura/graphql-engine/issues/10799
+    product: Hasura
+    closed: '2025-12-05'
+    summary: REST-эндпоинт, построенный из GraphQL-мутации, не находит поле, которое работает в GraphQL
+  - url: https://github.com/hasura/graphql-engine/issues/10512
+    product: Hasura
+    closed: '2024-10-23'
+    summary: 'Для REST-эндпоинтов внешний хук аутентификации получает request: null вместо тела запроса'
+RWB-0208:
+  pattern: Экспортируемая телеметрия (спаны, журналы OTLP) соответствует документированной структуре и семантическим соглашениям
+    OpenTelemetry (span.kind CLIENT для обращений к БД и сервисам, поля записи журнала в body); нужен доступ к тестовому коллектору
+  checks:
+  - OBS-TELEMETRY-FORMAT
+  batch: hasura
+  bugs:
+  - url: https://github.com/hasura/graphql-engine/issues/10868
+    product: Hasura
+    closed: '2026-09-09'
+    summary: Экспортируемые спаны обращений к БД имеют неверный span.kind, это видно в коллекторе трассировки
+  - url: https://github.com/hasura/graphql-engine/issues/10472
+    product: Hasura
+    closed: '2024-07-25'
+    summary: Экспортируемые журналы OpenTelemetry не соответствуют документированной структуре
+RWB-0209:
+  pattern: Медленный клиент подписки не теряет сообщения молча — при переполнении очереди отправки он получает все записи
+    или явный сигнал о потере
+  checks:
+  - WS-SLOW-CONSUMER-NO-SILENT-LOSS
+  batch: hasura
+  bugs:
+  - url: https://github.com/hasura/graphql-engine/issues/10860
+    product: Hasura
+    closed: '2026-08-25'
+    summary: Потоковая подписка молча теряет данные при переполнении очереди отправки
+RWB-0210:
+  pattern: Условие прав по связанной записи (в том числе по вычисляемому полю) действует во вставке, изменении и удалении
+    так же, как в чтении
+  checks:
+  - SEC-AUTHZ-RULE-READ-WRITE-PARITY
+  batch: hasura
+  bugs:
+  - url: https://github.com/hasura/graphql-engine/issues/10762
+    product: Hasura
+    closed: '2025-08-11'
+    summary: Правило доступа на основе вычисляемого поля связанной записи не работает в мутациях, хотя работает в чтении
+RWB-0211:
+  pattern: В объединённой схеме нескольких источников (remote schemas, федерация) каждое поле направляется в свой upstream,
+    даже если типы источников совпадают и различаются только префиксом
+  checks:
+  - GQL-GATEWAY-ROUTING
+  batch: hasura
+  bugs:
+  - url: https://github.com/hasura/graphql-engine/issues/10717
+    product: Hasura
+    closed: '2025-10-21'
+    summary: Запрос к полю второй удалённой схемы направляется в первую при одинаковых определениях и разных префиксах
+RWB-0212:
+  pattern: Фильтр по полю связанной коллекции (один-ко-многим, в том числе внутри _or/_and) возвращает каждую подходящую запись
+    ровно один раз
+  checks:
+  - REST-FILTER-RELATION-NO-DUPLICATES
+  batch: hasura
+  bugs:
+  - url: https://github.com/hasura/graphql-engine/issues/10238
+    product: Hasura
+    closed: '2024-05-17'
+    summary: Фильтр с условием по связи один-ко-многим возвращает дубликаты родительских записей
+RWB-0213:
+  pattern: Сортировка по нескольким ключам применяется в заданном клиентом порядке приоритета; смена порядка ключей меняет
+    порядок результатов
+  checks:
+  - PAGE-SORT-MULTI-KEY-PRIORITY
+  batch: hasura
+  bugs:
+  - url: https://github.com/hasura/graphql-engine/issues/10093
+    product: Hasura
+    closed: '2024-05-21'
+    summary: Аргумент order_by не принимает список, поэтому порядок приоритета нескольких ключей сортировки теряется
+RWB-0214:
+  pattern: Явный сброс кэша через API удаляет закэшированные ответы и сообщает их фактическое число; следующий запрос возвращает
+    свежие данные
+  checks:
+  - RES-CACHE-EXPLICIT-INVALIDATION
+  batch: hasura
+  bugs:
+  - url: https://github.com/hasura/graphql-engine/issues/10055
+    product: Hasura
+    closed: '2024-08-21'
+    summary: API сброса кэша сообщает 0 очищенных записей, закэшированный запрос продолжает отдавать старые данные
+RWB-0215:
+  pattern: API, построенный по схеме БД, читает и пишет объекты с именами в верхнем регистре, со спецсимволами и совпадающими
+    со встроенными типами (таблицы, столбцы, пользовательские типы)
+  checks:
+  - RES-DB-OBJECT-NAMES
+  batch: hasura
+  bugs:
+  - url: https://github.com/hasura/graphql-engine/issues/10314
+    product: Hasura
+    closed: '2024-07-22'
+    summary: Имя пользовательского enum-типа в верхнем регистре приводится к нижнему, мутация падает
+RWB-0216:
+  pattern: Изменения контракта проверяются на обратную несовместимость
+  checks:
+  - COMPAT-BREAKING-CHANGE-DIFF
+  batch: hasura
+  bugs:
+  - url: https://github.com/hasura/graphql-engine/issues/10867
+    product: Hasura
+    closed: '2026-08-06'
+    summary: 'После обновления сервера неизменная конфигурация стала несогласованной: конфликт имён сгенерированных типов
+      GraphQL'
+  - url: https://github.com/hasura/graphql-engine/issues/10864
+    product: Hasura
+    closed: '2026-07-31'
+    summary: Новая версия переименовала сгенерированные скалярные типы, существующие клиентские операции и пользовательские
+      типы перестали проходить валидацию

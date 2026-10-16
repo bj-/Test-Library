@@ -22,6 +22,7 @@ clusters:
   file: checks/graphql/graphql.yaml
   bugs: [hasura/graphql-engine#10799, hasura/graphql-engine#10512]
   idea: Операция, опубликованная как REST-эндпоинт поверх GraphQL, выполняется так же, как исходный GraphQL-запрос — результат, побочные эффекты и контекст внешнего хука аутентификации (заголовки и тело)
+# Ревью bj (2026-10-16): верно, проверка — при наличии инструментов (коллектор).
 - key: telemetry-format
   decision: accept
   check_id: OBS-TELEMETRY-FORMAT
@@ -64,6 +65,9 @@ clusters:
   file: checks/common/resource-lifecycle.yaml
   bugs: [hasura/graphql-engine#10055]
   idea: Явный сброс кэша через API удаляет закэшированные ответы и сообщает их фактическое число; следующий запрос возвращает свежие данные
+# Ревью bj (2026-10-16): регистр — общее требование, и для тестов SQL: в идеале регистр совпадает на всём пути,
+# но проверяется реальное поведение; при доступе к БД или её описанию ожидание зависит от регистрозависимости БД.
+# Отдельно от VAL-CASE-SENSITIVITY (имена объектов схемы, а не значения данных); общее для SQL — inbox №181.
 - key: db-object-names
   decision: accept
   check_id: RES-DB-OBJECT-NAMES

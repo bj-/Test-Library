@@ -25,6 +25,9 @@ checks:
   - action: Явный null для секрета/служебного поля в PATCH запускает побочную операцию (перегенерацию) - проверить, что она
       идёт через те же правила, что и штатная операция
     notes: 'Real-world bug: RWB-0122 (keycloak/keycloak#51527)'
+  - action: Отправить в теле GraphQL-запроса необязательные поля extensions, variables и operationName со значением null и
+      проверить, что ответ такой же, как без этих полей
+    notes: 'Real-world bug: RWB-0122 (hasura/graphql-engine#10013)'
   expected:
   - каждый вариант соответствует правилам required/nullable/type
   applicability:

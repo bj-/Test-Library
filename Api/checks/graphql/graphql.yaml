@@ -171,6 +171,8 @@ checks:
   - Есть поля с ограниченным доступом.
   steps:
   - action: Запросить защищённые поля напрямую, через вложенные связи, через fragments и union.
+  - action: Повторить проверку полевых и строковых ограничений для роли, которая наследует составную роль
+    notes: 'Real-world bug: RWB-0194 (hasura/graphql-engine#10711)'
   expected:
   - Защищённые поля недоступны по всем путям.
   applicability:
@@ -413,3 +415,83 @@ checks:
   - GraphQL spec §5.5 (Fragments)
   - Field Alias
   - 'Real-world bug: RWB-0014'
+- id: GQL-REST-ENDPOINT-PARITY
+  status: draft
+  title: Операция, опубликованная как REST-эндпоинт, выполняется так же, как исходный GraphQL-запрос
+  category: graphql
+  protocols:
+  - graphql
+  - rest
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - graphql
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - GraphQL-операции публикуются как REST-эндпоинты (RESTified endpoints, persisted queries по URL).
+  steps:
+  - action: Выполнить одну и ту же операцию (запрос и мутацию) через GraphQL и через REST-эндпоинт с одинаковыми переменными
+      и правами.
+  - action: При внешнем хуке аутентификации (webhook) сравнить заголовки и тело, которые хук получает в обоих случаях.
+  expected:
+  - Результат, ошибки и побочные эффекты совпадают.
+  - Хук аутентификации получает тот же контекст (заголовки, тело запроса), что и для GraphQL.
+  applicability:
+    when:
+    - Есть REST-публикация GraphQL-операций.
+    skip_when:
+    - Нет такой публикации.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Здравый смысл — один и тот же запрос через разные входы даёт одинаковый результат
+  - 'Real-world bug: RWB-0207'
+- id: GQL-GATEWAY-ROUTING
+  status: draft
+  title: В объединённой схеме каждое поле направляется в свой upstream
+  category: graphql
+  protocols:
+  - graphql
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - graphql
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Схема собрана из нескольких источников (remote schemas, федерация, stitching).
+  steps:
+  - action: Подключить два источника с одинаковыми именами типов, различающиеся только префиксом (namespace), и запросить
+      поля каждого из них в одном и в разных запросах.
+  - action: Проверить по журналам или ответам upstream, какой источник обработал каждое поле.
+  expected:
+  - Каждое поле обработано своим источником; данные источников не смешиваются и не подменяются.
+  applicability:
+    when:
+    - Есть объединение схем.
+    skip_when:
+    - Один источник.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - GraphQL Federation spec
+  - 'Real-world bug: RWB-0211'

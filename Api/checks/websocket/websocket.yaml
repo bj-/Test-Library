@@ -280,3 +280,41 @@ checks:
   risk:
     impact: low
     likelihood: medium
+- id: WS-SLOW-CONSUMER-NO-SILENT-LOSS
+  status: draft
+  title: Медленный клиент подписки не теряет сообщения молча
+  category: websocket
+  protocols:
+  - websocket
+  - graphql
+  kind: reliability
+  priority: P2
+  tags:
+  - reliability
+  - websocket
+  - real-world-bug
+  - nightly
+  preconditions:
+  - Есть подписки или поток событий по WebSocket.
+  steps:
+  - action: Подписаться и не читать сокет (или читать медленно), пока сервер генерирует поток событий больше буфера отправки.
+  - action: Возобновить чтение и сверить полученные события с отправленными.
+  expected:
+  - Клиент получает все события, либо сервер явно сообщает о потере (ошибка, закрытие с кодом, маркер пропуска).
+  - Сервер не копит память без предела.
+  applicability:
+    when:
+    - Есть подписки.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - RFC 6455
+  - 'Real-world bug: RWB-0209'

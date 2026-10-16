@@ -134,6 +134,9 @@ checks:
   - Сервис отдаёт описание (openapi.json, JSON Schema, MCP tools/list, GraphQL SDL, proto через reflection).
   steps:
   - action: Скачать описание и проверить строгим валидатором заявленной версии (OpenAPI 3.1, JSON Schema 2020-12).
+  - action: Выполнить полный запрос introspection и проверить ответ на соответствие мета-схеме GraphQL, включая non-null поля
+      вроде isRepeatable
+    notes: 'Real-world bug: RWB-0049 (hasura/graphql-engine#10560)'
   expected:
   - Описание валидно; $schema и версия соответствуют фактическому синтаксису.
   applicability:

@@ -166,3 +166,43 @@ checks:
   references:
   - Здравый смысл — эквивалентные выражения дают одинаковый результат
   - 'Real-world bug: RWB-0002'
+- id: REST-FILTER-RELATION-NO-DUPLICATES
+  status: draft
+  title: Фильтр по полю связанной коллекции возвращает каждую запись один раз
+  category: pagination
+  protocols:
+  - rest
+  - graphql
+  kind: boundary
+  priority: P2
+  tags:
+  - boundary
+  - pagination
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Список поддерживает фильтр по полям связанной коллекции (один-ко-многим).
+  steps:
+  - action: Создать запись с несколькими связанными элементами, каждый из которых подходит под фильтр; запросить список
+      с этим фильтром.
+  - action: Повторить с фильтром внутри _or/_and и вместе с пагинацией и подсчётом total.
+  expected:
+  - Каждая подходящая запись в выдаче ровно один раз; total и страницы согласованы с выдачей.
+  applicability:
+    when:
+    - Есть фильтр по связям.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Здравый смысл — фильтр не размножает записи (JOIN без DISTINCT/EXISTS)
+  - 'Real-world bug: RWB-0212'

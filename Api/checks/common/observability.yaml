@@ -149,6 +149,9 @@ checks:
   - action: Доступность health без аутентификации при глобальном префиксе/версии и что исключение не расширяется на соседние
       маршруты
     notes: 'Real-world bug: RWB-0093 (nestjs/nest#11442)'
+  - action: Замерить время ответа liveness-эндпоинта под нагрузкой и во время перестроения конфигурации; ответ не должен зависеть
+      от долгих проверок
+    notes: 'Real-world bug: RWB-0093 (hasura/graphql-engine#10721)'
   expected:
   - Readiness отражает зависимости; публичный ответ не содержит версий, хостов и секретов.
   applicability:
@@ -168,3 +171,42 @@ checks:
     likelihood: medium
   references:
   - 'Real-world bug: RWB-0093'
+- id: OBS-TELEMETRY-FORMAT
+  status: draft
+  title: Экспортируемая телеметрия соответствует документированной структуре и соглашениям OpenTelemetry
+  category: observability
+  protocols:
+  - generic
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - observability
+  - real-world-bug
+  - nightly
+  preconditions:
+  - Сервис экспортирует спаны, метрики или журналы (OTLP и др.).
+  - Нужны инструменты — тестовый коллектор телеметрии (OpenTelemetry Collector с файловым экспортом и т. п.); без него проверка
+    пропускается осознанно.
+  steps:
+  - action: Выполнить запросы, затрагивающие БД и внешние сервисы, и собрать экспортированные спаны.
+  - action: Собрать экспортированные записи журнала и сверить их поля с документацией.
+  expected:
+  - Спаны обращений к БД и сервисам имеют span.kind CLIENT и атрибуты по семантическим соглашениям; связь parent/child сохранена.
+  - Текст записи журнала — в body, атрибуты — в attributes, как в документации и спецификации OTLP.
+  applicability:
+    when:
+    - Экспорт телеметрии включён и есть коллектор из предусловий.
+    skip_when:
+    - Телеметрии нет или нет доступа к коллектору.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - OpenTelemetry Semantic Conventions, OTLP specification
+  - 'Real-world bug: RWB-0208'

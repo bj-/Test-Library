@@ -238,3 +238,41 @@ checks:
   risk:
     impact: low
     likelihood: medium
+- id: PAGE-SORT-MULTI-KEY-PRIORITY
+  status: draft
+  title: Сортировка по нескольким ключам соблюдает заданный клиентом порядок приоритета
+  category: pagination
+  protocols:
+  - rest
+  - graphql
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - pagination
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Поддерживается сортировка по нескольким полям.
+  steps:
+  - action: Запросить список с сортировкой (a, b), затем (b, a) на данных, где порядки различаются.
+  expected:
+  - Первый ключ — главный; смена порядка ключей меняет порядок результатов согласно ему.
+  applicability:
+    when:
+    - Есть сортировка по нескольким полям.
+    skip_when:
+    - Сортировка по одному полю.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - Здравый смысл — ORDER BY a, b
+  - 'Real-world bug: RWB-0213'
