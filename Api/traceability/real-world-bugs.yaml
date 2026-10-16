@@ -96,6 +96,21 @@ RWB-0003:
     product: Directus
     closed: '2025-02-13'
     summary: Правило доступа с фильтром по политикам сохраняется, а чтение пользователей под ним падает с ошибкой БД
+  - url: https://github.com/Kong/kong/issues/10446
+    fix: https://github.com/Kong/kong/pull/10514
+    product: Kong
+    closed: '2023-03-22'
+    summary: Принятый маршрут с 4+ адресами назначения ломает перестроение маршрутизатора.
+  - url: https://github.com/Kong/kong/issues/8314
+    fix: https://github.com/Kong/kong/pull/8483
+    product: Kong
+    closed: '2022-03-10'
+    summary: Принятая настройка лимита с null-единицами даёт 500 на каждый запрос.
+  - url: https://github.com/Kong/kong/issues/6707
+    fix: https://github.com/Kong/kong/pull/6710
+    product: Kong
+    closed: '2021-01-07'
+    summary: Принятая настройка с null в полях ломает обработку запроса — пустой ответ.
 RWB-0004:
   pattern: Разрешённая операция работает для каждой роли с правом, а не только для администратора (позитивная матрица прав)
   checks:
@@ -154,6 +169,11 @@ RWB-0004:
     product: Directus
     closed: '2025-03-07'
     summary: Вложенное изменение связанной записи отклоняется, если у роли нет права менять её первичный ключ
+  - url: https://github.com/Kong/kong/issues/6281
+    fix: https://github.com/Kong/kong/pull/6354
+    product: Kong
+    closed: '2020-09-18'
+    summary: Список запрета с несуществующей группой отклоняет всех пользователей.
 RWB-0005:
   pattern: Делегированный администратор над собственной учёткой — явное разрешение или 403 по политике, без 5xx
   checks:
@@ -241,6 +261,11 @@ RWB-0007:
     product: activeadmin
     closed: '2023-12-15'
     summary: Коллекция для экспорта CSV хранилась в разделяемом между потоками состоянии
+  - url: https://github.com/Kong/kong/issues/7054
+    fix: https://github.com/Kong/kong/pull/7102
+    product: Kong
+    closed: '2021-05-04'
+    summary: На одном keep-alive соединении настройки первого маршрута применяются к запросу на другой маршрут.
 RWB-0008:
   pattern: Параллельные независимые запросы одной операции выполняются без 5xx (общая кэшированная конфигурация)
   checks:
@@ -498,6 +523,16 @@ RWB-0023:
     product: Kubernetes
     closed: '2025-07-11'
     summary: Кэш токенов ключуется по имени учётной записи без uid и после её пересоздания выдаёт токен старой учётки
+  - url: https://github.com/Kong/kong/issues/9582
+    fix: https://github.com/Kong/kong/pull/9856
+    product: Kong
+    closed: '2023-03-07'
+    summary: Коллизия CRC32 ключа пула соединений отправляет запросы одного сервиса на адрес другого.
+  - url: https://github.com/Kong/kong/issues/9272
+    fix: https://github.com/Kong/kong/pull/9789
+    product: Kong
+    closed: '2022-11-21'
+    summary: Экземпляры отправки логов с разными размером очереди и тайм-аутом делят одну очередь — часть настроек теряется.
 RWB-0024:
   pattern: Незавершённые сообщения (slowloris) и непрочитанные ответы не накапливаются без ограничения; таймауты, лимит соединений,
     backpressure
@@ -931,6 +966,11 @@ RWB-0045:
     product: Directus
     closed: '2025-09-26'
     summary: Загрузка файла считается успешной, но файл не сохранён и метаданные пустые
+  - url: https://github.com/Kong/kong/issues/10279
+    fix: https://github.com/Kong/kong/pull/10348
+    product: Kong
+    closed: '2023-02-23'
+    summary: Загрузка конфигурации с невалидным regex отвечает 201, но маршрут не загружается.
 RWB-0046:
   pattern: Код и вызовы инструментов, сгенерированные LLM по вводу пользователя, не выполняют исходящих запросов и опасных
     операций (prompt injection)
@@ -1305,6 +1345,11 @@ RWB-0067:
     product: Directus
     closed: '2026-10-01'
     summary: Схема GraphQL помечает необнуляемое поле с default как nullable
+  - url: https://github.com/Kong/kong/issues/9944
+    fix: https://github.com/Kong/kong/pull/9960
+    product: Kong
+    closed: '2022-12-14'
+    summary: Целочисленное поле срока жизни возвращается дробным числом.
 RWB-0068:
   pattern: Внутренняя ошибка сервера возвращается в общей модели без утечек
   checks:
@@ -2577,6 +2622,11 @@ RWB-0093:
     product: Directus
     closed: '2024-10-09'
     summary: Health-эндпоинт сообщает ошибку исправного хранилища после обновления
+  - url: https://github.com/Kong/kong/issues/9879
+    fix: https://github.com/Kong/kong/pull/9911
+    product: Kong
+    closed: '2022-12-26'
+    summary: Статус-эндпоинт сообщает, что конфигурация не загружена, хотя она загружена при старте.
 RWB-0094:
   pattern: Поиск со спецсимволами и wildcard не ломается и не расширяет выборку
   checks:
@@ -2751,6 +2801,11 @@ RWB-0102:
     product: Directus
     closed: '2025-04-07'
     summary: Удалённое поле остаётся в настройках коллекции (поля для дублирования), запросы копирования падают
+  - url: https://github.com/Kong/kong/issues/7859
+    fix: https://github.com/Kong/kong/pull/7924
+    product: Kong
+    closed: '2021-10-05'
+    summary: После удаления upstream с именем хоста сервиса запросы к сервису навсегда дают 503.
 RWB-0103:
   pattern: Неизменяемые поля нельзя изменить после создания
   checks:
@@ -2773,6 +2828,11 @@ RWB-0104:
     product: Keycloak
     closed: '2026-08-11'
     summary: API принимает разрешение со scope, не связанным с выбранным ресурсом, интерфейс такое не допускает
+  - url: https://github.com/Kong/kong/issues/7696
+    fix: https://github.com/Kong/kong/pull/7756
+    product: Kong
+    closed: '2021-08-25'
+    summary: Явная ссылка на родителя во вложенной конфигурации в неверной форме даёт 500.
 RWB-0105:
   pattern: Клиент не может задать серверные поля (id, createdAt, status, version)
   checks:
@@ -2844,6 +2904,16 @@ RWB-0107:
     product: Kubernetes
     closed: '2025-06-12'
     summary: Сетевые ошибки при вызове вебхука допуска возвращаются клиенту как 400
+  - url: https://github.com/Kong/kong/issues/10182
+    fix: https://github.com/Kong/kong/pull/11386
+    product: Kong
+    closed: '2023-08-11'
+    summary: При недоступном DNS ошибка возвращается вдвое дольше тайм-аута из-за повторов по типам записей.
+  - url: https://github.com/Kong/kong/issues/6726
+    fix: https://github.com/Kong/kong/pull/6735
+    product: Kong
+    closed: '2021-01-15'
+    summary: При буферизации ответа недоступный upstream даёт 500 вместо 502.
 RWB-0108:
   pattern: Перезапуск экземпляра не обрывает выполняющиеся запросы
   checks:
@@ -2999,6 +3069,11 @@ RWB-0115:
     product: Directus
     closed: '2025-03-25'
     summary: Создание коллекции с числом в имени или с пустой схемой без полей даёт 500
+  - url: https://github.com/Kong/kong/issues/6390
+    fix: https://github.com/Kong/kong/pull/6632
+    product: Kong
+    closed: '2020-12-08'
+    summary: Пустой список попыток сериализуется в журнал как {} вместо [].
 RWB-0116:
   pattern: Допустимые и неизвестные enum
   checks:
@@ -3076,6 +3151,11 @@ RWB-0120:
     product: NestJS
     closed: '2024-09-23'
     summary: HEAD на существующий GET-маршрут возвращал 404 после обновления
+  - url: https://github.com/Kong/kong/issues/7554
+    fix: https://github.com/Kong/kong/pull/7796
+    product: Kong
+    closed: '2021-09-01'
+    summary: HEAD несуществующего объекта даёт 200, GET — 404.
 RWB-0121:
   pattern: Mass assignment защищённых полей
   checks:
@@ -3157,6 +3237,11 @@ RWB-0122:
     product: Hasura
     closed: '2024-05-02'
     summary: 'Запрос с "extensions": null отклоняется ошибкой разбора, без поля работает (регрессия)'
+  - url: https://github.com/Kong/kong/issues/8610
+    fix: https://github.com/Kong/kong/pull/8611
+    product: Kong
+    closed: '2022-04-06'
+    summary: Тело с null-значением ломает обработку запроса.
 RWB-0123:
   pattern: Числовые границы
   checks:
@@ -3616,6 +3701,16 @@ RWB-0138:
     product: Directus
     closed: '2025-03-12'
     summary: Нечисловое значение параметра трансформации изображения даёт 500 вместо 400
+  - url: https://github.com/Kong/kong/issues/12892
+    fix: https://github.com/Kong/kong/pull/12907
+    product: Kong
+    closed: '2024-05-07'
+    summary: Поле messages не массивом в теле даёт 500 вместо 400.
+  - url: https://github.com/Kong/kong/issues/9224
+    fix: https://github.com/Kong/kong/pull/9226
+    product: Kong
+    closed: '2022-08-10'
+    summary: PATCH с объектным полем строкой даёт 500 вместо 400.
 RWB-0139:
   pattern: Политика неизвестных полей
   checks:
@@ -4422,6 +4517,11 @@ RWB-0170:
     product: com.fasterxml.jackson.core:jackson-core, tools.jackson.core:jackson-core
     closed: '2026-10-01'
     summary: Сообщение об ошибке разбора JSON включает весь некорректный токен без ограничения длины
+  - url: https://github.com/Kong/kong/issues/10028
+    fix: https://github.com/Kong/kong/pull/12971
+    product: Kong
+    closed: '2024-05-02'
+    summary: Невалидный JSON и неверный тип поля в шлюзе REST→gRPC дают 500 вместо 400.
 RWB-0171:
   pattern: Ошибка во вложенном объекте указывает точный путь к полю
   checks:
@@ -4437,6 +4537,11 @@ RWB-0171:
     product: Directus
     closed: '2026-06-30'
     summary: Ошибка валидации длины указывает не то поле (первичный ключ вместо реально длинного)
+  - url: https://github.com/Kong/kong/issues/10767
+    fix: https://github.com/Kong/kong/pull/10896
+    product: Kong
+    closed: '2023-05-26'
+    summary: Применение некорректной вложенной конфигурации в режиме плоских ошибок даёт 500.
 RWB-0172:
   pattern: Массивы в query передаются в задокументированном формате
   checks:
@@ -4485,6 +4590,11 @@ RWB-0174:
     closed: '2019-03-26'
     summary: Ответ TCP-транспорта с не-ASCII символами ломал кадрирование сообщений (длина в символах, а не байтах) — видно
       по ошибке у клиента.
+  - url: https://github.com/Kong/kong/issues/11860
+    fix: https://github.com/Kong/kong/pull/11881
+    product: Kong
+    closed: '2023-11-06'
+    summary: Admin API отклоняет допустимое по RFC 6265 имя cookie с точкой.
 RWB-0175:
   pattern: Форматы строк (email, uuid, uri, date, phone) проверяются
   checks:
@@ -4973,6 +5083,11 @@ RWB-0200:
     product: org.springframework.retry:spring-retry
     closed: '2026-06-09'
     summary: Переполнение общего кэша повторов ломало все повторы и circuit breaker в приложении
+  - url: https://github.com/Kong/kong/issues/10281
+    fix: https://github.com/Kong/kong/pull/10325
+    product: Kong
+    closed: '2023-03-01'
+    summary: Пассивная проверка здоровья учитывает код, подменённый шлюзом, и выводит цель из строя.
 RWB-0201:
   pattern: Ошибки аутентификации без утечки
   checks:
@@ -5565,6 +5680,16 @@ RWB-0245:
     product: datadog
     closed: '2026-07-15'
     summary: Заголовок W3C baggage разбирается без лимитов на число пар и размер
+  - url: https://github.com/Kong/kong/issues/11294
+    fix: https://github.com/Kong/kong/pull/11468
+    product: Kong
+    closed: '2023-09-05'
+    summary: При частичной трассировке в запрос к upstream передаётся несуществующий parent span ID.
+  - url: https://github.com/Kong/kong/issues/9458
+    fix: https://github.com/Kong/kong/pull/9628
+    product: Kong
+    closed: '2022-11-03'
+    summary: Шлюз передаёт в исходящий запрос parent span ID, которого нет в трассе.
 RWB-0246:
   pattern: Кэширование чувствительных ответов
   checks:
@@ -5813,6 +5938,11 @@ RWB-0265:
     product: Directus
     closed: '2025-07-01'
     summary: Ручной процесс без выбора записей отклоняется 403 из-за отсутствия ключей
+  - url: https://github.com/Kong/kong/issues/13591
+    fix: https://github.com/Kong/kong/pull/13723
+    product: Kong
+    closed: '2024-10-30'
+    summary: Пустой query-параметр фильтра по тегам даёт 500.
 RWB-0266:
   pattern: Кодирование path-параметров
   checks:
@@ -5824,3 +5954,184 @@ RWB-0266:
     product: Directus
     closed: '2024-11-06'
     summary: 'Первичный ключ со слэшем ломает служебный маршрут прав: закодированный слэш разбирается как разделитель пути'
+RWB-0267:
+  pattern: Заголовок WWW-Authenticate в ответе 401 разбирается строгим парсером — схема и параметры вызова через запятую с
+    кавычками (Bearer realm="…", error="invalid_token", error_description="…"), по RFC 9110 §11.6.1 и RFC 6750 §3
+  checks:
+  - HTTP-WWW-AUTHENTICATE-SYNTAX
+  batch: kong
+  bugs:
+  - url: https://github.com/Kong/kong/issues/14429
+    fix: https://github.com/Kong/kong/pull/14437
+    product: Kong
+    closed: '2025-05-05'
+    summary: Заголовок WWW-Authenticate в ответе 401 нарушает синтаксис RFC — видно по ответу.
+RWB-0268:
+  pattern: Исходящий HTTP-запрос сервера на настроенный пользователем адрес (вебхук, приёмник журналов, интеграция) содержит
+    заголовок Host по RFC 9110 §7.2 — с нестандартным портом (имя:порт), без порта для стандартного
+  checks:
+  - ASYNC-OUTBOUND-REQUEST-HEADERS
+  batch: kong
+  bugs:
+  - url: https://github.com/Kong/kong/issues/13067
+    fix: https://github.com/Kong/kong/pull/13116
+    product: Kong
+    closed: '2024-06-04'
+    summary: Исходящий HTTP-запрос сервера к настроенному адресу содержит Host без нестандартного порта — видно на приёмнике.
+RWB-0269:
+  pattern: Настроенные заголовки ответа (служебные, CORS, безопасности, трассировки) присутствуют во всех режимах обработки
+    ответа — потоковом и буферизованном, сжатом и несжатом, из кэша и без
+  checks:
+  - HTTP-RESPONSE-MODE-HEADER-PARITY
+  batch: kong
+  bugs:
+  - url: https://github.com/Kong/kong/issues/10031
+    fix: https://github.com/Kong/kong/pull/10056
+    product: Kong
+    closed: '2023-01-20'
+    summary: Включённый заголовок статуса upstream пропадает при буферизованной обработке ответа.
+RWB-0270:
+  pattern: Настройка более узкого уровня (маршрут, сервис, проект, арендатор, пользователь) имеет приоритет над глобальной;
+    на объектах без своей настройки действует глобальная; удаление узкой настройки возвращает глобальную
+  checks:
+  - BIZ-CONFIG-SCOPE-PRECEDENCE
+  batch: kong
+  bugs:
+  - url: https://github.com/Kong/kong/issues/9812
+    fix: https://github.com/Kong/kong/pull/9877
+    product: Kong
+    closed: '2022-12-05'
+    summary: Глобальная настройка плагина перекрывает настройку уровня маршрута — видно по заголовкам трассировки.
+RWB-0271:
+  pattern: Ссылка next (в теле или заголовке Link) ведёт на тот же путь коллекции, что и исходный запрос, сохраняет фильтры
+    и работает — в том числе для коллекции, доступной по нескольким путям
+  checks:
+  - PAGE-NEXT-LINK-VALID
+  batch: kong
+  bugs:
+  - url: https://github.com/Kong/kong/issues/8243
+    fix: https://github.com/Kong/kong/pull/8249
+    product: Kong
+    closed: '2022-01-05'
+    summary: Ссылка next указывает на другой список, переход по ней даёт 500.
+RWB-0272:
+  pattern: Шаблон домена с wildcard (*.example.com) в маршрутизации, списках разрешённых origin и redirect совпадает только
+    с поддоменами указанного домена — не с abc.gw-example.com, example.com.evil.com и подобными
+  checks:
+  - HARD-WILDCARD-DOMAIN-MATCH
+  batch: kong
+  bugs:
+  - url: https://github.com/Kong/kong/issues/7834
+    fix: https://github.com/Kong/kong/pull/7839
+    product: Kong
+    closed: '2021-09-13'
+    summary: Шаблон домена *.alpha.example.com совпадает с abc.gw-alpha.example.com из-за неэкранированной точки.
+RWB-0273:
+  pattern: Журнал запроса с повторами к зависимости содержит данные о каждой попытке, включая последнюю неуспешную (код, состояние,
+    время); нужен доступ к журналу запросов
+  checks:
+  - OBS-REQUEST-LOG-ALL-ATTEMPTS
+  batch: kong
+  bugs:
+  - url: https://github.com/Kong/kong/issues/6820
+    fix: https://github.com/Kong/kong/pull/6972
+    product: Kong
+    closed: '2021-04-16'
+    summary: В журнале запроса нет данных о последней неудачной попытке к upstream.
+RWB-0274:
+  pattern: В шлюзе или прокси условие маршрута, применимое только к одному протоколу (SNI — только TLS), не блокирует совпадение
+    того же маршрута по другому разрешённому протоколу (HTTP по Host)
+  checks:
+  - HTTP-ROUTE-PROTOCOL-CONDITION
+  batch: kong
+  bugs:
+  - url: https://github.com/Kong/kong/issues/6425
+    fix: https://github.com/Kong/kong/pull/6517
+    product: Kong
+    closed: '2020-10-31'
+    summary: Маршрут HTTP+HTTPS с условием SNI никогда не совпадает для HTTP-запросов — 404.
+RWB-0275:
+  pattern: Ответ сервера не содержит одновременно Content-Length и Transfer-Encoding (RFC 9112 §6.1), в том числе когда заголовки
+    ответа задаёт приложение или upstream; пара к HTTP-REQUEST-SMUGGLING
+  checks:
+  - HTTP-RESPONSE-FRAMING-HEADERS
+  batch: kong
+  bugs:
+  - url: https://github.com/Kong/kong/issues/8083
+    fix: https://github.com/Kong/kong/pull/8698
+    product: Kong
+    closed: '2022-04-21'
+    summary: Ответ содержит одновременно Content-Length и Transfer-Encoding.
+RWB-0276:
+  pattern: Basic-аутентификация принимает пароль с двоеточием, пробелами и не-ASCII (UTF-8) — логин отделяется по первому
+    двоеточию (RFC 7617 §2); позитивная пара к SEC-AUTHN-MALFORMED
+  checks:
+  - AUTH-BASIC-CREDENTIALS-SPECIAL-CHARS
+  batch: kong
+  bugs:
+  - url: https://github.com/Kong/kong/issues/7968
+    fix: https://github.com/Kong/kong/pull/7977
+    product: Kong
+    closed: '2021-10-20'
+    summary: Пароль с двоеточием в Basic-подобных учётных данных разбирается неверно.
+RWB-0277:
+  pattern: HTTP/JSON транскодирование соответствует proto-аннотациям
+  checks:
+  - GRPC-JSON-TRANSCODING
+  batch: kong
+  bugs:
+  - url: https://github.com/Kong/kong/issues/7552
+    fix: https://github.com/Kong/kong/pull/7564
+    product: Kong
+    closed: '2021-09-01'
+    summary: Вложенные поля из query (sub.subfield) не попадают в gRPC-сообщение при транскодировании.
+RWB-0278:
+  pattern: Списки и счётчики отражают создание, изменение и удаление
+  checks:
+  - RES-LIST-REFLECTS-CHANGES
+  batch: kong
+  bugs:
+  - url: https://github.com/Kong/kong/issues/7620
+    fix: https://github.com/Kong/kong/pull/7748
+    product: Kong
+    closed: '2021-08-25'
+    summary: Объекты, подставленные через YAML-якоря в несколько родителей, работают, но список показывает только последний
+      экземпляр.
+RWB-0279:
+  pattern: Created resource can be read back
+  checks:
+  - RESOURCE-CREATE-READ
+  batch: kong
+  bugs:
+  - url: https://github.com/Kong/kong/issues/7699
+    fix: https://github.com/Kong/kong/pull/7758
+    product: Kong
+    closed: '2021-08-24'
+    summary: Объект с весом 0 есть в списке, но чтение по ключу даёт 404.
+RWB-0280:
+  pattern: Согласование Accept
+  checks:
+  - REST-ACCEPT-NEGOTIATION
+  batch: kong
+  bugs:
+  - url: https://github.com/Kong/kong/issues/7746
+    fix: https://github.com/Kong/kong/pull/7757
+    product: Kong
+    closed: '2021-08-24'
+    summary: Некорректный Accept при ошибке 4xx превращает ответ в 500.
+RWB-0281:
+  pattern: Ограничение частоты запросов
+  checks:
+  - REST-RATE-LIMIT
+  batch: kong
+  bugs:
+  - url: https://github.com/Kong/kong/issues/13715
+    fix: https://github.com/Kong/kong/pull/13722
+    product: Kong
+    closed: '2024-10-08'
+    summary: При срабатывании лимита с выключенными заголовками лимита возвращается 500 вместо 429.
+  - url: https://github.com/Kong/kong/issues/13682
+    fix: https://github.com/Kong/kong/pull/13696
+    product: Kong
+    closed: '2025-02-06'
+    summary: Шлюз перестал передавать в запрос к upstream заголовки остатка лимита — видно через echo-upstream.

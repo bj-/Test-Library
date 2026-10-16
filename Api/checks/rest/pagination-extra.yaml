@@ -279,3 +279,40 @@ checks:
   references:
   - Здравый смысл — ORDER BY a, b
   - 'Real-world bug: RWB-0213'
+- id: PAGE-NEXT-LINK-VALID
+  status: draft
+  title: Ссылка next ведёт на ту же коллекцию, сохраняет фильтры и работает
+  category: pagination
+  protocols:
+  - rest
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - pagination
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Пагинация возвращает ссылку next (в теле или заголовке Link); коллекция может быть доступна по нескольким путям.
+  steps:
+  - action: Запросить первую страницу с фильтром и сортировкой по каждому пути коллекции и перейти по ссылке next до конца.
+  expected:
+  - Ссылка ведёт на тот же путь, сохраняет фильтры и сортировку; каждая страница 200, последняя без next.
+  applicability:
+    when:
+    - Есть ссылки пагинации.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - RFC 8288 (Link)
+  - 'Real-world bug: RWB-0271'

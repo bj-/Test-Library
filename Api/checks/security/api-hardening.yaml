@@ -1006,3 +1006,42 @@ checks:
   references:
   - Связано с HARD-CLIENT-IP-TRUSTED-PROXIES (определение адреса клиента)
   - 'Real-world bug: RWB-0188'
+- id: HARD-WILDCARD-DOMAIN-MATCH
+  status: draft
+  title: Шаблон домена с wildcard совпадает только с поддоменами указанного домена
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - hardening
+  - negative
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Есть шаблоны доменов с wildcard — маршрутизация по Host, списки разрешённых origin (CORS), redirect, вебхуков.
+  steps:
+  - action: Для шаблона *.example.com проверить a.example.com, a.b.example.com, example.com, abc.gw-example.com, example.com.evil.com, evil-example.com.
+  expected:
+  - Совпадают только поддомены example.com (и сам домен — если так задокументировано); остальные не обрабатываются правилом.
+  applicability:
+    when:
+    - Есть шаблоны доменов.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - RFC 6125 §6.4.3
+  - Смежные — REST-CORS-POLICY, REST-OPEN-REDIRECT
+  - 'Real-world bug: RWB-0272'

@@ -11,6 +11,7 @@ checks:
   priority: P1
   tags:
   - positive
+  - real-world-bug
   - smoke
   - pr
   - ci
@@ -22,6 +23,8 @@ checks:
   steps:
   - action: Create a resource with valid data and save its identifier.
   - action: Read the resource by identifier.
+  - action: Создать объект с нулевым значением поля, влияющего на выборку (вес 0), и прочитать его по ключу
+    notes: 'Real-world bug: RWB-0279 (Kong/kong#7699)'
   expected:
   - Create returns the documented success result.
   - Read returns the created resource with expected values.
@@ -43,6 +46,8 @@ checks:
   risk:
     impact: high
     likelihood: high
+  references:
+  - 'Real-world bug: RWB-0279'
 - id: RESOURCE-READ-MISSING
   status: approved
   title: Reading a missing resource returns a documented error

@@ -531,3 +531,39 @@ checks:
   - Вероятная причина — предел 32-битного таймера в миллисекундах (2^31 мс ≈ 24,8 суток)
   - Смежная — PERF-SOAK
   - 'Real-world bug: RWB-0254'
+- id: ASYNC-OUTBOUND-REQUEST-HEADERS
+  status: draft
+  title: Исходящий запрос сервера содержит корректный Host, в том числе с нестандартным портом
+  category: async
+  protocols:
+  - generic
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - webhooks
+  - real-world-bug
+  - regression
+  preconditions:
+  - Сервер отправляет HTTP-запросы на настроенный пользователем адрес (вебхук, приёмник журналов, интеграция).
+  - Нужен тестовый приёмник, записывающий заголовки.
+  steps:
+  - action: Настроить адрес приёмника с нестандартным портом и со стандартным; вызвать отправку и проверить заголовок Host.
+  expected:
+  - 'Host: имя:порт для нестандартного порта и имя без порта для стандартного.'
+  applicability:
+    when:
+    - Есть исходящие запросы на настраиваемый адрес.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - RFC 9110 §7.2
+  - 'Real-world bug: RWB-0268'

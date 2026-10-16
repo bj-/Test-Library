@@ -12,6 +12,7 @@ checks:
   - contract
   - negative
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -19,6 +20,8 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Отправить запрос, завершающийся 4xx, с некорректным Accept без слэша и проверить исходный код ошибки без 5xx
+    notes: 'Real-world bug: RWB-0280 (Kong/kong#7746)'
   expected:
   - поддерживаемый тип возвращается корректно; неподдерживаемый обрабатывается по контракту
   applicability:
@@ -37,4 +40,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0280'

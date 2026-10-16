@@ -622,3 +622,150 @@ checks:
   - RFC 3986 §3.3 (сегменты пути)
   - Смежные — HTTP-TRAILING-SLASH-CASE, SEC-AUTHZ-PATH-RULE-PRECEDENCE
   - 'Real-world bug: RWB-0235'
+- id: HTTP-WWW-AUTHENTICATE-SYNTAX
+  status: draft
+  title: Заголовок WWW-Authenticate в ответе 401 соответствует синтаксису RFC
+  category: http-semantics
+  protocols:
+  - rest
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - authn
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервер отвечает 401 с заголовком WWW-Authenticate.
+  steps:
+  - action: Отправить запрос без токена, с повреждённым и с истёкшим токеном; разобрать WWW-Authenticate строгим парсером.
+  expected:
+  - Схема и параметры вызова через запятую, значения в кавычках (Bearer realm="…", error="invalid_token"); error соответствует причине.
+  applicability:
+    when:
+    - Есть ответы 401.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - RFC 9110 §11.6.1, RFC 6750 §3
+  - 'Real-world bug: RWB-0267'
+- id: HTTP-RESPONSE-MODE-HEADER-PARITY
+  status: draft
+  title: Настроенные заголовки ответа присутствуют во всех режимах обработки ответа
+  category: http-semantics
+  protocols:
+  - rest
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервис или шлюз добавляет заголовки ответа (служебные, CORS, безопасности, трассировки) и обрабатывает ответы в разных режимах.
+  steps:
+  - action: Получить один и тот же ответ в потоковом и буферизованном режиме, сжатым и несжатым, из кэша и без; сравнить заголовки.
+  expected:
+  - Настроенные заголовки присутствуют во всех режимах с одинаковыми значениями.
+  applicability:
+    when:
+    - Есть разные режимы обработки ответа.
+    skip_when:
+    - Один режим.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: low
+  references:
+  - Смежная — REST-SECURITY-HEADERS
+  - 'Real-world bug: RWB-0269'
+- id: HTTP-ROUTE-PROTOCOL-CONDITION
+  status: draft
+  title: Условие маршрута для одного протокола не блокирует маршрут по другому разрешённому протоколу
+  category: http-semantics
+  protocols:
+  - rest
+  - grpc
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - transport-security
+  - real-world-bug
+  - regression
+  preconditions:
+  - Шлюз или прокси с маршрутами для нескольких протоколов (HTTP и HTTPS, gRPC) и условиями, применимыми к одному из них (SNI — только TLS).
+  steps:
+  - action: Создать маршрут для HTTP и HTTPS с условием по SNI и Host; отправить HTTP-запрос с подходящим Host и HTTPS-запрос с подходящим SNI.
+  expected:
+  - Оба запроса совпадают с маршрутом; для HTTP условие SNI не учитывается.
+  applicability:
+    when:
+    - Сервис — шлюз или прокси с такими маршрутами.
+    skip_when:
+    - Не шлюз и не прокси.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - Смежная — HTTP-VERSION-PARITY
+  - 'Real-world bug: RWB-0274'
+- id: HTTP-RESPONSE-FRAMING-HEADERS
+  status: draft
+  title: Ответ не содержит одновременно Content-Length и Transfer-Encoding
+  category: http-semantics
+  protocols:
+  - rest
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - hardening
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Ответы могут формироваться с Transfer-Encoding (потоковые, проксируемые, заданные приложением или upstream).
+  steps:
+  - action: 'Запросить маршруты, ответ которых задаёт Transfer-Encoding: chunked, в том числе через прокси; проверить заголовки.'
+  expected:
+  - При Transfer-Encoding нет Content-Length; длина тела соответствует кадрированию.
+  applicability:
+    when:
+    - Всегда.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - RFC 9112 §6.1, §6.3
+  - Пара к HTTP-REQUEST-SMUGGLING
+  - 'Real-world bug: RWB-0275'

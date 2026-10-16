@@ -303,6 +303,7 @@ checks:
   tags:
   - contract
   - compatibility
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -310,6 +311,9 @@ checks:
   - Используется grpc-gateway или Envoy transcoding.
   steps:
   - action: 'Вызвать REST-эквиваленты: int64 как строка, имена полей lowerCamelCase, enum строкой, ошибки в HTTP-статусы.'
+  - action: Передать поле вложенного сообщения в query через точку (sub.subfield=foo) и проверить, что оно попало во вложенное
+      сообщение
+    notes: 'Real-world bug: RWB-0277 (Kong/kong#7552)'
   expected:
   - Отображение соответствует google.api.http и стандартному маппингу статусов.
   applicability:
@@ -327,3 +331,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0277'

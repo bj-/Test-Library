@@ -8,6 +8,10 @@
 # в proofs.retarget. Затем: cluster.py (пересобрать kong.md) и apply_proofs.py. Перекрёстное ревью другими LLM —
 # reviewcheck.py (mining/README.md, шаги 6–7, п. 7).
 #
+# Перекрёстное ревью (2026-10-16): ChatGPT (blind, только сводка решений) и Qwen — kong.reviewcheck.answer-1.md, -2.md;
+# правило — mining/README.md, шаги 6–7, п. 7. Итог: №1, 4–7, 9, 10 — accept у всех; №11 — reject у всех; №2 — сужен до
+# Host (ChatGPT; Claude согласен); №3 — accept (Qwen, Claude; ChatGPT — reject как жизненный цикл плагинов Kong), P3;
+# №8 — accept (обе модели; Claude согласился после переоценки), только для шлюзов и прокси.
 # decision: accept | reject | pending
 batch: kong
 clusters:
@@ -22,7 +26,7 @@ clusters:
   check_id: ASYNC-OUTBOUND-REQUEST-HEADERS
   file: checks/common/async-integration.yaml
   bugs: [Kong/kong#13067]
-  idea: Исходящий HTTP-запрос сервера на настроенный пользователем адрес (вебхук, приёмник журналов, интеграция) содержит корректные заголовки — Host с нестандартным портом (имя:порт), Content-Type и Content-Length по телу
+  idea: Исходящий HTTP-запрос сервера на настроенный пользователем адрес (вебхук, приёмник журналов, интеграция) содержит заголовок Host по RFC 9110 §7.2 — с нестандартным портом (имя:порт), без порта для стандартного
 - key: response-mode-header-parity
   decision: accept
   check_id: HTTP-RESPONSE-MODE-HEADER-PARITY
@@ -54,10 +58,11 @@ clusters:
   bugs: [Kong/kong#6820]
   idea: Журнал запроса с повторами к зависимости содержит данные о каждой попытке, включая последнюю неуспешную (код, состояние, время); нужен доступ к журналу запросов
 - key: protocol-specific-route-condition
-  decision: reject
+  decision: accept
+  check_id: HTTP-ROUTE-PROTOCOL-CONDITION
+  file: checks/rest/http-protocol.yaml
   bugs: [Kong/kong#6425]
-  idea: Условие маршрута, неприменимое к протоколу (SNI для HTTP), не блокирует совпадение маршрута по этому протоколу
-  reason: Внутренняя логика маршрутизатора шлюза (сочетание условий SNI и протоколов в одном маршруте); тестом API другого продукта не воспроизводится — для шлюзов и прокси общая часть уже в HTTP-VERSION-PARITY и правилах маршрутизации
+  idea: В шлюзе или прокси условие маршрута, применимое только к одному протоколу (SNI — только TLS), не блокирует совпадение того же маршрута по другому разрешённому протоколу (HTTP по Host)
 - key: response-framing-headers
   decision: accept
   check_id: HTTP-RESPONSE-FRAMING-HEADERS

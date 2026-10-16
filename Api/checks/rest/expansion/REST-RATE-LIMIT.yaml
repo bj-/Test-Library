@@ -13,6 +13,7 @@ checks:
   - resilience
   - negative
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -21,6 +22,10 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Отключить отдачу заголовков лимита, исчерпать лимит и проверить ответ 429 без 5xx и без заголовков лимита
+    notes: 'Real-world bug: RWB-0281 (Kong/kong#13715)'
+  - action: Отправить запрос через шлюз на echo-сервис и проверить, что сервис получил заголовки остатка лимита
+    notes: 'Real-world bug: RWB-0281 (Kong/kong#13682)'
   expected:
   - лимит и заголовки соответствуют политике, доступ восстанавливается по окончании окна
   applicability:
@@ -40,4 +45,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0281'

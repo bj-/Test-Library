@@ -498,3 +498,41 @@ checks:
   references:
   - Здравый смысл — пользователь открывает письмо на другом устройстве
   - 'Real-world bug: RWB-0017'
+- id: BIZ-CONFIG-SCOPE-PRECEDENCE
+  status: draft
+  title: Настройка более узкого уровня имеет приоритет над глобальной
+  category: business-logic
+  protocols:
+  - generic
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - business-logic
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Одну функцию можно настроить на нескольких уровнях (глобально, арендатор, проект, сервис, маршрут, пользователь).
+  steps:
+  - action: Задать функцию глобально и на одном объекте узкого уровня с разными параметрами; выполнить операции на этом и на соседнем объекте.
+  - action: Удалить узкую настройку и повторить.
+  expected:
+  - На объекте действует его настройка, на остальных — глобальная; после удаления узкой настройки — глобальная.
+  applicability:
+    when:
+    - Есть уровни настроек.
+    skip_when:
+    - Один уровень.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Смежная — SEC-AUTHZ-PATH-RULE-PRECEDENCE
+  - 'Real-world bug: RWB-0270'

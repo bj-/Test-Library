@@ -1934,3 +1934,39 @@ checks:
   - OpenID Connect Core §5.1 (стандартные claims необязательны)
   - Пара к AUTH-EXTERNAL-IDP-UNVERIFIED-EMAIL
   - 'Real-world bug: RWB-0259'
+- id: AUTH-BASIC-CREDENTIALS-SPECIAL-CHARS
+  status: draft
+  title: Basic-аутентификация принимает пароль с двоеточием, пробелами и UTF-8
+  category: security
+  protocols:
+  - rest
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - authn
+  - real-world-bug
+  - regression
+  preconditions:
+  - Есть Basic-аутентификация; можно задать пароль со спецсимволами.
+  steps:
+  - action: 'Задать пароли pass:w0rd, "a b", пароль в UTF-8; отправить Authorization: Basic base64(user:pass).'
+  expected:
+  - Логин отделяется по первому двоеточию, вход успешен.
+  applicability:
+    when:
+    - Есть Basic-аутентификация.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - RFC 7617 §2, §2.1 (charset)
+  - Позитивная пара к SEC-AUTHN-MALFORMED
+  - 'Real-world bug: RWB-0276'

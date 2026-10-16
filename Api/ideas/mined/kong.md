@@ -6,7 +6,7 @@
 
 ## Сводка
 
-- Новых паттернов: 11 → идей: 11 (принять: 9, отклонить: 2, не решено: 0).
+- Новых паттернов: 11 → идей: 11 (принять: 10, отклонить: 1, не решено: 0).
 - Пруфы к существующим: 32 багов → 25 записей; новых шагов-вариантов: 22.
 
 ## Новые идеи
@@ -16,15 +16,15 @@
 | # | Решение | Запись / файл | Идея | Подтверждающие баги |
 |---|---|---|---|---|
 | 1 | accept | `HTTP-WWW-AUTHENTICATE-SYNTAX` (RWB-0267)<br>`checks/rest/http-protocol.yaml` | Заголовок WWW-Authenticate в ответе 401 разбирается строгим парсером — схема и параметры вызова через запятую с кавычками (Bearer realm="…", error="invalid_token", error_description="…"), по RFC 9110 §11.6.1 и RFC 6750 §3 | [Kong/kong#14429](https://github.com/Kong/kong/issues/14429) |
-| 2 | accept | `ASYNC-OUTBOUND-REQUEST-HEADERS` (RWB-0268)<br>`checks/common/async-integration.yaml` | Исходящий HTTP-запрос сервера на настроенный пользователем адрес (вебхук, приёмник журналов, интеграция) содержит корректные заголовки — Host с нестандартным портом (имя:порт), Content-Type и Content-Length по телу | [Kong/kong#13067](https://github.com/Kong/kong/issues/13067) |
+| 2 | accept | `ASYNC-OUTBOUND-REQUEST-HEADERS` (RWB-0268)<br>`checks/common/async-integration.yaml` | Исходящий HTTP-запрос сервера на настроенный пользователем адрес (вебхук, приёмник журналов, интеграция) содержит заголовок Host по RFC 9110 §7.2 — с нестандартным портом (имя:порт), без порта для стандартного | [Kong/kong#13067](https://github.com/Kong/kong/issues/13067) |
 | 3 | accept | `HTTP-RESPONSE-MODE-HEADER-PARITY` (RWB-0269)<br>`checks/rest/http-protocol.yaml` | Настроенные заголовки ответа (служебные, CORS, безопасности, трассировки) присутствуют во всех режимах обработки ответа — потоковом и буферизованном, сжатом и несжатом, из кэша и без | [Kong/kong#10031](https://github.com/Kong/kong/issues/10031) |
 | 4 | accept | `BIZ-CONFIG-SCOPE-PRECEDENCE` (RWB-0270)<br>`checks/common/business-logic.yaml` | Настройка более узкого уровня (маршрут, сервис, проект, арендатор, пользователь) имеет приоритет над глобальной; на объектах без своей настройки действует глобальная; удаление узкой настройки возвращает глобальную | [Kong/kong#9812](https://github.com/Kong/kong/issues/9812) |
 | 5 | accept | `PAGE-NEXT-LINK-VALID` (RWB-0271)<br>`checks/rest/pagination-extra.yaml` | Ссылка next (в теле или заголовке Link) ведёт на тот же путь коллекции, что и исходный запрос, сохраняет фильтры и работает — в том числе для коллекции, доступной по нескольким путям | [Kong/kong#8243](https://github.com/Kong/kong/issues/8243) |
 | 6 | accept | `HARD-WILDCARD-DOMAIN-MATCH` (RWB-0272)<br>`checks/security/api-hardening.yaml` | Шаблон домена с wildcard (*.example.com) в маршрутизации, списках разрешённых origin и redirect совпадает только с поддоменами указанного домена — не с abc.gw-example.com, example.com.evil.com и подобными | [Kong/kong#7834](https://github.com/Kong/kong/issues/7834) |
 | 7 | accept | `OBS-REQUEST-LOG-ALL-ATTEMPTS` (RWB-0273)<br>`checks/common/observability.yaml` | Журнал запроса с повторами к зависимости содержит данные о каждой попытке, включая последнюю неуспешную (код, состояние, время); нужен доступ к журналу запросов | [Kong/kong#6820](https://github.com/Kong/kong/issues/6820) |
-| 8 | reject | отклонено: Внутренняя логика маршрутизатора шлюза (сочетание условий SNI и протоколов в одном маршруте); тестом API другого продукта не воспроизводится — для шлюзов и прокси общая часть уже в HTTP-VERSION-PARITY и правилах маршрутизации | Условие маршрута, неприменимое к протоколу (SNI для HTTP), не блокирует совпадение маршрута по этому протоколу | [Kong/kong#6425](https://github.com/Kong/kong/issues/6425) |
-| 9 | accept | `HTTP-RESPONSE-FRAMING-HEADERS` (RWB-0274)<br>`checks/rest/http-protocol.yaml` | Ответ сервера не содержит одновременно Content-Length и Transfer-Encoding (RFC 9112 §6.1), в том числе когда заголовки ответа задаёт приложение или upstream; пара к HTTP-REQUEST-SMUGGLING | [Kong/kong#8083](https://github.com/Kong/kong/issues/8083) |
-| 10 | accept | `AUTH-BASIC-CREDENTIALS-SPECIAL-CHARS` (RWB-0275)<br>`checks/security/authentication-session.yaml` | Basic-аутентификация принимает пароль с двоеточием, пробелами и не-ASCII (UTF-8) — логин отделяется по первому двоеточию (RFC 7617 §2); позитивная пара к SEC-AUTHN-MALFORMED | [Kong/kong#7968](https://github.com/Kong/kong/issues/7968) |
+| 8 | accept | `HTTP-ROUTE-PROTOCOL-CONDITION` (RWB-0274)<br>`checks/rest/http-protocol.yaml` | В шлюзе или прокси условие маршрута, применимое только к одному протоколу (SNI — только TLS), не блокирует совпадение того же маршрута по другому разрешённому протоколу (HTTP по Host) | [Kong/kong#6425](https://github.com/Kong/kong/issues/6425) |
+| 9 | accept | `HTTP-RESPONSE-FRAMING-HEADERS` (RWB-0275)<br>`checks/rest/http-protocol.yaml` | Ответ сервера не содержит одновременно Content-Length и Transfer-Encoding (RFC 9112 §6.1), в том числе когда заголовки ответа задаёт приложение или upstream; пара к HTTP-REQUEST-SMUGGLING | [Kong/kong#8083](https://github.com/Kong/kong/issues/8083) |
+| 10 | accept | `AUTH-BASIC-CREDENTIALS-SPECIAL-CHARS` (RWB-0276)<br>`checks/security/authentication-session.yaml` | Basic-аутентификация принимает пароль с двоеточием, пробелами и не-ASCII (UTF-8) — логин отделяется по первому двоеточию (RFC 7617 §2); позитивная пара к SEC-AUTHN-MALFORMED | [Kong/kong#7968](https://github.com/Kong/kong/issues/7968) |
 | 11 | reject | отклонено: Внутренняя механика балансировщика шлюза (дублирование проверок по числу процессов-обработчиков); для API продукта это не наблюдаемое поведение, кроме нагрузки на upstream | Активные проверки здоровья целей выполняются с настроенной частотой | [Kong/kong#6788](https://github.com/Kong/kong/issues/6788) |
 
 ## Пруфы к существующим
@@ -51,7 +51,7 @@
 |---|---|---|
 | [Kong/kong#10279](https://github.com/Kong/kong/issues/10279) | covered | _только пруф_: Код ответа не соответствует фактическому результату |
 
-### GRPC-JSON-TRANSCODING — HTTP/JSON транскодирование соответствует proto-аннотациям (RWB-0276, багов: 1)
+### GRPC-JSON-TRANSCODING — HTTP/JSON транскодирование соответствует proto-аннотациям (RWB-0277, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -83,7 +83,7 @@
 |---|---|---|
 | [Kong/kong#7859](https://github.com/Kong/kong/issues/7859) | extends | Удалить объект, перекрывающий адрес сервиса по имени, и проверить, что сервис вернулся к прежнему поведению без 503 |
 
-### RES-LIST-REFLECTS-CHANGES — Списки и счётчики отражают создание, изменение и удаление (RWB-0277, багов: 1)
+### RES-LIST-REFLECTS-CHANGES — Списки и счётчики отражают создание, изменение и удаление (RWB-0278, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -108,13 +108,13 @@
 | [Kong/kong#10182](https://github.com/Kong/kong/issues/10182) | extends | Сделать DNS недоступным и проверить, что ошибка возвращается за настроенный тайм-аут без повторов по другим типам записей |
 | [Kong/kong#6726](https://github.com/Kong/kong/issues/6726) | extends | Включить буферизацию ответа, сделать upstream недоступным и проверить 502, как без буферизации |
 
-### RESOURCE-CREATE-READ — Created resource can be read back (RWB-0278, багов: 1)
+### RESOURCE-CREATE-READ — Created resource can be read back (RWB-0279, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
 | [Kong/kong#7699](https://github.com/Kong/kong/issues/7699) | extends | Создать объект с нулевым значением поля, влияющего на выборку (вес 0), и прочитать его по ключу |
 
-### REST-ACCEPT-NEGOTIATION — Согласование Accept (RWB-0279, багов: 1)
+### REST-ACCEPT-NEGOTIATION — Согласование Accept (RWB-0280, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -144,7 +144,7 @@
 |---|---|---|
 | [Kong/kong#13591](https://github.com/Kong/kong/issues/13591) | covered | _только пруф_: Запись проверяет пустой параметр против отсутствующего |
 
-### REST-RATE-LIMIT — Ограничение частоты запросов (RWB-0280, багов: 2)
+### REST-RATE-LIMIT — Ограничение частоты запросов (RWB-0281, багов: 2)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|

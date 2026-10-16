@@ -124,6 +124,9 @@ checks:
   - action: Отправить запрос с traceparent и проверить trace в системе трассировки.
   - action: Отправить заголовок baggage с десятками тысяч пар и огромным значением и проверить, что время ответа не растёт
     notes: 'Real-world bug: RWB-0245 (GHSA-p5f6-rccc-jv98)'
+  - action: Включить трассировку только части операций и проверить, что parent span ID в исходящем запросе совпадает со спаном,
+      отправленным в коллектор
+    notes: 'Real-world bug: RWB-0245 (Kong/kong#11294)'
   expected:
   - Трасса связана с входящим контекстом; некорректный traceparent не ломает запрос.
   applicability:
@@ -182,6 +185,8 @@ checks:
   - action: Запросить health при каждом поддерживаемом драйвере хранилища и проверить, что исправное хранилище даёт статус
       ok
     notes: 'Real-world bug: RWB-0093 (directus/directus#23635)'
+  - action: Запустить сервис с валидной конфигурацией из файла и проверить, что статус-эндпоинт сообщает о загруженной конфигурации
+    notes: 'Real-world bug: RWB-0093 (Kong/kong#9879)'
   expected:
   - Readiness отражает зависимости; публичный ответ не содержит версий, хостов и секретов.
   applicability:
@@ -275,3 +280,38 @@ checks:
   references:
   - Доступ к эндпоинту — HARD-DEBUG-ENDPOINTS
   - 'Real-world bug: RWB-0223'
+- id: OBS-REQUEST-LOG-ALL-ATTEMPTS
+  status: draft
+  title: Журнал запроса с повторами содержит каждую попытку, включая последнюю
+  category: observability
+  protocols:
+  - generic
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - observability
+  - real-world-bug
+  - nightly
+  preconditions:
+  - Сервис повторяет запросы к зависимости; нужен доступ к журналу запросов.
+  steps:
+  - action: Отправить запрос, при котором все попытки к зависимости неуспешны (тайм-аут, 5xx), и прочитать запись журнала.
+  expected:
+  - У каждой попытки, включая последнюю, есть код, состояние и время.
+  applicability:
+    when:
+    - Есть повторы и доступ к журналу.
+    skip_when:
+    - Нет повторов или доступа.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - Смежная — OBS-AUDIT-TRAIL
+  - 'Real-world bug: RWB-0273'
