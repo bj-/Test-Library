@@ -280,7 +280,7 @@ checks:
   - Практика ротации ключей
   - 'Real-world bug: RWB-0021'
 - id: RESIL-DEPENDENCY-TLS-RECOVERY
-  status: draft
+  status: approved
   title: Проверка доступности внешнего бэкенда проверяет его сертификат и восстанавливается без перезапуска
   category: resilience
   protocols:
@@ -292,6 +292,8 @@ checks:
   - resilience
   - transport-security
   - real-world-bug
+  - ci
+  - regression
   - nightly
   preconditions:
   - Сервис обращается к внешнему бэкенду по TLS с заданным CA и следит за его доступностью.
@@ -311,6 +313,8 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
+  - Regression
   - Nightly
   risk:
     impact: high
@@ -320,7 +324,7 @@ checks:
   - Смежные — HARD-TLS-ONLY, RESIL-DEPENDENCY-DOWN
   - 'Real-world bug: RWB-0218'
 - id: RESIL-TLS-CERT-RELOAD
-  status: draft
+  status: approved
   title: Сервер подхватывает заменённый TLS-сертификат без перезапуска
   category: resilience
   protocols:
@@ -331,6 +335,7 @@ checks:
   - reliability
   - transport-security
   - real-world-bug
+  - regression
   - nightly
   preconditions:
   - Сертификат и ключ сервера заданы файлами и заменяются внешней ротацией; ротация без перезапуска заявлена.
@@ -349,6 +354,7 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - Regression
   - Nightly
   risk:
     impact: high

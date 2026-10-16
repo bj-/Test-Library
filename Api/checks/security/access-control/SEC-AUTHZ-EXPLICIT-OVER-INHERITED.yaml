@@ -1,6 +1,6 @@
 checks:
 - id: SEC-AUTHZ-EXPLICIT-OVER-INHERITED
-  status: draft
+  status: approved
   title: Явное пониженное право на дочерний объект имеет приоритет над унаследованным
   category: security
   protocols:
@@ -12,8 +12,10 @@ checks:
   - negative
   - authz
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Иерархия объектов с наследованием прав (проект → подпроект, папка → файл); можно выдать право на дочерний объект явно.
   steps:
@@ -30,8 +32,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium

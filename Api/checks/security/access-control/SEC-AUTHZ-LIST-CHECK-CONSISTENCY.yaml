@@ -1,6 +1,6 @@
 checks:
 - id: SEC-AUTHZ-LIST-CHECK-CONSISTENCY
-  status: draft
+  status: approved
   title: Перечисление субъектов и объектов с доступом согласовано с точечной проверкой
   category: security
   protocols:
@@ -11,6 +11,7 @@ checks:
   - security
   - authz
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -29,6 +30,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

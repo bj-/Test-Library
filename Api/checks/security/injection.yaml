@@ -1103,7 +1103,7 @@ checks:
   - CWE-94
   - 'Real-world bug: RWB-0046'
 - id: INJ-USER-CODE-EXECUTION
-  status: draft
+  status: approved
   title: Пользовательский код, исполняемый сервером, не получает доступа к ОС, файлам и сети
   category: security
   protocols:
@@ -1115,8 +1115,10 @@ checks:
   - negative
   - injection
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - API принимает и исполняет пользовательский код — скрипт, выражение, алгоритм, правило (JavaScript, Python, Groovy, Java-выражения,
     SpEL/OGNL).
@@ -1140,8 +1142,10 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: critical
     likelihood: medium
@@ -1150,7 +1154,7 @@ checks:
   - Отличается от INJ-TEMPLATE-SSTI (шаблоны) и INJ-OS-COMMAND (подстановка ввода в команду ОС)
   - 'Real-world bug: RWB-0181'
 - id: INJ-ARCHIVE-ENTRY-NAME-EVAL
-  status: draft
+  status: approved
   title: Имена файлов внутри загруженного репозитория или архива не исполняются как код
   category: security
   protocols:
@@ -1163,8 +1167,10 @@ checks:
   - files
   - negative
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Сервис принимает git-репозиторий, архив или пакет и перечисляет или обрабатывает файлы внутри.
   steps:
@@ -1181,8 +1187,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: low
@@ -1191,7 +1199,7 @@ checks:
   - Имя самого загружаемого файла — FILE-FILENAME-SANITIZATION
   - 'Real-world bug: RWB-0232'
 - id: INJ-REFLECTED-XSS
-  status: draft
+  status: approved
   title: Параметры запроса не отражаются в HTML-ответе без экранирования
   category: security
   protocols:
@@ -1203,6 +1211,7 @@ checks:
   - injection
   - negative
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -1221,6 +1230,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -1231,7 +1241,7 @@ checks:
   - Пара к INJ-STORED-XSS
   - 'Real-world bug: RWB-0236'
 - id: INJ-RESERVED-PATH-WRITE
-  status: draft
+  status: approved
   title: Запись файлов через API не попадает в служебные каталоги
   category: security
   protocols:
@@ -1244,8 +1254,10 @@ checks:
   - injection
   - files
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - API записывает файлы по путям пользователя — патч, загрузка в репозиторий, распаковка, синхронизация.
   steps:
@@ -1262,8 +1274,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: low
@@ -1272,7 +1286,7 @@ checks:
   - Смежные — INJ-PATH-TRAVERSAL, INJ-ARCHIVE-ENTRY-NAME-EVAL
   - 'Real-world bug: RWB-0285'
 - id: INJ-SCHEMA-IDENTIFIER-CODEGEN
-  status: draft
+  status: approved
   title: Идентификаторы пользовательской схемы не внедряют код и SQL при генерации кода и DDL
   category: security
   protocols:
@@ -1284,8 +1298,10 @@ checks:
   - negative
   - injection
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Пользователь создаёт или импортирует определение схемы (имена полей, таблиц, индексов), по которому сервер генерирует
     исходный код или меняет таблицы.
@@ -1307,8 +1323,10 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: low
@@ -1317,7 +1335,7 @@ checks:
   - Законные имена со спецсимволами — RES-DB-OBJECT-NAMES
   - 'Real-world bug: RWB-0302'
 - id: INJ-USER-DATA-CALLABLE
-  status: draft
+  status: approved
   title: Данные пользователя не позволяют вызвать серверную функцию вне allowlist
   category: security
   protocols:
@@ -1329,8 +1347,10 @@ checks:
   - negative
   - injection
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Поле формы, настройки или фронтматтер страницы может назвать серверную функцию — источник данных, обработчик, callback.
   steps:
@@ -1348,8 +1368,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium

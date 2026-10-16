@@ -514,7 +514,7 @@ checks:
   - WHATWG HTML — Server-Sent Events
   - 'Real-world bug: RWB-0050'
 - id: ASYNC-SCHEDULE-LONG-UPTIME
-  status: draft
+  status: approved
   title: Задача по расписанию срабатывает и после длительной непрерывной работы процесса
   category: async
   protocols:
@@ -525,6 +525,7 @@ checks:
   - reliability
   - async-jobs
   - real-world-bug
+  - regression
   - nightly
   preconditions:
   - Есть задачи по расписанию (cron, плановые потоки).
@@ -544,6 +545,7 @@ checks:
     level: partial
     deterministic: false
   profiles:
+  - Regression
   - Nightly
   risk:
     impact: medium
@@ -553,7 +555,7 @@ checks:
   - Смежная — PERF-SOAK
   - 'Real-world bug: RWB-0254'
 - id: ASYNC-OUTBOUND-REQUEST-HEADERS
-  status: draft
+  status: approved
   title: Исходящий запрос сервера содержит корректный Host, в том числе с нестандартным портом
   category: async
   protocols:
@@ -565,6 +567,7 @@ checks:
   - webhooks
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Сервер отправляет HTTP-запросы на настроенный пользователем адрес (вебхук, приёмник журналов, интеграция).
   - Нужен тестовый приёмник, записывающий заголовки.
@@ -582,6 +585,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: low
     likelihood: medium

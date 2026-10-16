@@ -528,7 +528,7 @@ checks:
   - Конфигурация публичного URL
   - 'Real-world bug: RWB-0027'
 - id: HTTP-HTTP2-RESOURCE-LIMITS
-  status: draft
+  status: approved
   title: Параметры HTTP/2 со стороны клиента не заставляют сервер буферизовать и работать без предела
   category: http-semantics
   protocols:
@@ -540,6 +540,7 @@ checks:
   - boundary
   - hardening
   - real-world-bug
+  - regression
   - nightly
   preconditions:
   - Сервер поддерживает HTTP/2.
@@ -564,6 +565,7 @@ checks:
     level: partial
     deterministic: false
   profiles:
+  - Regression
   - Nightly
   risk:
     impact: high
@@ -572,7 +574,7 @@ checks:
   - RFC 9113 п. 5.2, 6.5.2
   - 'Real-world bug: RWB-0189'
 - id: HTTP-HEADER-REPEATED-LINES-ACCEPTED
-  status: draft
+  status: approved
   title: Сотни повторяющихся строк одного заголовка в пределах лимита размера принимаются одинаково по HTTP/1.1 и HTTP/2
   category: http-semantics
   protocols:
@@ -613,7 +615,7 @@ checks:
   - Позитивная пара к HTTP-HEADER-SIZE-LIMIT; паритет версий — HTTP-VERSION-PARITY; запись отказа в аудит — OBS-AUDIT-TRAIL
   - 'Real-world bug: RWB-0217'
 - id: HTTP-PATH-PREFIX-SEGMENT-BOUNDARY
-  status: draft
+  status: approved
   title: Правило по префиксу пути соблюдает границу сегмента
   category: http-semantics
   protocols:
@@ -624,6 +626,7 @@ checks:
   - boundary
   - security
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -642,6 +645,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -652,7 +656,7 @@ checks:
   - Смежные — HTTP-TRAILING-SLASH-CASE, SEC-AUTHZ-PATH-RULE-PRECEDENCE
   - 'Real-world bug: RWB-0235'
 - id: HTTP-WWW-AUTHENTICATE-SYNTAX
-  status: draft
+  status: approved
   title: Заголовок WWW-Authenticate в ответе 401 соответствует синтаксису RFC
   category: http-semantics
   protocols:
@@ -690,7 +694,7 @@ checks:
   - RFC 9110 §11.6.1 (ранее RFC 7235 §4.1 — в первоисточнике), RFC 6750 §3
   - 'Real-world bug: RWB-0267'
 - id: HTTP-RESPONSE-MODE-HEADER-PARITY
-  status: draft
+  status: approved
   title: Настроенные заголовки ответа присутствуют во всех режимах обработки ответа
   category: http-semantics
   protocols:
@@ -727,7 +731,7 @@ checks:
   - Смежная — REST-SECURITY-HEADERS
   - 'Real-world bug: RWB-0269'
 - id: HTTP-ROUTE-PROTOCOL-CONDITION
-  status: draft
+  status: approved
   title: Условие маршрута для одного протокола не блокирует маршрут по другому разрешённому протоколу
   category: http-semantics
   protocols:
@@ -740,6 +744,7 @@ checks:
   - transport-security
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Шлюз или прокси с маршрутами для нескольких протоколов (HTTP и HTTPS, gRPC) и условиями, применимыми к одному из них (SNI
     — только TLS).
@@ -758,6 +763,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: low
@@ -765,7 +771,7 @@ checks:
   - Смежная — HTTP-VERSION-PARITY
   - 'Real-world bug: RWB-0274'
 - id: HTTP-RESPONSE-FRAMING-HEADERS
-  status: draft
+  status: approved
   title: Ответ не содержит одновременно Content-Length и Transfer-Encoding
   category: http-semantics
   protocols:
@@ -776,6 +782,7 @@ checks:
   - contract
   - hardening
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -793,6 +800,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -803,7 +811,7 @@ checks:
   - Пара к HTTP-REQUEST-SMUGGLING
   - 'Real-world bug: RWB-0275'
 - id: HTTP-CACHEABLE-RESPONSE-CACHE-CONTROL
-  status: draft
+  status: approved
   title: Кэшируемый ответ содержит Cache-Control по итоговой политике
   category: http-semantics
   protocols:
@@ -816,6 +824,7 @@ checks:
   - caching
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Для ответа включено кэширование — подсказки max-age у полей GraphQL, политика кэша маршрута.
   steps:
@@ -832,6 +841,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: low
     likelihood: medium
@@ -840,7 +850,7 @@ checks:
   - Пара к REST-SENSITIVE-CACHE-CONTROL
   - 'Real-world bug: RWB-0317'
 - id: REST-NEGOTIATED-FORMAT-CONFORMANCE
-  status: draft
+  status: approved
   title: Ответ в согласованном формате соответствует спецификации формата
   category: contract
   protocols:
@@ -851,6 +861,7 @@ checks:
   - contract
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Сервис отдаёт ответы в нескольких форматах по Accept (GeoJSON, CSV, NDJSON и т. п.).
   steps:
@@ -868,6 +879,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: low
     likelihood: low
@@ -876,7 +888,7 @@ checks:
   - Пара к REST-ACCEPT-NEGOTIATION
   - 'Real-world bug: RWB-0330'
 - id: REST-CUSTOM-MEDIA-TYPE-EMPTY-RESULT
-  status: draft
+  status: approved
   title: Пустой результат в пользовательском медиатипе не вызывает внутреннюю ошибку
   category: contract
   protocols:
@@ -888,6 +900,7 @@ checks:
   - error-handling
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Сервис поддерживает пользовательский медиатип (бинарный формат, свой обработчик).
   steps:
@@ -904,6 +917,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: low
     likelihood: low
@@ -911,7 +925,7 @@ checks:
   - Смежная — REST-ACCEPT-NEGOTIATION
   - 'Real-world bug: RWB-0331'
 - id: HTTP-PREFERENCE-APPLIED-ACCURATE
-  status: draft
+  status: approved
   title: Preference-Applied перечисляет ровно применённые предпочтения
   category: http-semantics
   protocols:
@@ -922,6 +936,7 @@ checks:
   - contract
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Сервис поддерживает заголовок Prefer (return, count, handling, tx и др.).
   steps:
@@ -939,6 +954,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: low
     likelihood: medium

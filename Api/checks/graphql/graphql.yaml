@@ -435,7 +435,7 @@ checks:
   - Field Alias
   - 'Real-world bug: RWB-0014'
 - id: GQL-REST-ENDPOINT-PARITY
-  status: draft
+  status: approved
   title: Операция, опубликованная как REST-эндпоинт, выполняется так же, как исходный GraphQL-запрос
   category: graphql
   protocols:
@@ -447,6 +447,7 @@ checks:
   - contract
   - graphql
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -467,6 +468,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -476,7 +478,7 @@ checks:
   - Здравый смысл — один и тот же запрос через разные входы даёт одинаковый результат
   - 'Real-world bug: RWB-0207'
 - id: GQL-GATEWAY-ROUTING
-  status: draft
+  status: approved
   title: В объединённой схеме каждое поле направляется в свой upstream
   category: graphql
   protocols:
@@ -487,6 +489,7 @@ checks:
   - contract
   - graphql
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -509,6 +512,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -518,7 +522,7 @@ checks:
   - GraphQL Federation spec
   - 'Real-world bug: RWB-0211'
 - id: GQL-ERROR-EXTENSIONS-SHAPE
-  status: draft
+  status: approved
   title: Поля extensions ошибки GraphQL не дублируются во вложенных объектах
   category: graphql
   protocols:
@@ -531,6 +535,7 @@ checks:
   - error-handling
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Ошибки GraphQL содержат extensions (code и пользовательские поля).
   steps:
@@ -549,6 +554,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: low
     likelihood: medium

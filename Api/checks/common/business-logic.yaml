@@ -508,7 +508,7 @@ checks:
   - Здравый смысл — пользователь открывает письмо на другом устройстве
   - 'Real-world bug: RWB-0017'
 - id: BIZ-CONFIG-SCOPE-PRECEDENCE
-  status: draft
+  status: approved
   title: Настройка более узкого уровня имеет приоритет над глобальной
   category: business-logic
   protocols:
@@ -519,6 +519,7 @@ checks:
   - contract
   - business-logic
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -538,6 +539,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

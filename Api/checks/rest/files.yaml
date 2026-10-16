@@ -673,7 +673,7 @@ checks:
   - CWE-459
   - 'Real-world bug: RWB-0048'
 - id: FILE-MULTIPART-METADATA-SAVED
-  status: draft
+  status: approved
   title: Метаданные из полей multipart сохраняются вместе с файлом
   category: files
   protocols:
@@ -685,6 +685,7 @@ checks:
   - files
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Загрузка файла через multipart/form-data принимает поля метаданных (имя для скачивания, заголовок, описание, папка).
   steps:
@@ -701,6 +702,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: low
     likelihood: medium
@@ -709,7 +711,7 @@ checks:
   - Смежные — FILE-FILENAME-SANITIZATION, RES-CREATE-RESPONSE-MATCHES-READ
   - 'Real-world bug: RWB-0256'
 - id: FILE-TRANSFORM-STORAGE-PARITY
-  status: draft
+  status: approved
   title: Трансформации файла работают на каждом поддерживаемом хранилище
   category: files
   protocols:
@@ -720,6 +722,7 @@ checks:
   - compatibility
   - files
   - real-world-bug
+  - regression
   - nightly
   preconditions:
   - Поддерживается несколько драйверов хранилища (локальный диск, S3, GCS, Azure, Cloudinary и т. п.) и трансформации изображений
@@ -739,6 +742,7 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - Regression
   - Nightly
   risk:
     impact: medium

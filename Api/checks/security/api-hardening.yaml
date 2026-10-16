@@ -1004,7 +1004,7 @@ checks:
   - CWE-348
   - 'Real-world bug: RWB-0030'
 - id: SEC-INTERNAL-CONTROL-PARAMS
-  status: draft
+  status: approved
   title: Заголовки и параметры подключения клиента не задают внутренние управляющие параметры операции
   category: security
   protocols:
@@ -1018,8 +1018,10 @@ checks:
   - injection
   - hardening
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Сервис передаёт заголовки входящего запроса или параметры подключения (query, path WebSocket) во внутренний конвейер интеграции
     (маршрутизатор сообщений, клиент поиска, хранилища, DNS, внешней системы).
@@ -1045,8 +1047,10 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: critical
     likelihood: medium
@@ -1055,7 +1059,7 @@ checks:
   - Apache Camel — фильтр заголовков отсекает только служебный префикс
   - 'Real-world bug: RWB-0180'
 - id: SEC-DISABLED-FEATURE-ENFORCED
-  status: draft
+  status: approved
   title: Отключённая настройкой функция недоступна через все API и не попадает в токены
   category: security
   protocols:
@@ -1067,6 +1071,7 @@ checks:
   - negative
   - authz
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -1087,6 +1092,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -1096,7 +1102,7 @@ checks:
   - Keycloak — данные организаций в API аккаунта и токенах после отключения функции
   - 'Real-world bug: RWB-0182'
 - id: SEC-OPAQUE-ID-INTEGRITY
-  status: draft
+  status: approved
   title: Непрозрачный идентификатор, выданный сервером, проверяется на подлинность
   category: security
   protocols:
@@ -1108,6 +1114,7 @@ checks:
   - negative
   - hardening
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -1128,6 +1135,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -1138,7 +1146,7 @@ checks:
   - Связано с PAGE-CURSOR-TAMPERING (курсоры пагинации)
   - 'Real-world bug: RWB-0184'
 - id: HARD-IP-ALLOWLIST
-  status: draft
+  status: approved
   title: Ограничение доступа по адресам и подсетям работает на границах для IPv4 и IPv6
   category: security
   protocols:
@@ -1151,6 +1159,7 @@ checks:
   - boundary
   - hardening
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -1170,6 +1179,7 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -1179,7 +1189,7 @@ checks:
   - Связано с HARD-CLIENT-IP-TRUSTED-PROXIES (определение адреса клиента)
   - 'Real-world bug: RWB-0188'
 - id: HARD-WILDCARD-DOMAIN-MATCH
-  status: draft
+  status: approved
   title: Шаблон домена с wildcard совпадает только с поддоменами указанного домена
   category: security
   protocols:
@@ -1191,8 +1201,10 @@ checks:
   - hardening
   - negative
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Есть шаблоны доменов с wildcard — маршрутизация по Host, списки разрешённых origin (CORS), redirect, вебхуков.
   steps:
@@ -1209,8 +1221,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -1219,7 +1233,7 @@ checks:
   - Смежные — REST-CORS-POLICY, REST-OPEN-REDIRECT
   - 'Real-world bug: RWB-0272'
 - id: HARD-DENYLIST-EVERY-ENTRY
-  status: draft
+  status: approved
   title: Каждый элемент списка запрещённых значений отклоняется
   category: security
   protocols:
@@ -1231,6 +1245,7 @@ checks:
   - negative
   - hardening
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -1249,6 +1264,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -1258,7 +1274,7 @@ checks:
   - Смежная — VAL-CASE-SENSITIVITY
   - 'Real-world bug: RWB-0284'
 - id: HARD-ROUTE-SHARED-BACKEND-ISOLATION
-  status: draft
+  status: approved
   title: Маршруты шлюза к одному бэкенду применяют каждый свои фильтры
   category: security
   protocols:
@@ -1269,7 +1285,9 @@ checks:
   - security
   - tenant-isolation
   - real-world-bug
+  - ci
   - regression
+  - nightly
   preconditions:
   - Шлюз или прокси с маршрутами разных арендаторов или пространств имён к одному бэкенду (Service:port); маршруты добавляют
     свои заголовки (идентичность арендатора).
@@ -1288,7 +1306,9 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: high
     likelihood: low
@@ -1296,7 +1316,7 @@ checks:
   - Смежные — SEC-TENANT-HEADER-SPOOF, CONC-REQUEST-CONTEXT-ISOLATION
   - 'Real-world bug: RWB-0286'
 - id: HARD-BACKUP-RESTORE-PROTECTED
-  status: draft
+  status: approved
   title: Восстановление из резервной копии не обходит защиту записи
   category: security
   protocols:
@@ -1309,8 +1329,10 @@ checks:
   - authz
   - privilege-escalation
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Есть восстановление из резервной копии или импорт конфигурации через API.
   steps:
@@ -1329,8 +1351,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: low
@@ -1339,7 +1363,7 @@ checks:
   - Смежные — RES-ARCHIVE-RESTORE, REST-MASS-ASSIGNMENT
   - 'Real-world bug: RWB-0288'
 - id: HARD-SETUP-ENDPOINTS-PROTECTED
-  status: draft
+  status: approved
   title: Эндпоинты первоначальной настройки не позволяют захватить экземпляр
   category: security
   protocols:
@@ -1351,8 +1375,10 @@ checks:
   - negative
   - authn
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Неинициализированный экземпляр открывает эндпоинты настройки (создание первого администратора, восстановление базы) —
     на время или до настройки.
@@ -1373,8 +1399,10 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: low
@@ -1383,7 +1411,7 @@ checks:
   - Смежные — SECURITY-AUTH-REQUIRED, SEC-IDENTITY-PROOF-OF-POSSESSION
   - 'Real-world bug: RWB-0290'
 - id: HARD-OUTBOUND-CREDENTIALS-SCOPE
-  status: draft
+  status: approved
   title: Учётные данные своего сайта не уходят в исходящие запросы к другим хостам
   category: security
   protocols:
@@ -1394,8 +1422,10 @@ checks:
   - security
   - negative
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Сервер делает исходящие запросы с учётными данными для своего сайта или интеграции (обход ссылок, проверка битых ссылок,
     загрузка по URL).
@@ -1414,8 +1444,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: low

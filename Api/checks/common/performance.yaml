@@ -228,7 +228,7 @@ checks:
   references:
   - 'Real-world bug: RWB-0097'
 - id: PERF-NO-UNNEEDED-DEPENDENCY-CALLS
-  status: draft
+  status: approved
   title: Внешняя зависимость вызывается только когда её результат нужен
   category: performance
   protocols:
@@ -265,7 +265,7 @@ checks:
   - Смежная — BIZ-SIDE-EFFECTS-ONCE
   - 'Real-world bug: RWB-0224'
 - id: PERF-METADATA-RELOAD-NO-BLOCK
-  status: draft
+  status: approved
   title: Перезагрузка кэша метаданных не блокирует обслуживание запросов надолго
   category: performance
   protocols:

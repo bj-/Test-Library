@@ -186,7 +186,7 @@ checks:
   - Здравый смысл — эквивалентные выражения дают одинаковый результат
   - 'Real-world bug: RWB-0002'
 - id: REST-FILTER-RELATION-NO-DUPLICATES
-  status: draft
+  status: approved
   title: Фильтр по полю связанной коллекции возвращает каждую запись один раз
   category: pagination
   protocols:
@@ -198,6 +198,7 @@ checks:
   - boundary
   - pagination
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -217,6 +218,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -226,7 +228,7 @@ checks:
   - Здравый смысл — фильтр не размножает записи (JOIN без DISTINCT/EXISTS)
   - 'Real-world bug: RWB-0212'
 - id: REST-FILTER-OPERATION-PARITY
-  status: draft
+  status: approved
   title: Один фильтр даёт согласованный результат в списке, агрегации и вложенной выборке
   category: pagination
   protocols:
@@ -238,6 +240,7 @@ checks:
   - contract
   - filtering
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -256,6 +259,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -265,7 +269,7 @@ checks:
   - Смежная — REST-FILTER-EQUIVALENT-FORMS (формы записи фильтра)
   - 'Real-world bug: RWB-0251'
 - id: REST-ALIASED-EMBED-FILTER-INDEPENDENCE
-  status: draft
+  status: approved
   title: Вложения одного ресурса под разными алиасами фильтруются независимо
   category: pagination
   protocols:
@@ -277,6 +281,7 @@ checks:
   - contract
   - filtering
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -296,6 +301,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -305,7 +311,7 @@ checks:
   - Смежные — REST-FILTER-SORT-COMPOSITION, REST-FILTER-OPERATION-PARITY
   - 'Real-world bug: RWB-0327'
 - id: REST-FILTER-UNSELECTED-FIELD
-  status: draft
+  status: approved
   title: Фильтр по полю, не входящему в выбор полей, работает
   category: pagination
   protocols:
@@ -317,6 +323,7 @@ checks:
   - contract
   - filtering
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -335,6 +342,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -344,7 +352,7 @@ checks:
   - Смежная — CONTRACT-FIELD-SELECTION
   - 'Real-world bug: RWB-0328'
 - id: REST-FILTER-NAME-COLLISION
-  status: draft
+  status: approved
   title: Фильтр по полю с именем вложенного ресурса применяется к полю
   category: pagination
   protocols:
@@ -356,6 +364,7 @@ checks:
   - filtering
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Имя поля (например, внешнего ключа) совпадает с именем вложенного ресурса или связи.
   steps:
@@ -372,6 +381,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: low
     likelihood: low

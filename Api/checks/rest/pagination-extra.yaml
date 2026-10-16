@@ -251,7 +251,7 @@ checks:
     impact: low
     likelihood: medium
 - id: PAGE-SORT-MULTI-KEY-PRIORITY
-  status: draft
+  status: approved
   title: Сортировка по нескольким ключам соблюдает заданный клиентом порядок приоритета
   category: pagination
   protocols:
@@ -289,7 +289,7 @@ checks:
   - Здравый смысл — ORDER BY a, b
   - 'Real-world bug: RWB-0213'
 - id: PAGE-NEXT-LINK-VALID
-  status: draft
+  status: approved
   title: Ссылка next ведёт на ту же коллекцию, сохраняет фильтры и работает
   category: pagination
   protocols:
@@ -300,6 +300,7 @@ checks:
   - contract
   - pagination
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -317,6 +318,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

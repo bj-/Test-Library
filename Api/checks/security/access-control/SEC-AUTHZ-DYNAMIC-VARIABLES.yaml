@@ -1,6 +1,6 @@
 checks:
 - id: SEC-AUTHZ-DYNAMIC-VARIABLES
-  status: draft
+  status: approved
   title: Динамические переменные в правилах доступа действуют как эквивалентные статические значения
   category: security
   protocols:
@@ -13,6 +13,7 @@ checks:
   - authz
   - positive
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -32,6 +33,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

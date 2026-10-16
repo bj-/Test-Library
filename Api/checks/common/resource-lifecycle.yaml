@@ -934,7 +934,7 @@ checks:
   - RFC 9457
   - 'Real-world bug: RWB-0035'
 - id: RES-CACHE-EXPLICIT-INVALIDATION
-  status: draft
+  status: approved
   title: Явный сброс кэша через API удаляет закэшированные ответы
   category: resources
   protocols:
@@ -977,7 +977,7 @@ checks:
   - Дополняет RES-CACHE-KEY-COMPLETENESS
   - 'Real-world bug: RWB-0214'
 - id: RES-DB-OBJECT-NAMES
-  status: draft
+  status: approved
   title: API по схеме БД работает с объектами в любом регистре, со спецсимволами и зарезервированными именами
   category: resources
   protocols:
@@ -987,6 +987,7 @@ checks:
   tags:
   - boundary
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -1012,6 +1013,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -1022,7 +1024,7 @@ checks:
   - Значения данных в другом регистре — VAL-CASE-SENSITIVITY
   - 'Real-world bug: RWB-0215'
 - id: RES-ALLOCATED-VALUE-RELEASE
-  status: draft
+  status: approved
   title: Выделенное из пула значение не выдаётся повторно, пока прежний владелец не удалён окончательно
   category: resources
   protocols:
@@ -1062,7 +1064,7 @@ checks:
   - Смежные — CONC-PARALLEL-CREATE-UNIQUE, RES-SOFT-DELETE-VISIBILITY
   - 'Real-world bug: RWB-0227'
 - id: RES-RELATION-NULL-TARGET-ROWS
-  status: draft
+  status: approved
   title: Связь многие-ко-многим возвращает записи связующей таблицы с пустой ссылкой
   category: resources
   protocols:
@@ -1075,6 +1077,7 @@ checks:
   - data-integrity
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Связь многие-ко-многим, ссылка в связующей таблице необязательна или связанный объект можно удалить с обнулением.
   steps:
@@ -1092,6 +1095,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: low
@@ -1099,7 +1103,7 @@ checks:
   - Смежные — RES-REFERENTIAL-INTEGRITY, RES-DELETE-WITH-DEPENDENTS
   - 'Real-world bug: RWB-0257'
 - id: RES-RELATIONS-SHARED-JUNCTION-ISOLATION
-  status: draft
+  status: approved
   title: Связи через общую связующую таблицу возвращают каждая только свои данные
   category: resources
   protocols:
@@ -1111,7 +1115,9 @@ checks:
   - contract
   - data-integrity
   - real-world-bug
+  - ci
   - regression
+  - nightly
   preconditions:
   - У ресурса две и более связи через одну связующую таблицу (политика ↔ пользователи и политика ↔ роли).
   steps:
@@ -1129,7 +1135,9 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: high
     likelihood: low
@@ -1137,7 +1145,7 @@ checks:
   - Смежная — CONTRACT-FIELD-SELECTION
   - 'Real-world bug: RWB-0258'
 - id: RES-RELATION-CONNECT-DISCONNECT-CONFLICT
-  status: draft
+  status: approved
   title: Подключение с позицией относительно отключаемой в том же запросе связи обрабатывается корректно
   category: resources
   protocols:
@@ -1150,6 +1158,7 @@ checks:
   - data-integrity
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Упорядоченные связи; в одном запросе можно передать connect с позицией (before/after) и disconnect.
   steps:
@@ -1166,6 +1175,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: low
     likelihood: low
@@ -1173,7 +1183,7 @@ checks:
   - Смежная — RES-RELATION-ORDER-STABLE
   - 'Real-world bug: RWB-0319'
 - id: RES-BULK-SINGLE-VALIDATION-PARITY
-  status: draft
+  status: approved
   title: Массовая операция валидирует так же, как одиночная
   category: resources
   protocols:
@@ -1185,6 +1195,7 @@ checks:
   - contract
   - validation
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -1203,6 +1214,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

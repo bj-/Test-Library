@@ -1,6 +1,6 @@
 checks:
 - id: SEC-ALT-REPRESENTATION-ACCESS
-  status: draft
+  status: approved
   title: Закрытый ресурс недоступен ни через одно альтернативное представление
   category: security
   protocols:
@@ -13,8 +13,10 @@ checks:
   - authz
   - negative
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Ресурс может быть неопубликованным, приватным или защищённым паролем доступа.
   - Кроме основного маршрута есть альтернативные представления — встраивание (embed), превью, дерево или вложенный список,
@@ -37,8 +39,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium

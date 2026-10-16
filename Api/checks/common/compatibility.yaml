@@ -266,7 +266,7 @@ checks:
     impact: medium
     likelihood: medium
 - id: COMPAT-UPGRADE-STORED-DATA-STABLE
-  status: draft
+  status: approved
   title: Обновление сервера не меняет сохранённые объекты и не запускает побочных действий
   category: compatibility
   protocols:
@@ -277,7 +277,9 @@ checks:
   - compatibility
   - data-integrity
   - real-world-bug
-  - release
+  - ci
+  - regression
+  - nightly
   preconditions:
   - Можно обновить стенд с предыдущей версии на новую, сохранив данные.
   steps:
@@ -294,7 +296,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
-  - Release
+  - CI
+  - Regression
+  - Nightly
   risk:
     impact: high
     likelihood: low
@@ -302,7 +306,7 @@ checks:
   - Здравый смысл — обновление без изменения данных пользователем не меняет данные
   - 'Real-world bug: RWB-0220'
 - id: COMPAT-MIXED-VERSION-WRITE-STABILITY
-  status: draft
+  status: approved
   title: Экземпляры разных версий при поэтапном обновлении не перезаписывают общий объект по кругу
   category: compatibility
   protocols:
@@ -313,7 +317,8 @@ checks:
   - compatibility
   - concurrency
   - real-world-bug
-  - release
+  - regression
+  - nightly
   preconditions:
   - Нужны две версии сервиса одновременно (поэтапное обновление) с общим хранилищем или общим служебным объектом.
   steps:
@@ -329,7 +334,8 @@ checks:
     level: partial
     deterministic: false
   profiles:
-  - Release
+  - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: low

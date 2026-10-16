@@ -217,7 +217,7 @@ checks:
   - CWE-226
   - 'Real-world bug: RWB-0009'
 - id: PRIV-IMPORT-URL-CREDENTIALS-NOT-STORED
-  status: draft
+  status: approved
   title: Учётные данные из URL источника импорта не сохраняются после завершения импорта
   category: privacy
   protocols:
@@ -227,6 +227,7 @@ checks:
   tags:
   - privacy
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -245,6 +246,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

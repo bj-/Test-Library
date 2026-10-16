@@ -1,6 +1,6 @@
 checks:
 - id: SEC-AUTHZ-RULE-READ-WRITE-PARITY
-  status: draft
+  status: approved
   title: Условие прав по связанной записи действует в записи так же, как в чтении
   category: security
   protocols:
@@ -13,8 +13,10 @@ checks:
   - authz
   - negative
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Права задаются условиями на данные, в том числе по связанной записи или вычисляемому полю (row-level security, permission
     rules).
@@ -34,8 +36,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium

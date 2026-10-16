@@ -308,7 +308,7 @@ checks:
     impact: low
     likelihood: medium
 - id: WS-SLOW-CONSUMER-NO-SILENT-LOSS
-  status: draft
+  status: approved
   title: Медленный клиент подписки не теряет сообщения молча
   category: websocket
   protocols:
@@ -320,6 +320,7 @@ checks:
   - reliability
   - websocket
   - real-world-bug
+  - regression
   - nightly
   preconditions:
   - Есть подписки или поток событий по WebSocket.
@@ -338,6 +339,7 @@ checks:
     level: partial
     deterministic: false
   profiles:
+  - Regression
   - Nightly
   risk:
     impact: medium
@@ -346,7 +348,7 @@ checks:
   - RFC 6455
   - 'Real-world bug: RWB-0209'
 - id: WS-SUBSCRIPTION-EVENTS-DELIVERED
-  status: draft
+  status: approved
   title: Подписка получает события создания, изменения и удаления
   category: websocket
   protocols:
@@ -358,6 +360,7 @@ checks:
   - positive
   - websocket
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -376,6 +379,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -385,7 +389,7 @@ checks:
   - Смежные — WS-SUBSCRIPTION-AUTHZ, WS-RECONNECT-RESUME
   - 'Real-world bug: RWB-0255'
 - id: WS-MULTIPLE-ENDPOINTS-INDEPENDENT
-  status: draft
+  status: approved
   title: Несколько WebSocket-эндпоинтов на разных путях работают независимо
   category: websocket
   protocols:
@@ -397,6 +401,7 @@ checks:
   - websocket
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Сервер поддерживает несколько WebSocket-эндпоинтов (realtime, GraphQL subscriptions, журналы, служебные).
   steps:
@@ -414,6 +419,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: low

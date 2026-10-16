@@ -1,6 +1,6 @@
 checks:
 - id: SEC-POLICY-TEMPLATE-USER-DATA
-  status: draft
+  status: approved
   title: Данные пользователя, подставляемые в шаблон политики доступа, не работают как wildcard
   category: security
   protocols:
@@ -13,8 +13,10 @@ checks:
   - authz
   - privilege-escalation
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Политики доступа шаблонные — в них подставляются имя или атрибуты субъекта (ACL <username>/*, домены сертификатов *.{name}.example.com,
     SSH-принципалы).
@@ -34,8 +36,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: low

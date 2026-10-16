@@ -1718,7 +1718,7 @@ checks:
   - RFC 8693
   - 'Real-world bug: RWB-0044'
 - id: AUTH-CLIENT-ASSERTION-BINDING
-  status: draft
+  status: approved
   title: Client assertion принимается только с ключом клиента, указанного в ней
   category: security
   protocols:
@@ -1730,8 +1730,10 @@ checks:
   - negative
   - authn
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Несколько клиентов OAuth с аутентификацией private_key_jwt (ключи по jwks_uri или зарегистрированные).
   steps:
@@ -1748,8 +1750,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: critical
     likelihood: low
@@ -1757,7 +1761,7 @@ checks:
   - RFC 7523, RFC 7521 п. 5.2
   - 'Real-world bug: RWB-0185'
 - id: AUTH-ACCOUNT-STATE-ALL-SCHEMES
-  status: draft
+  status: approved
   title: Отключённая, заблокированная или истёкшая учётка не аутентифицируется ни одной схемой
   category: security
   protocols:
@@ -1769,8 +1773,10 @@ checks:
   - negative
   - authn
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Поддерживается несколько схем аутентификации (пароль, сертификат клиента, ключ API, токен, внешний IdP).
   steps:
@@ -1787,8 +1793,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -1796,7 +1804,7 @@ checks:
   - Блокировка учёток — по правилам запуска (лимит попыток и путь разблокировки)
   - 'Real-world bug: RWB-0186'
 - id: AUTH-CLIENT-CERT-IDENTITY
-  status: draft
+  status: approved
   title: Личность из сертификата клиента извлекается однозначно
   category: security
   protocols:
@@ -1808,6 +1816,7 @@ checks:
   - negative
   - authn
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -1826,6 +1835,7 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -1835,7 +1845,7 @@ checks:
   - Дополняет AUTH-ACCOUNT-STATE-ALL-SCHEMES и GRPC-TLS-MTLS
   - 'Real-world bug: RWB-0187'
 - id: AUTH-JWT-VALID-ACCEPTED
-  status: draft
+  status: approved
   title: Валидный токен принимается при всех поддерживаемых алгоритмах, наборах ключей и настройках claims
   category: security
   protocols:
@@ -1846,6 +1856,7 @@ checks:
   - positive
   - authn
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -1876,6 +1887,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -1886,7 +1898,7 @@ checks:
   - Позитивная пара к AUTH-JWT-* и SEC-TOKEN-SIGNATURE
   - 'Real-world bug: RWB-0206'
 - id: AUTH-IDENTITY-ATTRIBUTES-ALL-SCHEMES
-  status: draft
+  status: approved
   title: Атрибуты идентичности, которые даёт источник, сохраняются при любом способе аутентификации
   category: security
   protocols:
@@ -1897,6 +1909,7 @@ checks:
   - security
   - authn
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -1916,6 +1929,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -1925,7 +1939,7 @@ checks:
   - Смежные — AUTH-CLIENT-CERT-IDENTITY, AUTH-ACCOUNT-STATE-ALL-SCHEMES, SEC-AUTHN-SCHEMES-SUPPORTED
   - 'Real-world bug: RWB-0226'
 - id: AUTH-PROTOCOL-SESSION-OWNER-BINDING
-  status: draft
+  status: approved
   title: Идентификатор протокольной сессии привязан к аутентифицированному владельцу
   category: security
   protocols:
@@ -1938,8 +1952,10 @@ checks:
   - session
   - negative
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Сервер ведёт сессии по идентификатору в заголовке или пути (Mcp-Session-Id, ID потока SSE, ID сессии WebSocket).
   steps:
@@ -1957,8 +1973,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -1968,7 +1986,7 @@ checks:
   - Смежные — AUTH-SESSION-FIXATION, SEC-OWNERSHIP-READ
   - 'Real-world bug: RWB-0233'
 - id: AUTH-OAUTH-PUBLIC-CLIENT-CONSENT
-  status: draft
+  status: approved
   title: Повторная авторизация публичного OAuth-клиента не выполняется без участия пользователя
   category: security
   protocols:
@@ -1980,6 +1998,7 @@ checks:
   - authn
   - negative
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -1999,6 +2018,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -2009,7 +2029,7 @@ checks:
   - Смежная — AUTH-OAUTH-REDIRECT-STATE
   - 'Real-world bug: RWB-0234'
 - id: AUTH-EXTERNAL-IDP-MISSING-ATTRIBUTES
-  status: draft
+  status: approved
   title: Вход через внешний IdP без необязательных атрибутов профиля обрабатывается по требованиям
   category: security
   protocols:
@@ -2021,6 +2041,7 @@ checks:
   - authn
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Вход через внешний IdP (OIDC, OAuth, SAML); есть тестовый IdP с профилями без необязательных атрибутов.
   steps:
@@ -2037,6 +2058,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -2045,7 +2067,7 @@ checks:
   - Пара к AUTH-EXTERNAL-IDP-UNVERIFIED-EMAIL
   - 'Real-world bug: RWB-0259'
 - id: AUTH-BASIC-CREDENTIALS-SPECIAL-CHARS
-  status: draft
+  status: approved
   title: Basic-аутентификация принимает пароль с двоеточием, пробелами и UTF-8
   category: security
   protocols:
@@ -2057,6 +2079,7 @@ checks:
   - authn
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Есть Basic-аутентификация; можно задать пароль со спецсимволами.
   steps:
@@ -2073,6 +2096,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: low
@@ -2081,7 +2105,7 @@ checks:
   - Позитивная пара к SEC-AUTHN-MALFORMED
   - 'Real-world bug: RWB-0276'
 - id: AUTH-EXTERNAL-ID-EXACT-MATCH
-  status: draft
+  status: approved
   title: Внешний идентификатор субъекта сравнивается побайтно в паре издатель и subject
   category: security
   protocols:
@@ -2093,8 +2117,10 @@ checks:
   - negative
   - authn
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Вход через внешний IdP; учётка привязана к паре издатель и subject (OIDC sub; SAML NameID — если его семантика требует
     точного совпадения).
@@ -2113,8 +2139,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: low
@@ -2123,7 +2151,7 @@ checks:
   - Пара к AUTH-LOGIN-IDENTIFIER-NORMALIZATION
   - 'Real-world bug: RWB-0305'
 - id: AUTH-OAUTH-OUTBOUND-SCOPE
-  status: draft
+  status: approved
   title: Запрос авторизации к внешнему провайдеру содержит запрошенные scope без устаревших значений по умолчанию
   category: security
   protocols:
@@ -2135,6 +2163,7 @@ checks:
   - authn
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Вход через внешнего OAuth/OIDC-провайдера, клиент может передать scope; известны актуальные scope провайдера.
   steps:
@@ -2153,6 +2182,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -2161,7 +2191,7 @@ checks:
   - Смежная — AUTH-OAUTH-REDIRECT-STATE
   - 'Real-world bug: RWB-0311'
 - id: AUTH-IMPORTED-PASSWORD-HASH
-  status: draft
+  status: approved
   title: Пользователь, импортированный с хешем пароля поддерживаемого алгоритма, входит по исходному паролю
   category: security
   protocols:
@@ -2172,6 +2202,7 @@ checks:
   - positive
   - authn
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -2190,6 +2221,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -2199,7 +2231,7 @@ checks:
   - Смежная — AUTH-PASSWORD-POLICY
   - 'Real-world bug: RWB-0312'
 - id: AUTH-CONTACT-CHANGE-PREVIOUS-VALUE
-  status: draft
+  status: approved
   title: Смена телефона или email на ранее использованный этим пользователем проходит подтверждение
   category: security
   protocols:
@@ -2211,6 +2243,7 @@ checks:
   - otp
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Пользователь может менять телефон или email с подтверждением кодом; нужен доступ к каналу кода (тестовый перехватчик).
   steps:
@@ -2227,6 +2260,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: low
     likelihood: medium
@@ -2234,7 +2268,7 @@ checks:
   - Смежные — AUTH-OTP-BINDING, AUTH-LOGIN-IDENTIFIER-NORMALIZATION
   - 'Real-world bug: RWB-0313'
 - id: AUTH-SAML-ASSERTION-REPLAY
-  status: draft
+  status: approved
   title: Повторно предъявленное SAML-утверждение отклоняется
   category: security
   protocols:
@@ -2247,8 +2281,10 @@ checks:
   - authn
   - token-lifecycle
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Вход по SAML или другому одноразовому утверждению (WS-Federation, ID-токен OIDC с nonce); включена защита от повторов.
   steps:
@@ -2265,8 +2301,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: low

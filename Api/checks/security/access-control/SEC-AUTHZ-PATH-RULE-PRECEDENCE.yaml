@@ -1,6 +1,6 @@
 checks:
 - id: SEC-AUTHZ-PATH-RULE-PRECEDENCE
-  status: draft
+  status: approved
   title: Правила доступа по путям применяются по наиболее точному совпадению, независимо от порядка объявления
   category: security
   protocols:
@@ -12,6 +12,7 @@ checks:
   - negative
   - authz
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -30,6 +31,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
