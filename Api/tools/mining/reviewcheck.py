@@ -93,11 +93,22 @@ def build(batch: str, blind: bool) -> tuple[str, int]:
                     f"- **Источник ожидания:** {p.get('expected_source') or '—'}",
                     f"- **Почему не подошла ближайшая запись:** {r['match'].get('note') or '—'}", "",
                     "Первоисточник:", "", "````text", body, "````", ""]
+    n = len(review["clusters"])
+    for t in (review.get("proofs") or {}).get("retarget") or []:
+        n += 1
+        src, r = sources[t["bug"]], results[t["bug"]]
+        body = re.sub(r"\n{3,}", "\n\n", (src.get("body") or "").strip())[:BODY_LIMIT]
+        out += [f"## Идея {n}. {r['pattern']['title']}", ""]
+        if not blind:
+            out += [f"- **Предложение Claude:** не новая запись, а шаг-вариант к `{t['check_id']}`: {t['variant']}", ""]
+        out += [f"### {t['bug']} — {src['title']}", "", f"Ссылка: {src['url']}", "",
+                f"- **Действие:** {r['pattern']['action']}", f"- **Ожидание:** {r['pattern']['expected']}", "",
+                "Первоисточник:", "", "````text", body, "````", ""]
     index = sorted((c["id"], c.get("category", ""), c.get("title", "")) for _, c in iter_checks(Path("."), []))
     out += ["## Индекс библиотеки", "", f"Все записи ({len(index)}): ID | категория | заголовок.", "", "```text"]
     out += [" | ".join(row) for row in index]
     out += ["```"]
-    return "\n".join(out) + "\n", len(review["clusters"])
+    return "\n".join(out) + "\n", n
 
 
 def main() -> int:

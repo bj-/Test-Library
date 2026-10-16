@@ -1,0 +1,83 @@
+# Ревью кандидатов партии ghsa-go (шаги 6–7, docs/BUG_MINING_PLAN.md, Api/mining/sessions.md — внутренняя сессия, п. 3).
+#
+# Шаг 6 (Claude, 2026-10-16): 11 new-паттернов — 10 идей (clusters) и 1 перенос в вариант существующей записи
+# (proofs.retarget: HTTP-HTTP2-RESOURCE-LIMITS добавлена в ghsa-maven уже после триажа ghsa-go). Для каждой идеи —
+# предложение: accept (новая запись draft с предложенным ID в указанном файле) или reject (с причиной). Пруфы к
+# существующим берутся из batches/*.out.jsonl автоматически. Идеи UI/DB — inbox №229–246; ideas.md у источника нет;
+# GHSA-xp7j-h7jc-4w8p исключён из выгрузки (skipped.md).
+# Шаг 7 (человек): поменять decision / check_id / file кластера; неверные совпадения пруфов — в proofs.exclude
+# (ID бага), вариант пруфа без нового шага — в proofs.no_variant, new-паттерн как вариант существующей записи —
+# в proofs.retarget. Затем: cluster.py (пересобрать ghsa-go.md) и apply_proofs.py. Перекрёстное ревью другими LLM —
+# reviewcheck.py (mining/README.md, шаги 6–7, п. 7).
+#
+# decision: accept | reject | pending
+batch: ghsa-go
+clusters:
+- key: metrics-label-cardinality
+  decision: accept
+  check_id: OBS-METRICS-LABEL-CARDINALITY
+  file: checks/common/observability.yaml
+  bugs: [GHSA-6r69-c6wg-7g8m]
+  idea: Значения из запроса (метод, путь, заголовки, коды) не создают неограниченно новых серий метрик — неизвестные значения сводятся в одну серию (other), шаблоны пути — в маршрут; размер /metrics и память не растут
+- key: policy-template-user-data
+  decision: accept
+  check_id: SEC-POLICY-TEMPLATE-USER-DATA
+  file: checks/security/access-control/SEC-POLICY-TEMPLATE-USER-DATA.yaml
+  bugs: [GHSA-59w7-v8rr-pr4p]
+  idea: Данные, которые пользователь задаёт сам (имя, атрибуты, метаданные сущности) и которые подставляются в шаблон политики доступа (<username>/*, *.{name}.example.com), не работают как wildcard и метасимволы — экранируются или отклоняются при создании
+- key: denylist-every-entry
+  decision: accept
+  check_id: HARD-DENYLIST-EVERY-ENTRY
+  file: checks/security/api-hardening.yaml
+  bugs: [GHSA-gjw4-3v3v-rqxg]
+  idea: Каждый элемент списка запрещённых значений (ключи меток и аннотаций, имена полей, домены, команды) отклоняется — проверка перебором всех элементов списка, в том числе в разном регистре и при любом составе и порядке списка
+- key: reserved-path-write
+  decision: accept
+  check_id: INJ-RESERVED-PATH-WRITE
+  file: checks/security/injection.yaml
+  bugs: [GHSA-rcr6-4jqh-j84m]
+  idea: Запись файлов пользователем через API (патч, загрузка в репозиторий, распаковка, синхронизация) не попадает в служебные каталоги и файлы с особым смыслом (.git/, hooks/, конфигурация, .htaccess) даже по законному относительному пути — без ../; служебный файл не исполняется
+- key: route-shared-backend-isolation
+  decision: accept
+  check_id: HARD-ROUTE-SHARED-BACKEND-ISOLATION
+  file: checks/security/api-hardening.yaml
+  bugs: [GHSA-6p8f-p8j2-rqmv]
+  idea: В шлюзе или прокси несколько маршрутов (в том числе разных арендаторов и пространств имён) к одному бэкенду применяют каждый свои фильтры и заголовки (идентичность арендатора) — конфигурация маршрутов не смешивается
+- key: authz-explicit-over-inherited
+  decision: accept
+  check_id: SEC-AUTHZ-EXPLICIT-OVER-INHERITED
+  file: checks/security/access-control/SEC-AUTHZ-EXPLICIT-OVER-INHERITED.yaml
+  bugs: [GHSA-pjr3-86v4-5p7w]
+  idea: В иерархии объектов (проект → подпроект, папка → файл) явное право на дочерний объект — в том числе пониженное — имеет приоритет над унаследованным от родителя, по документированному правилу ближайшего назначения
+- key: backup-restore-protected
+  decision: accept
+  check_id: HARD-BACKUP-RESTORE-PROTECTED
+  file: checks/security/api-hardening.yaml
+  bugs: [GHSA-p393-cf76-4jmr]
+  idea: Восстановление из резервной копии через API не обходит защиту записи — доступно только администратору, подлинность копии проверяется ключом сервера (а не ключом из запроса), защищённые настройки (команды, секреты, роли) подделанной копией не перезаписываются
+- key: user-script-sandbox
+  decision: accept
+  check_id: INJ-USER-SCRIPT-SANDBOX
+  file: checks/security/injection.yaml
+  bugs: [GHSA-fgmf-7rf8-m6vf]
+  idea: Пользовательские скрипты, которые сервер штатно исполняет (потоки, правила, хуки, формулы), изолированы — загрузка модулей и чтение файлов хоста, сеть и переменные окружения недоступны, содержимое файлов не попадает в результат
+- key: authz-list-check-consistency
+  decision: accept
+  check_id: SEC-AUTHZ-LIST-CHECK-CONSISTENCY
+  file: checks/security/access-control/SEC-AUTHZ-LIST-CHECK-CONSISTENCY.yaml
+  bugs: [GHSA-g3pg-frfm-pr2m]
+  idea: Перечисление субъектов или объектов с доступом (кто имеет отношение, какие объекты доступны) согласовано с точечной проверкой каждого — с пересечением, исключением и wildcard в модели прав исключённый не попадает в список
+- key: setup-endpoints-protected
+  decision: accept
+  check_id: HARD-SETUP-ENDPOINTS-PROTECTED
+  file: checks/security/api-hardening.yaml
+  bugs: [GHSA-x626-fcwx-f5pc]
+  idea: Эндпоинты первоначальной настройки (создание первого администратора, восстановление базы в окне инициализации) не позволяют захватить экземпляр без доказательства владения — секрета настройки или локального доступа; после настройки закрыты
+proofs:
+  exclude: []
+  no_variant: []
+  retarget:
+  - bug: GHSA-vp52-pcj8-j9qc
+    check_id: HTTP-HTTP2-RESOURCE-LIMITS
+    variant: Открыть несколько стримов HTTP/2 и отправлять тело кадрами DATA по 1 байту в пределах окон управления потоком; наблюдать память сервера и доступность
+    note: 'Перенесено на ревью из new: накладные расходы фрагментации HTTP/2 — запись добавлена в ghsa-maven после триажа ghsa-go'
