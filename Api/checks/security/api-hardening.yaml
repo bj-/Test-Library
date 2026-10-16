@@ -1462,7 +1462,7 @@ checks:
   - Смежная — REST-SSRF-URL-FETCH
   - 'Real-world bug: RWB-0304'
 - id: SEC-CHECK-ORDER
-  status: draft
+  status: approved
   title: Аутентификация и авторизация проверяются раньше разбора и валидации тела
   category: security
   protocols:
@@ -1476,6 +1476,7 @@ checks:
   - authn
   - authz
   - negative
+  - ci
   - regression
   - nightly
   preconditions:
@@ -1496,6 +1497,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -1505,7 +1507,7 @@ checks:
   - OWASP API2:2023, API5:2023
   - inbox №2, №34
 - id: HARD-ENVIRONMENT-ISOLATION
-  status: draft
+  status: approved
   title: Тестовый стенд не обращается к ресурсам production
   category: security
   protocols:
@@ -1515,7 +1517,10 @@ checks:
   tags:
   - security
   - hardening
+  - ci
   - regression
+  - nightly
+  - release
   preconditions:
   - Есть описание стенда или служебные ответы с адресами зависимостей.
   steps:
@@ -1534,7 +1539,10 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
+  - Release
   risk:
     impact: high
     likelihood: low
@@ -1542,7 +1550,7 @@ checks:
   - Чек-лист guru99 (пер. О. Алифановой)
   - inbox №82
 - id: HARD-NOT-IMPLEMENTED-INERT
-  status: draft
+  status: approved
   title: Операция, помеченная в контракте как нереализованная, не выполняется
   category: security
   protocols:
@@ -1554,7 +1562,9 @@ checks:
   tags:
   - security
   - hardening
+  - ci
   - regression
+  - nightly
   preconditions:
   - В контракте есть операции, помеченные как нереализованные (описание, x-status, ответ 501).
   steps:
@@ -1570,7 +1580,9 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: low

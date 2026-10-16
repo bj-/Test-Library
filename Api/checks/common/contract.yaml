@@ -184,7 +184,7 @@ checks:
   - JSON Schema 2020-12
   - 'Real-world bug: RWB-0049'
 - id: CONTRACT-RESPONSE-LINKS-RESOLVE
-  status: draft
+  status: approved
   title: URL в ответах открываются
   category: contract
   protocols:
@@ -195,6 +195,7 @@ checks:
   tags:
   - contract
   - regression
+  - nightly
   preconditions:
   - Ответы содержат URL — ссылки на ресурсы, файлы, изображения, next и prev, Location.
   steps:
@@ -211,6 +212,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: low
     likelihood: medium

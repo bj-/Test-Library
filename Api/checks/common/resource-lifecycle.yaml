@@ -1224,7 +1224,7 @@ checks:
   - Смежная — RES-BULK-LIMITS
   - 'Real-world bug: RWB-0320'
 - id: RES-VALUE-ROUNDTRIP-EXACT
-  status: draft
+  status: approved
   title: Сохранённое значение возвращается так, как введено, кроме документированной нормализации
   category: resources
   protocols:
@@ -1234,14 +1234,17 @@ checks:
   tags:
   - contract
   - validation
+  - ci
   - regression
   - nightly
   preconditions:
   - Есть строковые поля, которые сохраняются и читаются.
   steps:
-  - action: Сохранить значения со спецсимволами, разным регистром, пробелами по краям, Unicode в разных формах нормализации, HTML и кавычками; прочитать.
+  - action: Сохранить значения со спецсимволами, разным регистром, пробелами по краям, Unicode в разных формах нормализации,
+      HTML и кавычками; прочитать.
   expected:
-  - Значение совпадает с отправленным байт в байт, кроме задокументированной нормализации; незадокументированная трансформация (обрезка, замена, регистр, экранирование при хранении) — находка.
+  - Значение совпадает с отправленным байт в байт, кроме задокументированной нормализации; незадокументированная трансформация
+    (обрезка, замена, регистр, экранирование при хранении) — находка.
   applicability:
     when:
     - Есть сохраняемые строки.
@@ -1251,6 +1254,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -1261,7 +1265,7 @@ checks:
   - Смежные — VAL-WHITESPACE-HANDLING, REST-UNICODE-NORMALIZATION, VAL-SPECIAL-CHARACTERS
   - inbox №46
 - id: RES-REFERENCE-DATA-COMPLETE
-  status: draft
+  status: approved
   title: Справочники через API полные, упорядочены по документации и управляются без релиза
   category: resources
   protocols:
@@ -1271,6 +1275,7 @@ checks:
   tags:
   - contract
   - regression
+  - nightly
   preconditions:
   - API отдаёт справочники (значения для выбора в клиенте).
   steps:
@@ -1287,6 +1292,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: low
     likelihood: medium

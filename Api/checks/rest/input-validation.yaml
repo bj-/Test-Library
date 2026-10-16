@@ -1250,7 +1250,7 @@ checks:
   - Смежные — SEC-AUTHZ-DYNAMIC-VARIABLES, VAL-NUMBER-REPRESENTATION
   - 'Real-world bug: RWB-0253'
 - id: VAL-OPTIONAL-FIELDS-COMBINATIONS
-  status: draft
+  status: approved
   title: Любая комбинация и порядок необязательных полей обрабатываются без падения
   category: validation
   protocols:
@@ -1262,6 +1262,7 @@ checks:
   tags:
   - boundary
   - validation
+  - ci
   - regression
   - nightly
   preconditions:
@@ -1281,6 +1282,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

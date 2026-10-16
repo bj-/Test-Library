@@ -593,7 +593,7 @@ checks:
   - RFC 9110 §7.2
   - 'Real-world bug: RWB-0268'
 - id: ASYNC-SCHEDULE-DST-TRANSITION
-  status: draft
+  status: approved
   title: Расписание на несуществующее или повторяющееся местное время срабатывает по правилу
   category: async
   protocols:
@@ -603,6 +603,7 @@ checks:
   tags:
   - boundary
   - async-jobs
+  - regression
   - nightly
   preconditions:
   - Есть задачи по расписанию в местном времени с переходом на летнее или зимнее время; можно сдвигать время стенда.
@@ -619,6 +620,7 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - Regression
   - Nightly
   risk:
     impact: medium

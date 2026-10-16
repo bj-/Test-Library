@@ -1,6 +1,6 @@
 checks:
 - id: SEC-PRINCIPAL-TYPE-CONFUSION
-  status: draft
+  status: approved
   title: Принципал одного типа не получает прав принципала другого типа с тем же числовым ID
   category: security
   protocols:
@@ -11,12 +11,15 @@ checks:
   - security
   - authz
   - negative
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Есть принципалы разных типов (пользователь, ссылка-доступ, бот, сервисная учётка) с пересекающимися числовыми ID.
   steps:
-  - action: Создать принципал одного типа с ID, равным ID пользователя, и выполнить от него операции, доступные этому пользователю (удаление из команды, владение, чтение состава).
+  - action: Создать принципал одного типа с ID, равным ID пользователя, и выполнить от него операции, доступные этому пользователю
+      (удаление из команды, владение, чтение состава).
   expected:
   - 'Отказ: права определяются по паре тип и ID.'
   applicability:
@@ -28,8 +31,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: low

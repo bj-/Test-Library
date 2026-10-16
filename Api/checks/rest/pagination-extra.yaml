@@ -328,7 +328,7 @@ checks:
   - RFC 8288 (Link)
   - 'Real-world bug: RWB-0271'
 - id: PAGE-SORT-FIELD-TYPE-MATRIX
-  status: draft
+  status: approved
   title: Сортировка по каждому полю учитывает его тип, локаль и направление
   category: pagination
   protocols:
@@ -339,6 +339,7 @@ checks:
   tags:
   - contract
   - sorting
+  - ci
   - regression
   - nightly
   preconditions:
@@ -362,6 +363,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

@@ -498,7 +498,7 @@ checks:
   - Смежные — OBS-REQUEST-LOG-ALL-ATTEMPTS, INJ-LOG-FORGING
   - 'Real-world bug: RWB-0333'
 - id: OBS-BUILD-VERSION-TRACEABLE
-  status: draft
+  status: approved
   title: Версия сборки доступна для трассировки на тестовых стендах и скрыта в production
   category: observability
   protocols:
@@ -509,6 +509,7 @@ checks:
   - contract
   - observability
   - regression
+  - nightly
   preconditions:
   - Известно, какой стенд тестовый, а какой production.
   steps:
@@ -527,6 +528,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: low
     likelihood: medium

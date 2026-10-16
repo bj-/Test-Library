@@ -31,7 +31,7 @@ _Последнее обновление: 2026-10-16_
 - [x] Выгрузка багов: 90 draft масштабирования переведены в `approved` (решение bj, 2026-10-16, по `Api/ideas/mined/scale.drafts-review.md`); в библиотеке approved 467, draft 32 (`REAL-*` из реальных контрактов), needs_clarification 16
 - [ ] Баг-трекеры, пилот: `collect_github.py` + `filter.py` → трассировка и метка `real-world-bug` → калибровка лимита (≤ 5 % недельного в день) → партии
 - [x] Разобран `Api/ideas/inbox.md` целиком (317 идей, 2026-10-16): API — 33 записи draft и 47 шагов; DB — 20 записей `DB-*`; UI — 30 записей `UI-*`; 4 отклонены как правила процесса (`docs/ideas.md`), остальные — шаги или уже покрыты
-- [ ] Вычитка 83 draft из разбора inbox: **ждут ответов других LLM** — пакеты `Api/ideas/draftcheck/inbox-api.md` (33), `inbox-db.md` (20), `inbox-ui.md` (30); ответы — `<пакет>.answer-N.md`, решения по правилу сверки (`Api/mining/README.md`, шаги 6–7, п. 7), `approved` — bj. 32 `REAL-*` — свой процесс
+- [ ] Вычитка 83 draft из разбора inbox: inbox-api (33) — **approved** (решение bj); **ждут ответов других LLM** — `Api/ideas/draftcheck/inbox-db.md` (20), `inbox-ui.md` (30); ответы — `<пакет>.answer-N.md`, решения по правилу сверки (`Api/mining/README.md`, шаги 6–7, п. 7), `approved` — bj. 32 `REAL-*` — свой процесс
 - [ ] Доработать оформление багов по итогам первых разборов (`Process/bugs.md`), затем — перенос в трекер
 - [ ] Свести текущий этап из `Api/docs/IMPLEMENTATION_PLAN.md` / `STAGE_REPORTS.md` в «Цель / текущий фокус»
 
@@ -119,3 +119,4 @@ _Последнее обновление: 2026-10-16_
 | 2026-10-16 | Claude | Разбор inbox, слой UI (111 идей + №27): 30 записей `UI-*` в `checks/ui/` (appearance, forms, data, navigation, errors, security), платформы — по пометкам идей; inbox разобран целиком — 313 → записи, 4 отклонены; исправлены строки №53 (переводы строк внутри ячейки) и №162 (неэкранированный `|`) |
 | 2026-10-16 | Claude | `tools/draftcheck.py` — пакет перекрёстной проверки черновых записей другой LLM (записи в YAML, исходные идеи inbox, индекс библиотеки); пакеты inbox-api (33), inbox-db (20), inbox-ui (30) |
 | 2026-10-16 | Claude / bj | Пакет inbox-api: ответы ChatGPT, Qwen, Gemini, Grok (`Api/ideas/draftcheck/inbox-api.answers.md`), итог — `inbox-api.decisions.md`: правки в 12 записях (BIZ-EMAIL-NOTIFICATION-DELIVERY разделена, шаги перенесены в INJ-HEADER-CRLF и AUTH-OTP-REUSE), расхождений для bj нет, рекомендация — все 33 approved; `draftcheck.py` — записи пакета не входят в индекс (из-за этого ChatGPT и Grok видели «дубли»), пакеты db и ui пересобраны; эксперимент с 4 моделями — польза в основном от ChatGPT |
+| 2026-10-16 | Claude / bj | 33 записи пакета inbox-api → `approved` (решение bj); `assign_profiles.py` — профили и run-теги |

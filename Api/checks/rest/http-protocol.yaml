@@ -970,7 +970,7 @@ checks:
   - RFC 7240 §3
   - 'Real-world bug: RWB-0332'
 - id: HTTP-REDIRECT-ENDPOINT-PARITY
-  status: draft
+  status: approved
   title: Вызов через перенаправляющий адрес работает как прямой вызов
   category: http-semantics
   protocols:
@@ -980,6 +980,7 @@ checks:
   tags:
   - compatibility
   - regression
+  - nightly
   preconditions:
   - Старый адрес перенаправляет на новый (совместимость, смена версии, канонизация).
   steps:
@@ -997,6 +998,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: low

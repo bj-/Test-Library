@@ -553,7 +553,7 @@ checks:
   - Смежная — SEC-AUTHZ-PATH-RULE-PRECEDENCE
   - 'Real-world bug: RWB-0270'
 - id: BIZ-AMBIGUOUS-ADDRESS
-  status: draft
+  status: approved
   title: Неоднозначный почтовый адрес не выбирается молча по первому совпадению
   category: business-logic
   protocols:
@@ -564,6 +564,7 @@ checks:
   - boundary
   - business-logic
   - regression
+  - nightly
   preconditions:
   - Адрес используется дальше (почта, геокодирование, доставка, зона обслуживания); есть справочник адресов (ФИАС, геокодер).
   steps:
@@ -582,6 +583,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -589,7 +591,7 @@ checks:
   - Здравый смысл и практика работы с ФИАС; в ТЗ обычно не описано — REQ-UNSPECIFIED-BEHAVIOR-PROBE
   - inbox №45
 - id: BIZ-DIVISION-BY-ZERO
-  status: draft
+  status: approved
   title: Входы с нулём в знаменателе не дают 500 и нечисловых значений
   category: business-logic
   protocols:
@@ -599,6 +601,7 @@ checks:
   tags:
   - boundary
   - business-logic
+  - ci
   - regression
   - nightly
   preconditions:
@@ -617,6 +620,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -626,7 +630,7 @@ checks:
   - Чек-лист guru99 (пер. О. Алифановой)
   - inbox №65
 - id: BIZ-EMAIL-NOTIFICATION-DELIVERY
-  status: draft
+  status: approved
   title: Письма уходят нужному адресату с верными ссылками и без внедрения заголовков
   category: business-logic
   protocols:
@@ -636,6 +640,7 @@ checks:
   tags:
   - contract
   - business-logic
+  - ci
   - regression
   - nightly
   preconditions:
@@ -653,6 +658,7 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -662,7 +668,7 @@ checks:
   - Внедрение заголовков письма — INJ-HEADER-CRLF; повторная отправка — BIZ-SIDE-EFFECTS-ONCE
   - inbox №73
 - id: BIZ-FLAG-EFFECT-MATRIX
-  status: draft
+  status: approved
   title: Каждый флаг сущности влияет на поведение так, как описано
   category: business-logic
   protocols:
@@ -672,6 +678,7 @@ checks:
   tags:
   - contract
   - business-logic
+  - ci
   - regression
   - nightly
   preconditions:
@@ -689,6 +696,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

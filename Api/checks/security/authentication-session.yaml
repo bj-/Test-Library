@@ -2355,7 +2355,7 @@ checks:
   - Смежная — SEC-TOKEN-REFRESH-REPLAY
   - 'Real-world bug: RWB-0323'
 - id: AUTH-SENSITIVE-CHANGE-REAUTH
-  status: draft
+  status: approved
   title: Изменение защиты учётки требует свежей аутентификации
   category: security
   protocols:
@@ -2366,8 +2366,10 @@ checks:
   - security
   - negative
   - authn
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Учётка может менять настройки защиты — MFA, коды восстановления, email, пароль.
   steps:
@@ -2384,8 +2386,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -2395,7 +2399,7 @@ checks:
   - Смежные — AUTH-MFA-STEP-UP, AUTH-PASSWORD-CHANGE-REQUIRES-CURRENT
   - inbox №145, №146 (GHSA-7m6h-rg42-m449)
 - id: AUTH-PATH-NORMALIZATION-BYPASS
-  status: draft
+  status: approved
   title: Вариации пути защищённого маршрута не обходят аутентификацию
   category: security
   protocols:
@@ -2406,8 +2410,10 @@ checks:
   - security
   - negative
   - authn
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Есть защищённые маршруты.
   steps:
@@ -2424,8 +2430,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -2434,7 +2442,7 @@ checks:
   - CWE-22, CWE-647
   - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
 - id: AUTH-CREDENTIAL-CHANNEL-STRICT
-  status: draft
+  status: approved
   title: Учётные данные принимаются только по документированному каналу
   category: security
   protocols:
@@ -2445,6 +2453,7 @@ checks:
   - security
   - negative
   - authn
+  - ci
   - regression
   - nightly
   preconditions:
@@ -2463,6 +2472,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -2472,7 +2482,7 @@ checks:
   - RFC 6265bis §4.1.3
   - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
 - id: AUTH-SESSION-VALUE-EXACT-MATCH
-  status: draft
+  status: approved
   title: Значение сессии сравнивается целиком и точно
   category: security
   protocols:
@@ -2483,8 +2493,10 @@ checks:
   - security
   - negative
   - session
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Аутентификация на cookie-сессии.
   steps:
@@ -2500,8 +2512,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -2509,7 +2523,7 @@ checks:
   - CWE-287
   - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
 - id: AUTH-DUPLICATE-CREDENTIALS
-  status: draft
+  status: approved
   title: Повторяющиеся и пустые учётные данные не дают доступа
   category: security
   protocols:
@@ -2520,6 +2534,7 @@ checks:
   - security
   - negative
   - session
+  - ci
   - regression
   - nightly
   preconditions:
@@ -2538,6 +2553,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -2547,7 +2563,7 @@ checks:
   - RFC 6265 §5.4
   - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
 - id: AUTH-SESSION-ID-ENTROPY
-  status: draft
+  status: approved
   title: Идентификатор сессии новый при каждом входе, уникален и непредсказуем
   category: security
   protocols:
@@ -2557,6 +2573,7 @@ checks:
   tags:
   - security
   - session
+  - ci
   - regression
   - nightly
   preconditions:
@@ -2575,6 +2592,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -2585,7 +2603,7 @@ checks:
   - Смежная — AUTH-SESSION-FIXATION
   - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
 - id: AUTH-PASSWORD-CHANGE-REQUIRES-CURRENT
-  status: draft
+  status: approved
   title: Смена пароля требует верный текущий пароль
   category: security
   protocols:
@@ -2596,8 +2614,10 @@ checks:
   - security
   - negative
   - authn
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Есть смена пароля пользователем.
   steps:
@@ -2613,8 +2633,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -2623,7 +2645,7 @@ checks:
   - Смежная — AUTH-SENSITIVE-CHANGE-REAUTH
   - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
 - id: AUTH-NOSQL-OPERATOR-CREDENTIALS
-  status: draft
+  status: approved
   title: Операторы NoSQL в учётных данных входа отклоняются
   category: security
   protocols:
@@ -2634,8 +2656,10 @@ checks:
   - security
   - negative
   - injection
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Есть вход по логину и паролю.
   steps:
@@ -2651,8 +2675,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -2661,7 +2687,7 @@ checks:
   - CWE-943
   - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
 - id: INJ-NULL-BYTE
-  status: draft
+  status: approved
   title: NUL-байт во входных данных отклоняется или не обрезает значение
   category: security
   protocols:
@@ -2672,6 +2698,7 @@ checks:
   - security
   - negative
   - injection
+  - ci
   - regression
   - nightly
   preconditions:
@@ -2689,6 +2716,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -2699,7 +2727,7 @@ checks:
   - Смежная — VAL-SPECIAL-CHARACTERS
   - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
 - id: AUTH-REVOKED-COOKIE-RELOGIN
-  status: draft
+  status: approved
   title: Вход с закрытой cookie сессии создаёт новую сессию
   category: security
   protocols:
@@ -2735,7 +2763,7 @@ checks:
   - Смежная — AUTH-SESSION-FIXATION
   - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
 - id: AUTH-LOGOUT-SCOPE
-  status: draft
+  status: approved
   title: Выход завершает только текущую сессию
   category: security
   protocols:
@@ -2745,6 +2773,7 @@ checks:
   tags:
   - positive
   - session
+  - ci
   - regression
   - nightly
   preconditions:
@@ -2762,6 +2791,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -2771,7 +2801,7 @@ checks:
   - Смежная — AUTH-LOGOUT-INVALIDATES
   - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
 - id: AUTH-SESSION-ID-NOT-EXPOSED
-  status: draft
+  status: approved
   title: Список сессий не раскрывает значение cookie сессии
   category: security
   protocols:
@@ -2781,8 +2811,10 @@ checks:
   tags:
   - security
   - session
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Аутентификация на cookie-сессии.
   steps:
@@ -2798,8 +2830,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -2807,7 +2841,7 @@ checks:
   - OWASP API3:2023
   - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
 - id: AUTH-SESSION-SLIDING-RENEWAL
-  status: draft
+  status: approved
   title: Активность продлевает сессию по правилам скользящего срока
   category: security
   protocols:
@@ -2843,7 +2877,7 @@ checks:
   - OWASP Session Management Cheat Sheet
   - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
 - id: AUTH-SESSION-FILTER-SCOPE
-  status: draft
+  status: approved
   title: Операции над сессиями ограничены сессиями своей учётки
   category: security
   protocols:
@@ -2854,8 +2888,10 @@ checks:
   - security
   - negative
   - ownership
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Аутентификация на cookie-сессии.
   steps:
@@ -2871,8 +2907,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -2881,7 +2919,7 @@ checks:
   - Смежная — SEC-OWNERSHIP-DELETE
   - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
 - id: AUTH-LOGIN-CROSS-ACCOUNT-COOKIE
-  status: draft
+  status: approved
   title: Вход другой учёткой с cookie действующей сессии обрабатывается по правилу
   category: security
   protocols:
@@ -2891,6 +2929,7 @@ checks:
   tags:
   - security
   - session
+  - ci
   - regression
   - nightly
   preconditions:
@@ -2908,6 +2947,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

@@ -751,7 +751,7 @@ checks:
   - Смежная — FILE-TRANSFORM-LIMITS
   - 'Real-world bug: RWB-0260'
 - id: FILE-ROUNDTRIP-EXACT
-  status: draft
+  status: approved
   title: Загруженный файл скачивается байт в байт
   category: files
   protocols:
@@ -761,6 +761,7 @@ checks:
   tags:
   - contract
   - files
+  - ci
   - regression
   - nightly
   preconditions:
@@ -778,6 +779,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
