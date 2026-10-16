@@ -133,3 +133,4 @@ _Последнее обновление: 2026-10-16_
 | 2026-10-17 | Claude | keycloak, шаг 6 (пропущен 2026-10-16): inbox №318–344 (27 идей UI/DB), 21 new → 10 идей + 9 `proofs.retarget`; пакеты `reviewcheck.py` |
 | 2026-10-17 | Claude / bj | keycloak, шаг 7: ответы ChatGPT, Gemini, Qwen на blind-пакет (`keycloak.reviewcheck.answers.md`); по правилу сверки — №12, №16 reject, №15 новая запись AUTH-OIDC-LOGOUT-WITHOUT-SESSION; 11 записей draft, `apply_proofs.py` — 73 записи, 76 RWB, +102 бага; `validate_library.py` 0 ошибок; шаги 6–7 пройдены по всем 14 источникам |
 | 2026-10-17 | Claude / bj | 11 записей keycloak → `approved` (решение bj); `assign_profiles.py` — профили и run-теги |
+| 2026-10-17 | Claude | Разбор inbox №318–344 (27 идей UI/DB keycloak): 23 шага к существующим UI-, DB- и API-записям, 4 уже покрыты; новых записей нет; inbox разобран целиком (344 идеи) |

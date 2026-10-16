@@ -129,6 +129,9 @@ checks:
     notes: inbox №247
   - action: Сменить email для входа — форма запрашивает текущий пароль
     notes: inbox №252
+  - action: Открыть первую страницу входа с каждым значением scope организации (organization, organization:*, organization:<alias>)
+      — вход по passkey доступен
+    notes: inbox №327
   expected:
   - Шаги восстановления не пропускаются; redirectTo после входа ведёт только внутрь своего origin; OIDC перенаправляет только
     на redirect_uri из списка клиента (он может быть на другом origin); изменение защиты учётки требует текущий пароль.
