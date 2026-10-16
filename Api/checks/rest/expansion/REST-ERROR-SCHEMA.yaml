@@ -25,6 +25,11 @@ checks:
     notes: 'Real-world bug: RWB-0117 (nestjs/nest#4319)'
   - action: Ошибки промежуточных слоёв (middleware, guard, прокси) — та же схема, что у ошибок обработчика
     notes: 'Real-world bug: RWB-0117 (nestjs/nest#431)'
+  - action: Запросить многоуровневый несуществующий путь и отключённое описание API и проверить код и сообщение ошибки в теле
+      404
+    notes: 'Real-world bug: RWB-0117 (PostgREST/postgrest#3906)'
+  - action: Отправить вставку и upsert в несуществующий ресурс и проверить код и сообщение в теле ответа
+    notes: 'Real-world bug: RWB-0117 (PostgREST/postgrest#3697)'
   expected:
   - ошибка соответствует схеме и не раскрывает stack trace/секреты
   applicability:

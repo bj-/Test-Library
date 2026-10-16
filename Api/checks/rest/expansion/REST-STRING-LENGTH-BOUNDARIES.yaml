@@ -26,6 +26,8 @@ checks:
   - action: Отправить в строковое поле без объявленного maxLength, в том числе во вложенном компоненте, строку длиннее размера
       колонки БД (256 и более символов)
     notes: 'Real-world bug: RWB-0137 (strapi/strapi#26113)'
+  - action: Вставить и изменить значение максимальной длины в колонки char(n) и bit(n) и проверить, что оно принято
+    notes: 'Real-world bug: RWB-0137 (PostgREST/postgrest#2861)'
   expected:
   - min-1/min/max/max+1 проверяются относительно ограничений
   applicability:

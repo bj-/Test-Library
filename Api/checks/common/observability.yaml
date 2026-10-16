@@ -193,6 +193,11 @@ checks:
     notes: 'Real-world bug: RWB-0093 (directus/directus#23635)'
   - action: Запустить сервис с валидной конфигурацией из файла и проверить, что статус-эндпоинт сообщает о загруженной конфигурации
     notes: 'Real-world bug: RWB-0093 (Kong/kong#9879)'
+  - action: Опрашивать эндпоинт готовности во время долгой загрузки кэша метаданных и проверить 503 до её завершения
+    notes: 'Real-world bug: RWB-0093 (PostgREST/postgrest#3330)'
+  - action: Запросить health-эндпоинт с тайм-аутом клиента и проверить, что ответ или отказ соединения приходит за ограниченное
+      время
+    notes: 'Real-world bug: RWB-0093 (PostgREST/postgrest#5012)'
   expected:
   - Readiness отражает зависимости; публичный ответ не содержит версий, хостов и секретов.
   applicability:
@@ -360,3 +365,116 @@ checks:
   - OWASP API4:2023
   - Практика Prometheus — ограничение кардинальности меток
   - 'Real-world bug: RWB-0282'
+- id: OBS-METRICS-VALUE-RANGE
+  status: draft
+  title: Gauge-метрики с известными границами остаются в них после сбоев и восстановления
+  category: observability
+  protocols:
+  - generic
+  kind: reliability
+  priority: P3
+  tags:
+  - reliability
+  - observability
+  - real-world-bug
+  - nightly
+  preconditions:
+  - Сервис экспортирует gauge-метрики с известной семантикой границ (доступные соединения пула, размер очереди); есть доступ
+    к эндпоинту метрик.
+  - Нужна возможность вызвать сбой зависимости (обрыв соединений с БД, перезапуск зависимости).
+  steps:
+  - action: Вызвать серию обрывов и переподключений, затем прочитать метрики и сравнить с фактическим состоянием и границами
+      (0..размер пула).
+  expected:
+  - Значения в документированных границах и восстанавливаются после сбоя; расхождения с фактическим состоянием нет.
+  applicability:
+    when:
+    - Есть gauge-метрики и управляемый сбой.
+    skip_when:
+    - Нет метрик или сбой не управляем.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - Смежная — OBS-METRICS-LABEL-CARDINALITY
+  - 'Real-world bug: RWB-0325'
+- id: OBS-SERVER-TIMING-ACCURATE
+  status: draft
+  title: Server-Timing отражает фактическую длительность этапов
+  category: observability
+  protocols:
+  - rest
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - observability
+  - real-world-bug
+  - regression
+  preconditions:
+  - Сервис отдаёт заголовок Server-Timing.
+  steps:
+  - action: Выполнить запрос с известной задержкой (короткой и длинной, от 100 с) и сравнить значения dur с независимым клиентским
+      измерением.
+  expected:
+  - Единицы документированы (миллисекунды); значения согласуются с измерением в пределах допуска; точного равенства суммы
+    этапов общему времени не требуется.
+  applicability:
+    when:
+    - Есть Server-Timing.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  risk:
+    impact: low
+    likelihood: low
+  references:
+  - W3C Server Timing
+  - 'Real-world bug: RWB-0326'
+- id: OBS-LOG-ENTRY-INTEGRITY
+  status: draft
+  title: Записи журнала при всплеске параллельных запросов не склеиваются
+  category: observability
+  protocols:
+  - generic
+  kind: reliability
+  priority: P3
+  tags:
+  - reliability
+  - observability
+  - real-world-bug
+  - nightly
+  preconditions:
+  - Нужен доступ к журналу сервиса; без него проверка пропускается осознанно.
+  steps:
+  - action: Отправить пачку из сотен параллельных запросов и разобрать журнал построчно (для структурированного — парсером
+      формата).
+  expected:
+  - Каждая запись — отдельная строка с собственной меткой времени; записей столько, сколько запросов; строки не склеены и
+    не разорваны.
+  applicability:
+    when:
+    - Есть доступ к журналу.
+    skip_when:
+    - Нет доступа к журналу.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - Решение bj 2026-10-16 (обе модели перекрёстного ревью — reject как не API)
+  - Смежные — OBS-REQUEST-LOG-ALL-ATTEMPTS, INJ-LOG-FORGING
+  - 'Real-world bug: RWB-0333'

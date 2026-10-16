@@ -29,6 +29,8 @@ checks:
     notes: 'Real-world bug: RWB-0204 (GHSA-qvc3-6q9x-95pj)'
   - action: Подписать токен HMAC пустым ключом, указав kid несуществующего ключа, и отправить его
     notes: 'Real-world bug: RWB-0204 (GHSA-c32j-vqhx-rx3x)'
+  - action: Сменить ключ подписи токенов перезагрузкой конфигурации и повторить запрос с ранее принятым токеном
+    notes: 'Real-world bug: RWB-0204 (PostgREST/postgrest#4014)'
   expected:
   - Token is rejected; modified claims do not influence identity or permissions.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

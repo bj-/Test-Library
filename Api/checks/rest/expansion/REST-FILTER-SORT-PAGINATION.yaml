@@ -25,6 +25,9 @@ checks:
     notes: 'Real-world bug: RWB-0119 (strapi/strapi#26577)'
   - action: Исходный баг серии strapi#26577/26550/26465 — пруф к тому же варианту
     notes: 'Real-world bug: RWB-0119 (strapi/strapi#26426)'
+  - action: Запросить сортировку с явным порядком null (nullslast, nullsfirst) вместе с limit и offset, в том числе для вложенного
+      ресурса
+    notes: 'Real-world bug: RWB-0119 (PostgREST/postgrest#4109)'
   expected:
   - все элементы соответствуют фильтру; порядок стабилен; нет пропусков/дублей
   applicability:

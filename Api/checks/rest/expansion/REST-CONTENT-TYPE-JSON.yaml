@@ -11,6 +11,7 @@ checks:
   tags:
   - contract
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -19,6 +20,14 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Запросить служебный эндпоинт метрик и проверить Content-Type text/plain формата Prometheus
+    notes: 'Real-world bug: RWB-0338 (PostgREST/postgrest#4271)'
+  - action: Отправить тело с Content-Type application/json; charset=utf-8 и с нераспознанным параметром медиатипа и проверить,
+      что запрос принят
+    notes: 'Real-world bug: RWB-0338 (PostgREST/postgrest#4030)'
+  - action: Переопределить Content-Type ответа из обработчика и проверить, что в ответе один заголовок Content-Type с новым
+      значением
+    notes: 'Real-world bug: RWB-0338 (PostgREST/postgrest#2915)'
   expected:
   - media type соответствует контракту, тело разбирается как JSON
   applicability:
@@ -38,4 +47,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0338'

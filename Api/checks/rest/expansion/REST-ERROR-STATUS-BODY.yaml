@@ -12,6 +12,7 @@ checks:
   - contract
   - negative
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -20,6 +21,15 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Вызвать операцию, превышающую лимит временных файлов БД, и проверить 500 без Retry-After, а не 503
+    notes: 'Real-world bug: RWB-0339 (PostgREST/postgrest#3257)'
+  - action: Запросить представление с бесконечной рекурсией в определении и проверить 500, а не 400
+    notes: 'Real-world bug: RWB-0339 (PostgREST/postgrest#3256)'
+  - action: Вызвать небольшую вставку, приводящую к рекурсии триггера на сервере, и проверить 500, а не 413
+    notes: 'Real-world bug: RWB-0339 (PostgREST/postgrest#3255)'
+  - action: Запросить встраивание несуществующей связи и проверить, что подсказка в ошибке описывает выполненный поиск, а
+      не предлагает перезагрузить кэш
+    notes: 'Real-world bug: RWB-0339 (PostgREST/postgrest#2569)'
   expected:
   - HTTP status и machine-readable code не противоречат друг другу
   applicability:
@@ -39,4 +49,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0339'

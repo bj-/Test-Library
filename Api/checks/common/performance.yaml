@@ -265,3 +265,38 @@ checks:
   references:
   - Смежная — BIZ-SIDE-EFFECTS-ONCE
   - 'Real-world bug: RWB-0224'
+- id: PERF-METADATA-RELOAD-NO-BLOCK
+  status: draft
+  title: Перезагрузка кэша метаданных не блокирует обслуживание запросов надолго
+  category: performance
+  protocols:
+  - generic
+  kind: performance
+  priority: P3
+  tags:
+  - performance
+  - real-world-bug
+  - nightly
+  preconditions:
+  - Сервис перезагружает кэш метаданных (схема, конфигурация, маршруты) по событию или команде.
+  - Нужен стенд с большой схемой (сотни таблиц, тысячи связей) и заданный SLO.
+  steps:
+  - action: Запустить перезагрузку и параллельно отправлять запросы, замеряя задержку и долю ошибок.
+  expected:
+  - Запросы обслуживаются в пределах SLO; допустимое поведение во время перезагрузки (старое состояние или короткая пауза) — по документации.
+  applicability:
+    when:
+    - Есть перезагрузка метаданных.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - Смежные — PERF-LATENCY-BASELINE, RESIL-GRACEFUL-SHUTDOWN
+  - 'Real-world bug: RWB-0334'

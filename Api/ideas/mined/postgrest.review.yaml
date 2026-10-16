@@ -9,6 +9,13 @@
 # в proofs.retarget. Затем: cluster.py (пересобрать postgrest.md) и apply_proofs.py. Перекрёстное ревью другими LLM —
 # reviewcheck.py (mining/README.md, шаги 6–7, п. 7).
 #
+# Перекрёстное ревью (2026-10-16): ChatGPT (blind, файл postgrest_review_result.md) и Qwen — postgrest.reviewcheck.answer-1.md,
+# -2.md; правило — mining/README.md, шаги 6–7, п. 7. Итог: №1–3, 12, 14 — accept у обеих (№1 сужен до gauge с известными
+# границами, №2 — согласование в пределах допуска, ChatGPT); №4 — новая запись (Qwen, Claude; ChatGPT — extends
+# CONTRACT-FIELD-SELECTION); №5 — accept (ChatGPT, Claude; Qwen — синтаксис PostgREST); №6–8, 10 — reject у всех;
+# №9 — reject (Qwen, Claude; ChatGPT — accept в узком виде); №11 — разбит на два (обе модели; Claude согласен);
+# №13 — обе модели reject, Claude accept → решение bj: accept с доступом к журналу; №15 — вариант к AUTH-JWT-VALID-ACCEPTED
+# (Qwen: сводится к общей AUTH-*; ChatGPT — новая запись).
 # decision: accept | reject | pending
 batch: postgrest
 clusters:
@@ -17,13 +24,13 @@ clusters:
   check_id: OBS-METRICS-VALUE-RANGE
   file: checks/common/observability.yaml
   bugs: [PostgREST/postgrest#4622]
-  idea: Значения метрик остаются в допустимом диапазоне и восстанавливаются после сбоев — gauge доступных соединений в пределах от 0 до размера пула при обрывах и переподключениях к БД, счётчики не уменьшаются
+  idea: Gauge-метрики с известными границами остаются в них и согласуются с фактическим состоянием после сбоев и восстановления — например, доступные соединения в пределах от 0 до размера пула при обрывах и переподключениях к БД
 - key: server-timing-accurate
   decision: accept
   check_id: OBS-SERVER-TIMING-ACCURATE
   file: checks/common/observability.yaml
   bugs: [PostgREST/postgrest#4522]
-  idea: Заголовок Server-Timing отражает фактическую длительность этапов — значения в миллисекундах, сумма согласуется с измеренным временем ответа при запросе с известной задержкой
+  idea: Заголовок Server-Timing отражает фактическую длительность этапов — значения в документированных единицах (миллисекунды) и согласуются с независимым измерением в пределах допуска при запросе с известной задержкой; точного равенства суммы этапов общему времени не требуется
 - key: aliased-embed-filters
   decision: accept
   check_id: REST-ALIASED-EMBED-FILTER-INDEPENDENCE
@@ -71,8 +78,14 @@ clusters:
   decision: accept
   check_id: REST-NEGOTIATED-FORMAT-CONFORMANCE
   file: checks/rest/http-protocol.yaml
-  bugs: [PostgREST/postgrest#2699, PostgREST/postgrest#3126]
-  idea: Ответ в согласованном формате (GeoJSON, CSV, NDJSON, пользовательский бинарный медиатип) соответствует спецификации этого формата — структура по RFC 7946 для GeoJSON — в том числе для пустого результата и null (200 с пустым телом того же Content-Type или документированный 404, без 5xx); пара к REST-ACCEPT-NEGOTIATION
+  bugs: [PostgREST/postgrest#2699]
+  idea: Ответ в согласованном формате (GeoJSON, CSV, NDJSON) соответствует спецификации этого формата — для GeoJSON структура FeatureCollection и Feature и расположение членов по RFC 7946; пара к REST-ACCEPT-NEGOTIATION
+- key: custom-media-type-empty-result
+  decision: accept
+  check_id: REST-CUSTOM-MEDIA-TYPE-EMPTY-RESULT
+  file: checks/rest/http-protocol.yaml
+  bugs: [PostgREST/postgrest#3126]
+  idea: Пустой результат или null в поддерживаемом пользовательском медиатипе (бинарный формат, свой обработчик) обрабатывается документированным образом — пустое тело того же Content-Type или документированный статус — без 5xx и внутренней ошибки
 - key: preference-applied-accurate
   decision: accept
   check_id: HTTP-PREFERENCE-APPLIED-ACCURATE

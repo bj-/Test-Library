@@ -54,6 +54,7 @@ checks:
   tags:
   - boundary
   - pagination
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -61,6 +62,9 @@ checks:
   - Коллекция с известным числом элементов.
   steps:
   - action: Запросить offset = total, total+1, очень большой offset.
+  - action: Запросить смещение больше числа записей с запросом точного общего счётчика и проверить статус, Content-Range и
+      Content-Length ответа
+    notes: 'Real-world bug: RWB-0337 (PostgREST/postgrest#4455)'
   expected:
   - Пустой список с корректными метаданными или задокументированная ошибка; без 5xx.
   applicability:
@@ -78,6 +82,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0337'
 - id: PAGE-TOTAL-COUNT
   status: approved
   title: Общее число элементов согласовано с суммой страниц
@@ -104,6 +110,9 @@ checks:
   - action: Отфильтровать по полю связи многие-ко-многим, где у записи несколько подходящих связанных элементов, и сравнить
       filter_count с числом записей
     notes: 'Real-world bug: RWB-0095 (directus/directus#24719)'
+  - action: Запросить общий счётчик вместе с фильтром по наличию вложенного ресурса (is null, not is null) и проверить данные
+      и Content-Range
+    notes: 'Real-world bug: RWB-0095 (PostgREST/postgrest#2846)'
   expected:
   - Сумма элементов равна total, нет дублей и пропусков.
   applicability:

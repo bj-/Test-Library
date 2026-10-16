@@ -22,6 +22,20 @@ checks:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
   - action: Отправить запрос, завершающийся 4xx, с некорректным Accept без слэша и проверить исходный код ошибки без 5xx
     notes: 'Real-world bug: RWB-0280 (Kong/kong#7746)'
+  - action: Запросить коллекцию из нескольких строк с Accept одиночного объекта и проверить, что ошибка 406 приходит с одним
+      Content-Type application/json
+    notes: 'Real-world bug: RWB-0280 (PostgREST/postgrest#3373)'
+  - action: Запросить ресурс с Accept каждого пользовательского медиатипа, для которого определён обработчик (в том числе
+      в другой схеме), и проверить 200 с этим Content-Type
+    notes: 'Real-world bug: RWB-0280 (PostgREST/postgrest#3124)'
+  - action: Запросить ресурс с Accept длинного медиатипа с точками и дефисами (application/vnd.openxmlformats-officedocument.wordprocessingml.document)
+      и с Accept */*, проверить Content-Type
+    notes: 'Real-world bug: RWB-0280 (PostgREST/postgrest#3089)'
+  - action: Отправить Accept с параметром медиатипа в кавычках, содержащим «;», «,» и экранированные кавычки, и проверить
+      корректный разбор
+    notes: 'Real-world bug: RWB-0280 (PostgREST/postgrest#3498)'
+  - action: Отправить Accept с типом в другом регистре (Application/JSON) и проверить, что он принимается как application/json
+    notes: 'Real-world bug: RWB-0280 (PostgREST/postgrest#3478)'
   expected:
   - поддерживаемый тип возвращается корректно; неподдерживаемый обрабатывается по контракту
   applicability:

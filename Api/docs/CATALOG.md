@@ -2,26 +2,26 @@
 
 Файл генерируется `python tools/build_catalog.py .` — не редактируйте вручную.
 
-Всего проверок: **505** — approved: 327, draft: 162, needs_clarification: 16.
-Протоколы: generic: 102, graphql: 221, grpc: 146, rest: 392, websocket: 65.
+Всего проверок: **515** — approved: 327, draft: 172, needs_clarification: 16.
+Протоколы: generic: 105, graphql: 223, grpc: 146, rest: 399, websocket: 65.
 
 | Категория | Описание | Проверок |
 |---|---|---:|
-| [contract](#contract) | API contract and schema conformance | 27 |
+| [contract](#contract) | API contract and schema conformance | 29 |
 | [resources](#resources) | Resource lifecycle and state transitions | 32 |
 | [security](#security) | Authentication, authorization, and data isolation | 206 |
 | [validation](#validation) | Input validation and normalization | 41 |
-| [http-semantics](#http-semantics) | HTTP methods, headers, and status semantics | 23 |
+| [http-semantics](#http-semantics) | HTTP methods, headers, and status semantics | 24 |
 | [errors](#errors) | Error response shape and consistency | 4 |
-| [pagination](#pagination) | Pagination, filtering, and sorting | 19 |
+| [pagination](#pagination) | Pagination, filtering, and sorting | 22 |
 | [idempotency](#idempotency) | Idempotent behavior and retry safety | 1 |
 | [grpc-contract](#grpc-contract) | Protobuf and RPC contract conformance | 17 |
 | [grpc-errors](#grpc-errors) | gRPC status and error details | 16 |
 | [resilience](#resilience) | Timeouts, retries, dependency failures | 10 |
 | [business-logic](#business-logic) | Domain rules, workflows, limits, and money | 13 |
 | [concurrency](#concurrency) | Parallel requests, races, and lost updates | 8 |
-| [observability](#observability) | Logs, audit trail, tracing, and health endpoints | 8 |
-| [performance](#performance) | Latency, throughput, load, and resource usage | 7 |
+| [observability](#observability) | Logs, audit trail, tracing, and health endpoints | 11 |
+| [performance](#performance) | Latency, throughput, load, and resource usage | 8 |
 | [compatibility](#compatibility) | Versioning, backward compatibility, and contract drift | 8 |
 | [files](#files) | File upload, download, and binary content | 16 |
 | [async](#async) | Webhooks, events, background jobs, and messaging | 14 |
@@ -63,6 +63,8 @@ API contract and schema conformance
 | `REST-RETRY-TRANSIENT-ERROR` | Retry после временной ошибки | P2 | approved | rest | CI, Regression, Nightly |
 | `REST-TIMEOUT-BUDGET` | Таймаут и бюджет времени | P2 | approved | rest | CI, Regression, Nightly |
 | `REST-UNKNOWN-FIELDS` | Политика неизвестных полей | P2 | approved | rest | CI, Regression, Nightly |
+| `REST-CUSTOM-MEDIA-TYPE-EMPTY-RESULT` | Пустой результат в пользовательском медиатипе не вызывает внутреннюю ошибку | P3 | draft | rest | Regression |
+| `REST-NEGOTIATED-FORMAT-CONFORMANCE` | Ответ в согласованном формате соответствует спецификации формата | P3 | draft | rest | Regression |
 
 ## resources
 
@@ -386,6 +388,7 @@ HTTP methods, headers, and status semantics
 | `HTTP-HEADER-REPEATED-LINES-ACCEPTED` | Сотни повторяющихся строк одного заголовка в пределах лимита размера принимаются одинаково по HTTP/1.1 и HTTP/2 | P3 | draft | rest, grpc | Regression, Nightly |
 | `HTTP-HTTP2-RESOURCE-LIMITS` | Параметры HTTP/2 со стороны клиента не заставляют сервер буферизовать и работать без предела | P3 | draft | rest, grpc | Nightly |
 | `HTTP-OPTIONS-ALLOW` | OPTIONS возвращает согласованный список методов | P3 | approved | rest | Regression, Nightly |
+| `HTTP-PREFERENCE-APPLIED-ACCURATE` | Preference-Applied перечисляет ровно применённые предпочтения | P3 | draft | rest | Regression |
 | `HTTP-RESPONSE-MODE-HEADER-PARITY` | Настроенные заголовки ответа присутствуют во всех режимах обработки ответа | P3 | draft | rest | Regression, Nightly |
 | `HTTP-ROUTE-PROTOCOL-CONDITION` | Условие маршрута для одного протокола не блокирует маршрут по другому разрешённому протоколу | P3 | draft | rest, grpc | Regression |
 | `HTTP-TRAILING-SLASH-CASE` | Вариации пути (слэш в конце, регистр, двойной слэш) обрабатываются единообразно | P3 | approved | rest | Regression, Nightly |
@@ -421,15 +424,18 @@ Pagination, filtering, and sorting
 | `PAGE-NEXT-LINK-VALID` | Ссылка next ведёт на ту же коллекцию, сохраняет фильтры и работает | P2 | draft | rest | Regression, Nightly |
 | `PAGE-SEARCH-SPECIAL-CHARS` | Поиск со спецсимволами и wildcard не ломается и не расширяет выборку | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `PAGE-TOTAL-COUNT` | Общее число элементов согласовано с суммой страниц | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
+| `REST-ALIASED-EMBED-FILTER-INDEPENDENCE` | Вложения одного ресурса под разными алиасами фильтруются независимо | P2 | draft | rest, graphql | Regression, Nightly |
 | `REST-FILTER-INVALID` | Невалидный фильтр | P2 | approved | rest | CI, Regression, Nightly |
 | `REST-FILTER-OPERATION-PARITY` | Один фильтр даёт согласованный результат в списке, агрегации и вложенной выборке | P2 | draft | rest, graphql | Regression, Nightly |
 | `REST-FILTER-OPERATOR-TYPE-MATRIX` | Каждый оператор фильтра работает для каждого допустимого типа поля и возвращает ровно подходящие записи | P2 | draft | rest, graphql | Regression, Nightly |
 | `REST-FILTER-RELATION-NO-DUPLICATES` | Фильтр по полю связанной коллекции возвращает каждую запись один раз | P2 | draft | rest, graphql | Regression, Nightly |
 | `REST-FILTER-SORT-COMPOSITION` | Filtering and sorting compose correctly | P2 | approved | rest, graphql | CI, Regression, Nightly |
+| `REST-FILTER-UNSELECTED-FIELD` | Фильтр по полю, не входящему в выбор полей, работает | P2 | draft | rest, graphql | Regression, Nightly |
 | `REST-SORT-INVALID-FIELD` | Сортировка по неизвестному полю | P2 | approved | rest | CI, Regression, Nightly |
 | `PAGE-SORT-MULTI-KEY-PRIORITY` | Сортировка по нескольким ключам соблюдает заданный клиентом порядок приоритета | P3 | draft | rest, graphql | Regression, Nightly |
 | `PAGE-SORT-NULLS-TIES` | Сортировка по полю с null и одинаковыми значениями детерминирована | P3 | approved | rest, grpc, graphql | Regression, Nightly |
 | `REST-FILTER-EQUIVALENT-FORMS` | Логически эквивалентные формы фильтра дают одинаковый ответ | P3 | draft | rest, graphql | Regression, Nightly |
+| `REST-FILTER-NAME-COLLISION` | Фильтр по полю с именем вложенного ресурса применяется к полю | P3 | draft | rest | Regression |
 
 ## idempotency
 
@@ -549,7 +555,10 @@ Logs, audit trail, tracing, and health endpoints
 | `OBS-HEALTH-ENDPOINTS` | Health-эндпоинты отражают состояние и не раскрывают детали | P2 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly |
 | `OBS-METRICS-LABEL-CARDINALITY` | Значения из запроса не создают неограниченно новых серий метрик | P2 | draft | generic | Nightly |
 | `OBS-CONFIG-ENDPOINT-ACCURATE` | Служебный эндпоинт конфигурации показывает фактические значения | P3 | draft | generic | Nightly |
+| `OBS-LOG-ENTRY-INTEGRITY` | Записи журнала при всплеске параллельных запросов не склеиваются | P3 | draft | generic | Nightly |
+| `OBS-METRICS-VALUE-RANGE` | Gauge-метрики с известными границами остаются в них после сбоев и восстановления | P3 | draft | generic | Nightly |
 | `OBS-REQUEST-LOG-ALL-ATTEMPTS` | Журнал запроса с повторами содержит каждую попытку, включая последнюю | P3 | draft | generic | Nightly |
+| `OBS-SERVER-TIMING-ACCURATE` | Server-Timing отражает фактическую длительность этапов | P3 | draft | rest | Regression |
 | `OBS-TELEMETRY-FORMAT` | Экспортируемая телеметрия соответствует документированной структуре и соглашениям OpenTelemetry | P3 | draft | generic | Nightly |
 | `OBS-TRACE-PROPAGATION` | Контекст трассировки принимается и передаётся дальше | P3 | approved | rest, grpc, graphql, websocket | Regression, Nightly |
 
@@ -562,6 +571,7 @@ Latency, throughput, load, and resource usage
 | `PERF-DEEP-PAGINATION` | Глубокая пагинация и большие выборки не деградируют неприемлемо | P2 | approved | rest, grpc, graphql | Nightly |
 | `PERF-LATENCY-BASELINE` | Задержка ключевых операций в пределах SLO при обычной нагрузке | P2 | approved | rest, grpc, graphql, websocket | Nightly |
 | `PERF-LOAD-THROUGHPUT` | Сервис выдерживает целевую нагрузку | P2 | approved | rest, grpc, graphql, websocket | Nightly |
+| `PERF-METADATA-RELOAD-NO-BLOCK` | Перезагрузка кэша метаданных не блокирует обслуживание запросов надолго | P3 | draft | generic | Nightly |
 | `PERF-NO-UNNEEDED-DEPENDENCY-CALLS` | Внешняя зависимость вызывается только когда её результат нужен | P3 | draft | generic | Nightly |
 | `PERF-PAYLOAD-SIZE` | Размер ответов разумен и не растёт неограниченно | P3 | approved | rest, grpc, graphql, websocket | Nightly |
 | `PERF-SOAK` | Длительная нагрузка не вызывает утечек и деградации | P3 | approved | rest, grpc, graphql, websocket | Nightly |

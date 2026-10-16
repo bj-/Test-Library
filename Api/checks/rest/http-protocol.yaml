@@ -10,6 +10,7 @@ checks:
   tags:
   - negative
   - contract
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -17,6 +18,11 @@ checks:
   - Базовый URL API известен.
   steps:
   - action: Запросить несуществующий путь и опечатку в существующем пути.
+  - action: Запросить несуществующий ресурс при десятках тысяч существующих и проверить, что приходит быстрый 404, а не обрыв
+      соединения
+    notes: 'Real-world bug: RWB-0336 (PostgREST/postgrest#4463)'
+  - action: Запросить несуществующий ресурс с параметром вложения связанных ресурсов и проверить 404, а не 400
+    notes: 'Real-world bug: RWB-0336 (PostgREST/postgrest#3602)'
   expected:
   - Ответ 404 в формате модели ошибок.
   - Не возвращается HTML-страница по умолчанию и не раскрывается фреймворк.
@@ -35,6 +41,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0336'
 - id: HTTP-OPTIONS-ALLOW
   status: approved
   title: OPTIONS возвращает согласованный список методов
@@ -46,12 +54,15 @@ checks:
   tags:
   - contract
   - compatibility
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Эндпоинт поддерживает несколько методов.
   steps:
   - action: Отправить OPTIONS без Origin.
+  - action: 'Отправить OPTIONS с Accept: application/json и другими поддерживаемыми медиатипами и проверить 200 с Allow'
+    notes: 'Real-world bug: RWB-0335 (PostgREST/postgrest#2821)'
   expected:
   - Allow соответствует реально поддерживаемым методам.
   applicability:
@@ -68,6 +79,8 @@ checks:
   risk:
     impact: low
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0335'
 - id: HTTP-TRAILING-SLASH-CASE
   status: approved
   title: Вариации пути (слэш в конце, регистр, двойной слэш) обрабатываются единообразно
@@ -826,3 +839,109 @@ checks:
   - RFC 9111 §5.2
   - Пара к REST-SENSITIVE-CACHE-CONTROL
   - 'Real-world bug: RWB-0317'
+- id: REST-NEGOTIATED-FORMAT-CONFORMANCE
+  status: draft
+  title: Ответ в согласованном формате соответствует спецификации формата
+  category: contract
+  protocols:
+  - rest
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - real-world-bug
+  - regression
+  preconditions:
+  - Сервис отдаёт ответы в нескольких форматах по Accept (GeoJSON, CSV, NDJSON и т. п.).
+  steps:
+  - action: Запросить непустую коллекцию в каждом поддерживаемом формате (с геометрией и null-свойствами для GeoJSON) и проверить
+      тело валидатором формата.
+  expected:
+  - 'Тело соответствует спецификации формата: для GeoJSON — FeatureCollection, Feature и расположение членов по RFC 7946.'
+  applicability:
+    when:
+    - Есть форматы кроме JSON.
+    skip_when:
+    - Только JSON.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: low
+    likelihood: low
+  references:
+  - RFC 7946, RFC 4180
+  - Пара к REST-ACCEPT-NEGOTIATION
+  - 'Real-world bug: RWB-0330'
+- id: REST-CUSTOM-MEDIA-TYPE-EMPTY-RESULT
+  status: draft
+  title: Пустой результат в пользовательском медиатипе не вызывает внутреннюю ошибку
+  category: contract
+  protocols:
+  - rest
+  kind: boundary
+  priority: P3
+  tags:
+  - boundary
+  - error-handling
+  - real-world-bug
+  - regression
+  preconditions:
+  - Сервис поддерживает пользовательский медиатип (бинарный формат, свой обработчик).
+  steps:
+  - action: Запросить ресурс в этом медиатипе по несуществующему идентификатору и для строки со значением null.
+  expected:
+  - Документированный ответ — пустое тело того же Content-Type или документированный статус; 5xx и внутренней ошибки нет.
+  applicability:
+    when:
+    - Есть пользовательские медиатипы.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: low
+    likelihood: low
+  references:
+  - Смежная — REST-ACCEPT-NEGOTIATION
+  - 'Real-world bug: RWB-0331'
+- id: HTTP-PREFERENCE-APPLIED-ACCURATE
+  status: draft
+  title: Preference-Applied перечисляет ровно применённые предпочтения
+  category: http-semantics
+  protocols:
+  - rest
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - real-world-bug
+  - regression
+  preconditions:
+  - Сервис поддерживает заголовок Prefer (return, count, handling, tx и др.).
+  steps:
+  - action: Отправить сочетания Prefer — применимые, неприменимые по настройкам и в запросах, завершающихся ошибкой; сравнить
+      Preference-Applied с фактическим поведением.
+  expected:
+  - В Preference-Applied есть все применённые предпочтения и нет неприменённых, в том числе в ответе с ошибкой.
+  applicability:
+    when:
+    - Есть Prefer.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - RFC 7240 §3
+  - 'Real-world bug: RWB-0332'

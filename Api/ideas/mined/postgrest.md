@@ -6,7 +6,7 @@
 
 ## Сводка
 
-- Новых паттернов: 16 → идей: 14 (принять: 9, отклонить: 5, не решено: 0).
+- Новых паттернов: 16 → идей: 15 (принять: 10, отклонить: 5, не решено: 0).
 - Пруфы к существующим: 57 багов → 27 записей; новых шагов-вариантов: 53.
 
 ## Новые идеи
@@ -15,8 +15,8 @@
 
 | # | Решение | Запись / файл | Идея | Подтверждающие баги |
 |---|---|---|---|---|
-| 1 | accept | `OBS-METRICS-VALUE-RANGE` (RWB-0325)<br>`checks/common/observability.yaml` | Значения метрик остаются в допустимом диапазоне и восстанавливаются после сбоев — gauge доступных соединений в пределах от 0 до размера пула при обрывах и переподключениях к БД, счётчики не уменьшаются | [PostgREST/postgrest#4622](https://github.com/PostgREST/postgrest/issues/4622) |
-| 2 | accept | `OBS-SERVER-TIMING-ACCURATE` (RWB-0326)<br>`checks/common/observability.yaml` | Заголовок Server-Timing отражает фактическую длительность этапов — значения в миллисекундах, сумма согласуется с измеренным временем ответа при запросе с известной задержкой | [PostgREST/postgrest#4522](https://github.com/PostgREST/postgrest/issues/4522) |
+| 1 | accept | `OBS-METRICS-VALUE-RANGE` (RWB-0325)<br>`checks/common/observability.yaml` | Gauge-метрики с известными границами остаются в них и согласуются с фактическим состоянием после сбоев и восстановления — например, доступные соединения в пределах от 0 до размера пула при обрывах и переподключениях к БД | [PostgREST/postgrest#4622](https://github.com/PostgREST/postgrest/issues/4622) |
+| 2 | accept | `OBS-SERVER-TIMING-ACCURATE` (RWB-0326)<br>`checks/common/observability.yaml` | Заголовок Server-Timing отражает фактическую длительность этапов — значения в документированных единицах (миллисекунды) и согласуются с независимым измерением в пределах допуска при запросе с известной задержкой; точного равенства суммы этапов общему времени не требуется | [PostgREST/postgrest#4522](https://github.com/PostgREST/postgrest/issues/4522) |
 | 3 | accept | `REST-ALIASED-EMBED-FILTER-INDEPENDENCE` (RWB-0327)<br>`checks/rest/pagination.yaml` | Один связанный ресурс, вложенный в ответ несколько раз под разными алиасами со своими фильтрами (REST-вложения, алиасы GraphQL), фильтруется независимо — каждое вложение совпадает с отдельным запросом с его фильтром | [PostgREST/postgrest#4075](https://github.com/PostgREST/postgrest/issues/4075) |
 | 4 | accept | `REST-FILTER-UNSELECTED-FIELD` (RWB-0328)<br>`checks/rest/pagination.yaml` | Фильтр по полю, не входящему в выбор полей (select, fields, sparse fieldsets), работает для любых источников — таблица, представление, результат функции — и для простого, логического и вложенного фильтра; ответ содержит только выбранные поля | [PostgREST/postgrest#3965](https://github.com/PostgREST/postgrest/issues/3965) |
 | 5 | accept | `REST-FILTER-NAME-COLLISION` (RWB-0329)<br>`checks/rest/pagination.yaml` | Фильтр по полю, имя которого совпадает с именем вложенного (встраиваемого) ресурса или связи, применяется к значению поля — совпадение имён не меняет смысл фильтра и не даёт ошибку | [PostgREST/postgrest#2862](https://github.com/PostgREST/postgrest/issues/2862), [PostgREST/postgrest#2588](https://github.com/PostgREST/postgrest/issues/2588) |
@@ -25,10 +25,11 @@
 | 8 | reject | отклонено: Специфика переключения ролей PostgreSQL (SET ROLE и параметры суперпользователя) — проверка уровня БД; идея — в inbox как DB | Настройки роли подключения не ломают запросы пользователей с меньшими правами | [PostgREST/postgrest#2896](https://github.com/PostgREST/postgrest/issues/2896) |
 | 9 | reject | отклонено: Специфика API, построенного по функциям PostgreSQL (перегрузка по типу аргумента); идея — в inbox как DB (№315) | Перегруженные функции разрешаются по типу аргумента во всех местах использования | [PostgREST/postgrest#2963](https://github.com/PostgREST/postgrest/issues/2963) |
 | 10 | reject | отклонено: Специфика API, построенного по функциям PostgreSQL (record, setof record, составные типы); идея — в inbox как DB (№316) | Функции с любым поддерживаемым видом возвращаемого значения вызываются через API | [PostgREST/postgrest#2881](https://github.com/PostgREST/postgrest/issues/2881) |
-| 11 | accept | `REST-NEGOTIATED-FORMAT-CONFORMANCE` (RWB-0330)<br>`checks/rest/http-protocol.yaml` | Ответ в согласованном формате (GeoJSON, CSV, NDJSON, пользовательский бинарный медиатип) соответствует спецификации этого формата — структура по RFC 7946 для GeoJSON — в том числе для пустого результата и null (200 с пустым телом того же Content-Type или документированный 404, без 5xx); пара к REST-ACCEPT-NEGOTIATION | [PostgREST/postgrest#2699](https://github.com/PostgREST/postgrest/issues/2699), [PostgREST/postgrest#3126](https://github.com/PostgREST/postgrest/issues/3126) |
-| 12 | accept | `HTTP-PREFERENCE-APPLIED-ACCURATE` (RWB-0331)<br>`checks/rest/http-protocol.yaml` | Заголовок Preference-Applied перечисляет ровно применённые предпочтения из Prefer (return, count, handling, tx и др.) — нет неприменённых, в том числе в ответе с ошибкой (RFC 7240) | [PostgREST/postgrest#2939](https://github.com/PostgREST/postgrest/issues/2939) |
-| 13 | accept | `OBS-LOG-ENTRY-INTEGRITY` (RWB-0332)<br>`checks/common/observability.yaml` | Записи журнала при всплеске параллельных запросов не склеиваются и не разрываются — каждая запись отдельной строкой с собственной меткой времени, структурированный журнал разбирается построчно; нужен доступ к журналу | [PostgREST/postgrest#5234](https://github.com/PostgREST/postgrest/issues/5234) |
-| 14 | accept | `PERF-METADATA-RELOAD-NO-BLOCK` (RWB-0333)<br>`checks/common/performance.yaml` | Перезагрузка кэша метаданных (схема, конфигурация, маршруты) на большом объёме не блокирует обслуживание запросов надолго — запросы идут по старому состоянию или с короткой задержкой в пределах SLO | [PostgREST/postgrest#4360](https://github.com/PostgREST/postgrest/issues/4360) |
+| 11 | accept | `REST-NEGOTIATED-FORMAT-CONFORMANCE` (RWB-0330)<br>`checks/rest/http-protocol.yaml` | Ответ в согласованном формате (GeoJSON, CSV, NDJSON) соответствует спецификации этого формата — для GeoJSON структура FeatureCollection и Feature и расположение членов по RFC 7946; пара к REST-ACCEPT-NEGOTIATION | [PostgREST/postgrest#2699](https://github.com/PostgREST/postgrest/issues/2699) |
+| 12 | accept | `REST-CUSTOM-MEDIA-TYPE-EMPTY-RESULT` (RWB-0331)<br>`checks/rest/http-protocol.yaml` | Пустой результат или null в поддерживаемом пользовательском медиатипе (бинарный формат, свой обработчик) обрабатывается документированным образом — пустое тело того же Content-Type или документированный статус — без 5xx и внутренней ошибки | [PostgREST/postgrest#3126](https://github.com/PostgREST/postgrest/issues/3126) |
+| 13 | accept | `HTTP-PREFERENCE-APPLIED-ACCURATE` (RWB-0332)<br>`checks/rest/http-protocol.yaml` | Заголовок Preference-Applied перечисляет ровно применённые предпочтения из Prefer (return, count, handling, tx и др.) — нет неприменённых, в том числе в ответе с ошибкой (RFC 7240) | [PostgREST/postgrest#2939](https://github.com/PostgREST/postgrest/issues/2939) |
+| 14 | accept | `OBS-LOG-ENTRY-INTEGRITY` (RWB-0333)<br>`checks/common/observability.yaml` | Записи журнала при всплеске параллельных запросов не склеиваются и не разрываются — каждая запись отдельной строкой с собственной меткой времени, структурированный журнал разбирается построчно; нужен доступ к журналу | [PostgREST/postgrest#5234](https://github.com/PostgREST/postgrest/issues/5234) |
+| 15 | accept | `PERF-METADATA-RELOAD-NO-BLOCK` (RWB-0334)<br>`checks/common/performance.yaml` | Перезагрузка кэша метаданных (схема, конфигурация, маршруты) на большом объёме не блокирует обслуживание запросов надолго — запросы идут по старому состоянию или с короткой задержкой в пределах SLO | [PostgREST/postgrest#4360](https://github.com/PostgREST/postgrest/issues/4360) |
 
 ## Пруфы к существующим
 
@@ -60,13 +61,13 @@
 | [PostgREST/postgrest#4292](https://github.com/PostgREST/postgrest/issues/4292) | covered | _только пруф_: Запись проверяет валидность опубликованного описания |
 | [PostgREST/postgrest#2619](https://github.com/PostgREST/postgrest/issues/2619) | extends | Создать представление над таблицей со связью, имя которого по алфавиту раньше таблицы, и проверить, что описание внешнего ключа в опубликованной схеме указывает на исходную таблицу |
 
-### HTTP-OPTIONS-ALLOW — OPTIONS возвращает согласованный список методов (RWB-0334, багов: 1)
+### HTTP-OPTIONS-ALLOW — OPTIONS возвращает согласованный список методов (RWB-0335, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
 | [PostgREST/postgrest#2821](https://github.com/PostgREST/postgrest/issues/2821) | extends | Отправить OPTIONS с Accept: application/json и другими поддерживаемыми медиатипами и проверить 200 с Allow |
 
-### HTTP-UNKNOWN-ROUTE — Неизвестный маршрут возвращает 404, а не 5xx или 200 (RWB-0335, багов: 2)
+### HTTP-UNKNOWN-ROUTE — Неизвестный маршрут возвращает 404, а не 5xx или 200 (RWB-0336, багов: 2)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -81,7 +82,7 @@
 | [PostgREST/postgrest#5096](https://github.com/PostgREST/postgrest/issues/5096) | extends | _только пруф_: Тот же сценарий, что у #5012 этой пачки — пруф |
 | [PostgREST/postgrest#5012](https://github.com/PostgREST/postgrest/issues/5012) | extends | Запросить health-эндпоинт с тайм-аутом клиента и проверить, что ответ или отказ соединения приходит за ограниченное время |
 
-### PAGE-BEYOND-LAST — Запрос страницы за последней возвращает пустой результат без ошибки (RWB-0336, багов: 1)
+### PAGE-BEYOND-LAST — Запрос страницы за последней возвращает пустой результат без ошибки (RWB-0337, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -135,7 +136,7 @@
 | [PostgREST/postgrest#3498](https://github.com/PostgREST/postgrest/issues/3498) | extends | Отправить Accept с параметром медиатипа в кавычках, содержащим «;», «,» и экранированные кавычки, и проверить корректный разбор |
 | [PostgREST/postgrest#3478](https://github.com/PostgREST/postgrest/issues/3478) | extends | Отправить Accept с типом в другом регистре (Application/JSON) и проверить, что он принимается как application/json |
 
-### REST-CONTENT-TYPE-JSON — Content-Type и JSON-формат (RWB-0337, багов: 3)
+### REST-CONTENT-TYPE-JSON — Content-Type и JSON-формат (RWB-0338, багов: 3)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -150,7 +151,7 @@
 | [PostgREST/postgrest#3906](https://github.com/PostgREST/postgrest/issues/3906) | extends | Запросить многоуровневый несуществующий путь и отключённое описание API и проверить код и сообщение ошибки в теле 404 |
 | [PostgREST/postgrest#3697](https://github.com/PostgREST/postgrest/issues/3697) | extends | Отправить вставку и upsert в несуществующий ресурс и проверить код и сообщение в теле ответа |
 
-### REST-ERROR-STATUS-BODY — Согласованность статуса и тела ошибки (RWB-0338, багов: 5)
+### REST-ERROR-STATUS-BODY — Согласованность статуса и тела ошибки (RWB-0339, багов: 5)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -193,7 +194,7 @@
 | [PostgREST/postgrest#3926](https://github.com/PostgREST/postgrest/issues/3926) | extends | Отправить Authorization: Bearer с пустым значением токена и проверить 401 без выполнения операции |
 | [PostgREST/postgrest#3601](https://github.com/PostgREST/postgrest/issues/3601) | extends | Отправить подписанный токен с ролью, которой нет на сервере, и проверить 401 |
 
-### SEC-AUTHZ-ERROR-LEAK — Authorization failures do not disclose protected data (RWB-0339, багов: 1)
+### SEC-AUTHZ-ERROR-LEAK — Authorization failures do not disclose protected data (RWB-0340, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|

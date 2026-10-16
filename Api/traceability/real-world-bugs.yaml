@@ -37,6 +37,21 @@ RWB-0001:
     product: Strapi
     closed: '2026-03-31'
     summary: Операторы фильтра $contains и $containsi в REST возвращают пустой результат
+  - url: https://github.com/PostgREST/postgrest/issues/4135
+    fix: https://github.com/PostgREST/postgrest/pull/4136
+    product: PostgREST
+    closed: '2025-06-16'
+    summary: Оператор полнотекстового поиска в фильтре падает с ошибкой 42883 для колонки доменного типа над tsvector
+  - url: https://github.com/PostgREST/postgrest/issues/2929
+    fix: https://github.com/PostgREST/postgrest/pull/2975
+    product: PostgREST
+    closed: '2023-09-28'
+    summary: Фильтр JSON-оператором по полю составного типа в результате функции даёт ошибку 42883 — регрессия
+  - url: https://github.com/PostgREST/postgrest/issues/2800
+    fix: https://github.com/PostgREST/postgrest/pull/2951
+    product: PostgREST
+    closed: '2023-09-15'
+    summary: Фильтр not.is.null по встроенному ресурсу отбрасывал записи, у связанной строки которых есть null-поле
 RWB-0002:
   pattern: Логически эквивалентные фильтры (плоская форма, вложенные $and/$or) дают одинаковый ответ
   checks:
@@ -63,6 +78,11 @@ RWB-0002:
     product: Directus
     closed: '2024-11-13'
     summary: Параметр version игнорируется при чтении через SEARCH с телом запроса
+  - url: https://github.com/PostgREST/postgrest/issues/2705
+    fix: https://github.com/PostgREST/postgrest/pull/2710
+    product: PostgREST
+    closed: '2023-04-03'
+    summary: PATCH/DELETE с ограничением через заголовок Range без order давал SQL-ошибку, в отличие от limit
 RWB-0003:
   pattern: Данные, принятые при записи, не вызывают 5xx в зависимых операциях (чтение, поиск, экспорт, политика)
   checks:
@@ -754,6 +774,26 @@ RWB-0026:
     product: Directus
     closed: '2025-05-20'
     summary: Алиас не попадает в ответ при выборе полей по маске *
+  - url: https://github.com/PostgREST/postgrest/issues/3887
+    fix: https://github.com/PostgREST/postgrest/pull/4192
+    product: PostgREST
+    closed: '2025-07-13'
+    summary: Вложение со спредом и пустым списком полей даёт синтаксическую ошибку SQL вместо обычного ответа
+  - url: https://github.com/PostgREST/postgrest/issues/3093
+    fix: https://github.com/PostgREST/postgrest/pull/3639
+    product: PostgREST
+    closed: '2024-07-04'
+    summary: Вложенные пустые вложения для фильтрации по связанным ресурсам не работали или попадали в ответ пустыми объектами
+  - url: https://github.com/PostgREST/postgrest/issues/2565
+    fix: https://github.com/PostgREST/postgrest/pull/2568
+    product: PostgREST
+    closed: '2022-11-18'
+    summary: Выбор только встроенной связи многие-ко-многим у результата функции давал SQL-ошибку
+  - url: https://github.com/PostgREST/postgrest/issues/3160
+    fix: https://github.com/PostgREST/postgrest/commit/00fbe9ff3e54cdfab2a3cb4489bf3095e19dd056
+    product: PostgREST
+    closed: '2024-02-15'
+    summary: Пользовательский формат ответа через агрегат работал только при select=*
 RWB-0027:
   pattern: Абсолютные URL, которые формирует сервер (Location, callback, ссылки в письмах), учитывают публичный базовый путь
   checks:
@@ -1318,6 +1358,21 @@ RWB-0049:
     product: Directus
     closed: '2026-07-10'
     summary: Сгенерированная сервисом спецификация OpenAPI не импортируется в Postman и Hoppscotch
+  - url: https://github.com/PostgREST/postgrest/issues/4641
+    fix: https://github.com/PostgREST/postgrest/pull/4770
+    product: PostgREST
+    closed: '2026-04-03'
+    summary: Сгенерированное описание OpenAPI 2.0 содержит недопустимое сочетание type integer и format integer
+  - url: https://github.com/PostgREST/postgrest/issues/4292
+    fix: https://github.com/PostgREST/postgrest/pull/4293
+    product: PostgREST
+    closed: '2025-08-29'
+    summary: Сгенерированное описание OpenAPI содержит пустой enum и не проходит валидацию
+  - url: https://github.com/PostgREST/postgrest/issues/2619
+    fix: https://github.com/PostgREST/postgrest/pull/2623
+    product: PostgREST
+    closed: '2023-01-20'
+    summary: Описание OpenAPI указывало внешний ключ на представление вместо исходной таблицы
 RWB-0050:
   pattern: Потоковый ответ SSE работает для всех методов (включая POST с телом), отдаёт text/event-stream и события до закрытия
     клиентом
@@ -3792,6 +3847,21 @@ RWB-0093:
     product: Kong
     closed: '2022-12-26'
     summary: Статус-эндпоинт сообщает, что конфигурация не загружена, хотя она загружена при старте.
+  - url: https://github.com/PostgREST/postgrest/issues/3330
+    fix: https://github.com/PostgREST/postgrest/pull/3334
+    product: PostgREST
+    closed: '2024-03-15'
+    summary: Эндпоинт готовности отвечает 200, пока кэш схемы ещё загружается и запросы обслужить нельзя
+  - url: https://github.com/PostgREST/postgrest/issues/5096
+    fix: https://github.com/PostgREST/postgrest/pull/5109
+    product: PostgREST
+    closed: '2026-07-21'
+    summary: Служебный сервер падал, а процесс продолжал работать, оставаясь недоступным для проверок готовности
+  - url: https://github.com/PostgREST/postgrest/issues/5012
+    fix: https://github.com/PostgREST/postgrest/pull/5045
+    product: PostgREST
+    closed: '2026-07-10'
+    summary: Служебный сервер молча падал, запросы к /ready зависали до тайм-аута клиента
 RWB-0094:
   pattern: Поиск со спецсимволами и wildcard не ломается и не расширяет выборку
   checks:
@@ -3828,6 +3898,11 @@ RWB-0095:
     product: Directus
     closed: '2025-02-27'
     summary: filter_count с фильтром по связи M2M считает строки соединения, а не записи
+  - url: https://github.com/PostgREST/postgrest/issues/2846
+    fix: https://github.com/PostgREST/postgrest/pull/2930
+    product: PostgREST
+    closed: '2023-09-16'
+    summary: 'Фильтр по наличию вложенного ресурса вместе с Prefer: count=exact даёт ошибку «column does not exist»'
 RWB-0096:
   pattern: Задержка ключевых операций в пределах SLO при обычной нагрузке
   checks:
@@ -3990,6 +4065,12 @@ RWB-0100:
     product: Directus
     closed: '2026-03-05'
     summary: 'Массовое удаление с пустым массивом: 204 для администратора и 500 для обычного пользователя'
+  - url: https://github.com/PostgREST/postgrest/issues/4100
+    fix: https://github.com/PostgREST/postgrest/pull/4119
+    product: PostgREST
+    closed: '2025-06-03'
+    summary: Ограничение max-affected в строгом режиме не срабатывает для процедуры, возвращающей void или скаляр, и удаление
+      проходит без ограничения
 RWB-0101:
   pattern: Ответ на создание и изменение совпадает с последующим чтением
   checks:
@@ -4001,6 +4082,17 @@ RWB-0101:
     product: Strapi
     closed: '2026-06-15'
     summary: PUT пользователя со связью по documentId возвращал 200, но связь не сохранялась
+  - url: https://github.com/PostgREST/postgrest/issues/3707
+    fix: https://github.com/PostgREST/postgrest/pull/4619
+    product: PostgREST
+    closed: '2026-01-27'
+    summary: PATCH с фильтром or по изменяемому полю и возвратом представления не возвращает изменённые записи — фильтр повторно
+      применяется к новым значениям
+  - url: https://github.com/PostgREST/postgrest/issues/3013
+    fix: https://github.com/PostgREST/postgrest/pull/3949
+    product: PostgREST
+    closed: '2025-03-17'
+    summary: Сортировка вложенных и основных ресурсов игнорируется в представлении ответа на PATCH и DELETE
 RWB-0102:
   pattern: Удаление ресурса с зависимыми объектами выполняется по правилам каскада
   checks:
@@ -4204,6 +4296,12 @@ RWB-0107:
     product: Apollo Server
     closed: '2018-08-10'
     summary: Ответы 4xx/5xx вышестоящего REST-сервиса кэшируются с ttl и отдаются после восстановления
+  - url: https://github.com/PostgREST/postgrest/issues/3673
+    fix: https://github.com/PostgREST/postgrest/pull/4222
+    product: PostgREST
+    closed: '2026-04-27'
+    summary: На реплике транзакция с ошибкой 40001 (конфликт с восстановлением) бесконечно повторяется, запрос не завершается
+      и вызывает лаг репликации
 RWB-0108:
   pattern: Перезапуск экземпляра не обрывает выполняющиеся запросы
   checks:
@@ -4240,6 +4338,12 @@ RWB-0109:
     product: Strapi
     closed: '2026-09-01'
     summary: Изменение и удаление workflow падали 500, когда необязательный модуль лицензии отключён
+  - url: https://github.com/PostgREST/postgrest/issues/4873
+    fix: https://github.com/PostgREST/postgrest/pull/4869
+    product: PostgREST
+    closed: '2026-06-11'
+    summary: Тайм-аут запроса перезагрузки кэша схемы обнуляет кэш, и все запросы API получают 503, хотя могли обслуживаться
+      по прежнему кэшу
 RWB-0110:
   pattern: Асинхронное принятие задачи 202
   checks:
@@ -4409,6 +4513,16 @@ RWB-0117:
     product: NestJS
     closed: '2018-02-18'
     summary: Исключение из middleware превращалось в ответ «[object Object]» вместо модели ошибки — видно по ответу.
+  - url: https://github.com/PostgREST/postgrest/issues/3906
+    fix: https://github.com/PostgREST/postgrest/pull/3960
+    product: PostgREST
+    closed: '2025-03-21'
+    summary: Часть путей 404 возвращает пустой JSON ошибки без кода и сообщения
+  - url: https://github.com/PostgREST/postgrest/issues/3697
+    fix: https://github.com/PostgREST/postgrest/pull/3869
+    product: PostgREST
+    closed: '2025-02-21'
+    summary: Вставка и upsert в несуществующую таблицу возвращают пустую ошибку без кода и сообщения
 RWB-0118:
   pattern: Filtering and sorting compose correctly
   checks:
@@ -4451,6 +4565,11 @@ RWB-0119:
     product: Strapi
     closed: '2026-06-03'
     summary: GraphQL возвращал связи в неверном порядке из-за пустого sort
+  - url: https://github.com/PostgREST/postgrest/issues/4109
+    fix: https://github.com/PostgREST/postgrest/pull/4114
+    product: PostgREST
+    closed: '2025-06-02'
+    summary: Сортировка с nullslast/nullsfirst вместе с limit возвращает 400 с синтаксической ошибкой SQL
 RWB-0120:
   pattern: HEAD response is consistent with GET
   checks:
@@ -5199,6 +5318,11 @@ RWB-0137:
     product: Strapi
     closed: '2026-07-15'
     summary: Строка длиннее размера колонки БД во вложенном компоненте даёт 500 вместо ошибки валидации
+  - url: https://github.com/PostgREST/postgrest/issues/2861
+    fix: https://github.com/PostgREST/postgrest/pull/2866
+    product: PostgREST
+    closed: '2023-07-21'
+    summary: 'Вставка значения в колонку char(2) падает с «value too long for type character(1)»: сервер теряет длину типа'
 RWB-0138:
   pattern: Несовпадение типа поля
   checks:
@@ -5316,6 +5440,17 @@ RWB-0142:
     product: github.com/cloudreve/Cloudreve/v3, github.com/cloudreve/Cloudreve/v4
     closed: '2026-07-24'
     summary: Токен WOPI проверяется только по ID сессии без секретной части, сессия просмотра может писать файл
+  - url: https://github.com/PostgREST/postgrest/issues/3926
+    fix: https://github.com/PostgREST/postgrest/pull/3933
+    product: PostgREST
+    closed: '2025-03-12'
+    summary: 'Пустой токен в Authorization: Bearer не отклоняется на входе, запрос доходит до БД и получает permission denied,
+      пустой токен кэшируется'
+  - url: https://github.com/PostgREST/postgrest/issues/3601
+    fix: https://github.com/PostgREST/postgrest/pull/4081
+    product: PostgREST
+    closed: '2025-05-13'
+    summary: JWT с ролью, которой нет на сервере, даёт 400 вместо 401, как остальные ошибки JWT
 RWB-0143:
   pattern: Protected operation rejects missing credentials
   checks:
@@ -6526,6 +6661,30 @@ RWB-0164:
     product: google.golang.org/grpc
     closed: '2026-09-08'
     summary: Правило RBAC по заголовку в смешанном регистре не срабатывает
+  - url: https://github.com/PostgREST/postgrest/issues/5158
+    fix: https://github.com/PostgREST/postgrest/pull/5251
+    product: PostgREST
+    closed: '2026-09-17'
+    summary: Имя схемы в смешанном регистре из конфигурации теряет регистр, любые запросы к API падают с ошибкой «схема не
+      существует»
+  - url: https://github.com/PostgREST/postgrest/issues/4955
+    fix: https://github.com/PostgREST/postgrest/pull/4977
+    product: PostgREST
+    closed: '2026-06-03'
+    summary: Настройка роли БД с регистрозависимым значением (work_mem = '256MB') приводится к нижнему регистру, и все запросы
+      от роли падают
+  - url: https://github.com/PostgREST/postgrest/issues/4678
+    fix: https://github.com/PostgREST/postgrest/pull/4843
+    product: PostgREST
+    closed: '2026-04-27'
+    summary: Имя роли подключения в смешанном регистре в части служебных запросов используется без кавычек, запросы падают
+      с «роль не существует»
+  - url: https://github.com/PostgREST/postgrest/issues/3712
+    fix: https://github.com/PostgREST/postgrest/pull/4131
+    product: PostgREST
+    closed: '2025-06-07'
+    summary: 'Массовый upsert с подстановкой default падает: последовательность таблицы с именем в смешанном регистре вызывается
+      без кавычек'
 RWB-0165:
   pattern: Чрезмерно вложенный JSON отклоняется без деградации сервиса
   checks:
@@ -6603,6 +6762,21 @@ RWB-0166:
     product: Directus
     closed: '2025-10-06'
     summary: Инструмент MCP отклоняет агрегацию, если не переданы все необязательные агрегатные функции
+  - url: https://github.com/PostgREST/postgrest/issues/3706
+    fix: https://github.com/PostgREST/postgrest/pull/3829
+    product: PostgREST
+    closed: '2024-12-23'
+    summary: Вставка с missing=default подставляет default доменного типа вместо default колонки
+  - url: https://github.com/PostgREST/postgrest/issues/2840
+    fix: https://github.com/PostgREST/postgrest/pull/2843
+    product: PostgREST
+    closed: '2023-06-30'
+    summary: При вставке без поля доменного типа NOT NULL с default подставлялся null вместо default домена
+  - url: https://github.com/PostgREST/postgrest/issues/2756
+    fix: https://github.com/PostgREST/postgrest/pull/2768
+    product: PostgREST
+    closed: '2023-04-28'
+    summary: Вставка с missing=default и вычисляемой колонкой в списке колонок давала ошибку «колонка не существует»
 RWB-0167:
   pattern: Взаимозависимые поля валидируются совместно
   checks:
@@ -6774,6 +6948,11 @@ RWB-0174:
     product: Kong
     closed: '2023-11-06'
     summary: Admin API отклоняет допустимое по RFC 6265 имя cookie с точкой.
+  - url: https://github.com/PostgREST/postgrest/issues/3054
+    fix: https://github.com/PostgREST/postgrest/pull/3081
+    product: PostgREST
+    closed: '2023-12-06'
+    summary: Ключ JSON с символом @ в пути фильтра отклоняется ошибкой разбора PGRST100, хотя ключ допустим
 RWB-0175:
   pattern: Форматы строк (email, uuid, uri, date, phone) проверяются
   checks:
@@ -7454,6 +7633,11 @@ RWB-0204:
     product: jwt
     closed: '2026-05-18'
     summary: Проверка HMAC-подписи JWT принимала пустой ключ, если поиск ключа вернул пустую строку
+  - url: https://github.com/PostgREST/postgrest/issues/4014
+    fix: https://github.com/PostgREST/postgrest/pull/4015
+    product: PostgREST
+    closed: '2025-04-16'
+    summary: После смены секрета подписи JWT с перезагрузкой конфигурации ранее закэшированные токены продолжают приниматься
 RWB-0205:
   pattern: Размер и частота сообщений ограничены
   checks:
@@ -7512,6 +7696,17 @@ RWB-0206:
     product: Supabase Auth
     closed: '2026-08-11'
     summary: Вход через OIDC-провайдера с ключами JWKS на кривой secp256k1 падает с server_error
+  - url: https://github.com/PostgREST/postgrest/issues/4039
+    fix: https://github.com/PostgREST/postgrest/pull/4072
+    product: PostgREST
+    closed: '2025-05-10'
+    summary: Путь к claim роли с индексом массива (.aud[0]) не работает для массива из одного элемента, запрос выполняется
+      как анонимный
+  - url: https://github.com/PostgREST/postgrest/issues/5212
+    fix: https://github.com/PostgREST/postgrest/pull/5231
+    product: PostgREST
+    closed: '2026-09-10'
+    summary: После долгого простоя сервер отклонял свежий JWT как «выпущенный в будущем» и писал старое время в журнал
 RWB-0207:
   pattern: Операция, опубликованная как REST-эндпоинт поверх GraphQL, выполняется так же, как исходный GraphQL-запрос — результат,
     побочные эффекты и контекст внешнего хука аутентификации (заголовки и тело)
@@ -7614,6 +7809,16 @@ RWB-0214:
     product: Hasura
     closed: '2024-08-21'
     summary: API сброса кэша сообщает 0 очищенных записей, закэшированный запрос продолжает отдавать старые данные
+  - url: https://github.com/PostgREST/postgrest/issues/2791
+    fix: https://github.com/PostgREST/postgrest/pull/2810
+    product: PostgREST
+    closed: '2023-06-02'
+    summary: Сигнал перезагрузки кэша схемы терялся, если уже шла перезагрузка, и API работал по устаревшей схеме
+  - url: https://github.com/PostgREST/postgrest/issues/2620
+    fix: https://github.com/PostgREST/postgrest/pull/2639
+    product: PostgREST
+    closed: '2023-01-28'
+    summary: После сигнала перезагрузки схемы соединения хранили старый тип колонки, фильтр давал ошибку приведения типа
 RWB-0215:
   pattern: API, построенный по схеме БД, читает и пишет объекты с именами в верхнем регистре, со спецсимволами и совпадающими
     со встроенными типами (таблицы, столбцы, пользовательские типы)
@@ -8545,6 +8750,33 @@ RWB-0280:
     product: Kong
     closed: '2021-08-24'
     summary: Некорректный Accept при ошибке 4xx превращает ответ в 500.
+  - url: https://github.com/PostgREST/postgrest/issues/3373
+    fix: https://github.com/PostgREST/postgrest/pull/3382
+    product: PostgREST
+    closed: '2024-04-13'
+    summary: Ответ 406 на запрос объекта при нескольких строках содержит два Content-Type, в том числе отклонённый медиатип
+  - url: https://github.com/PostgREST/postgrest/issues/3124
+    fix: https://github.com/PostgREST/postgrest/pull/3130
+    product: PostgREST
+    closed: '2023-12-20'
+    summary: После обновления запрос таблицы с Accept пользовательского медиатипа агрегатного обработчика даёт 415 «None of
+      these media types are available»
+  - url: https://github.com/PostgREST/postgrest/issues/3089
+    fix: https://github.com/PostgREST/postgrest/pull/3103
+    product: PostgREST
+    closed: '2023-12-12'
+    summary: Обработчик длинного медиатипа (application/vnd.openxmlformats-…) не находится, ответ 415; для Accept */* отдавался
+      не тот Content-Type
+  - url: https://github.com/PostgREST/postgrest/issues/3498
+    fix: https://github.com/PostgREST/postgrest/pull/4005
+    product: PostgREST
+    closed: '2025-04-12'
+    summary: Разбор медиатипа ломался на параметре в кавычках с ; и экранированными кавычками
+  - url: https://github.com/PostgREST/postgrest/issues/3478
+    fix: https://github.com/PostgREST/postgrest/pull/3489
+    product: PostgREST
+    closed: '2024-05-09'
+    summary: 'Accept: Application/json давал 415, хотя тип медиа регистронезависим'
 RWB-0281:
   pattern: Ограничение частоты запросов
   checks:
@@ -9133,3 +9365,236 @@ RWB-0324:
     closed: '2026-10-13'
     summary: Fallback локализации добавляет присланные клиентом синтетические имена культур в глобальный кэш — неограниченный
       рост памяти без аутентификации
+RWB-0325:
+  pattern: Gauge-метрики с известными границами остаются в них и согласуются с фактическим состоянием после сбоев и восстановления
+    — например, доступные соединения в пределах от 0 до размера пула при обрывах и переподключениях к БД
+  checks:
+  - OBS-METRICS-VALUE-RANGE
+  batch: postgrest
+  bugs:
+  - url: https://github.com/PostgREST/postgrest/issues/4622
+    fix: https://github.com/PostgREST/postgrest/pull/4672
+    product: PostgREST
+    closed: '2026-05-18'
+    summary: Метрика доступных соединений пула на эндпоинте метрик уходит в отрицательные значения при сбоях сети
+RWB-0326:
+  pattern: Заголовок Server-Timing отражает фактическую длительность этапов — значения в документированных единицах (миллисекунды)
+    и согласуются с независимым измерением в пределах допуска при запросе с известной задержкой; точного равенства суммы этапов
+    общему времени не требуется
+  checks:
+  - OBS-SERVER-TIMING-ACCURATE
+  batch: postgrest
+  bugs:
+  - url: https://github.com/PostgREST/postgrest/issues/4522
+    fix: https://github.com/PostgREST/postgrest/pull/4544
+    product: PostgREST
+    closed: '2025-12-18'
+    summary: Заголовок Server-Timing в ответе содержит длительности, не соответствующие фактическому времени обработки
+RWB-0327:
+  pattern: Один связанный ресурс, вложенный в ответ несколько раз под разными алиасами со своими фильтрами (REST-вложения,
+    алиасы GraphQL), фильтруется независимо — каждое вложение совпадает с отдельным запросом с его фильтром
+  checks:
+  - REST-ALIASED-EMBED-FILTER-INDEPENDENCE
+  batch: postgrest
+  bugs:
+  - url: https://github.com/PostgREST/postgrest/issues/4075
+    fix: https://github.com/PostgREST/postgrest/pull/4104
+    product: PostgREST
+    closed: '2026-08-04'
+    summary: При двух вложениях одной таблицы под разными алиасами фильтры одного вложения влияют на другое, результат неверный
+RWB-0328:
+  pattern: Фильтр по полю, не входящему в выбор полей (select, fields, sparse fieldsets), работает для любых источников —
+    таблица, представление, результат функции — и для простого, логического и вложенного фильтра; ответ содержит только выбранные
+    поля
+  checks:
+  - REST-FILTER-UNSELECTED-FIELD
+  batch: postgrest
+  bugs:
+  - url: https://github.com/PostgREST/postgrest/issues/3965
+    fix: https://github.com/PostgREST/postgrest/pull/4033
+    product: PostgREST
+    closed: '2025-04-27'
+    summary: Фильтр по полю, не выбранному в select, для результата табличной функции падает с ошибкой «column does not exist»
+RWB-0329:
+  pattern: Фильтр по полю, имя которого совпадает с именем вложенного (встраиваемого) ресурса или связи, применяется к значению
+    поля — совпадение имён не меняет смысл фильтра и не даёт ошибку
+  checks:
+  - REST-FILTER-NAME-COLLISION
+  batch: postgrest
+  bugs:
+  - url: https://github.com/PostgREST/postgrest/issues/2862
+    fix: https://github.com/PostgREST/postgrest/pull/2880
+    product: PostgREST
+    closed: '2023-07-28'
+    summary: Фильтр по колонке внешнего ключа, имя которой использовано для вложения, трактуется как фильтр по вложению и
+      даёт 400
+  - url: https://github.com/PostgREST/postgrest/issues/2588
+    fix: https://github.com/PostgREST/postgrest/pull/2589
+    product: PostgREST
+    closed: '2022-12-15'
+    summary: Фильтр eq по колонке внешнего ключа отклонялся, когда та же колонка использована как имя встраивания
+RWB-0330:
+  pattern: Ответ в согласованном формате (GeoJSON, CSV, NDJSON) соответствует спецификации этого формата — для GeoJSON структура
+    FeatureCollection и Feature и расположение членов по RFC 7946; пара к REST-ACCEPT-NEGOTIATION
+  checks:
+  - REST-NEGOTIATED-FORMAT-CONFORMANCE
+  batch: postgrest
+  bugs:
+  - url: https://github.com/PostgREST/postgrest/issues/2699
+    fix: https://github.com/PostgREST/postgrest/pull/2825
+    product: PostgREST
+    closed: '2023-10-26'
+    summary: В ответе GeoJSON член crs дублировался в геометрии каждого объекта вместо описания коллекции
+RWB-0331:
+  pattern: Пустой результат или null в поддерживаемом пользовательском медиатипе (бинарный формат, свой обработчик) обрабатывается
+    документированным образом — пустое тело того же Content-Type или документированный статус — без 5xx и внутренней ошибки
+  checks:
+  - REST-CUSTOM-MEDIA-TYPE-EMPTY-RESULT
+  batch: postgrest
+  bugs:
+  - url: https://github.com/PostgREST/postgrest/issues/3126
+    fix: https://github.com/PostgREST/postgrest/pull/3129
+    product: PostgREST
+    closed: '2023-12-20'
+    summary: Функция с пользовательским медиатипом, не вернувшая строки, даёт внутреннюю ошибку «RowError UnexpectedNull»
+      вместо пустого ответа
+RWB-0332:
+  pattern: Заголовок Preference-Applied перечисляет ровно применённые предпочтения из Prefer (return, count, handling, tx
+    и др.) — нет неприменённых, в том числе в ответе с ошибкой (RFC 7240)
+  checks:
+  - HTTP-PREFERENCE-APPLIED-ACCURATE
+  batch: postgrest
+  bugs:
+  - url: https://github.com/PostgREST/postgrest/issues/2939
+    fix: https://github.com/PostgREST/postgrest/pull/2940
+    product: PostgREST
+    closed: '2023-09-12'
+    summary: Заголовок Preference-Applied содержит tx=commit при откате транзакции и не содержит применённый count=exact
+RWB-0333:
+  pattern: Записи журнала при всплеске параллельных запросов не склеиваются и не разрываются — каждая запись отдельной строкой
+    с собственной меткой времени, структурированный журнал разбирается построчно; нужен доступ к журналу
+  checks:
+  - OBS-LOG-ENTRY-INTEGRITY
+  batch: postgrest
+  bugs:
+  - url: https://github.com/PostgREST/postgrest/issues/5234
+    fix: https://github.com/PostgREST/postgrest/pull/5235
+    product: PostgREST
+    closed: '2026-09-08'
+    summary: При всплеске параллельных запросов записи журнала склеивались в одну строку
+RWB-0334:
+  pattern: Перезагрузка кэша метаданных (схема, конфигурация, маршруты) на большом объёме не блокирует обслуживание запросов
+    надолго — запросы идут по старому состоянию или с короткой задержкой в пределах SLO
+  checks:
+  - PERF-METADATA-RELOAD-NO-BLOCK
+  batch: postgrest
+  bugs:
+  - url: https://github.com/PostgREST/postgrest/issues/4360
+    fix: https://github.com/PostgREST/postgrest/pull/4396
+    product: PostgREST
+    closed: '2025-10-21'
+    summary: Перезагрузка кэша схемы с большим числом связей блокировала все запросы API на 100+ секунд
+RWB-0335:
+  pattern: OPTIONS возвращает согласованный список методов
+  checks:
+  - HTTP-OPTIONS-ALLOW
+  batch: postgrest
+  bugs:
+  - url: https://github.com/PostgREST/postgrest/issues/2821
+    fix: https://github.com/PostgREST/postgrest/pull/2822
+    product: PostgREST
+    closed: '2023-06-14'
+    summary: 'OPTIONS с Accept: application/json возвращает 415 — принимается только text/csv'
+RWB-0336:
+  pattern: Неизвестный маршрут возвращает 404, а не 5xx или 200
+  checks:
+  - HTTP-UNKNOWN-ROUTE
+  batch: postgrest
+  bugs:
+  - url: https://github.com/PostgREST/postgrest/issues/4463
+    fix: https://github.com/PostgREST/postgrest/pull/4472
+    product: PostgREST
+    closed: '2026-01-02'
+    summary: Запрос к несуществующей таблице в схеме с десятками тысяч таблиц обрывает соединение вместо 404 из-за дорогого
+      подбора подсказки
+  - url: https://github.com/PostgREST/postgrest/issues/3602
+    fix: https://github.com/PostgREST/postgrest/pull/3869
+    product: PostgREST
+    closed: '2025-02-21'
+    summary: Запрос к несуществующему ресурсу с параметром вложения возвращает 400 «нет связи» вместо 404
+RWB-0337:
+  pattern: Запрос страницы за последней возвращает пустой результат без ошибки
+  checks:
+  - PAGE-BEYOND-LAST
+  batch: postgrest
+  bugs:
+  - url: https://github.com/PostgREST/postgrest/issues/4455
+    fix: https://github.com/PostgREST/postgrest/pull/4518
+    product: PostgREST
+    closed: '2025-12-10'
+    summary: 'Запрос со смещением за концом выборки и Prefer: count=exact возвращает ответ, который клиент не может разобрать'
+RWB-0338:
+  pattern: Content-Type и JSON-формат
+  checks:
+  - REST-CONTENT-TYPE-JSON
+  batch: postgrest
+  bugs:
+  - url: https://github.com/PostgREST/postgrest/issues/4271
+    fix: https://github.com/PostgREST/postgrest/pull/4274
+    product: PostgREST
+    closed: '2025-08-20'
+    summary: Эндпоинт метрик отвечает без Content-Type, Prometheus отказывается собирать метрики
+  - url: https://github.com/PostgREST/postgrest/issues/4030
+    fix: https://github.com/PostgREST/postgrest/pull/4032
+    product: PostgREST
+    closed: '2025-04-20'
+    summary: Запрос с Content-Type application/json; charset=utf-8 отклоняется как неприемлемый медиатип
+  - url: https://github.com/PostgREST/postgrest/issues/2915
+    fix: https://github.com/PostgREST/postgrest/pull/2916
+    product: PostgREST
+    closed: '2023-08-25'
+    summary: Content-Type, заданный обработчиком, добавлялся вторым заголовком вместо замены
+RWB-0339:
+  pattern: Согласованность статуса и тела ошибки
+  checks:
+  - REST-ERROR-STATUS-BODY
+  batch: postgrest
+  bugs:
+  - url: https://github.com/PostgREST/postgrest/issues/3257
+    fix: https://github.com/PostgREST/postgrest/pull/3383
+    product: PostgREST
+    closed: '2024-05-06'
+    summary: 'Ошибка БД 53400 (превышен лимит временных файлов) возвращается как 503 с Retry-After: 0, хотя сервис доступен'
+  - url: https://github.com/PostgREST/postgrest/issues/3256
+    fix: https://github.com/PostgREST/postgrest/pull/3406
+    product: PostgREST
+    closed: '2024-04-22'
+    summary: Представление с бесконечной рекурсией даёт 400 Bad Request, хотя ошибка серверная
+  - url: https://github.com/PostgREST/postgrest/issues/3255
+    fix: https://github.com/PostgREST/postgrest/pull/3534
+    product: PostgREST
+    closed: '2024-05-20'
+    summary: Ошибка БД 54001 (переполнение стека из-за рекурсивного триггера) возвращается как 413 Request Entity Too Large
+  - url: https://github.com/PostgREST/postgrest/issues/3205
+    fix: https://github.com/PostgREST/postgrest/pull/3206
+    product: PostgREST
+    closed: '2024-02-03'
+    summary: Ошибка БД cardinality_violation (подзапрос вернул больше одной строки в определении представления) возвращается
+      как 400 вместо 500
+  - url: https://github.com/PostgREST/postgrest/issues/2569
+    fix: https://github.com/PostgREST/postgrest/pull/2583
+    product: PostgREST
+    closed: '2022-12-15'
+    summary: Подсказка ошибки «связь не найдена» предлагала перезагрузить кэш вместо указания на опечатку
+RWB-0340:
+  pattern: Authorization failures do not disclose protected data
+  checks:
+  - SEC-AUTHZ-ERROR-LEAK
+  batch: postgrest
+  bugs:
+  - url: https://github.com/PostgREST/postgrest/issues/4675
+    fix: https://github.com/PostgREST/postgrest/pull/4684
+    product: PostgREST
+    closed: '2026-03-06'
+    summary: Подсказка «Perhaps you meant the table» подбирается с большим нечётким расстоянием и раскрывает имена таблиц,
+      на которые у пользователя нет прав

@@ -105,6 +105,14 @@ checks:
       документированный для него оператор.
   - action: Сравнить результат с эталонным отбором на клиенте по полному списку без фильтра.
   - action: Применить недокументированный для типа оператор.
+  - action: Применить операторы фильтра к колонкам доменных типов (в том числе домена над доменом) и сравнить результат с
+      колонкой базового типа
+    notes: 'Real-world bug: RWB-0001 (PostgREST/postgrest#4135)'
+  - action: Отфильтровать и отсортировать результат функции по полю составного типа через оператор пути
+    notes: 'Real-world bug: RWB-0001 (PostgREST/postgrest#2929)'
+  - action: Отфильтровать родительские записи по «связь не null» при связанной записи с null в части полей и проверить, что
+      такие записи возвращаются, а «связь is null» отдаёт только записи без связи
+    notes: 'Real-world bug: RWB-0001 (PostgREST/postgrest#2800)'
   expected:
   - Допустимый оператор принимается (2xx) для типа и всех его подтипов.
   - Результат совпадает с эталонным отбором; нет молчаливого пустого ответа.
@@ -155,6 +163,9 @@ checks:
     notes: 'Real-world bug: RWB-0002 (directus/directus#24190)'
   - action: Передать параметры чтения (version, fields) в теле запроса SEARCH и сравнить ответ с тем же запросом GET с query-строкой
     notes: 'Real-world bug: RWB-0002 (directus/directus#24038)'
+  - action: Отправить PATCH/DELETE с ограничением через заголовок Range вместо limit/offset, с order и без него, и сравнить
+      с ответами для limit/offset
+    notes: 'Real-world bug: RWB-0002 (PostgREST/postgrest#2705)'
   expected:
   - Состав и содержимое ответа одинаковы во всех эквивалентных формах.
   applicability:
@@ -253,3 +264,117 @@ checks:
   references:
   - Смежная — REST-FILTER-EQUIVALENT-FORMS (формы записи фильтра)
   - 'Real-world bug: RWB-0251'
+- id: REST-ALIASED-EMBED-FILTER-INDEPENDENCE
+  status: draft
+  title: Вложения одного ресурса под разными алиасами фильтруются независимо
+  category: pagination
+  protocols:
+  - rest
+  - graphql
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - filtering
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - API поддерживает вложение связанного ресурса несколько раз под разными алиасами со своими фильтрами (REST-вложения, алиасы
+    GraphQL).
+  steps:
+  - action: Запросить ресурс с двумя вложениями одного связанного ресурса под разными алиасами и разными фильтрами; сравнить
+      каждое с отдельным запросом с его фильтром.
+  expected:
+  - Каждое вложение содержит ровно записи по своему фильтру.
+  applicability:
+    when:
+    - Есть алиасы вложений.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - Смежные — REST-FILTER-SORT-COMPOSITION, REST-FILTER-OPERATION-PARITY
+  - 'Real-world bug: RWB-0327'
+- id: REST-FILTER-UNSELECTED-FIELD
+  status: draft
+  title: Фильтр по полю, не входящему в выбор полей, работает
+  category: pagination
+  protocols:
+  - rest
+  - graphql
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - filtering
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Есть выбор полей ответа (select, fields, sparse fieldsets) и фильтры.
+  steps:
+  - action: Для таблицы, представления и результата функции запросить select без поля фильтра с простым, логическим и вложенным
+      фильтром по этому полю.
+  expected:
+  - 200, отфильтрованные записи; в ответе только выбранные поля.
+  applicability:
+    when:
+    - Есть выбор полей и фильтры.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Смежная — CONTRACT-FIELD-SELECTION
+  - 'Real-world bug: RWB-0328'
+- id: REST-FILTER-NAME-COLLISION
+  status: draft
+  title: Фильтр по полю с именем вложенного ресурса применяется к полю
+  category: pagination
+  protocols:
+  - rest
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - filtering
+  - real-world-bug
+  - regression
+  preconditions:
+  - Имя поля (например, внешнего ключа) совпадает с именем вложенного ресурса или связи.
+  steps:
+  - action: Запросить коллекцию с вложением по этому имени и фильтром eq по полю; повторить с переименованным вложением.
+  expected:
+  - 200, фильтр применён к значению поля; синтаксис фильтра вложения однозначен.
+  applicability:
+    when:
+    - Есть вложения с совпадающими именами.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: low
+    likelihood: low
+  references:
+  - Смежная — REST-FILTER-OPERATOR-TYPE-MATRIX
+  - 'Real-world bug: RWB-0329'
