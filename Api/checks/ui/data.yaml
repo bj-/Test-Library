@@ -1,6 +1,6 @@
 checks:
 - id: UI-RELATED-RECORDS
-  status: draft
+  status: approved
   title: Связанные записи редактируются во вложенной форме так же, как отдельно
   category: ui
   protocols:
@@ -10,6 +10,7 @@ checks:
   tags:
   - ui
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -33,6 +34,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -40,7 +42,7 @@ checks:
   - Здравый смысл — одинаковое поведение во вложенной и основной форме
   - ADR 0006 (проверки UI)
 - id: UI-LIST-SORT
-  status: draft
+  status: approved
   title: Сортировка списков работает и сохраняется
   category: ui
   protocols:
@@ -53,7 +55,9 @@ checks:
   - ui
   - filtering
   - sorting
+  - ci
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -70,7 +74,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -79,7 +85,7 @@ checks:
   - Серверная сторона — PAGE-SORT-FIELD-TYPE-MATRIX, REST-FILTER-OPERATOR-TYPE-MATRIX
   - ADR 0006 (проверки UI)
 - id: UI-RICH-EDITOR
-  status: draft
+  status: approved
   title: Редактор содержимого сохраняет форматирование и вставки без искажений
   category: ui
   protocols:
@@ -89,6 +95,7 @@ checks:
   tags:
   - ui
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -108,6 +115,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -115,7 +123,7 @@ checks:
   - Здравый смысл — редактор не меняет содержимое
   - ADR 0006 (проверки UI)
 - id: UI-DOCUMENTS-OPEN
-  status: draft
+  status: approved
   title: Загруженные документы открываются и скачиваются в каждом поддерживаемом формате
   category: ui
   protocols:
@@ -127,7 +135,9 @@ checks:
   tags:
   - ui
   - files
+  - ci
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -144,7 +154,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -153,7 +165,7 @@ checks:
   - Серверная сторона — FILE-ROUNDTRIP-EXACT
   - ADR 0006 (проверки UI)
 - id: UI-CHANGE-HISTORY
-  status: draft
+  status: approved
   title: История изменений показывает каждое изменение с автором
   category: ui
   protocols:
@@ -166,6 +178,7 @@ checks:
   - ui
   - audit
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -184,6 +197,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -191,7 +205,7 @@ checks:
   - Серверная сторона — OBS-AUDIT-TRAIL
   - ADR 0006 (проверки UI)
 - id: UI-LIST-COUNTERS-CONSISTENCY
-  status: draft
+  status: approved
   title: Счётчики элементов совпадают с фактическим числом записей
   category: ui
   protocols:
@@ -201,6 +215,7 @@ checks:
   tags:
   - ui
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -218,6 +233,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -225,7 +241,7 @@ checks:
   - Здравый смысл — одинаковое поведение во вложенной и основной форме
   - ADR 0006 (проверки UI)
 - id: UI-LIST-FILTER-VALUES
-  status: draft
+  status: approved
   title: Фильтры принимают и показывают значения своего типа
   category: ui
   protocols:
@@ -238,7 +254,9 @@ checks:
   - ui
   - filtering
   - sorting
+  - ci
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -261,7 +279,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -270,7 +290,7 @@ checks:
   - Серверная сторона — PAGE-SORT-FIELD-TYPE-MATRIX, REST-FILTER-OPERATOR-TYPE-MATRIX
   - ADR 0006 (проверки UI)
 - id: UI-LIST-FILTER-STATE
-  status: draft
+  status: approved
   title: Фильтры снимаются и не переносятся между списками
   category: ui
   protocols:
@@ -281,7 +301,9 @@ checks:
   - ui
   - filtering
   - sorting
+  - ci
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -300,7 +322,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -309,7 +333,7 @@ checks:
   - Серверная сторона — PAGE-SORT-FIELD-TYPE-MATRIX, REST-FILTER-OPERATOR-TYPE-MATRIX
   - ADR 0006 (проверки UI)
 - id: UI-CONDITIONAL-FORMATTING
-  status: draft
+  status: approved
   title: Условное оформление работает для всех операторов сравнения
   category: ui
   protocols:
@@ -320,7 +344,9 @@ checks:
   - ui
   - filtering
   - sorting
+  - ci
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -337,7 +363,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium

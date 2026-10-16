@@ -1,6 +1,6 @@
 checks:
 - id: UI-TEXTS-CORRECT
-  status: draft
+  status: approved
   title: Тексты интерфейса без ошибок и на языке интерфейса
   category: ui
   protocols:
@@ -13,6 +13,7 @@ checks:
   - ui
   - i18n
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -34,6 +35,7 @@ checks:
     deterministic: false
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -41,7 +43,7 @@ checks:
   - Чек-лист guru99 (пер. О. Алифановой)
   - ADR 0006 (проверки UI)
 - id: UI-VISUAL-CONSISTENCY
-  status: draft
+  status: approved
   title: Шрифты, отступы и кнопки единообразны по макету и гайдлайнам
   category: ui
   protocols:
@@ -53,6 +55,7 @@ checks:
   tags:
   - ui
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -75,6 +78,7 @@ checks:
     deterministic: false
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -83,7 +87,7 @@ checks:
   - Apple HIG (44 pt), Material Design (48 dp)
   - ADR 0006 (проверки UI)
 - id: UI-RESPONSIVE-LAYOUT
-  status: draft
+  status: approved
   title: Интерфейс работает на всех поддерживаемых размерах экрана
   category: ui
   protocols:
@@ -95,7 +99,9 @@ checks:
   tags:
   - ui
   - compatibility
+  - ci
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -117,7 +123,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -125,7 +133,7 @@ checks:
   - Чек-лист guru99 (пер. О. Алифановой)
   - ADR 0006 (проверки UI)
 - id: UI-PLATFORM-COMPATIBILITY
-  status: draft
+  status: approved
   title: Интерфейс одинаково работает в поддерживаемых браузерах, ОС и режимах
   category: ui
   protocols:
@@ -138,7 +146,9 @@ checks:
   - ui
   - compatibility
   - i18n
+  - ci
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -160,7 +170,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -168,7 +180,7 @@ checks:
   - Чек-лист guru99 (пер. О. Алифановой)
   - ADR 0006 (проверки UI)
 - id: UI-KEYBOARD-ACCESS
-  status: draft
+  status: approved
   title: Интерфейс полностью управляется с клавиатуры в логическом порядке
   category: ui
   protocols:
@@ -179,7 +191,9 @@ checks:
   priority: P2
   tags:
   - ui
+  - ci
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -202,7 +216,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -210,7 +226,7 @@ checks:
   - WCAG 2.1 — 2.1.1, 2.4.3, 2.4.7
   - ADR 0006 (проверки UI)
 - id: UI-FIELD-LABELS-MATCH-FORM
-  status: draft
+  status: approved
   title: Подписи и подсказки полей соответствуют назначению формы
   category: ui
   protocols:
@@ -223,6 +239,7 @@ checks:
   - ui
   - i18n
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -240,6 +257,7 @@ checks:
     deterministic: false
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -247,7 +265,7 @@ checks:
   - Чек-лист guru99 (пер. О. Алифановой)
   - ADR 0006 (проверки UI)
 - id: UI-LAYOUT-OVERFLOW
-  status: draft
+  status: approved
   title: Длинные тексты и раскрывающиеся элементы не выходят за границы и не перекрываются
   category: ui
   protocols:
@@ -259,6 +277,7 @@ checks:
   tags:
   - ui
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -279,6 +298,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium

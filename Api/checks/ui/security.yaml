@@ -1,6 +1,6 @@
 checks:
 - id: UI-CLIENT-CODE-NO-SECRETS
-  status: draft
+  status: approved
   title: Клиентский код и страницы не раскрывают секретов и лишних данных
   category: ui
   protocols:
@@ -11,7 +11,10 @@ checks:
   - ui
   - security
   - privacy
+  - ci
   - regression
+  - nightly
+  - release
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -35,7 +38,10 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -44,7 +50,7 @@ checks:
   - CWE-200, CWE-798
   - ADR 0006 (проверки UI)
 - id: UI-SECRET-FIELDS
-  status: draft
+  status: approved
   title: Поля паролей и секретов не раскрывают и не теряют значение
   category: ui
   protocols:
@@ -56,7 +62,9 @@ checks:
   tags:
   - ui
   - security
+  - ci
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -78,7 +86,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -86,7 +96,7 @@ checks:
   - OWASP MASVS-STORAGE, MASVS-PLATFORM
   - ADR 0006 (проверки UI)
 - id: UI-AUTH-FLOWS
-  status: draft
+  status: approved
   title: Интерфейсные потоки входа и восстановления нельзя обойти и перенаправить наружу
   category: ui
   protocols:
@@ -99,7 +109,10 @@ checks:
   - ui
   - security
   - authn
+  - ci
   - regression
+  - nightly
+  - release
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -128,7 +141,10 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -136,7 +152,7 @@ checks:
   - Серверная сторона — REST-OPEN-REDIRECT, AUTH-OAUTH-REDIRECT-STATE, AUTH-SENSITIVE-CHANGE-REAUTH
   - ADR 0006 (проверки UI)
 - id: UI-SAFE-RENDERING
-  status: draft
+  status: approved
   title: Данные отображаются экранированными и не роняют интерфейс
   category: ui
   protocols:
@@ -147,7 +163,10 @@ checks:
   - ui
   - security
   - injection
+  - ci
   - regression
+  - nightly
+  - release
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -171,7 +190,10 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -180,7 +202,7 @@ checks:
   - Серверная сторона — INJ-STORED-XSS
   - ADR 0006 (проверки UI)
 - id: UI-PLATFORM-SECURITY
-  status: draft
+  status: approved
   title: Настольный и мобильный клиенты не открывают недоверенный код и экраны входа другим приложениям
   category: ui
   protocols:
@@ -191,7 +213,10 @@ checks:
   tags:
   - ui
   - security
+  - ci
   - regression
+  - nightly
+  - release
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -212,7 +237,10 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium

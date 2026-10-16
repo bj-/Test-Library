@@ -1,6 +1,6 @@
 checks:
 - id: UI-FORM-REQUIRED-AND-HINTS
-  status: draft
+  status: approved
   title: Обязательные поля помечены и проверяются, подсказки объясняют формат
   category: ui
   protocols:
@@ -12,7 +12,9 @@ checks:
   tags:
   - ui
   - validation
+  - ci
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -35,7 +37,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -43,7 +47,7 @@ checks:
   - Чек-лист guru99 (пер. О. Алифановой)
   - ADR 0006 (проверки UI)
 - id: UI-INPUT-VALUES
-  status: draft
+  status: approved
   title: Поля ввода принимают, показывают и сохраняют значения по своему типу
   category: ui
   protocols:
@@ -56,7 +60,9 @@ checks:
   - ui
   - validation
   - boundary
+  - ci
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -86,7 +92,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -94,7 +102,7 @@ checks:
   - Чек-лист guru99 (пер. О. Алифановой)
   - ADR 0006 (проверки UI)
 - id: UI-FORM-STATE
-  status: draft
+  status: approved
   title: Форма сохраняет и сбрасывает состояние ожидаемо
   category: ui
   protocols:
@@ -105,7 +113,9 @@ checks:
   priority: P2
   tags:
   - ui
+  - ci
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -133,7 +143,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -141,7 +153,7 @@ checks:
   - Чек-лист guru99 (пер. О. Алифановой)
   - ADR 0006 (проверки UI)
 - id: UI-DISABLED-AND-READONLY
-  status: draft
+  status: approved
   title: Недоступные и доступные только для чтения элементы видны и не выполняют действий
   category: ui
   protocols:
@@ -153,7 +165,9 @@ checks:
   tags:
   - ui
   - authz
+  - ci
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -179,7 +193,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -188,7 +204,7 @@ checks:
   - Серверная проверка — SEC-AUTHZ-FUNCTION
   - ADR 0006 (проверки UI)
 - id: UI-DROPDOWN-VALUES
-  status: draft
+  status: approved
   title: Выпадающие списки показывают полные, разрешённые и упорядоченные значения
   category: ui
   protocols:
@@ -200,7 +216,9 @@ checks:
   tags:
   - ui
   - authz
+  - ci
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -230,7 +248,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -239,7 +259,7 @@ checks:
   - Смежная — RES-REFERENCE-DATA-COMPLETE
   - ADR 0006 (проверки UI)
 - id: UI-ACTIONS-WORK-ONCE
-  status: draft
+  status: approved
   title: Каждое действие выполняется ровно один раз и меняет ровно своё
   category: ui
   protocols:
@@ -251,7 +271,9 @@ checks:
   tags:
   - ui
   - idempotency
+  - ci
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -275,7 +297,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -284,7 +308,7 @@ checks:
   - Серверная сторона — CONC-DOUBLE-SUBMIT
   - ADR 0006 (проверки UI)
 - id: UI-CONFIRM-DESTRUCTIVE
-  status: draft
+  status: approved
   title: Удаление и изменение подтверждаются, отмена ничего не меняет
   category: ui
   protocols:
@@ -295,7 +319,9 @@ checks:
   priority: P2
   tags:
   - ui
+  - ci
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -314,7 +340,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium

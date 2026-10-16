@@ -1,6 +1,6 @@
 checks:
 - id: UI-ERROR-DISPLAY
-  status: draft
+  status: approved
   title: Ошибки сервера при сохранении показываются понятным сообщением
   category: ui
   protocols:
@@ -12,7 +12,9 @@ checks:
   tags:
   - ui
   - error-handling
+  - ci
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -36,7 +38,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -45,7 +49,7 @@ checks:
   - Серверная сторона — REST-ERROR-SCHEMA
   - ADR 0006 (проверки UI)
 - id: UI-NO-BROKEN-RESOURCES
-  status: draft
+  status: approved
   title: Ссылки, картинки и ресурсы страниц загружаются
   category: ui
   protocols:
@@ -55,6 +59,7 @@ checks:
   tags:
   - ui
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -75,6 +80,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -82,7 +88,7 @@ checks:
   - Чек-лист guru99 (пер. О. Алифановой)
   - ADR 0006 (проверки UI)
 - id: UI-NETWORK-RESILIENCE
-  status: draft
+  status: approved
   title: Клиент работает при потере сети и без доступа в интернет
   category: ui
   protocols:
@@ -93,7 +99,9 @@ checks:
   tags:
   - ui
   - resilience
+  - ci
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -113,7 +121,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -121,7 +131,7 @@ checks:
   - Серверная сторона — WS-RECONNECT-RESUME
   - ADR 0006 (проверки UI)
 - id: UI-CLIENT-REQUEST-HYGIENE
-  status: draft
+  status: approved
   title: Клиент не шлёт лишних, дублирующих и бесконечных запросов
   category: ui
   protocols:
@@ -131,7 +141,8 @@ checks:
   tags:
   - ui
   - performance
-  - regression
+  - ci
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -155,7 +166,8 @@ checks:
     level: partial
     deterministic: true
   profiles:
-  - Regression
+  - CI
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -164,7 +176,7 @@ checks:
   - Смежная — HTTP-ABSOLUTE-URL-BASE-PATH
   - ADR 0006 (проверки UI)
 - id: UI-USABILITY
-  status: draft
+  status: approved
   title: Частые сценарии короткие, ожидание и задержки понятны пользователю
   category: ui
   protocols:
@@ -176,7 +188,7 @@ checks:
   tags:
   - ui
   - performance
-  - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   - Нужен список частых сценариев продукта и критерии оценки (число шагов, порог задержки ввода).
@@ -199,7 +211,7 @@ checks:
     level: partial
     deterministic: false
   profiles:
-  - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -207,7 +219,7 @@ checks:
   - Чек-лист guru99 (пер. О. Алифановой) — экспертная оценка
   - ADR 0006 (проверки UI)
 - id: UI-FAILURE-ROBUSTNESS
-  status: draft
+  status: approved
   title: Клиент не падает при сбое и неполных данных
   category: ui
   protocols:
@@ -219,7 +231,9 @@ checks:
   tags:
   - ui
   - error-handling
+  - ci
   - regression
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -242,7 +256,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -251,7 +267,7 @@ checks:
   - Серверная сторона — REST-ERROR-SCHEMA
   - ADR 0006 (проверки UI)
 - id: UI-CLIENT-BASE-PATH-URLS
-  status: draft
+  status: approved
   title: Клиент под подпутём строит все URL с учётом базового пути
   category: ui
   protocols:
@@ -261,7 +277,8 @@ checks:
   tags:
   - ui
   - performance
-  - regression
+  - ci
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -280,7 +297,8 @@ checks:
     level: partial
     deterministic: true
   profiles:
-  - Regression
+  - CI
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -289,7 +307,7 @@ checks:
   - Смежная — HTTP-ABSOLUTE-URL-BASE-PATH
   - ADR 0006 (проверки UI)
 - id: UI-STATE-CHANGE-METHODS
-  status: draft
+  status: approved
   title: Изменения состояния отправляются небезопасными методами, а не GET
   category: ui
   protocols:
@@ -299,7 +317,8 @@ checks:
   tags:
   - ui
   - performance
-  - regression
+  - ci
+  - nightly
   preconditions:
   - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
   steps:
@@ -316,7 +335,8 @@ checks:
     level: partial
     deterministic: true
   profiles:
-  - Regression
+  - CI
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
