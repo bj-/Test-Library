@@ -27,6 +27,8 @@ checks:
     notes: 'Real-world bug: RWB-0134 (GHSA-9g87-32v6-3c2r)'
   - action: Передать в параметре сортировки имя столбца, которого нет в ответе, и SQL-выражение и проверить 400
     notes: 'Real-world bug: RWB-0134 (GHSA-rxhg-vcww-2mpw)'
+  - action: Отправить сортировку по существующему полю с недопустимым направлением (поле:asc$, поле:up) и проверить 4xx
+    notes: 'Real-world bug: RWB-0134 (strapi/strapi#25560)'
   expected:
   - запрещённые поля не раскрываются, ошибка/игнорирование соответствует контракту
   applicability:

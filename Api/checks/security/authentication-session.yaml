@@ -299,6 +299,9 @@ checks:
   - action: Выполнить выход параллельно с долгим запросом в той же сессии и после завершения обоих повторить запрос со старой
       cookie
     notes: 'Real-world bug: RWB-0059 (GHSA-9j94-67jr-4cqj)'
+  - action: Удалить пользователя администратором и выполнить выход с его ещё не истёкшим токеном — выход завершается успешно
+      или не мешает клиенту завершить сеанс, сессии пользователя недействительны
+    notes: 'Real-world bug: RWB-0059 (supabase/auth#1550)'
   expected:
   - Запросы после выхода отклоняются в пределах задокументированного окна.
   applicability:
@@ -435,6 +438,9 @@ checks:
   - action: Вызвать служебный эндпоинт проверки существования email (мастер создания пользователя) от роли без права просмотра
       пользователей с существующим и несуществующим email
     notes: 'Real-world bug: RWB-0193 (GHSA-225x-3jhx-wh4q)'
+  - action: Зарегистрироваться с email существующего пользователя с нестандартной ролью и сравнить все поля ответа, включая
+      role, с ответом для нового email
+    notes: 'Real-world bug: RWB-0193 (supabase/auth#1365)'
   expected:
   - Тела, статусы и время ответа неразличимы в пределах допуска.
   applicability:
@@ -739,6 +745,9 @@ checks:
   - action: Отправить запрос сброса пароля с параметром URL ссылки на чужой домен и проверить, что письмо ведёт только на
       настроенный домен, а вход по токену требует второй фактор
     notes: 'Real-world bug: RWB-0307 (GHSA-h854-c3m3-mh5v)'
+  - action: Запросить сброс пароля и подтверждение email с адресом, который сервер сопоставляет с пользователем, но дословно
+      отличается от сохранённого, и проверить, что письмо уходит только на сохранённый адрес
+    notes: 'Real-world bug: RWB-0307 (GHSA-x3vp-85cm-q97r)'
   expected:
   - Все варианты отклоняются.
   - Токен не возвращается в ответе API и не попадает в Referer.
@@ -1236,6 +1245,8 @@ checks:
   - action: Сравнить с ограничениями формата в контракте и ТЗ.
   - action: Одинаковая нормализация не только при входе, но и в проверках согласия и прав
     notes: 'Real-world bug: RWB-0058 (keycloak/keycloak#53138)'
+  - action: Запросить OTP на номер с «+» и кодом страны, который в конфигурации указан без «+», и сравнить поведение
+    notes: 'Real-world bug: RWB-0058 (supabase/auth#1566)'
   expected:
   - Фактическое поведение зафиксировано тестом (обрезает или отвергает, учитывает регистр или нет).
   - Нормализация одинакова при входе, создании и поиске; не противоречит формату из контракта (если контракт требует format
@@ -1665,6 +1676,12 @@ checks:
   steps:
   - action: Передать привязанный токен в token exchange и выполнить refresh без доказательства владения ключом.
   - action: Проверить claim cnf нового токена; вызвать ресурс новым токеном без доказательства.
+  - action: Предъявить SAML-утверждение holder-of-key без KeyInfo и с нестандартным методом подтверждения и проверить отказ
+      аутентификации
+    notes: 'Real-world bug: RWB-0044 (GHSA-48pq-2xq3-c2m4)'
+  - action: Отправить DPoP-токен на собственные эндпоинты сервера авторизации без DPoP-доказательства и с доказательством
+      другого ключа и проверить 401
+    notes: 'Real-world bug: RWB-0044 (GHSA-v9xq-2mvm-x8xc)'
   expected:
   - Обмен и refresh требуют доказательство; новый токен тоже привязан, иначе отказ.
   applicability:
@@ -1825,6 +1842,9 @@ checks:
   - action: Добавить в JWKS рядом с ключом подписи ключи другого или неизвестного use/kty и повторить.
   - action: Передать claims по настроенному пути (claims map, вложенный namespace) и без необязательных claims — проверить
       значения по умолчанию.
+  - action: Подключить внешнего OIDC-провайдера с ключами JWKS на зарегистрированном алгоритме (ES256K, kty=EC, crv=secp256k1)
+      и пройти вход до callback — ID-токен принимается, а неподдерживаемый ключ даёт контролируемую ошибку, не 500
+    notes: 'Real-world bug: RWB-0206 (supabase/auth#2534)'
   expected:
   - Валидный токен принимается во всех вариантах; посторонние ключи в JWKS не мешают выбору ключа подписи.
   - Роль и атрибуты берутся из настроенного пути, при отсутствии — значения по умолчанию из документации.
@@ -2083,3 +2103,155 @@ checks:
   - OpenID Connect Core §2 (sub уникален в пределах издателя), §5.7
   - Пара к AUTH-LOGIN-IDENTIFIER-NORMALIZATION
   - 'Real-world bug: RWB-0305'
+- id: AUTH-OAUTH-OUTBOUND-SCOPE
+  status: draft
+  title: Запрос авторизации к внешнему провайдеру содержит запрошенные scope без устаревших значений по умолчанию
+  category: security
+  protocols:
+  - generic
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - authn
+  - real-world-bug
+  - regression
+  preconditions:
+  - Вход через внешнего OAuth/OIDC-провайдера, клиент может передать scope; известны актуальные scope провайдера.
+  steps:
+  - action: Начать вход через провайдера с параметром scopes и без него; разобрать URL перенаправления к провайдеру (параметр
+      scope).
+  expected:
+  - scope содержит запрошенные клиентом и обязательные актуальные значения; устаревших и конфликтующих значений по умолчанию
+    нет.
+  applicability:
+    when:
+    - Есть вход через внешнего провайдера.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - RFC 6749 §3.3
+  - Смежная — AUTH-OAUTH-REDIRECT-STATE
+  - 'Real-world bug: RWB-0311'
+- id: AUTH-IMPORTED-PASSWORD-HASH
+  status: draft
+  title: Пользователь, импортированный с хешем пароля поддерживаемого алгоритма, входит по исходному паролю
+  category: security
+  protocols:
+  - generic
+  kind: positive
+  priority: P2
+  tags:
+  - positive
+  - authn
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Есть импорт пользователей с готовым хешем пароля (админ-API, миграция); известны поддерживаемые алгоритмы и параметры.
+  steps:
+  - action: Для каждого поддерживаемого алгоритма (bcrypt, scrypt, argon2, PBKDF2 — по документации) создать пользователя
+      с хешем известного пароля; войти по верному и неверному паролю.
+  expected:
+  - Верный пароль даёт вход, неверный отклоняется (invalid_grant/401); неподдерживаемый формат отклоняется при импорте 4xx.
+  applicability:
+    when:
+    - Есть импорт хешей паролей.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - Смежная — AUTH-PASSWORD-POLICY
+  - 'Real-world bug: RWB-0312'
+- id: AUTH-CONTACT-CHANGE-PREVIOUS-VALUE
+  status: draft
+  title: Смена телефона или email на ранее использованный этим пользователем проходит подтверждение
+  category: security
+  protocols:
+  - generic
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - otp
+  - real-world-bug
+  - regression
+  preconditions:
+  - Пользователь может менять телефон или email с подтверждением кодом; нужен доступ к каналу кода (тестовый перехватчик).
+  steps:
+  - action: Сменить значение A на B с подтверждением, затем обратно на A; запросить и ввести код.
+  expected:
+  - Код отправляется и принимается, значение обновляется на A.
+  applicability:
+    when:
+    - Есть смена контактов с подтверждением.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - Смежные — AUTH-OTP-BINDING, AUTH-LOGIN-IDENTIFIER-NORMALIZATION
+  - 'Real-world bug: RWB-0313'
+- id: AUTH-SAML-ASSERTION-REPLAY
+  status: draft
+  title: Повторно предъявленное SAML-утверждение отклоняется
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - token-lifecycle
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Вход по SAML или другому одноразовому утверждению (WS-Federation, ID-токен OIDC с nonce); включена защита от повторов.
+  steps:
+  - action: Предъявить одно и то же утверждение дважды в пределах срока действия; при нескольких экземплярах — второй раз
+      на другом экземпляре.
+  expected:
+  - Второе предъявление отклоняется ошибкой аутентификации.
+  applicability:
+    when:
+    - Есть вход по одноразовым утверждениям.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - OASIS SAML 2.0 Profiles §4.1.4.5 (OneTimeUse)
+  - Смежная — SEC-TOKEN-REFRESH-REPLAY
+  - 'Real-world bug: RWB-0323'

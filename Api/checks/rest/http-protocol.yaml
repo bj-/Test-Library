@@ -92,6 +92,9 @@ checks:
     notes: 'Real-world bug: RWB-0197 (GHSA-qcxp-gm7m-4j5v)'
   - action: Запросить заблокированный файл с косой чертой в конце пути и проверить, что ответ — тот же отказ, что без слэша
     notes: 'Real-world bug: RWB-0197 (GHSA-964w-f6gj-5236)'
+  - action: Повторить изменяющую операцию по URL с завершающим «?» без параметров и сравнить побочные эффекты с вызовом без
+      него
+    notes: 'Real-world bug: RWB-0197 (strapi/strapi#25724)'
   expected:
   - Поведение одинаково для всех ручек API (либо вариация ведёт на ту же ручку, либо везде 404).
   - Вариации пути не обходят авторизацию или правила шлюза.
@@ -298,12 +301,16 @@ checks:
   tags:
   - positive
   - i18n
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - API локализует сообщения.
   steps:
   - action: Запросить с ru, en, неподдерживаемым языком, некорректным значением заголовка.
+  - action: Отправить серию анонимных запросов с уникальными несуществующими именами культур в Accept-Language и параметре
+      культуры и проверить, что память сервиса не растёт
+    notes: 'Real-world bug: RWB-0324 (GHSA-f4g7-52wc-p8x7)'
   expected:
   - Используется запрошенный язык или задокументированный fallback.
   - Коды ошибок не зависят от языка.
@@ -321,6 +328,8 @@ checks:
   risk:
     impact: low
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0324'
 - id: HTTP-VARY-HEADER
   status: approved
   title: Кэшируемые ответы содержат корректный Vary
@@ -484,6 +493,8 @@ checks:
     в письмах, пагинация).
   steps:
   - action: Запустить сценарии, где сервер формирует абсолютный URL, и разобрать полученные адреса.
+  - action: Проверить ссылки, построенные от адреса сайта, во всех типах писем, включая уведомления о смене пароля и email
+    notes: 'Real-world bug: RWB-0027 (supabase/auth#2468)'
   expected:
   - URL содержит публичную схему, хост и базовый путь и ведёт на рабочий маршрут.
   applicability:
@@ -778,3 +789,40 @@ checks:
   - RFC 9112 §6.1, §6.3 (ранее RFC 7230 §3.3.2 — в первоисточнике)
   - Пара к HTTP-REQUEST-SMUGGLING
   - 'Real-world bug: RWB-0275'
+- id: HTTP-CACHEABLE-RESPONSE-CACHE-CONTROL
+  status: draft
+  title: Кэшируемый ответ содержит Cache-Control по итоговой политике
+  category: http-semantics
+  protocols:
+  - rest
+  - graphql
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - caching
+  - real-world-bug
+  - regression
+  preconditions:
+  - Для ответа включено кэширование — подсказки max-age у полей GraphQL, политика кэша маршрута.
+  steps:
+  - action: Запросить ресурс или поля с подсказками кэширования (разные max-age, с private и без) и проверить заголовки ответа.
+  expected:
+  - Cache-Control есть; max-age — минимальный из подсказок; public или private по политике.
+  applicability:
+    when:
+    - Есть управление кэшированием.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - RFC 9111 §5.2
+  - Пара к REST-SENSITIVE-CACHE-CONTROL
+  - 'Real-world bug: RWB-0317'

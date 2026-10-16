@@ -33,6 +33,9 @@ checks:
   - action: Запросить ресурс с полем, видимым по правам, сначала привилегированным, затем непривилегированным пользователем
       в каждом поддерживаемом формате ответа (JSON, JSON:API, HAL, GraphQL)
     notes: 'Real-world bug: RWB-0145 (GHSA-pjhx-3c3w-9v23)'
+  - action: Запросить ресурс с валидным API-ключом, затем тот же путь и query без ключа и с неверным ключом и проверить 401
+      вместо закэшированного ответа
+    notes: 'Real-world bug: RWB-0145 (GHSA-75vq-qvhr-7ffr)'
   expected:
   - Cached responses are partitioned or bypassed appropriately; B never receives A’s protected content.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

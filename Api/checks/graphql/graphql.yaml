@@ -318,6 +318,7 @@ checks:
   tags:
   - negative
   - validation
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -326,6 +327,9 @@ checks:
   - Нет.
   steps:
   - action: Передать переменные неверного типа, null в non-null, неизвестные поля input.
+  - action: Передать переменную-объект без обязательного вложенного поля входного типа и проверить, что код ошибки — ошибка
+      ввода, а не INTERNAL_SERVER_ERROR
+    notes: 'Real-world bug: RWB-0318 (apollographql/apollo-server#1410)'
   expected:
   - Ошибки валидации до выполнения резолверов.
   applicability:
@@ -344,6 +348,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0318'
 - id: GQL-PARTIAL-DATA
   status: approved
   title: Частичные результаты с ошибками соответствуют спецификации nullability
@@ -402,6 +408,12 @@ checks:
   - action: Выполнить один вложенный фильтр связи в запросе по id и в запросе списка.
   - action: Повторить запрос с аргументом filter по полю связанной коллекции, запросив поле связи под алиасом
     notes: 'Real-world bug: RWB-0014 (directus/directus#26133)'
+  - action: Запросить поле типа union через фрагмент на член union, внутри которого фрагмент на сам union с фрагментами на
+      каждый член, и сравнить с плоской формой
+    notes: 'Real-world bug: RWB-0014 (apollographql/apollo-server#3983)'
+  - action: Запросить поле конкретного типа через inline-фрагмент на реализуемый им интерфейс и сравнить с прямым выбором
+      поля
+    notes: 'Real-world bug: RWB-0014 (apollographql/apollo-server#3253)'
   expected:
   - Значения одинаковы во всех формах; оба запроса с вложенным фильтром успешны и одинаково отфильтрованы.
   applicability:
@@ -483,6 +495,9 @@ checks:
   - action: Подключить два источника с одинаковыми именами типов, различающиеся только префиксом (namespace), и запросить
       поля каждого из них в одном и в разных запросах.
   - action: Проверить по журналам или ответам upstream, какой источник обработал каждое поле.
+  - action: В объединённой схеме выбрать поле общего типа-значения, объявленного в нескольких подграфах, у сущностей разных
+      подграфов — данные возвращаются без ошибок
+    notes: 'Real-world bug: RWB-0211 (apollographql/apollo-server#3141)'
   expected:
   - Каждое поле обработано своим источником; данные источников не смешиваются и не подменяются.
   applicability:
@@ -502,3 +517,42 @@ checks:
   references:
   - GraphQL Federation spec
   - 'Real-world bug: RWB-0211'
+- id: GQL-ERROR-EXTENSIONS-SHAPE
+  status: draft
+  title: Поля extensions ошибки GraphQL не дублируются во вложенных объектах
+  category: graphql
+  protocols:
+  - graphql
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - graphql
+  - error-handling
+  - real-world-bug
+  - regression
+  preconditions:
+  - Ошибки GraphQL содержат extensions (code и пользовательские поля).
+  steps:
+  - action: Вызвать ошибку с пользовательскими полями extensions и сравнить ключи errors[].extensions и вложенных объектов
+      (exception, originalError).
+  expected:
+  - Каждое поле extensions присутствует в одном месте по документированной структуре; нежелательных копий во вложенных объектах
+    нет.
+  applicability:
+    when:
+    - Есть GraphQL с extensions ошибок.
+    skip_when:
+    - Нет GraphQL.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - GraphQL spec §7.1.2 (Errors)
+  - Смежная — GQL-ERRORS-NO-LEAK
+  - 'Real-world bug: RWB-0316'

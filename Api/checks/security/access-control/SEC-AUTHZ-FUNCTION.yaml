@@ -80,6 +80,9 @@ checks:
     notes: 'Real-world bug: RWB-0146 (GHSA-qh45-9g5p-m2v4)'
   - action: Переместить объект в раздел или контейнер, где у пользователя только право чтения
     notes: 'Real-world bug: RWB-0146 (GHSA-43cq-c2gq-pfpw)'
+  - action: Вызвать эндпоинты административного API с токеном пользователя другого типа (участника сайта, а не сотрудника)
+      и проверить 403
+    notes: 'Real-world bug: RWB-0146 (GHSA-hrww-x3fq-xcvh)'
   expected:
   - Access is denied according to policy; no protected side effect occurs.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

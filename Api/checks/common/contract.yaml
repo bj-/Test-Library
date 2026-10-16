@@ -13,6 +13,7 @@ checks:
   tags:
   - positive
   - contract
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -21,6 +22,8 @@ checks:
   - A valid request exists for the operation.
   steps:
   - action: Execute a valid request and validate the response against the contract.
+  - action: Проверить обязательные поля исходящего payload хука для каждого типа события
+    notes: 'Real-world bug: RWB-0314 (supabase/auth#1744)'
   expected:
   - Required fields are present.
   - Field types and constraints match the schema.
@@ -41,6 +44,8 @@ checks:
   risk:
     impact: high
     likelihood: high
+  references:
+  - 'Real-world bug: RWB-0314'
 - id: CONTRACT-UNKNOWN-FIELD-POLICY
   status: approved
   title: Unknown fields follow the documented contract policy

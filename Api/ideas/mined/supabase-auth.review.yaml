@@ -7,6 +7,8 @@
 # (ID бага), вариант пруфа без нового шага — в proofs.no_variant, new-паттерн как вариант существующей записи —
 # в proofs.retarget. Затем: cluster.py и apply_proofs.py. Правило сверки — mining/README.md, шаги 6–7, п. 7.
 #
+# Перекрёстное ревью (2026-10-16): ChatGPT и Qwen — supabase-auth+apollo-server+strapi+ghsa-nuget.reviewcheck.answer-1.md,
+# -2.md (сквозная нумерация 1–13); правило — mining/README.md, шаги 6–7, п. 7. Итог: №1, 2 — accept у обеих; №3 — accept (ChatGPT, Claude; Qwen — reject); №4 — вариант к AUTH-JWT-VALID-ACCEPTED (Qwen, Claude; ChatGPT — новая запись); №5 — обе модели: покрыто SEC-TOKEN-ISSUER — цель варианта заменена (Claude согласен); №6 — вариант к AUTH-LOGOUT-INVALIDATES (обе).
 # decision: accept | reject | pending
 batch: supabase-auth
 clusters:
@@ -37,9 +39,9 @@ proofs:
     variant: Подключить внешнего OIDC-провайдера с ключами JWKS на зарегистрированном алгоритме (ES256K, kty=EC, crv=secp256k1) и пройти вход до callback — ID-токен принимается, а неподдерживаемый ключ даёт контролируемую ошибку, не 500
     note: 'Перенесено на ревью из new: законный токен на допустимом алгоритме — AUTH-JWT-VALID-ACCEPTED (добавлена в hasura после триажа)'
   - bug: supabase/auth#1533
-    check_id: AUTH-JWT-VALID-ACCEPTED
+    check_id: SEC-TOKEN-ISSUER
     variant: Пройти вход через каждого встроенного OIDC-провайдера с актуальным значением iss его ID-токена — законный токен принимается
-    note: 'Перенесено на ревью из new: законный токен с актуальным issuer — позитивная пара к SEC-TOKEN-ISSUER'
+    note: 'Перенесено на ревью из new: законный токен с актуальным issuer провайдера принимается (перекрёстное ревью, обе модели)'
   - bug: supabase/auth#1550
     check_id: AUTH-LOGOUT-INVALIDATES
     variant: Удалить пользователя администратором и выполнить выход с его ещё не истёкшим токеном — выход завершается успешно или не мешает клиенту завершить сеанс, сессии пользователя недействительны

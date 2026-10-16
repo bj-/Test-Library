@@ -39,6 +39,12 @@ checks:
     notes: 'Real-world bug: RWB-0152 (GHSA-3277-h8g9-qj5f)'
   - action: Начать привязку внешней учётной записи (OAuth) с ID чужого объекта в URL и завершить callback
     notes: 'Real-world bug: RWB-0152 (GHSA-8hm4-r66f-29wr)'
+  - action: Отправить запрос принятия заявки (в друзья, приглашения), адресованной другому пользователю, и проверить отказ
+      403 и неизменный статус заявки
+    notes: 'Real-world bug: RWB-0152 (GHSA-fpj4-9qhx-5m6m)'
+  - action: Назначить узлу контента вне разрешённой пользователю части дерева связанную настройку (домен) через отдельный
+      эндпоинт и проверить 403
+    notes: 'Real-world bug: RWB-0152 (GHSA-fpvf-fvp5-996r)'
   expected:
   - Deny the operation; persisted state of resource A remains unchanged.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

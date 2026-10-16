@@ -660,6 +660,10 @@ checks:
   - action: Опубликовать черновик, в котором удалены элементы связи (delete со списком первичных ключей), и проверить успех
       публикации
     notes: 'Real-world bug: RWB-0015 (directus/directus#26084)'
+  - action: Опубликовать запись со связью на саму себя и проверить связь в опубликованной версии
+    notes: 'Real-world bug: RWB-0015 (strapi/strapi#24936)'
+  - action: Опубликовать запись со связями внутри компонента динамической зоны и проверить связи в опубликованной версии
+    notes: 'Real-world bug: RWB-0015 (strapi/strapi#24363)'
   expected:
   - Опубликованная версия совпадает с черновиком, включая порядок связей.
   - Публикация B не удаляет его из связей A; публикация между типами с разными режимами успешна.
@@ -698,6 +702,9 @@ checks:
   - Упорядоченная связь (one-to-many, many-to-one, ссылка на себя) с ручным порядком.
   steps:
   - action: Задать у родителя порядок детей B, A; изменить и сохранить ребёнка A, не трогая порядок; прочитать родителя.
+  - action: Переместить связь в начало списка (position start) у сущности с большим числом связей и проверить порядок, прочитав
+      все связи
+    notes: 'Real-world bug: RWB-0016 (strapi/strapi#25958)'
   expected:
   - Порядок детей у родителя прежний.
   applicability:
@@ -847,6 +854,9 @@ checks:
     notes: 'Real-world bug: RWB-0029 (directus/directus#23859)'
   - action: Изменить несущественное свойство поля первичного ключа, выгрузить снимок схемы и применить его к другому экземпляру
     notes: 'Real-world bug: RWB-0029 (directus/directus#23667)'
+  - action: Отправить изменение повторяемого вложенного компонента с id элементов из ответа чтения и проверить, что элементы
+      обновлены, а не отклонены
+    notes: 'Real-world bug: RWB-0029 (strapi/strapi#25074)'
   expected:
   - Импорт проходит без ошибок; результат совпадает с исходным, особые значения перенесены.
   applicability:
@@ -1106,3 +1116,78 @@ checks:
   references:
   - Смежная — CONTRACT-FIELD-SELECTION
   - 'Real-world bug: RWB-0258'
+- id: RES-RELATION-CONNECT-DISCONNECT-CONFLICT
+  status: draft
+  title: Подключение с позицией относительно отключаемой в том же запросе связи обрабатывается корректно
+  category: resources
+  protocols:
+  - rest
+  - graphql
+  kind: boundary
+  priority: P3
+  tags:
+  - boundary
+  - data-integrity
+  - real-world-bug
+  - regression
+  preconditions:
+  - Упорядоченные связи; в одном запросе можно передать connect с позицией (before/after) и disconnect.
+  steps:
+  - action: 'Отправить изменение с connect: [{id: A, position: {before: B}}] и disconnect: [{id: B}]; прочитать связи.'
+  expected:
+  - Запрос выполняется, порядок оставшихся связей корректен, или 4xx с понятной ошибкой по контракту; 5xx нет.
+  applicability:
+    when:
+    - Есть упорядоченные связи с connect/disconnect.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: low
+    likelihood: low
+  references:
+  - Смежная — RES-RELATION-ORDER-STABLE
+  - 'Real-world bug: RWB-0319'
+- id: RES-BULK-SINGLE-VALIDATION-PARITY
+  status: draft
+  title: Массовая операция валидирует так же, как одиночная
+  category: resources
+  protocols:
+  - rest
+  - graphql
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - validation
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Операция (публикация, изменение, удаление) есть в одиночном и массовом режиме.
+  steps:
+  - action: Выполнить одиночную и массовую операцию на одинаковых данных — допустимых и недопустимых, в том числе с вложенными
+      компонентами; прочитать состояние.
+  expected:
+  - 'Результат валидации совпадает: что принимает одиночная операция, принимает массовая, и наоборот.'
+  applicability:
+    when:
+    - Есть массовые операции.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Смежная — RES-BULK-LIMITS
+  - 'Real-world bug: RWB-0320'

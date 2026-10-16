@@ -28,6 +28,9 @@ checks:
   - action: Отправить в теле GraphQL-запроса необязательные поля extensions, variables и operationName со значением null и
       проверить, что ответ такой же, как без этих полей
     notes: 'Real-world bug: RWB-0122 (hasura/graphql-engine#10013)'
+  - action: Создать локализацию записи без нелокализуемых полей (медиа, вложенные компоненты) и проверить, что их значения
+      во всех локалях не изменились
+    notes: 'Real-world bug: RWB-0122 (strapi/strapi#25178)'
   expected:
   - каждый вариант соответствует правилам required/nullable/type
   applicability:

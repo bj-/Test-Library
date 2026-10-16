@@ -38,6 +38,9 @@ checks:
     notes: 'Real-world bug: RWB-0247 (GHSA-3v2j-6fw9-f57c)'
   - action: Изменить через API статус объекта, требующий старшей роли, ролью с правом обычного изменения
     notes: 'Real-world bug: RWB-0247 (GHSA-m7ph-9558-mrx3)'
+  - action: Вызвать административную POST-операцию от минимальной роли и проверить не только ответ (403 или редирект), но
+      и отсутствие её эффекта в данных
+    notes: 'Real-world bug: RWB-0247 (GHSA-xhw7-j96h-c3g5)'
   expected:
   - Request is denied and privileged state remains unchanged.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

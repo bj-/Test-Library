@@ -21,6 +21,9 @@ checks:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
   - action: 'Отправить запрос с Origin: null при неразрешённом null-origin и проверить, что он отклоняется'
     notes: 'Real-world bug: RWB-0112 (GHSA-6cqp-g7gg-8hr5)'
+  - action: Отправить preflight с Access-Control-Request-Headers, содержащим собственные заголовки API (выбор версии), и убедиться,
+      что они разрешены
+    notes: 'Real-world bug: RWB-0112 (supabase/auth#1589)'
   expected:
   - разрешённые/запрещённые origins и credentials соответствуют политике
   applicability:

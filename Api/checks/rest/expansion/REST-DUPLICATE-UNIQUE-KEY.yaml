@@ -27,6 +27,8 @@ checks:
     notes: 'Real-world bug: RWB-0114 (directus/directus#26997)'
   - action: Нарушить составное уникальное ограничение из двух полей и проверить 4xx с кодом нарушения уникальности
     notes: 'Real-world bug: RWB-0114 (directus/directus#25784)'
+  - action: Повторить приглашение на email пользователя, который уже приглашён и не принял приглашение
+    notes: 'Real-world bug: RWB-0114 (supabase/auth#2057)'
   expected:
   - конфликт обработан документированно, второй уникальный ресурс не создаётся
   applicability:

@@ -6,7 +6,7 @@
 
 ## Сводка
 
-- Новых паттернов: 3 → идей: 3 (принять: 3, отклонить: 0, не решено: 0).
+- Новых паттернов: 3 → идей: 3 (принять: 2, отклонить: 1, не решено: 0).
 - Пруфы к существующим: 10 багов → 7 записей; новых шагов-вариантов: 5.
 
 ## Новые идеи
@@ -15,9 +15,9 @@
 
 | # | Решение | Запись / файл | Идея | Подтверждающие баги |
 |---|---|---|---|---|
-| 1 | accept | `GQL-ERROR-EXTENSIONS-SHAPE` (RWB-0311)<br>`checks/graphql/graphql.yaml` | Поля extensions ошибки GraphQL (code и пользовательские) присутствуют по документированной структуре ровно в одном месте — без копий во вложенных объектах (exception, originalError) | [apollographql/apollo-server#3835](https://github.com/apollographql/apollo-server/issues/3835) |
-| 2 | accept | `RESIL-COLD-START-REQUESTS` (RWB-0312)<br>`checks/common/resilience.yaml` | Сразу после старта экземпляра (асинхронная загрузка схемы, прогрев) серия одинаковых корректных запросов обслуживается одинаково — либо все успешны, либо до готовности 503 с Retry-After и readiness «не готов»; механизм в баге не описан | [apollographql/apollo-server#3416](https://github.com/apollographql/apollo-server/issues/3416) |
-| 3 | accept | `HTTP-CACHEABLE-RESPONSE-CACHE-CONTROL` (RWB-0313)<br>`checks/rest/http-protocol.yaml` | Ответ, для которого включено кэширование (подсказки max-age у всех полей, политика кэша маршрута), содержит Cache-Control по итоговой политике — max-age как минимум из подсказок, public или private; пара к REST-SENSITIVE-CACHE-CONTROL | [apollographql/apollo-server#2918](https://github.com/apollographql/apollo-server/issues/2918) |
+| 1 | accept | `GQL-ERROR-EXTENSIONS-SHAPE` (RWB-0316)<br>`checks/graphql/graphql.yaml` | Поля extensions ошибки GraphQL (code и пользовательские) присутствуют по документированной структуре ровно в одном месте — без копий во вложенных объектах (exception, originalError) | [apollographql/apollo-server#3835](https://github.com/apollographql/apollo-server/issues/3835) |
+| 2 | reject | отклонено: Механизм в баге не описан, воспроизводится только в связке apollo-server-lambda и serverless-offline; ожидание (503, readiness) не обосновано первоисточником — перекрёстное ревью, обе модели | Сразу после старта экземпляра (асинхронная загрузка схемы, прогрев) серия одинаковых корректных запросов обслуживается одинаково — либо все успешны, либо до готовности 503 с Retry-After и readiness «не готов»; механизм в баге не описан | [apollographql/apollo-server#3416](https://github.com/apollographql/apollo-server/issues/3416) |
+| 3 | accept | `HTTP-CACHEABLE-RESPONSE-CACHE-CONTROL` (RWB-0317)<br>`checks/rest/http-protocol.yaml` | Ответ, для которого включено кэширование (подсказки max-age у всех полей, политика кэша маршрута), содержит Cache-Control по итоговой политике — max-age как минимум из подсказок, public или private; пара к REST-SENSITIVE-CACHE-CONTROL | [apollographql/apollo-server#2918](https://github.com/apollographql/apollo-server/issues/2918) |
 
 ## Пруфы к существующим
 
@@ -46,7 +46,7 @@
 |---|---|---|
 | [apollographql/apollo-server#3141](https://github.com/apollographql/apollo-server/issues/3141) | extends | В объединённой схеме выбрать поле общего типа-значения, объявленного в нескольких подграфах, у сущностей разных подграфов — данные возвращаются без ошибок |
 
-### GQL-INPUT-VALIDATION — Входные типы и переменные валидируются (RWB-0314, багов: 1)
+### GQL-INPUT-VALIDATION — Входные типы и переменные валидируются (RWB-0318, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|

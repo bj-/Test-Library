@@ -27,6 +27,9 @@ checks:
     notes: 'Real-world bug: RWB-0132 (nestjs/nest#13093)'
   - action: Регистрация middleware шаблоном на все маршруты и под альтернативным HTTP-сервером
     notes: 'Real-world bug: RWB-0132 (nestjs/nest#972)'
+  - action: Проверить, что с включёнными плагинами Content-Security-Policy содержит директивы по умолчанию и пользовательские,
+      а не только добавленные плагином
+    notes: 'Real-world bug: RWB-0132 (strapi/strapi#24525)'
   expected:
   - обязательные заголовки присутствуют и согласованы с политикой
   applicability:

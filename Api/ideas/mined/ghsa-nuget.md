@@ -15,7 +15,7 @@
 
 | # | Решение | Запись / файл | Идея | Подтверждающие баги |
 |---|---|---|---|---|
-| 1 | accept | `AUTH-SAML-ASSERTION-REPLAY` (RWB-0311)<br>`checks/security/authentication-session.yaml` | Повторно предъявленное SAML-утверждение (или другой одноразовый токен входа — WS-Federation, OIDC ID-токен с nonce) в пределах срока действия отклоняется при включённой защите от повторов, в том числе на другом экземпляре сервиса | [GHSA-9jr3-rj99-8jq3](https://github.com/advisories/GHSA-9jr3-rj99-8jq3) |
+| 1 | accept | `AUTH-SAML-ASSERTION-REPLAY` (RWB-0323)<br>`checks/security/authentication-session.yaml` | Повторно предъявленное SAML-утверждение (или другой одноразовый токен входа — WS-Federation, OIDC ID-токен с nonce) в пределах срока действия отклоняется при включённой защите от повторов, в том числе на другом экземпляре сервиса | [GHSA-9jr3-rj99-8jq3](https://github.com/advisories/GHSA-9jr3-rj99-8jq3) |
 
 ## Пруфы к существующим
 
@@ -153,7 +153,7 @@
 |---|---|---|
 | [GHSA-vrgw-pc9c-qrrc](https://github.com/advisories/GHSA-vrgw-pc9c-qrrc) | extends | Указать в настройке источника данных URL внешнего WSDL с вредоносным содержимым и проверить, что сервер не генерирует и не исполняет код из него |
 
-### HTTP-ACCEPT-LANGUAGE — Язык сообщений определяется Accept-Language с fallback (RWB-0312, багов: 1)
+### HTTP-ACCEPT-LANGUAGE — Язык сообщений определяется Accept-Language с fallback (RWB-0324, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|

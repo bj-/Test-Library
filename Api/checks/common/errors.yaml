@@ -14,6 +14,7 @@ checks:
   - contract
   - error-handling
   - compatibility
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -21,6 +22,9 @@ checks:
   - Модель ошибок содержит code/type.
   steps:
   - action: Вызвать каждую задокументированную ошибку операции.
+  - action: Вызвать задокументированные ошибки в каждой поддерживаемой версии API (заголовок версии) и проверить наличие машиночитаемого
+      кода
+    notes: 'Real-world bug: RWB-0315 (supabase/auth#1631)'
   expected:
   - Код ошибки совпадает с документацией и не зависит от языка сообщения.
   applicability:
@@ -38,6 +42,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0315'
 - id: ERR-INTERNAL-ERROR-SHAPE
   status: approved
   title: Внутренняя ошибка сервера возвращается в общей модели без утечек
@@ -70,6 +76,8 @@ checks:
   - action: Вызвать ошибку СУБД в операции, выполняющей запрос пользователя (EXPLAIN), и проверить, что текст ошибки не содержит
       значений из данных
     notes: 'Real-world bug: RWB-0068 (GHSA-vf99-xw26-86g5)'
+  - action: Отправить отрицательные значения параметров пагинации (skip, take) и проверить, что ответ 4xx и не содержит стек-трейса
+    notes: 'Real-world bug: RWB-0068 (GHSA-77gj-crhp-3gvx)'
   expected:
   - Ответ в модели ошибок с correlation id.
   - Нет stack trace, SQL, путей файлов, версий библиотек и секретов.

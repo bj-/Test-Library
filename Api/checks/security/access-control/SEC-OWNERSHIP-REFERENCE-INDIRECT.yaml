@@ -79,6 +79,9 @@ checks:
     notes: 'Real-world bug: RWB-0151 (GHSA-j5mc-p8qg-39j7)'
   - action: Запросить подтверждение удаления дочернего объекта своего ресурса с ID дочернего объекта другого пользователя
     notes: 'Real-world bug: RWB-0151 (GHSA-mr9h-45p9-fg8h)'
+  - action: Запросить анонимно публичный ресурс со ссылкой на защищённый без expand и с expand, в том числе во вложенных блоках,
+      и проверить, что не возвращаются ни свойства, ни имя, маршрут и id защищённого
+    notes: 'Real-world bug: RWB-0151 (GHSA-wr57-hqmp-fgvh)'
   expected:
   - Authorization is enforced for both parent and referenced child resources; no cross-owner association is created.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

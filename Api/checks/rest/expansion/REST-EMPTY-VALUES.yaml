@@ -31,6 +31,9 @@ checks:
     notes: 'Real-world bug: RWB-0115 (directus/directus#23939)'
   - action: Получить ответ или запись, где списочное поле пусто, и проверить, что оно выдаётся как [], а не {}
     notes: 'Real-world bug: RWB-0115 (Kong/kong#6390)'
+  - action: Отправить массив полиморфных элементов (динамическая зона) с элементом null и проверить 4xx или пропуск элемента
+      без 5xx
+    notes: 'Real-world bug: RWB-0115 (strapi/strapi#24303)'
   expected:
   - пустые значения принимаются только если допускаются контрактом
   applicability:

@@ -12,6 +12,7 @@ checks:
   - pagination
   - contract
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -20,6 +21,9 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Пройти все страницы при сортировке по вычисляемому полю (статус публикации) и проверить отсутствие повторов и
+      пропусков
+    notes: 'Real-world bug: RWB-0322 (strapi/strapi#26030)'
   expected:
   - при обходе стабильного набора нет пропусков и дубликатов
   applicability:
@@ -39,4 +43,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0322'

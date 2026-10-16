@@ -41,6 +41,9 @@ checks:
     notes: 'Real-world bug: RWB-0107 (Kong/kong#10182)'
   - action: Включить буферизацию ответа, сделать upstream недоступным и проверить 502, как без буферизации
     notes: 'Real-world bug: RWB-0107 (Kong/kong#6726)'
+  - action: Получить от зависимости 4xx или 5xx на кэшируемый запрос, восстановить зависимость и повторить запрос в пределах
+      ttl кэша
+    notes: 'Real-world bug: RWB-0107 (apollographql/apollo-server#1510)'
   expected:
   - Ответ 503 или задокументированная ошибка, без зависания и утечек; после восстановления работа продолжается.
   applicability:

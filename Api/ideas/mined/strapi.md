@@ -15,8 +15,8 @@
 
 | # | Решение | Запись / файл | Идея | Подтверждающие баги |
 |---|---|---|---|---|
-| 1 | accept | `RES-RELATION-CONNECT-DISCONNECT-CONFLICT` (RWB-0311)<br>`checks/common/resource-lifecycle.yaml` | Изменение упорядоченных связей, где в одном запросе connect ставит позицию относительно связи из disconnect (before/after удаляемой), выполняется с корректным порядком оставшихся связей или отклоняется 4xx с понятной ошибкой — без 5xx | [strapi/strapi#25710](https://github.com/strapi/strapi/issues/25710) |
-| 2 | accept | `RES-BULK-SINGLE-VALIDATION-PARITY` (RWB-0312)<br>`checks/common/resource-lifecycle.yaml` | Массовая операция (публикация, изменение, удаление) применяет те же правила валидации, что одиночная, — запись, которую принимает одиночная операция, принимает и массовая, и наоборот, в том числе с вложенными компонентами | [strapi/strapi#24576](https://github.com/strapi/strapi/issues/24576) |
+| 1 | accept | `RES-RELATION-CONNECT-DISCONNECT-CONFLICT` (RWB-0319)<br>`checks/common/resource-lifecycle.yaml` | Изменение упорядоченных связей, где в одном запросе connect ставит позицию относительно связи из disconnect (before/after удаляемой), выполняется с корректным порядком оставшихся связей или отклоняется 4xx с понятной ошибкой — без 5xx | [strapi/strapi#25710](https://github.com/strapi/strapi/issues/25710) |
+| 2 | accept | `RES-BULK-SINGLE-VALIDATION-PARITY` (RWB-0320)<br>`checks/common/resource-lifecycle.yaml` | Массовая операция (публикация, изменение, удаление) применяет те же правила валидации, что одиночная, — запись, которую принимает одиночная операция, принимает и массовая, и наоборот, в том числе с вложенными компонентами | [strapi/strapi#24576](https://github.com/strapi/strapi/issues/24576) |
 
 ## Пруфы к существующим
 
@@ -73,7 +73,7 @@
 |---|---|---|
 | [strapi/strapi#24285](https://github.com/strapi/strapi/issues/24285) | extends | Сбросить ранее заданное необязательное поле enum в null и опубликовать запись |
 
-### REST-FILTER-INVALID — Невалидный фильтр (RWB-0313, багов: 1)
+### REST-FILTER-INVALID — Невалидный фильтр (RWB-0321, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -103,7 +103,7 @@
 |---|---|---|
 | [strapi/strapi#24624](https://github.com/strapi/strapi/issues/24624) | extends | Повторить запрос с pageSize и page на каждом списочном эндпоинте, включая эндпоинты плагинов, и проверить размер страницы, смещение и мета |
 
-### REST-PAGINATION-STABLE-ORDER — Стабильный порядок пагинации (RWB-0314, багов: 1)
+### REST-PAGINATION-STABLE-ORDER — Стабильный порядок пагинации (RWB-0322, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|

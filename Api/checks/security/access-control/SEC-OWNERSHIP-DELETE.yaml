@@ -33,6 +33,9 @@ checks:
   - action: Удалить контейнер (папку) с объектами других пользователей пользователем без права удалять чужие; чужие объекты
       не удаляются каскадом
     notes: 'Real-world bug: RWB-0149 (GHSA-7h62-6v23-v8fm)'
+  - action: Удалить медиа-элемент из папки вне разрешённой пользователю части дерева, подставив его ID в URL, и проверить
+      403
+    notes: 'Real-world bug: RWB-0149 (GHSA-wx5h-wqfq-v698)'
   expected:
   - Deny the operation; resource A remains available to its owner.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

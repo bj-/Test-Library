@@ -13,6 +13,7 @@ checks:
   - filtering
   - validation
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -20,6 +21,9 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Отправить параметр выборки связей (populate) с недопустимой для полиморфного поля структурой (конкретные поля,
+      null) и проверить 4xx
+    notes: 'Real-world bug: RWB-0321 (strapi/strapi#25788)'
   expected:
   - неизвестные поля/операторы обрабатываются по контракту
   applicability:
@@ -38,4 +42,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0321'

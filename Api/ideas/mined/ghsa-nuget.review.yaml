@@ -7,6 +7,8 @@
 # (ID бага), вариант пруфа без нового шага — в proofs.no_variant, new-паттерн как вариант существующей записи —
 # в proofs.retarget. Затем: cluster.py и apply_proofs.py. Правило сверки — mining/README.md, шаги 6–7, п. 7.
 #
+# Перекрёстное ревью (2026-10-16): ChatGPT и Qwen — supabase-auth+apollo-server+strapi+ghsa-nuget.reviewcheck.answer-1.md,
+# -2.md (сквозная нумерация 1–13); правило — mining/README.md, шаги 6–7, п. 7. Итог: №13 — accept у обеих.
 # decision: accept | reject | pending
 batch: ghsa-nuget
 clusters:

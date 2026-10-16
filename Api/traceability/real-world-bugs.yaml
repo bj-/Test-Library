@@ -32,6 +32,11 @@ RWB-0001:
     product: Directus
     closed: '2026-09-22'
     summary: Фильтр по строковому значению в JSON-поле молча не находит записи
+  - url: https://github.com/strapi/strapi/issues/25795
+    fix: https://github.com/strapi/strapi/pull/25810
+    product: Strapi
+    closed: '2026-03-31'
+    summary: Операторы фильтра $contains и $containsi в REST возвращают пустой результат
 RWB-0002:
   pattern: Логически эквивалентные фильтры (плоская форма, вложенные $and/$or) дают одинаковый ответ
   checks:
@@ -174,6 +179,12 @@ RWB-0004:
     product: Kong
     closed: '2020-09-18'
     summary: Список запрета с несуществующей группой отклоняет всех пользователей.
+  - url: https://github.com/strapi/strapi/issues/25965
+    fix: https://github.com/strapi/strapi/pull/25977
+    product: Strapi
+    closed: '2026-04-15'
+    summary: Пользователю с условными правами (тот же создатель, та же роль) вспомогательный запрос по документу отвечает
+      403
 RWB-0005:
   pattern: Делегированный администратор над собственной учёткой — явное разрешение или 403 по политике, без 5xx
   checks:
@@ -333,6 +344,13 @@ RWB-0009:
     closed: '2026-10-01'
     summary: Сериализация Buffer отдавала в ответе общий пул памяти процесса с данными чужих запросов — видно в ответе публичной
       страницы.
+  - url: https://github.com/advisories/GHSA-8g53-9m3c-69xg
+    product: Magick.NET-Q16-AnyCPU, Magick.NET-Q16-HDRI-AnyCPU, Magick.NET-Q16-HDRI-OpenMP-arm64, Magick.NET-Q16-HDRI-arm64,
+      Magick.NET-Q16-HDRI-x64, Magick.NET-Q16-HDRI-x86, Magick.NET-Q16-OpenMP-arm64, Magick.NET-Q16-OpenMP-x64, Magick.NET-Q16-arm64,
+      Magick.NET-Q16-x64, Magick.NET-Q16-x86, Magick.NET-Q8-AnyCPU, Magick.NET-Q8-OpenMP-arm64, Magick.NET-Q8-OpenMP-x64,
+      Magick.NET-Q8-arm64, Magick.NET-Q8-x64, Magick.NET-Q8-x86
+    closed: '2026-07-23'
+    summary: Декодер MNG оставляет часть пикселей неинициализированными — в результат попадает содержимое памяти процесса
 RWB-0010:
   pattern: Интроспекция (RFC 7662) — active true для действующих токенов каждого типа с теми же claims, false для отозванных
     и истёкших
@@ -438,6 +456,20 @@ RWB-0014:
     product: Directus
     closed: '2025-11-17'
     summary: Алиас поля в GraphQL ломает проверку прав для фильтра по связи many-to-any
+  - url: https://github.com/apollographql/apollo-server/issues/3983
+    fix: https://github.com/apollographql/apollo-server/pull/4071
+    product: Apollo Server
+    closed: '2020-05-08'
+    summary: Шлюз федерации теряет поля из вложенных inline-фрагментов по union и возвращает null вместо значения
+  - url: https://github.com/apollographql/apollo-server/issues/3253
+    fix: https://github.com/apollographql/apollo-server/pull/3529
+    product: Apollo Server
+    closed: '2019-11-20'
+    summary: Шлюз разворачивает фрагмент на интерфейсе в фрагменты на все реализации, и подграф отклоняет запрос ошибкой валидации
+  - url: https://github.com/apollographql/apollo-server/issues/1724
+    product: Apollo Server
+    closed: '2018-10-05'
+    summary: Алиасы в именованном фрагменте на вложенных уровнях дают null и ошибку «Expected Iterable»
 RWB-0015:
   pattern: Публикация черновика переносит все изменения (включая связи и их порядок), не удаляет объект из связей других и
     работает между типами с разными режимами
@@ -466,6 +498,16 @@ RWB-0015:
     product: Directus
     closed: '2026-04-10'
     summary: Публикация версии (черновика) падает «Invalid time value», версию нельзя опубликовать
+  - url: https://github.com/strapi/strapi/issues/24936
+    fix: https://github.com/strapi/strapi/pull/25890
+    product: Strapi
+    closed: '2026-05-18'
+    summary: Связь записи на саму себя теряется в опубликованной версии
+  - url: https://github.com/strapi/strapi/issues/24363
+    fix: https://github.com/strapi/strapi/pull/24539
+    product: Strapi
+    closed: '2025-10-09'
+    summary: Связи в компоненте динамической зоны отсутствуют в опубликованной версии
 RWB-0016:
   pattern: Изменение связанного ресурса не меняет ручной порядок связей у другой стороны
   checks:
@@ -477,6 +519,11 @@ RWB-0016:
     product: Strapi
     closed: '2026-07-06'
     summary: Редактирование дочерней записи сбрасывало ручной порядок oneToMany-связей у родителя
+  - url: https://github.com/strapi/strapi/issues/25958
+    fix: https://github.com/strapi/strapi/pull/26112
+    product: Strapi
+    closed: '2026-07-16'
+    summary: Связь, перемещённая в начало списка, после сохранения оказывается на второй позиции
 RWB-0017:
   pattern: Ссылка-действие из письма работает в другом браузере/сессии и после перезапуска сервиса (или понятная ошибка, но
     не 5xx), во всех вариантах настройки потока
@@ -656,6 +703,18 @@ RWB-0024:
     product: go.etcd.io/etcd/v3
     closed: '2026-07-24'
     summary: TLS-слушатель создаёт горутину рукопожатия без тайм-аута на каждое соединение без ClientHello
+  - url: https://github.com/advisories/GHSA-334f-vvp4-7g6p
+    product: Microsoft.AspNetCore.SignalR.Common, Microsoft.AspNetCore.SignalR.Core
+    closed: '2026-10-13'
+    summary: Клиент с повторным подключением без чтения сообщений бесконечно блокирует рассылку остальным через обратное давление
+      буфера
+  - url: https://github.com/advisories/GHSA-j8gr-8fp3-5q5h
+    product: Microsoft.AspNetCore.App.Runtime.linux-arm, Microsoft.AspNetCore.App.Runtime.linux-arm64, Microsoft.AspNetCore.App.Runtime.linux-musl-arm,
+      Microsoft.AspNetCore.App.Runtime.linux-musl-arm64, Microsoft.AspNetCore.App.Runtime.linux-musl-x64, Microsoft.AspNetCore.App.Runtime.linux-x64,
+      Microsoft.AspNetCore.App.Runtime.osx-arm64, Microsoft.AspNetCore.App.Runtime.osx-x64, Microsoft.AspNetCore.App.Runtime.win-arm,
+      Microsoft.AspNetCore.App.Runtime.win-arm64, Microsoft.AspNetCore.App.Runtime.win-x64, Microsoft.AspNetCore.App.Runtime.win-x86
+    closed: '2026-07-21'
+    summary: Повторное подключение с сохранением состояния в SignalR позволяет одному клиенту отказать в обслуживании другим
 RWB-0025:
   pattern: Права и согласия не переходят к пересозданному пользователю с тем же логином; привязка к неизменяемому id
   checks:
@@ -706,6 +765,11 @@ RWB-0027:
     product: Directus
     closed: '2025-11-21'
     summary: При публикации под подпутём redirect_uri для SSO строился без базового пути PUBLIC_URL
+  - url: https://github.com/supabase/auth/issues/2468
+    fix: https://github.com/supabase/auth/pull/2532
+    product: Supabase Auth
+    closed: '2026-05-26'
+    summary: В шаблонах писем-уведомлений недоступна переменная адреса сайта, ссылки и картинки в письмах битые
 RWB-0028:
   pattern: Режим «только чтение» для пользовательских запросов (SQL, GraphQL) запрещает любые изменения, а не проверяет первое
     ключевое слово
@@ -783,6 +847,11 @@ RWB-0029:
     product: Directus
     closed: '2024-09-21'
     summary: 'Снимок схемы без признака уникальности первичного ключа не применяется: «Primary key must be unique»'
+  - url: https://github.com/strapi/strapi/issues/25074
+    fix: https://github.com/strapi/strapi/pull/25714
+    product: Strapi
+    closed: '2026-03-19'
+    summary: Изменение повторяемого компонента с id из ответа чтения отклоняется ValidationError Invalid key id
 RWB-0030:
   pattern: IP клиента определяется по X-Forwarded-For с учётом числа доверенных прокси, одинаково на всех маршрутах и модулях
   checks:
@@ -808,6 +877,10 @@ RWB-0030:
     product: puma
     closed: '2024-09-20'
     summary: Заголовок с подчёркиванием (X-Forwarded_For) после нормализации перезаписывал заголовок, установленный прокси
+  - url: https://github.com/advisories/GHSA-fjhg-3mrh-mm7h
+    product: DNN.PLATFORM
+    closed: '2025-06-20'
+    summary: Специальный запрос или прокси обходит фильтр входа по IP
 RWB-0031:
   pattern: Повреждённый файл (некорректные размеры блоков) при разборе метаданных даёт 4xx, а не падение процесса
   checks:
@@ -838,6 +911,56 @@ RWB-0031:
     product: phpoffice/phpspreadsheet
     closed: '2026-07-23'
     summary: Цикл в цепочке секторов XLS/OLE исчерпывает память при определении типа загруженного файла
+  - url: https://github.com/advisories/GHSA-qh5g-q395-cx4j
+    product: Magick.NET-Q16-AnyCPU, Magick.NET-Q16-HDRI-AnyCPU, Magick.NET-Q16-HDRI-OpenMP-arm64, Magick.NET-Q16-HDRI-arm64,
+      Magick.NET-Q16-HDRI-x64, Magick.NET-Q16-HDRI-x86, Magick.NET-Q16-OpenMP-arm64, Magick.NET-Q16-OpenMP-x64, Magick.NET-Q16-arm64,
+      Magick.NET-Q16-x64, Magick.NET-Q16-x86, Magick.NET-Q8-AnyCPU, Magick.NET-Q8-OpenMP-arm64, Magick.NET-Q8-OpenMP-x64,
+      Magick.NET-Q8-arm64, Magick.NET-Q8-x64, Magick.NET-Q8-x86
+    closed: '2026-07-24'
+    summary: Некорректный XMP-профиль изображения приводит к use-after-free и падению процесса при разборе
+  - url: https://github.com/advisories/GHSA-mx48-2qq3-23hf
+    product: Magick.NET-Q16-AnyCPU, Magick.NET-Q16-HDRI-AnyCPU, Magick.NET-Q16-HDRI-OpenMP-arm64, Magick.NET-Q16-HDRI-arm64,
+      Magick.NET-Q16-HDRI-x64, Magick.NET-Q16-HDRI-x86, Magick.NET-Q16-OpenMP-arm64, Magick.NET-Q16-OpenMP-x64, Magick.NET-Q16-arm64,
+      Magick.NET-Q16-x64, Magick.NET-Q16-x86, Magick.NET-Q8-AnyCPU, Magick.NET-Q8-OpenMP-arm64, Magick.NET-Q8-OpenMP-x64,
+      Magick.NET-Q8-arm64, Magick.NET-Q8-x64, Magick.NET-Q8-x86
+    closed: '2026-07-24'
+    summary: В декодере MVG нет проверки глубины — специально сформированное изображение вызывает переполнение стека
+  - url: https://github.com/advisories/GHSA-7gg8-qqx7-92g5
+    product: Magick.NET-Q16-AnyCPU, Magick.NET-Q16-HDRI-AnyCPU, Magick.NET-Q16-HDRI-OpenMP-arm64, Magick.NET-Q16-HDRI-OpenMP-x64,
+      Magick.NET-Q16-HDRI-arm64, Magick.NET-Q16-HDRI-x64, Magick.NET-Q16-HDRI-x86, Magick.NET-Q16-OpenMP-arm64, Magick.NET-Q16-OpenMP-x64,
+      Magick.NET-Q16-arm64, Magick.NET-Q16-x64, Magick.NET-Q16-x86, Magick.NET-Q8-AnyCPU, Magick.NET-Q8-OpenMP-arm64, Magick.NET-Q8-OpenMP-x64,
+      Magick.NET-Q8-arm64, Magick.NET-Q8-x64, Magick.NET-Q8-x86
+    closed: '2026-05-18'
+    summary: Повреждённый файл MIFF зацикливает декодер и исчерпывает процессор
+  - url: https://github.com/advisories/GHSA-j96m-mjp6-99xr
+    fix: https://github.com/ImageMagick/ImageMagick/commit/c5b23cbf2119540725e6dc81f4deb25798ead6a4
+    product: Magick.NET-Q16-AnyCPU, Magick.NET-Q16-HDRI-AnyCPU, Magick.NET-Q16-HDRI-OpenMP-arm64, Magick.NET-Q16-HDRI-OpenMP-x64,
+      Magick.NET-Q16-HDRI-arm64, Magick.NET-Q16-HDRI-x64, Magick.NET-Q16-HDRI-x86, Magick.NET-Q16-OpenMP-arm64, Magick.NET-Q16-OpenMP-x64,
+      Magick.NET-Q16-OpenMP-x86, Magick.NET-Q16-arm64, Magick.NET-Q16-x64, Magick.NET-Q16-x86, Magick.NET-Q8-AnyCPU, Magick.NET-Q8-OpenMP-arm64,
+      Magick.NET-Q8-OpenMP-x64, Magick.NET-Q8-arm64, Magick.NET-Q8-x64, Magick.NET-Q8-x86
+    closed: '2026-03-12'
+    summary: SVG, ссылающийся сам на себя, вызывает падение процесса обработки и оставляет временные файлы
+  - url: https://github.com/advisories/GHSA-v994-63cg-9wj3
+    fix: https://github.com/ImageMagick/ImageMagick/commit/880057ce34f6da9dff2fe3b290bbbc45b743e613
+    product: Magick.NET-Q16-AnyCPU, Magick.NET-Q16-HDRI-AnyCPU, Magick.NET-Q16-HDRI-OpenMP-arm64, Magick.NET-Q16-HDRI-OpenMP-x64,
+      Magick.NET-Q16-HDRI-arm64, Magick.NET-Q16-HDRI-x64, Magick.NET-Q16-HDRI-x86, Magick.NET-Q16-OpenMP-arm64, Magick.NET-Q16-OpenMP-x64,
+      Magick.NET-Q16-OpenMP-x86, Magick.NET-Q16-arm64, Magick.NET-Q16-x64, Magick.NET-Q16-x86, Magick.NET-Q8-AnyCPU, Magick.NET-Q8-OpenMP-arm64,
+      Magick.NET-Q8-OpenMP-x64, Magick.NET-Q8-arm64, Magick.NET-Q8-x64, agick.NET-Q8-x86
+    closed: '2026-02-24'
+    summary: Изображение с некорректным IPTC-профилем зацикливает запись IPTCTEXT
+  - url: https://github.com/advisories/GHSA-pqgj-2p96-rx85
+    fix: https://github.com/ImageMagick/ImageMagick/commit/332c1566acc2de77857032d3c2504ead6210ff50
+    product: Magick.NET-Q16-AnyCPU, Magick.NET-Q16-HDRI-AnyCPU, Magick.NET-Q16-HDRI-OpenMP-arm64, Magick.NET-Q16-HDRI-OpenMP-x64,
+      Magick.NET-Q16-HDRI-arm64, Magick.NET-Q16-HDRI-x64, Magick.NET-Q16-HDRI-x86, Magick.NET-Q16-OpenMP-arm64, Magick.NET-Q16-OpenMP-x64,
+      Magick.NET-Q16-OpenMP-x86, Magick.NET-Q16-arm64, Magick.NET-Q16-x64, Magick.NET-Q16-x86, Magick.NET-Q8-AnyCPU, Magick.NET-Q8-OpenMP-arm64,
+      Magick.NET-Q8-OpenMP-x64, Magick.NET-Q8-arm64, Magick.NET-Q8-x64, Magick.NET-Q8-x86
+    closed: '2026-02-24'
+    summary: Файл PCD без корректного маркера зацикливает декодер
+  - url: https://github.com/advisories/GHSA-rxmq-m78w-7wmc
+    fix: https://github.com/SixLabors/ImageSharp/commit/55e49262df9a057dff9b7807ed1b7bdb49187c3f
+    product: SixLabors.ImageSharp
+    closed: '2025-07-30'
+    summary: GIF с блоком комментария без терминатора зацикливает декодер
 RWB-0032:
   pattern: Ошибка обработчика в схеме запрос-ответ через брокер возвращается вызывающему в документированном формате, а не
     таймаутом
@@ -904,6 +1027,11 @@ RWB-0036:
     product: Keycloak
     closed: '2026-06-03'
     summary: Расширения API после регресса принимают только Bearer/DPoP и отклоняют Basic
+  - url: https://github.com/strapi/strapi/issues/24669
+    fix: https://github.com/strapi/strapi/pull/24954
+    product: Strapi
+    closed: '2026-01-09'
+    summary: Обновление токена игнорирует refresh-токен из httpOnly cookie и отвечает 400 Missing refresh token
 RWB-0037:
   pattern: Загрузка не перезаписывает чужой файл с тем же именем или ключом хранилища
   checks:
@@ -1095,6 +1223,15 @@ RWB-0044:
     product: Keycloak
     closed: '2026-07-21'
     summary: Обмен токена с DPoP-привязкой выдаёт новый токен без привязки (cnf отсутствует).
+  - url: https://github.com/advisories/GHSA-48pq-2xq3-c2m4
+    product: CoreWCF.Primitives
+    closed: '2026-06-19'
+    summary: Метод подтверждения SAML и ключ holder-of-key не проверяются — утверждение принимается без доказательства владения
+  - url: https://github.com/advisories/GHSA-v9xq-2mvm-x8xc
+    fix: https://github.com/DuendeSoftware/IdentityServer/commit/f28cac921c1f545afe65af71a9327224755b6dac
+    product: Duende.IdentityServer
+    closed: '2024-10-28'
+    summary: Локальные эндпоинты сервера авторизации принимают DPoP-токен без проверки claim cnf
 RWB-0045:
   pattern: Код ответа соответствует фактическому результату; при 5xx — состояние не изменено (или явное сообщение о частичном
     выполнении)
@@ -1273,6 +1410,11 @@ RWB-0054:
     product: github.com/amir20/dozzle
     closed: '2026-09-08'
     summary: Защита от SSRF вебхуков не распознаёт IPv6-адреса перехода
+  - url: https://github.com/advisories/GHSA-74p6-39f2-23v3
+    fix: https://github.com/umbraco/Umbraco-CMS/commit/6b8067815c02ae43161966a8075a3585e1bc4de0
+    product: Umbraco.Cms.Core, Umbraco.Cms.Web.BackOffice
+    closed: '2024-04-17'
+    summary: 'Журнал неуспешных вебхуков доступен вне режима отладки: слепой SSRF позволяет сканировать порты'
 RWB-0055:
   pattern: API-ключи ограничены по правам, отзываются и не раскрываются
   checks:
@@ -1337,6 +1479,11 @@ RWB-0058:
     product: Keycloak
     closed: '2026-09-29'
     summary: Проверка согласия сравнивала идентификатор строго, а поиск пользователя — без учёта формы
+  - url: https://github.com/supabase/auth/issues/1566
+    fix: https://github.com/supabase/auth/pull/1567
+    product: Supabase Auth
+    closed: '2024-04-30'
+    summary: Тестовые OTP-коды не срабатывают для номеров с префиксом «+» и кодом страны
 RWB-0059:
   pattern: После выхода токен и сессия недействительны
   checks:
@@ -1362,6 +1509,16 @@ RWB-0059:
     product: rack
     closed: '2025-05-08'
     summary: Та же гонка восстановления сессии после выхода в версии до выноса кода в отдельный пакет
+  - url: https://github.com/supabase/auth/issues/1550
+    fix: https://github.com/supabase/auth-js/pull/894
+    product: Supabase Auth
+    closed: '2024-05-01'
+    summary: Выход с токеном удалённого пользователя возвращает ошибку «User from sub claim in JWT does not exist», клиент
+      не очищает сессию
+  - url: https://github.com/advisories/GHSA-wxw9-6pv9-c3xc
+    product: Umbraco.CMS
+    closed: '2024-10-22'
+    summary: При явном выходе серверная сессия завершается не полностью
 RWB-0060:
   pattern: Операции, требующие второго фактора, недоступны без него
   checks:
@@ -1576,6 +1733,11 @@ RWB-0067:
     product: Kong
     closed: '2022-12-14'
     summary: Целочисленное поле срока жизни возвращается дробным числом.
+  - url: https://github.com/strapi/strapi/issues/25591
+    fix: https://github.com/strapi/strapi/pull/25616
+    product: Strapi
+    closed: '2026-03-09'
+    summary: Сгенерированный OpenAPI-документ содержит пути маршрутов плагина без префикса роутера
 RWB-0068:
   pattern: Внутренняя ошибка сервера возвращается в общей модели без утечек
   checks:
@@ -1614,6 +1776,20 @@ RWB-0068:
     product: github.com/rclone/rclone
     closed: '2026-08-05'
     summary: Перехваченная паника задания возвращает в JSON-ответе API полный стек Go
+  - url: https://github.com/apollographql/apollo-server/issues/313
+    fix: https://github.com/apollographql/apollo-server/pull/390
+    product: Apollo Server
+    closed: '2017-05-19'
+    summary: Исключение при разборе аргумента пользовательского скаляра не обрабатывается, запрос зависает без ответа
+  - url: https://github.com/apollographql/apollo-server/issues/23
+    product: Apollo Server
+    closed: '2016-07-05'
+    summary: Сервер зависает без ответа, если подготовка настроек запроса завершилась ошибкой
+  - url: https://github.com/advisories/GHSA-77gj-crhp-3gvx
+    fix: https://github.com/umbraco/Umbraco-CMS/commit/b76070c794925932cb159ef50b851db6e966a004
+    product: Umbraco.Cms.Api.Management
+    closed: '2024-08-20'
+    summary: При внутренней ошибке, например отрицательной пагинации, API отдаёт стек-трейс вне режима отладки
 RWB-0069:
   pattern: Архивные и графические бомбы не исчерпывают ресурсы
   checks:
@@ -1702,6 +1878,42 @@ RWB-0069:
     product: adawolfa/isdoc
     closed: '2026-07-15'
     summary: ZIP-записи ISDOCX и вложения PDF читаются без лимита распакованного размера
+  - url: https://github.com/advisories/GHSA-qxrv-gp6x-rc23
+    fix: https://github.com/SixLabors/ImageSharp/pull/2759
+    product: SixLabors.ImageSharp
+    closed: '2024-07-22'
+    summary: Специально сформированный GIF вызывает чрезмерное выделение памяти при декодировании загруженного изображения
+  - url: https://github.com/advisories/GHSA-v72x-2h86-7f8m
+    product: MessagePack
+    closed: '2026-06-25'
+    summary: При распаковке LZ4 в MessagePack буфер выделяется по заявленной длине распакованных данных без ограничения
+  - url: https://github.com/advisories/GHSA-g5mf-wqq5-vwg6
+    product: Magick.NET-Q16-AnyCPU, Magick.NET-Q16-HDRI-AnyCPU, Magick.NET-Q16-HDRI-OpenMP-arm64, Magick.NET-Q16-HDRI-OpenMP-x64,
+      Magick.NET-Q16-HDRI-arm64, Magick.NET-Q16-HDRI-x64, Magick.NET-Q16-HDRI-x86, Magick.NET-Q16-OpenMP-arm64, Magick.NET-Q16-OpenMP-x64,
+      Magick.NET-Q16-arm64, Magick.NET-Q16-x64, Magick.NET-Q16-x86, Magick.NET-Q8-AnyCPU, Magick.NET-Q8-OpenMP-arm64, Magick.NET-Q8-OpenMP-x64,
+      Magick.NET-Q8-arm64, Magick.NET-Q8-x64, Magick.NET-Q8-x86
+    closed: '2026-05-18'
+    summary: Декодер MNG читает больше кадров, чем позволяет лимит длины списка, — чрезмерное потребление ресурсов
+  - url: https://github.com/advisories/GHSA-cwpj-h54c-xjpx
+    product: Magick.NET-Q16-AnyCPU, Magick.NET-Q16-HDRI-AnyCPU, Magick.NET-Q16-HDRI-OpenMP-arm64, Magick.NET-Q16-HDRI-OpenMP-x64,
+      Magick.NET-Q16-HDRI-arm64, Magick.NET-Q16-HDRI-x64, Magick.NET-Q16-HDRI-x86, Magick.NET-Q16-OpenMP-arm64, Magick.NET-Q16-OpenMP-x64,
+      Magick.NET-Q16-arm64, Magick.NET-Q16-x64, Magick.NET-Q16-x86, Magick.NET-Q8-AnyCPU, Magick.NET-Q8-OpenMP-arm64, Magick.NET-Q8-OpenMP-x64,
+      Magick.NET-Q8-arm64, Magick.NET-Q8-x64, Magick.NET-Q8-x86
+    closed: '2026-05-18'
+    summary: Декодер PSD обходит лимит длины списка слоёв
+  - url: https://github.com/advisories/GHSA-v7g2-m8c5-mf84
+    fix: https://github.com/ImageMagick/ImageMagick/commit/1a51eb9af00c36724660e294520878fd1f13e312
+    product: Magick.NET-Q16-AnyCPU, Magick.NET-Q16-HDRI-AnyCPU, Magick.NET-Q16-HDRI-OpenMP-arm64, Magick.NET-Q16-HDRI-OpenMP-x64,
+      Magick.NET-Q16-HDRI-arm64, Magick.NET-Q16-HDRI-x64, Magick.NET-Q16-HDRI-x86, Magick.NET-Q16-OpenMP-arm64, Magick.NET-Q16-OpenMP-x64,
+      Magick.NET-Q16-OpenMP-x86, Magick.NET-Q16-arm64, Magick.NET-Q16-x64, Magick.NET-Q16-x86, Magick.NET-Q8-AnyCPU, Magick.NET-Q8-OpenMP-arm64,
+      Magick.NET-Q8-OpenMP-x64, Magick.NET-Q8-arm64, Magick.NET-Q8-x64, Magick.NET-Q8-x86
+    closed: '2026-02-24'
+    summary: Специально сформированный SVG заставляет декодер выделить ~674 ГБ памяти
+  - url: https://github.com/advisories/GHSA-g85r-6x2q-45w7
+    fix: https://github.com/SixLabors/ImageSharp/commit/b6b08ac3e7cea8da5ac1e90f7c0b67dd254535c3
+    product: SixLabors.ImageSharp
+    closed: '2024-04-15'
+    summary: Специально сформированные изображения вызывают чрезмерное выделение памяти декодером
 RWB-0070:
   pattern: Скачивание файлов проверяет права и срок действия ссылок
   checks:
@@ -1770,6 +1982,11 @@ RWB-0070:
     product: craftcms/cms
     closed: '2026-07-06'
     summary: Эндпоинт превью отдаёт подписанную ссылку на приватный файл без проверки права просмотра
+  - url: https://github.com/advisories/GHSA-24mc-gc52-47jv
+    fix: https://github.com/IowaComputerGurus/aspnetcore.utilities.cloudstorage/commit/8ea534481181a063175f457082662fdcad9a41ff
+    product: ICG.AspNetCore.Utilities.CloudStorage
+    closed: '2024-10-30'
+    summary: Подписанная ссылка на хранилище получает срок жизни, отличный от запрошенного
 RWB-0071:
   pattern: Пустой файл и некорректный multipart обрабатываются корректно
   checks:
@@ -1875,6 +2092,21 @@ RWB-0075:
     product: github.com/openchoreo/openchoreo
     closed: '2026-09-02'
     summary: Управляющие API шлюза кластера на внешнем слушателе для агентов не аутентифицируют вызывающего
+  - url: https://github.com/advisories/GHSA-8phw-xrj9-cpqp
+    fix: https://github.com/SteeltoeOSS/Steeltoe/commit/9bf0ecb9f2d4a34b65f61d41c5625d49071ae9fa
+    product: Steeltoe.Management.Endpoint
+    closed: '2026-09-17'
+    summary: Служебный эндпоинт истории запросов маскирует только userinfo и отдаёт секреты из query-строк прошлых запросов
+  - url: https://github.com/advisories/GHSA-227r-jm2g-7cp4
+    fix: https://github.com/SteeltoeOSS/Steeltoe/commit/b39defa4db5f44f8696c456866b3a5b900d8d96b
+    product: Steeltoe.Management.Endpoint, Steeltoe.Management.EndpointBase
+    closed: '2026-07-02'
+    summary: Чувствительные служебные эндпоинты (heapdump, env, threaddump) доступны роли с правом только базового чтения
+  - url: https://github.com/advisories/GHSA-q62h-354g-5r85
+    fix: https://github.com/SteeltoeOSS/Steeltoe/commit/bef9f14b710232fca3fbe87e48fdd1b9e6b60d43
+    product: Steeltoe.Management.Endpoint, Steeltoe.Management.EndpointCore
+    closed: '2026-07-02'
+    summary: Маскирование в служебном эндпоинте окружения смотрит только на имя ключа и пропускает строки подключения с паролями
 RWB-0076:
   pattern: Ответы не содержат внутренних полей сверх контракта
   checks:
@@ -1926,6 +2158,10 @@ RWB-0076:
     product: alextselegidis/easyappointments
     closed: '2026-07-29'
     summary: Поиск клиентов возвращает хэши записей других исполнителей, по которым записи можно менять и удалять
+  - url: https://github.com/advisories/GHSA-m4mm-534h-5cp5
+    product: AutoQueryable
+    closed: '2025-02-20'
+    summary: Поля, помеченные недоступными для выбора, всё равно отдаются через параметр выбора полей
 RWB-0077:
   pattern: Дорогие операции ограничены по ресурсам
   checks:
@@ -2142,6 +2378,101 @@ RWB-0077:
     product: simplesamlphp/saml2, simplesamlphp/saml2-legacy
     closed: '2026-07-02'
     summary: XPath-преобразования в подписи SAML-сообщения не ограничены — отказ в обслуживании
+  - url: https://github.com/advisories/GHSA-7pxr-59rr-hqj2
+    fix: https://github.com/microsoft/OpenAPI.NET/pull/3000
+    product: Microsoft.OpenApi.Readers, Microsoft.OpenApi.YamlReader
+    closed: '2026-10-14'
+    summary: Небольшой YAML-документ с вложенными якорями и алиасами раскрывается экспоненциально и исчерпывает память процесса
+      разбора
+  - url: https://github.com/advisories/GHSA-3w5p-95mh-gq75
+    fix: https://github.com/ncalc/ncalc/pull/575
+    product: NCalc.Core, NCalcSync
+    closed: '2026-06-18'
+    summary: Вычисление факториала огромного операнда в пользовательском выражении занимает процессор бесконечно
+  - url: https://github.com/advisories/GHSA-c399-9853-6jmj
+    product: System.Security.Cryptography.Xml
+    closed: '2026-10-13'
+    summary: Проверка подписанного XML без лимитов глубины, числа операций, атрибутов и пространств имён исчерпывает ресурсы
+  - url: https://github.com/advisories/GHSA-w5qq-qrpp-rf4c
+    product: Microsoft.AspNetCore.App.Runtime.linux-arm, Microsoft.AspNetCore.App.Runtime.linux-arm64, Microsoft.AspNetCore.App.Runtime.linux-musl-arm,
+      Microsoft.AspNetCore.App.Runtime.linux-musl-arm64, Microsoft.AspNetCore.App.Runtime.linux-musl-x64, Microsoft.AspNetCore.App.Runtime.linux-x64,
+      Microsoft.AspNetCore.App.Runtime.osx-arm64, Microsoft.AspNetCore.App.Runtime.osx-x64, Microsoft.AspNetCore.App.Runtime.win-arm,
+      Microsoft.AspNetCore.App.Runtime.win-arm64, Microsoft.AspNetCore.App.Runtime.win-x64, Microsoft.AspNetCore.App.Runtime.win-x86
+    closed: '2026-10-13'
+    summary: Буферы под части multipart выделяются заранее — запросы multipart исчерпывают память сервера
+  - url: https://github.com/advisories/GHSA-8q5v-6pqq-x66h
+    product: System.Security.Cryptography.Xml
+    closed: '2026-07-20'
+    summary: Специально сформированный зашифрованный XML вызывает неконтролируемое потребление ресурсов
+  - url: https://github.com/advisories/GHSA-23rf-6693-g89p
+    product: System.Security.Cryptography.Xml
+    closed: '2026-07-20'
+    summary: Специально сформированный зашифрованный XML вызывает неконтролируемое потребление ресурсов
+  - url: https://github.com/advisories/GHSA-cvvh-rhrc-wg4q
+    product: Microsoft.NetCore.App.Runtime.linux-arm, Microsoft.NetCore.App.Runtime.linux-arm64, Microsoft.NetCore.App.Runtime.linux-musl-arm,
+      Microsoft.NetCore.App.Runtime.linux-musl-arm64, Microsoft.NetCore.App.Runtime.linux-musl-x64, Microsoft.NetCore.App.Runtime.linux-x64,
+      Microsoft.NetCore.App.Runtime.osx-arm64, Microsoft.NetCore.App.Runtime.osx-x64, Microsoft.NetCore.App.Runtime.win-arm,
+      Microsoft.NetCore.App.Runtime.win-arm64, Microsoft.NetCore.App.Runtime.win-x64, Microsoft.NetCore.App.Runtime.win-x86,
+      System.Security.Cryptography.Xml
+    closed: '2026-07-20'
+    summary: Обработка шифрования при разборе XML вызывает чрезмерное потребление ресурсов или падение
+  - url: https://github.com/advisories/GHSA-q6rr-fm2g-g5x8
+    product: Scriban, Scriban.Signed
+    closed: '2026-06-26'
+    summary: Умножение массива на число в шаблоне выделяет гигабайты без проверки лимита цикла
+  - url: https://github.com/advisories/GHSA-24c8-4792-22hx
+    product: Scriban.Signed, scriban
+    closed: '2026-05-19'
+    summary: Функция вставки в массив по индексу заполняет пропуск без учёта лимитов — шаблон роняет процесс по OOM
+  - url: https://github.com/advisories/GHSA-w3x6-4m5h-cxqf
+    product: System.Security.Cryptography.Xml
+    closed: '2026-04-14'
+    summary: Обработка зашифрованного XML без ограничений позволяет вызвать отказ в обслуживании
+  - url: https://github.com/advisories/GHSA-37gx-xxp4-5rgx
+    product: System.Security.Cryptography.Xml
+    closed: '2026-04-14'
+    summary: Обработка специально сформированного зашифрованного XML (EncryptedXml) уходит в бесконечный цикл — DoS без аутентификации
+  - url: https://github.com/advisories/GHSA-xw6w-9jjh-p9cr
+    product: Scriban, Scriban.Signed
+    closed: '2026-03-24'
+    summary: Умножение строки на большое число и сдвиг BigInteger в выражениях шаблона обходят лимиты LimitToString и LoopLimit
+  - url: https://github.com/advisories/GHSA-m2p3-hwv5-xpqw
+    product: Scriban, Scriban.Signed
+    closed: '2026-03-24'
+    summary: Лимит размера вывода сбрасывается на каждом выражении, суммарный вывод шаблона не ограничен
+  - url: https://github.com/advisories/GHSA-v66j-x4hw-fv9g
+    product: Scriban, Scriban.Signed
+    closed: '2026-03-24'
+    summary: Функции pad_left/pad_right шаблона без проверки ширины выделяют ~1 ГБ памяти коротким запросом
+  - url: https://github.com/advisories/GHSA-c875-h985-hvrc
+    product: Scriban.Signed, scriban
+    closed: '2026-03-24'
+    summary: 'Встроенные операции над диапазонами не учитываются LoopLimit: одно выражение выполняет миллионы итераций'
+  - url: https://github.com/advisories/GHSA-5rpf-x9jg-8j5p
+    fix: https://github.com/scriban/scriban/commit/a6fe6074199e5c04f4d29dc8d8e652b24d33e3e4
+    product: Scriban.Signed, scriban
+    closed: '2026-03-19'
+    summary: 'Удвоение строки в цикле из 30 итераций даёт ~1 ГБ: лимит вывода по умолчанию не задан'
+  - url: https://github.com/advisories/GHSA-wg3g-gvx5-2pmv
+    fix: https://github.com/ImageMagick/ImageMagick/commit/0349df6d43d633bd61bb582d1e1e87d6332de32a
+    product: Magick.NET-Q16-AnyCPU, Magick.NET-Q16-HDRI-AnyCPU, Magick.NET-Q16-HDRI-OpenMP-arm64, Magick.NET-Q16-HDRI-OpenMP-x64,
+      Magick.NET-Q16-HDRI-arm64, Magick.NET-Q16-HDRI-x64, Magick.NET-Q16-HDRI-x86, Magick.NET-Q16-OpenMP-arm64, Magick.NET-Q16-OpenMP-x64,
+      Magick.NET-Q16-OpenMP-x86, Magick.NET-Q16-arm64, Magick.NET-Q16-x64, Magick.NET-Q16-x86, Magick.NET-Q8-AnyCPU, Magick.NET-Q8-OpenMP-arm64,
+      Magick.NET-Q8-OpenMP-x64, Magick.NET-Q8-arm64, Magick.NET-Q8-x64, Magick.NET-Q8-x86
+    closed: '2026-02-24'
+    summary: Конвертация многоуровнево вложенного MVG в SVG вызывает DoS
+  - url: https://github.com/advisories/GHSA-q5r6-9qwq-g2wj
+    fix: https://github.com/amazon-ion/ion-dotnet/pull/160
+    product: Amazon.IonDotnet
+    closed: '2025-10-09'
+    summary: Синтаксическая ошибка в тексте Amazon Ion зацикливает разбор
+  - url: https://github.com/advisories/GHSA-8xfc-gm6g-vgpv
+    fix: https://github.com/bcgit/bc-csharp/commit/56daa6eac526f165416d17f661422d60de0dfd63
+    product: BouncyCastle, BouncyCastle.Cryptography, org.bouncycastle:bc-fips, org.bouncycastle:bcprov-jdk14, org.bouncycastle:bcprov-jdk15on,
+      org.bouncycastle:bcprov-jdk15to18, org.bouncycastle:bcprov-jdk18on, org.bouncycastle:bctls-jdk14, org.bouncycastle:bctls-jdk15to18,
+      org.bouncycastle:bctls-jdk18on
+    closed: '2024-05-14'
+    summary: Импорт EC-сертификата с искусственными параметрами кривой F2m вызывает высокую нагрузку CPU
 RWB-0078:
   pattern: Подмена Host и X-Forwarded-Host не влияет на ссылки и маршрутизацию
   checks:
@@ -2171,6 +2502,16 @@ RWB-0078:
     product: nukeviet/nukeviet
     closed: '2026-07-13'
     summary: Хост из X-Forwarded-Host без проверки подставляется в URL исходящего запроса сервера — SSRF без аутентификации
+  - url: https://github.com/advisories/GHSA-58f6-6rj2-3v8r
+    fix: https://github.com/SteeltoeOSS/Steeltoe/commit/4cbc352fe89ac2e6c609554e435ab28996fec5e9
+    product: Steeltoe.Management.Endpoint, Steeltoe.Management.EndpointCore
+    closed: '2026-07-02'
+    summary: Изоляция служебного порта проверяется по заголовку Host, а не по фактическому порту — служебные эндпоинты доступны
+      с публичного порта
+  - url: https://github.com/advisories/GHSA-75x2-6h4m-h6mx
+    product: FullStackHero.WebAPI.Boilerplate
+    closed: '2024-02-29'
+    summary: Подмена Host в восстановлении пароля отправляет ссылку с токеном на чужой домен
 RWB-0079:
   pattern: Старые версии API и недокументированные маршруты не обходят защиту
   checks:
@@ -2218,6 +2559,10 @@ RWB-0080:
     product: github.com/oam-dev/kubevela
     closed: '2026-08-28'
     summary: Загрузчик читает файл внешнего репозитория по символьной ссылке на /dev/zero
+  - url: https://github.com/advisories/GHSA-vrgw-pc9c-qrrc
+    product: UmbracoForms
+    closed: '2026-01-13'
+    summary: Источник данных формы по URL компилирует недоверенное WSDL-описание — выполнение кода
 RWB-0081:
   pattern: Сжатие ответа согласуется через Accept-Encoding
   checks:
@@ -2452,6 +2797,11 @@ RWB-0085:
     product: pheditor/pheditor
     closed: '2026-07-16'
     summary: Подстановка $() не блокируется, проверка префикса команды обходится
+  - url: https://github.com/advisories/GHSA-2jh5-g5ch-43q5
+    fix: https://github.com/Bluegrams/YoutubeDLSharp/commit/b6051372bd5af30f95f73de47d9bc71c3a07de0f
+    product: YoutubeDLSharp
+    closed: '2025-04-23'
+    summary: Аргументы внешней утилиты на Windows передаются через командную строку без экранирования — инъекция команд
 RWB-0086:
   pattern: Обход каталогов через параметры файлов и путей невозможен
   checks:
@@ -2510,6 +2860,25 @@ RWB-0086:
     product: winter/wn-system-module
     closed: '2026-08-20'
     summary: Директива =include в JS-ресурсе темы включает произвольный файл сервера, результат отдаётся без аутентификации
+  - url: https://github.com/advisories/GHSA-wxhm-2mq7-7697
+    fix: https://github.com/microsoft/prompty/commit/88ac9948d7d37995edbb2f6d36913436626c39e1
+    product: '@prompty/core, Prompty.Core, prompty'
+    closed: '2026-07-17'
+    summary: Ссылка ${file:...} в загружаемом шаблоне промпта читает файлы вне каталога шаблона через ../ и абсолютный путь
+  - url: https://github.com/advisories/GHSA-xwc6-v6g8-pw2h
+    fix: https://github.com/ImageMagick/ImageMagick/commit/8d4c67a90ae458fb36393a05c0069e9123ac174c
+    product: Magick.NET-Q16-AnyCPU, Magick.NET-Q16-HDRI-AnyCPU, Magick.NET-Q16-HDRI-OpenMP-arm64, Magick.NET-Q16-HDRI-arm64,
+      Magick.NET-Q16-HDRI-x64, Magick.NET-Q16-HDRI-x86, Magick.NET-Q16-OpenMP-arm64, Magick.NET-Q16-OpenMP-x64, Magick.NET-Q16-OpenMP-x86,
+      Magick.NET-Q16-arm64, Magick.NET-Q16-x64, Magick.NET-Q8-AnyCPU, Magick.NET-Q8-OpenMP-arm64, Magick.NET-Q8-OpenMP-x64,
+      Magick.NET-Q8-arm64, Magick.NET-Q8-x86, Magick.NET-QMagick.NET-Q16-x8616-x64
+    closed: '2026-02-24'
+    summary: Псевдоимена файлов fd:<n> обходят запрет чтения и записи стандартных потоков в политике обработчика изображений
+  - url: https://github.com/advisories/GHSA-hfv2-pf68-m33x
+    fix: https://github.com/umbraco/Umbraco-CMS/commit/7505efd433189037f46547932d4a8b603fd4a615
+    product: Umbraco.Cms
+    closed: '2025-12-09'
+    summary: 'Импорт словаря по пути временного файла: 500 при существующем файле и 404 при отсутствующем раскрывает файловую
+      систему'
 RWB-0087:
   pattern: Специальные ключи __proto__ и constructor не меняют поведение сервера
   checks:
@@ -2841,6 +3210,11 @@ RWB-0088:
     product: yeswiki/yeswiki
     closed: '2026-07-09'
     summary: 'Формула проверяется рекурсивным regex перед eval: глубокая вложенность переполняет стек PCRE и роняет процесс'
+  - url: https://github.com/advisories/GHSA-c2g3-c4gc-w5wg
+    product: DotVVM
+    closed: '2026-06-19'
+    summary: Регулярное выражение маршрута с несколькими параметрами в одном сегменте даёт катастрофический backtracking на
+      пути из дефисов
 RWB-0089:
   pattern: SQL-инъекция во входных параметрах не исполняется
   checks:
@@ -3038,6 +3412,25 @@ RWB-0089:
     product: mautic/core
     closed: '2026-07-02'
     summary: Вложенные параметры фильтра контактов очищаются нерекурсивно — SQL-инъекция
+  - url: https://github.com/advisories/GHSA-rfx3-98h7-v3xp
+    fix: https://github.com/JasperFx/marten/pull/4911
+    product: Marten
+    closed: '2026-09-17'
+    summary: Ключ словаря в фильтре и идентификатор арендатора подставлялись в SQL строковым литералом без экранирования
+  - url: https://github.com/advisories/GHSA-vmw2-qwm8-x84c
+    fix: https://github.com/JasperFx/marten/pull/4343
+    product: Marten
+    closed: '2026-05-14'
+    summary: Параметр конфигурации языка полнотекстового поиска подставлялся в SQL без параметризации
+  - url: https://github.com/advisories/GHSA-x9vc-6hfv-hg8c
+    fix: https://github.com/npgsql/npgsql/commit/f7e7ead0702d776a8f551f5786c4cac2d65c4bc6
+    product: Npgsql
+    closed: '2024-05-09'
+    summary: Переполнение int в длине сообщения протокола СУБД при огромных параметрах позволяет внедрить SQL
+  - url: https://github.com/advisories/GHSA-287f-46j7-j4wh
+    product: Plumber.Workflow, Umbraco.Workflow
+    closed: '2024-04-24'
+    summary: Пользователь backoffice подменой запроса выполняет произвольный SQL
 RWB-0090:
   pattern: Параметры с URL и хостами не дают доступа к внутренней сети
   checks:
@@ -3204,6 +3597,15 @@ RWB-0090:
     product: yeswiki/yeswiki
     closed: '2026-07-09'
     summary: Публичный inbox загружает ключ по URL из keyId заголовка Signature до проверки подписи и URL — SSRF
+  - url: https://github.com/advisories/GHSA-h66j-xm43-47pp
+    product: UmbracoCms
+    closed: '2026-01-15'
+    summary: Параметр baseUrl эндпоинтов панели и справки заставляет сервер обращаться к произвольному хосту
+  - url: https://github.com/advisories/GHSA-3f7v-qx94-666m
+    fix: https://github.com/dnnsoftware/Dnn.Platform/commit/4721dd9eef846936d3b1a3676499e46968d15feb
+    product: DotNetNuke.Core
+    closed: '2025-04-09'
+    summary: 'Обход прежнего исправления SSRF: без аутентификации сервер выполняет GET к произвольным адресам'
 RWB-0091:
   pattern: Инъекция в серверные шаблоны не исполняется
   checks:
@@ -3311,6 +3713,10 @@ RWB-0091:
     product: twig/twig
     closed: '2026-06-30'
     summary: Фильтр column читает свойства в обход allowlist песочницы
+  - url: https://github.com/advisories/GHSA-7jvp-hj45-2f2m
+    product: Scriban
+    closed: '2026-07-06'
+    summary: Код шаблона записывает любые свойства объектов хоста, включая private и init, изменения сохраняются после рендеринга
 RWB-0092:
   pattern: Чувствительные действия фиксируются в журнале аудита
   checks:
@@ -3448,6 +3854,11 @@ RWB-0096:
     product: Directus
     closed: '2026-01-30'
     summary: Операции изменения схемы на CockroachDB выполняются 15–25 секунд
+  - url: https://github.com/strapi/strapi/issues/26048
+    fix: https://github.com/strapi/strapi/pull/26049
+    product: Strapi
+    closed: '2026-05-11'
+    summary: Подсчёт документов для главной страницы выполняет дорогое самосоединение на больших таблицах
 RWB-0097:
   pattern: Размер ответов разумен и не растёт неограниченно
   checks:
@@ -3540,6 +3951,24 @@ RWB-0099:
     product: kimai/kimai
     closed: '2026-07-14'
     summary: Веб-маршруты шаблонов экспорта требуют более слабое право, чем API
+  - url: https://github.com/supabase/auth/issues/2285
+    fix: https://github.com/supabase/auth/pull/2298
+    product: Supabase Auth
+    closed: '2025-12-29'
+    summary: Эндпоинт динамической регистрации OAuth-клиентов отклоняет redirect URI с пользовательской схемой, разрешённой
+      в списке адресов перенаправления
+  - url: https://github.com/supabase/auth/issues/1619
+    fix: https://github.com/supabase/auth/pull/1646
+    product: Supabase Auth
+    closed: '2024-07-04'
+    summary: При отключённом подтверждении email перевод анонимного пользователя в постоянный через смену email всё равно
+      требовал подтверждения
+  - url: https://github.com/supabase/auth/issues/1578
+    fix: https://github.com/supabase/auth/pull/1623
+    product: Supabase Auth
+    closed: '2024-06-17'
+    summary: Админское изменение email с подтверждением у анонимного пользователя не снимает признак анонимности, пользовательский
+      путь снимает
 RWB-0100:
   pattern: Массовые операции соблюдают лимиты и сообщают о каждом элементе
   checks:
@@ -3771,6 +4200,10 @@ RWB-0107:
     product: Kong
     closed: '2021-01-15'
     summary: При буферизации ответа недоступный upstream даёт 500 вместо 502.
+  - url: https://github.com/apollographql/apollo-server/issues/1510
+    product: Apollo Server
+    closed: '2018-08-10'
+    summary: Ответы 4xx/5xx вышестоящего REST-сервиса кэшируются с ttl и отдаются после восстановления
 RWB-0108:
   pattern: Перезапуск экземпляра не обрывает выполняющиеся запросы
   checks:
@@ -3852,6 +4285,11 @@ RWB-0112:
     product: io.netty:netty-codec-http
     closed: '2026-07-22'
     summary: 'Запрос с Origin: null проходит короткое замыкание CORS, даже если null-origin не разрешён'
+  - url: https://github.com/supabase/auth/issues/1589
+    fix: https://github.com/supabase/auth/pull/1612
+    product: Supabase Auth
+    closed: '2024-08-01'
+    summary: Заголовок выбора версии API не входит в Access-Control-Allow-Headers по умолчанию, кросс-доменные клиенты ломаются
 RWB-0113:
   pattern: Дата, время и timezone
   checks:
@@ -3894,6 +4332,11 @@ RWB-0114:
     product: Directus
     closed: '2025-09-09'
     summary: На MSSQL нарушение составного уникального ограничения не превращается в обычную ошибку, интерфейс её не показывает
+  - url: https://github.com/supabase/auth/issues/2057
+    fix: https://github.com/supabase/auth/commit/96469bd01b9c37f938aabdb0434a054a111cf963
+    product: Supabase Auth
+    closed: '2025-06-16'
+    summary: Повторное приглашение уже приглашённого пользователя даёт 500 из-за нарушения уникального ключа email
 RWB-0115:
   pattern: Пустые объект, массив и строка
   checks:
@@ -3931,6 +4374,11 @@ RWB-0115:
     product: Kong
     closed: '2020-12-08'
     summary: Пустой список попыток сериализуется в журнал как {} вместо [].
+  - url: https://github.com/strapi/strapi/issues/24303
+    fix: https://github.com/strapi/strapi/pull/26842
+    product: Strapi
+    closed: '2026-06-30'
+    summary: Элемент null в массиве динамической зоны роняет обход сущности на сервере
 RWB-0116:
   pattern: Допустимые и неизвестные enum
   checks:
@@ -3942,6 +4390,11 @@ RWB-0116:
     product: Keycloak
     closed: '2026-09-21'
     summary: Динамическая регистрация отклонялась целиком из-за одного неподдерживаемого grant_type
+  - url: https://github.com/strapi/strapi/issues/24285
+    fix: https://github.com/strapi/strapi/pull/24708
+    product: Strapi
+    closed: '2025-10-29'
+    summary: Необязательное поле enum нельзя сбросить в пустое значение — публикация с ошибкой
 RWB-0117:
   pattern: Стабильная схема ошибок
   checks:
@@ -4124,6 +4577,11 @@ RWB-0122:
     product: Kong
     closed: '2022-04-06'
     summary: Тело с null-значением ломает обработку запроса.
+  - url: https://github.com/strapi/strapi/issues/25178
+    fix: https://github.com/strapi/strapi/pull/26031
+    product: Strapi
+    closed: '2026-04-21'
+    summary: Создание локализации без нелокализуемых медиа-полей очищает их во всех локалях
 RWB-0123:
   pattern: Числовые границы
   checks:
@@ -4161,6 +4619,11 @@ RWB-0123:
     product: activerecord
     closed: '2023-01-18'
     summary: Целое за пределами int64 в параметре запроса превращает сравнение в numeric и вызывает полное сканирование таблицы
+  - url: https://github.com/strapi/strapi/issues/24861
+    fix: https://github.com/strapi/strapi/pull/25409
+    product: Strapi
+    closed: '2026-02-11'
+    summary: Значение ниже отрицательного минимума принимается
 RWB-0124:
   pattern: Object-level authorization
   checks:
@@ -4269,6 +4732,30 @@ RWB-0125:
     product: snipe/snipe-it
     closed: '2026-08-28'
     summary: Адрес возврата после редактирования берётся из заголовка Referer и ведёт на внешний сайт
+  - url: https://github.com/advisories/GHSA-2qjj-h6wp-c7h7
+    fix: https://github.com/umbraco/Umbraco-CMS/pull/22561
+    product: Umbraco.Cms
+    closed: '2026-05-21'
+    summary: Обработчики входа, выхода, профиля и регистрации перенаправляют на RedirectUrl из query без проверки
+  - url: https://github.com/advisories/GHSA-vfm5-cr22-jg3m
+    fix: https://github.com/abpframework/abp/commit/44a2dc14e933f3ce1ca93f9313d836694ab77d1d
+    product: Volo.Abp.Account.Web
+    closed: '2025-12-16'
+    summary: Параметр returnUrl в регистрации перенаправляет на внешний домен
+  - url: https://github.com/advisories/GHSA-55p7-v223-x366
+    product: IdentityServer4
+    closed: '2024-07-31'
+    summary: Специально сформированные URL принимаются как локальные и используются в редиректе
+  - url: https://github.com/advisories/GHSA-ff4q-64jc-gx98
+    fix: https://github.com/DuendeSoftware/IdentityServer/commit/269ca2171fe1e901c87f2f0797bbc7c230db87c6
+    product: Duende.IdentityServer, IdentityServer4
+    closed: '2024-07-31'
+    summary: Специально сформированные URL принимаются как локальные и используются в редиректе
+  - url: https://github.com/advisories/GHSA-j74q-mv2c-rxmp
+    fix: https://github.com/umbraco/Umbraco-CMS/commit/5f24de308584b9771240a6db1a34630a5114c450
+    product: Umbraco.Cms.Web.BackOffice, UmbracoCms.Core
+    closed: '2024-05-21'
+    summary: Эндпоинт backoffice перенаправляет на внешний адрес в обход защиты
 RWB-0126:
   pattern: Границы размера страницы
   checks:
@@ -4280,6 +4767,11 @@ RWB-0126:
     product: Keycloak
     closed: '2026-09-08'
     summary: Запрос списка пользователей с max=100000 превышал таймаут транзакции, клиент получал обрезанный JSON
+  - url: https://github.com/strapi/strapi/issues/24624
+    fix: https://github.com/strapi/strapi/pull/26597
+    product: Strapi
+    closed: '2026-06-12'
+    summary: Эндпоинт списка файлов игнорирует параметры пагинации
 RWB-0127:
   pattern: Семантика PATCH
   checks:
@@ -4421,6 +4913,10 @@ RWB-0131:
     closed: '2024-09-25'
     summary: Создание ресурса без обязательного вложенного объекта возвращает вводящую в заблуждение ошибку о несовпадении
       полей вместо сообщения о пропуске.
+  - url: https://github.com/apollographql/apollo-server/issues/206
+    product: Apollo Server
+    closed: '2017-06-28'
+    summary: POST без тела передаётся в выполнение GraphQL без query и вызывает исключение
 RWB-0132:
   pattern: Защитные HTTP-заголовки
   checks:
@@ -4440,6 +4936,11 @@ RWB-0132:
     closed: '2019-09-04'
     summary: Middleware, зарегистрированный на все маршруты шаблоном '*' или '/', под одним из HTTP-адаптеров не срабатывал
       — видно по ответу.
+  - url: https://github.com/strapi/strapi/issues/24525
+    fix: https://github.com/strapi/strapi/pull/24571
+    product: Strapi
+    closed: '2025-10-20'
+    summary: Плагин перезаписывает настройки CSP вместо слияния, ресурсы админки блокируются
 RWB-0133:
   pattern: Отсутствие чувствительных данных в ответах
   checks:
@@ -4496,6 +4997,11 @@ RWB-0134:
     closed: '2026-09-24'
     summary: Параметр sort принимает любую колонку таблицы без проверки по списку сортируемых, что даёт оракул по скрытому
       полю password
+  - url: https://github.com/strapi/strapi/issues/25560
+    fix: https://github.com/strapi/strapi/pull/26907
+    product: Strapi
+    closed: '2026-07-06'
+    summary: Недопустимое направление сортировки даёт 500 вместо 400
 RWB-0135:
   pattern: Контроль server-side URL fetch
   checks:
@@ -4688,6 +5194,11 @@ RWB-0137:
     product: Keycloak
     closed: '2026-08-10'
     summary: Поле username на входе без ограничения длины целиком писалось в лог — раздувание логов одним запросом
+  - url: https://github.com/strapi/strapi/issues/26113
+    fix: https://github.com/strapi/strapi/pull/26128
+    product: Strapi
+    closed: '2026-07-15'
+    summary: Строка длиннее размера колонки БД во вложенном компоненте даёт 500 вместо ошибки валидации
 RWB-0138:
   pattern: Несовпадение типа поля
   checks:
@@ -4749,6 +5260,10 @@ RWB-0140:
     product: Keycloak
     closed: '2026-08-07'
     summary: Синтаксически неверный Content-Type даёт 500 вместо 400 на эндпоинтах токенов
+  - url: https://github.com/apollographql/apollo-server/issues/1841
+    product: Apollo Server
+    closed: '2021-06-15'
+    summary: POST с Content-Type text/plain даёт 500 с пустым телом вместо 400/415
 RWB-0141:
   pattern: Атомарность ошибки валидации
   checks:
@@ -4856,6 +5371,18 @@ RWB-0143:
     closed: '2026-07-24'
     summary: Валидирующий middleware по OpenAPI без функции аутентификации молча пропускает операции с security без учётных
       данных
+  - url: https://github.com/advisories/GHSA-wjpq-6766-7f5j
+    product: CoreWCF.UnixDomainSocket
+    closed: '2026-06-19'
+    summary: Сервис на Unix-сокете с идентификацией POSIX обрабатывает сообщения клиента, пропустившего шаг согласования безопасности
+  - url: https://github.com/advisories/GHSA-86vq-ccwf-rm62
+    product: Umbraco.Engage.Forms
+    closed: '2026-02-27'
+    summary: Эндпоинты отдают данные по ?id= без аутентификации, записи перебираются
+  - url: https://github.com/advisories/GHSA-6cwx-42hw-w69c
+    product: FormCMS
+    closed: '2025-09-30'
+    summary: История схем /api/schemas/history/{id} доступна без аутентификации
 RWB-0144:
   pattern: Authorization is rechecked for asynchronous job access
   checks:
@@ -4889,6 +5416,11 @@ RWB-0145:
     closed: '2026-07-10'
     summary: Кэш структуры нормализатора JSON:API и HAL не учитывает пользователя — поля, скрытые правами, видны следующему
       пользователю
+  - url: https://github.com/advisories/GHSA-75vq-qvhr-7ffr
+    fix: https://github.com/umbraco/Umbraco-CMS/commit/7e82c258eebaa595eadc9b000461e27d02bc030e
+    product: Umbraco.Cms.Api.Delivery
+    closed: '2025-07-29'
+    summary: 'Кэш вывода не различает запросы по заголовку API-ключа: без ключа отдаётся закэшированный ответ'
 RWB-0146:
   pattern: User without required permission cannot invoke operation
   checks:
@@ -5120,6 +5652,24 @@ RWB-0146:
     product: craftcms/cms
     closed: '2026-07-02'
     summary: Перемещение записи в раздел проверяет только право чтения раздела назначения
+  - url: https://github.com/advisories/GHSA-c8qj-jx8j-fg2w
+    product: DotVVM
+    closed: '2026-06-19'
+    summary: Фильтр авторизации действий ничего не делал — защищённые действия доступны без прав
+  - url: https://github.com/advisories/GHSA-6ffg-mjg7-585x
+    fix: https://github.com/umbraco/Umbraco-CMS/commit/d9fb6df16e9adf8656181cac8497fc5ba23321cd
+    product: Umbraco.Cms.Api.Management
+    closed: '2025-03-11'
+    summary: Пользователь без доступа к разделу настроек создаёт и меняет типы данных
+  - url: https://github.com/advisories/GHSA-4gp9-ff99-j6vj
+    product: Umbraco.CMS
+    closed: '2024-10-22'
+    summary: Низкопривилегированный пользователь читает API вебхуков раздела настроек
+  - url: https://github.com/advisories/GHSA-hrww-x3fq-xcvh
+    fix: https://github.com/umbraco/Umbraco-CMS/commit/72bef8861d94a39d5cc9530a04c4797b91fcbecf
+    product: Umbraco.Cms
+    closed: '2024-08-20'
+    summary: Токен участника сайта даёт доступ к эндпоинтам API управления, требующим только аутентификации
 RWB-0147:
   pattern: Authorization is enforced for every method
   checks:
@@ -5321,6 +5871,11 @@ RWB-0149:
     product: craftcms/cms
     closed: '2026-07-02'
     summary: Удаление папки каскадно удаляет файлы других пользователей без права deletePeerAssets
+  - url: https://github.com/advisories/GHSA-wx5h-wqfq-v698
+    fix: https://github.com/umbraco/Umbraco-CMS/commit/5b54bed406682ceff57903bf7d3c57814eef31a7
+    product: Umbraco.Cms.Web.Backoffice
+    closed: '2025-03-11'
+    summary: Редактор с ограниченным доступом удаляет и читает медиа из папок вне своих прав, подставив ID в URL
 RWB-0150:
   pattern: User cannot read another owner’s resource
   checks:
@@ -5399,6 +5954,16 @@ RWB-0150:
     product: mautic/core
     closed: '2026-07-02'
     summary: Роли «только свои» (viewown, editown) не применяются в API v2
+  - url: https://github.com/advisories/GHSA-2hr5-cvwp-jr5w
+    fix: https://github.com/oqtane/oqtane.framework/pull/4876/files
+    product: Oqtane.Client, Oqtane.Framework, Oqtane.Server, Oqtane.Shared
+    closed: '2024-12-20'
+    summary: Смена ID уведомления в URL открывает чужие входящие сообщения
+  - url: https://github.com/advisories/GHSA-hhcw-wwxv-g95c
+    fix: https://github.com/oqtane/oqtane.framework/pull/4880/files
+    product: Oqtane.Framework, Oqtane.Server
+    closed: '2024-12-20'
+    summary: Смена id в запросе к контроллеру пользователей открывает данные других пользователей
 RWB-0151:
   pattern: Indirect resource references preserve authorization
   checks:
@@ -5560,6 +6125,11 @@ RWB-0151:
     product: froxlor/froxlor
     closed: '2026-07-02'
     summary: Подтверждение удаления алиаса загружает алиас по глобальному ID без привязки к клиенту и выводит чужое значение
+  - url: https://github.com/advisories/GHSA-wr57-hqmp-fgvh
+    fix: https://github.com/umbraco/Umbraco-CMS/commit/26312a3f717a0f33bb3d7d28b14bef3592bdb0fe
+    product: Umbraco.Cms
+    closed: '2026-09-17'
+    summary: Delivery API раскрывает защищённый контент, на который ссылается публичный узел, при раскрытии ссылки expand
 RWB-0152:
   pattern: User cannot modify another owner’s resource
   checks:
@@ -5606,6 +6176,14 @@ RWB-0152:
     product: alextselegidis/easyappointments
     closed: '2026-07-29'
     summary: ID провайдера из URL сохраняется в сессии, и OAuth-callback привязывает токен Google к чужому провайдеру
+  - url: https://github.com/advisories/GHSA-fpj4-9qhx-5m6m
+    product: DotNetNuke.Core
+    closed: '2026-04-10'
+    summary: Пользователь специальным запросом принимает заявку в друзья за другого пользователя
+  - url: https://github.com/advisories/GHSA-fpvf-fvp5-996r
+    product: Umbraco.Cms
+    closed: '2026-03-11'
+    summary: Редактор назначает домены узлам контента, к которым у него нет доступа
 RWB-0153:
   pattern: User cannot grant self a higher role
   checks:
@@ -5985,6 +6563,11 @@ RWB-0165:
       com.google.protobuf:protobuf-kotlin-lite, google-protobuf
     closed: '2024-09-19'
     summary: Глубоко вложенные группы в неизвестных полях protobuf вызывали переполнение стека при разборе
+  - url: https://github.com/advisories/GHSA-f8h2-vmm9-qhj6
+    product: Microsoft.AspNetCore.App.Runtime.linux-x64, Microsoft.AspNetCore.App.Runtime.osx-arm64, Microsoft.AspNetCore.App.Runtime.win-x64,
+      Microsoft.AspNetCore.SignalR.Protocols.MessagePack
+    closed: '2026-06-15'
+    summary: Глубоко вложенные массивы MessagePack в протоколе хаба вызывают переполнение стека и падение сервера
 RWB-0166:
   pattern: Опущенные необязательные поля получают задокументированные значения по умолчанию
   checks:
@@ -6079,6 +6662,15 @@ RWB-0169:
     product: github.com/getkin/kin-openapi
     closed: '2026-08-21'
     summary: Декодер deepObject выделяет массив до максимального индекса из запроса до проверки maxItems
+  - url: https://github.com/advisories/GHSA-cxmj-83gh-fp49
+    product: MessagePack
+    closed: '2026-06-25'
+    summary: Десериализатор MessagePack выделяет многомерный массив по заявленным размерностям до проверки фактического числа
+      элементов
+  - url: https://github.com/advisories/GHSA-w567-gjr2-hm5j
+    product: MessagePack
+    closed: '2026-06-25'
+    summary: Десериализатор MessagePack выделяет массив по заявленной в расширении длине до проверки наличия байт
 RWB-0170:
   pattern: Синтаксически некорректный JSON отклоняется
   checks:
@@ -6146,6 +6738,11 @@ RWB-0172:
     product: Express
     closed: '2024-05-29'
     summary: Массив в query с индексом больше 20 разбирался как объект с числовыми ключами
+  - url: https://github.com/strapi/strapi/issues/25632
+    fix: https://github.com/strapi/strapi/pull/25916
+    product: Strapi
+    closed: '2026-06-19'
+    summary: Индексный массив в query длиннее 100 элементов превращается в объект и запрос отклоняется
 RWB-0173:
   pattern: Дублирующиеся query-параметры обрабатываются однозначно
   checks:
@@ -6626,6 +7223,16 @@ RWB-0193:
     product: statamic/cms
     closed: '2026-08-06'
     summary: Эндпоинт мастера создания пользователя сообщал о существовании email без проверки права просмотра пользователей
+  - url: https://github.com/supabase/auth/issues/1365
+    fix: https://github.com/supabase/auth/pull/1366
+    product: Supabase Auth
+    closed: '2023-12-25'
+    summary: Регистрация с email существующего пользователя возвращает его роль в «обезличенном» ответе
+  - url: https://github.com/advisories/GHSA-hmg4-wwm5-p999
+    fix: https://github.com/umbraco/Umbraco-CMS/commit/559c6c9f312df1d6eb1bde82c4b81c0896da6382
+    product: Umbraco.Cms
+    closed: '2025-01-21'
+    summary: По кодам ответа и времени API управления можно определить существование учётки
 RWB-0194:
   pattern: Авторизация применяется на уровне полей и вложенных резолверов
   checks:
@@ -6720,6 +7327,11 @@ RWB-0197:
     product: github.com/patrickhener/goshs, github.com/patrickhener/goshs/v2, goshs.de/goshs, goshs.de/goshs/v2
     closed: '2026-07-28'
     summary: Слэш в конце пути обходит список блокировки файлов и защиту файла ACL
+  - url: https://github.com/strapi/strapi/issues/25724
+    fix: https://github.com/strapi/strapi/pull/25900
+    product: Strapi
+    closed: '2026-04-30'
+    summary: Завершающий «?» в URL публикации ломает защиту от дубля и создаёт две версии истории
 RWB-0198:
   pattern: Небезопасная десериализация пользовательских данных невозможна
   checks:
@@ -6810,6 +7422,11 @@ RWB-0202:
     product: org.apache.camel:camel-platform-http-main
     closed: '2026-08-24'
     summary: Без настроенных issuer и audience сервер проверял у JWT только подпись и срок
+  - url: https://github.com/supabase/auth/issues/1533
+    fix: https://github.com/supabase/auth/pull/1534
+    product: Supabase Auth
+    closed: '2024-04-15'
+    summary: 'Вход через linkedin_oidc падает с 500: ожидаемый issuer не совпадает с фактическим issuer провайдера'
 RWB-0203:
   pattern: Revoked token cannot be reused
   checks:
@@ -6863,6 +7480,13 @@ RWB-0205:
     product: github.com/klever-io/klever-go
     closed: '2026-09-23'
     summary: WebSocket /subscribe без лимита размера чтения и числа соединений
+  - url: https://github.com/advisories/GHSA-4vgm-c2wm-63mw
+    product: Microsoft.AspNetCore.App.Runtime.linux-arm, Microsoft.AspNetCore.App.Runtime.linux-arm64, Microsoft.AspNetCore.App.Runtime.linux-musl-arm,
+      Microsoft.AspNetCore.App.Runtime.linux-musl-arm64, Microsoft.AspNetCore.App.Runtime.linux-musl-x64, Microsoft.AspNetCore.App.Runtime.linux-x64,
+      Microsoft.AspNetCore.App.Runtime.osx-arm64, Microsoft.AspNetCore.App.Runtime.osx-x64, Microsoft.AspNetCore.App.Runtime.win-arm,
+      Microsoft.AspNetCore.App.Runtime.win-arm64, Microsoft.AspNetCore.App.Runtime.win-x64, Microsoft.AspNetCore.App.Runtime.win-x86
+    closed: '2026-03-11'
+    summary: Специально сформированное сообщение SignalR исчерпывает внутренний буфер сервера
 RWB-0206:
   pattern: Валидный токен принимается — подпись каждым поддерживаемым алгоритмом (включая EdDSA), JWKS с ключами неизвестного
     use рядом с ключом подписи, claims по настроенному пути (claims map) и значения по умолчанию; позитивная пара к AUTH-JWT-*
@@ -6883,6 +7507,11 @@ RWB-0206:
     product: Hasura
     closed: '2024-05-28'
     summary: JWT с нужным claim по настроенному пути отклоняется с ошибкой отсутствующей переменной сессии
+  - url: https://github.com/supabase/auth/issues/2534
+    fix: https://github.com/supabase/auth/pull/2696
+    product: Supabase Auth
+    closed: '2026-08-11'
+    summary: Вход через OIDC-провайдера с ключами JWKS на кривой secp256k1 падает с server_error
 RWB-0207:
   pattern: Операция, опубликованная как REST-эндпоинт поверх GraphQL, выполняется так же, как исходный GraphQL-запрос — результат,
     побочные эффекты и контекст внешнего хука аутентификации (заголовки и тело)
@@ -6946,6 +7575,12 @@ RWB-0211:
     product: Hasura
     closed: '2025-10-21'
     summary: Запрос к полю второй удалённой схемы направляется в первую при одинаковых определениях и разных префиксах
+  - url: https://github.com/apollographql/apollo-server/issues/3141
+    fix: https://github.com/apollographql/apollo-server/pull/3182
+    product: Apollo Server
+    closed: '2019-08-27'
+    summary: Запрос поля общего типа-значения, объявленного в нескольких подграфах, падает с ошибкой валидации подзапроса
+      шлюза
 RWB-0212:
   pattern: Фильтр по полю связанной коллекции (один-ко-многим, в том числе внутри _or/_and) возвращает каждую подходящую запись
     ровно один раз
@@ -7006,6 +7641,12 @@ RWB-0216:
     closed: '2026-07-31'
     summary: Новая версия переименовала сгенерированные скалярные типы, существующие клиентские операции и пользовательские
       типы перестали проходить валидацию
+  - url: https://github.com/supabase/auth/issues/2369
+    fix: https://github.com/supabase/supabase-js/pull/2132
+    product: Supabase Auth
+    closed: '2026-02-24'
+    summary: После обновления существующие OAuth-клиенты получили метод аутентификации client_secret_basic по умолчанию, и
+      client_secret_post стал отклоняться
 RWB-0217:
   pattern: Законный запрос с сотнями повторяющихся строк одного заголовка (группы при имперсонации, от аутентифицирующего
     прокси) в пределах лимита размера обслуживается одинаково по HTTP/1.1 и HTTP/2; лимит числа строк, если есть, задокументирован,
@@ -7391,6 +8032,14 @@ RWB-0244:
     product: librenms/librenms
     closed: '2026-08-18'
     summary: Поля ответа внешней интеграции выводятся в страницу без экранирования — хранимый XSS
+  - url: https://github.com/advisories/GHSA-rw6c-xp26-225v
+    fix: https://github.com/ImageMagick/ImageMagick/commit/26088a83d71e9daa203d54a56fe3c31f3f85463d
+    product: Magick.NET-Q16-AnyCPU, Magick.NET-Q16-HDRI-AnyCPU, Magick.NET-Q16-HDRI-OpenMP-arm64, Magick.NET-Q16-HDRI-OpenMP-x64,
+      Magick.NET-Q16-HDRI-arm64, Magick.NET-Q16-HDRI-x64, Magick.NET-Q16-HDRI-x86, Magick.NET-Q16-OpenMP-arm64, Magick.NET-Q16-OpenMP-x64,
+      Magick.NET-Q16-OpenMP-x86, Magick.NET-Q16-arm64, Magick.NET-Q16-x86, Magick.NET-Q8-AnyCPU, Magick.NET-Q8-OpenMP-arm64,
+      Magick.NET-Q8-OpenMP-x64, Magick.NET-Q8-arm64, Magick.NET-Q8-x64, Magick.NET-Q8-x86
+    closed: '2026-02-24'
+    summary: 'Кодировщики PostScript и HTML не экранируют данные из файла: внедрение PostScript-кода и HTML'
 RWB-0245:
   pattern: Контекст трассировки принимается и передаётся дальше
   checks:
@@ -7411,6 +8060,19 @@ RWB-0245:
     product: Kong
     closed: '2022-11-03'
     summary: Шлюз передаёт в исходящий запрос parent span ID, которого нет в трассе.
+  - url: https://github.com/advisories/GHSA-38wr-vpc7-2mp4
+    product: Datadog.Trace, Datadog.Trace.OpenTracing
+    closed: '2026-07-15'
+    summary: Заголовок W3C baggage разбирается без лимита числа элементов и размера — CPU и память на каждый запрос
+  - url: https://github.com/advisories/GHSA-vc29-vg52-6643
+    product: OpenTelemetry.AutoInstrumentation
+    closed: '2025-03-06'
+    summary: Заголовки traceparent и tracestate вызывают высокую нагрузку CPU даже без явной трассировки
+  - url: https://github.com/advisories/GHSA-8785-wc3w-h8q6
+    fix: https://github.com/open-telemetry/opentelemetry-dotnet/pull/6161
+    product: OpenTelemetry.Api
+    closed: '2025-03-05'
+    summary: Заголовки traceparent и tracestate вызывают высокую нагрузку CPU в OpenTelemetry.Api
 RWB-0246:
   pattern: Кэширование чувствительных ответов
   checks:
@@ -7475,6 +8137,12 @@ RWB-0247:
     product: mantisbt/mantisbt
     closed: '2026-07-15'
     summary: Через REST и SOAP роль с правом изменения меняет статус задачи, требующий более высокого порога
+  - url: https://github.com/advisories/GHSA-xhw7-j96h-c3g5
+    fix: https://github.com/YAFNET/YAFNET/commit/27f7e671f93698f7e014d5d0fb88320248b8aa20
+    product: YAFNET.Core
+    closed: '2026-05-05'
+    summary: Проверка прав администратора выполнялась после обработчика — побочные эффекты (выполнение SQL) происходили до
+      ответа 302
 RWB-0248:
   pattern: Mass assignment cannot elevate privileges
   checks:
@@ -8256,6 +8924,13 @@ RWB-0307:
     product: kimai/kimai
     closed: '2026-07-01'
     summary: Ссылка сброса пароля действует после смены пароля и после выдачи новой
+  - url: https://github.com/advisories/GHSA-x3vp-85cm-q97r
+    product: Microsoft.AspNetCore.App.Runtime.linux-arm, Microsoft.AspNetCore.App.Runtime.linux-arm64, Microsoft.AspNetCore.App.Runtime.linux-musl-arm,
+      Microsoft.AspNetCore.App.Runtime.linux-musl-arm64, Microsoft.AspNetCore.App.Runtime.linux-musl-x64, Microsoft.AspNetCore.App.Runtime.linux-x64,
+      Microsoft.AspNetCore.App.Runtime.osx-arm64, Microsoft.AspNetCore.App.Runtime.osx-x64, Microsoft.AspNetCore.App.Runtime.win-arm,
+      Microsoft.AspNetCore.App.Runtime.win-arm64, Microsoft.AspNetCore.App.Runtime.win-x64, Microsoft.AspNetCore.App.Runtime.win-x86
+    closed: '2026-10-13'
+    summary: Письмо сброса пароля и подтверждения уходит на адрес из запроса, а не на сохранённый канонический адрес пользователя
 RWB-0308:
   pattern: Учётные данные не передаются и не принимаются в URL
   checks:
@@ -8294,3 +8969,167 @@ RWB-0310:
     product: pimcore/pimcore
     closed: '2026-08-13'
     summary: Шаблон проверки ID класса без якоря конца пропускает SQL в хвосте, позже исполняемый
+RWB-0311:
+  pattern: Запрос авторизации, который сервис отправляет внешнему OAuth/OIDC-провайдеру, содержит в scope запрошенные клиентом
+    значения и не добавляет устаревших или конфликтующих scope по умолчанию
+  checks:
+  - AUTH-OAUTH-OUTBOUND-SCOPE
+  batch: supabase-auth
+  bugs:
+  - url: https://github.com/supabase/auth/issues/1827
+    fix: https://github.com/supabase/auth/pull/1831
+    product: Supabase Auth
+    closed: '2024-11-12'
+    summary: Запрос авторизации к внешнему провайдеру содержит устаревший scope по умолчанию, вместе с запрошенным клиентом
+      провайдер отклоняет вход
+RWB-0312:
+  pattern: Пользователь, импортированный с готовым хешем пароля поддерживаемого алгоритма (bcrypt, scrypt, argon2, PBKDF2
+    из другой системы), входит по исходному паролю; неверный пароль отклоняется; формат хеша определяется по префиксу или
+    параметрам
+  checks:
+  - AUTH-IMPORTED-PASSWORD-HASH
+  batch: supabase-auth
+  bugs:
+  - url: https://github.com/supabase/auth/issues/1750
+    fix: https://github.com/supabase/auth/pull/1768
+    product: Supabase Auth
+    closed: '2024-09-26'
+    summary: 'Пользователи, импортированные с хешем пароля Firebase (scrypt), не могут войти: сервер проверял только bcrypt'
+RWB-0313:
+  pattern: Смена телефона или email на ранее использованный этим же пользователем (A → B → A) проходит обычным подтверждением
+    кодом — код отправляется, принимается, значение обновляется
+  checks:
+  - AUTH-CONTACT-CHANGE-PREVIOUS-VALUE
+  batch: supabase-auth
+  bugs:
+  - url: https://github.com/supabase/auth/issues/1629
+    fix: https://github.com/supabase/auth/pull/1647
+    product: Supabase Auth
+    closed: '2024-07-04'
+    summary: 'Смена телефона на ранее использованный номер: код не отправляется или проверка всегда неуспешна'
+RWB-0314:
+  pattern: Successful response contains required contract fields
+  checks:
+  - CONTRACT-REQUIRED-FIELDS
+  batch: supabase-auth
+  bugs:
+  - url: https://github.com/supabase/auth/issues/1744
+    fix: https://github.com/supabase/auth/pull/1763
+    product: Supabase Auth
+    closed: '2024-09-11'
+    summary: В payload хука отправки письма для смены email поле токена пустое
+RWB-0315:
+  pattern: Машиночитаемые коды ошибок стабильны и задокументированы
+  checks:
+  - ERR-STABLE-ERROR-CODES
+  batch: supabase-auth
+  bugs:
+  - url: https://github.com/supabase/auth/issues/1631
+    fix: https://github.com/supabase/auth/pull/1721
+    product: Supabase Auth
+    closed: '2024-08-15'
+    summary: Ошибка неверных учётных данных при выбранной версии API приходит без машиночитаемого кода
+RWB-0316:
+  pattern: Поля extensions ошибки GraphQL (code и пользовательские) присутствуют по документированной структуре ровно в одном
+    месте — без копий во вложенных объектах (exception, originalError)
+  checks:
+  - GQL-ERROR-EXTENSIONS-SHAPE
+  batch: apollo-server
+  bugs:
+  - url: https://github.com/apollographql/apollo-server/issues/3835
+    product: Apollo Server
+    closed: '2021-06-09'
+    summary: Поля extensions ошибки дублируются в extensions и в extensions.exception
+RWB-0317:
+  pattern: Ответ, для которого включено кэширование (подсказки max-age у всех полей, политика кэша маршрута), содержит Cache-Control
+    по итоговой политике — max-age как минимум из подсказок, public или private; пара к REST-SENSITIVE-CACHE-CONTROL
+  checks:
+  - HTTP-CACHEABLE-RESPONSE-CACHE-CONTROL
+  batch: apollo-server
+  bugs:
+  - url: https://github.com/apollographql/apollo-server/issues/2918
+    product: Apollo Server
+    closed: '2022-10-20'
+    summary: При включённом управлении кэшированием сервер перестал отправлять заголовок Cache-Control
+RWB-0318:
+  pattern: Входные типы и переменные валидируются
+  checks:
+  - GQL-INPUT-VALIDATION
+  batch: apollo-server
+  bugs:
+  - url: https://github.com/apollographql/apollo-server/issues/1410
+    product: Apollo Server
+    closed: '2019-07-08'
+    summary: Переменная-объект без обязательного поля input даёт код INTERNAL_SERVER_ERROR вместо ошибки ввода
+RWB-0319:
+  pattern: Изменение упорядоченных связей, где в одном запросе connect ставит позицию относительно связи из disconnect (before/after
+    удаляемой), выполняется с корректным порядком оставшихся связей или отклоняется 4xx с понятной ошибкой — без 5xx
+  checks:
+  - RES-RELATION-CONNECT-DISCONNECT-CONFLICT
+  batch: strapi
+  bugs:
+  - url: https://github.com/strapi/strapi/issues/25710
+    fix: https://github.com/strapi/strapi/pull/26210
+    product: Strapi
+    closed: '2026-07-06'
+    summary: Запрос с одновременным отключением связи и подключением другой относительно неё падает
+RWB-0320:
+  pattern: Массовая операция (публикация, изменение, удаление) применяет те же правила валидации, что одиночная, — запись,
+    которую принимает одиночная операция, принимает и массовая, и наоборот, в том числе с вложенными компонентами
+  checks:
+  - RES-BULK-SINGLE-VALIDATION-PARITY
+  batch: strapi
+  bugs:
+  - url: https://github.com/strapi/strapi/issues/24576
+    fix: https://github.com/strapi/strapi/pull/25687
+    product: Strapi
+    closed: '2026-04-15'
+    summary: Массовая публикация признаёт невалидной запись с заполненным обязательным вложенным компонентом в динамической
+      зоне
+RWB-0321:
+  pattern: Невалидный фильтр
+  checks:
+  - REST-FILTER-INVALID
+  batch: strapi
+  bugs:
+  - url: https://github.com/strapi/strapi/issues/25788
+    fix: https://github.com/strapi/strapi/pull/25854
+    product: Strapi
+    closed: '2026-06-30'
+    summary: Недопустимая конструкция populate для полиморфного поля даёт 500 вместо 400
+RWB-0322:
+  pattern: Стабильный порядок пагинации
+  checks:
+  - REST-PAGINATION-STABLE-ORDER
+  batch: strapi
+  bugs:
+  - url: https://github.com/strapi/strapi/issues/26030
+    fix: https://github.com/strapi/strapi/pull/26032
+    product: Strapi
+    closed: '2026-05-11'
+    summary: Записи повторяются на разных страницах выдачи при сортировке после обновления
+RWB-0323:
+  pattern: Повторно предъявленное SAML-утверждение (или другой одноразовый токен входа — WS-Federation, OIDC ID-токен с nonce)
+    в пределах срока действия отклоняется при включённой защите от повторов, в том числе на другом экземпляре сервиса
+  checks:
+  - AUTH-SAML-ASSERTION-REPLAY
+  batch: ghsa-nuget
+  bugs:
+  - url: https://github.com/advisories/GHSA-9jr3-rj99-8jq3
+    product: CoreWCF.Primitives
+    closed: '2026-06-19'
+    summary: Защита от повторного использования SAML-токена при включённой опции не срабатывает
+RWB-0324:
+  pattern: Язык сообщений определяется Accept-Language с fallback
+  checks:
+  - HTTP-ACCEPT-LANGUAGE
+  batch: ghsa-nuget
+  bugs:
+  - url: https://github.com/advisories/GHSA-f4g7-52wc-p8x7
+    product: Microsoft.AspNetCore.App.Runtime.linux-arm, Microsoft.AspNetCore.App.Runtime.linux-arm64, Microsoft.AspNetCore.App.Runtime.linux-musl-arm,
+      Microsoft.AspNetCore.App.Runtime.linux-musl-arm64, Microsoft.AspNetCore.App.Runtime.linux-musl-x64, Microsoft.AspNetCore.App.Runtime.linux-x64,
+      Microsoft.AspNetCore.App.Runtime.osx-arm64, Microsoft.AspNetCore.App.Runtime.osx-x64, Microsoft.AspNetCore.App.Runtime.win-arm64,
+      Microsoft.AspNetCore.App.Runtime.win-x64, Microsoft.AspNetCore.App.Runtime.win-x86
+    closed: '2026-10-13'
+    summary: Fallback локализации добавляет присланные клиентом синтетические имена культур в глобальный кэш — неограниченный
+      рост памяти без аутентификации

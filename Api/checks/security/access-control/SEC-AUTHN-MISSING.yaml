@@ -43,6 +43,9 @@ checks:
     notes: 'Real-world bug: RWB-0143 (GHSA-p569-5gjg-9cmj)'
   - action: Отправить без учётных данных запрос к каждой операции, у которой в спецификации задан security, и проверить 401
     notes: 'Real-world bug: RWB-0143 (GHSA-r277-6w6q-xmqw)'
+  - action: Подключиться к сервису, пропустив шаг согласования безопасности транспорта, отправить сообщение и проверить, что
+      операция не вызвана
+    notes: 'Real-world bug: RWB-0143 (GHSA-wjpq-6766-7f5j)'
   expected:
   - Reject according to documented auth policy; no protected data or internal details are returned.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

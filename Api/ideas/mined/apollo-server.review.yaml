@@ -7,6 +7,8 @@
 # (ID бага), вариант пруфа без нового шага — в proofs.no_variant, new-паттерн как вариант существующей записи —
 # в proofs.retarget. Затем: cluster.py и apply_proofs.py. Правило сверки — mining/README.md, шаги 6–7, п. 7.
 #
+# Перекрёстное ревью (2026-10-16): ChatGPT и Qwen — supabase-auth+apollo-server+strapi+ghsa-nuget.reviewcheck.answer-1.md,
+# -2.md (сквозная нумерация 1–13); правило — mining/README.md, шаги 6–7, п. 7. Итог: №7, 9 — accept у обеих; №8 — reject у обеих (механизм не описан, 503/readiness не обоснованы; Claude согласен); №10 — вариант к GQL-GATEWAY-ROUTING (Qwen, Claude; ChatGPT — новая запись).
 # decision: accept | reject | pending
 batch: apollo-server
 clusters:
@@ -17,11 +19,10 @@ clusters:
   bugs: [apollographql/apollo-server#3835]
   idea: Поля extensions ошибки GraphQL (code и пользовательские) присутствуют по документированной структуре ровно в одном месте — без копий во вложенных объектах (exception, originalError)
 - key: cold-start-repeated-requests
-  decision: accept
-  check_id: RESIL-COLD-START-REQUESTS
-  file: checks/common/resilience.yaml
+  decision: reject
   bugs: [apollographql/apollo-server#3416]
   idea: Сразу после старта экземпляра (асинхронная загрузка схемы, прогрев) серия одинаковых корректных запросов обслуживается одинаково — либо все успешны, либо до готовности 503 с Retry-After и readiness «не готов»; механизм в баге не описан
+  reason: Механизм в баге не описан, воспроизводится только в связке apollo-server-lambda и serverless-offline; ожидание (503, readiness) не обосновано первоисточником — перекрёстное ревью, обе модели
 - key: cacheable-response-cache-control
   decision: accept
   check_id: HTTP-CACHEABLE-RESPONSE-CACHE-CONTROL
