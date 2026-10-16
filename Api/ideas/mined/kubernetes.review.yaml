@@ -1,0 +1,87 @@
+# Ревью кандидатов партии kubernetes (шаги 6–7, docs/BUG_MINING_PLAN.md, Api/mining/sessions.md — внутренняя сессия, п. 3).
+#
+# Шаг 6 (Claude, 2026-10-16): 13 new-паттернов склеены в 12 идей (clusters); для каждой — предложение: accept (новая
+# запись draft с предложенным ID в указанном файле) или reject (с причиной). Пруфы к существующим (extends/covered)
+# берутся из batches/*.out.jsonl автоматически. Идей UI/DB и build/mining/kubernetes/ideas.md нет — в inbox нечего.
+# Шаг 7 (человек): поменять decision / check_id / file кластера; неверные совпадения пруфов — в proofs.exclude
+# (ID бага), вариант пруфа без нового шага — в proofs.no_variant. Затем: cluster.py (пересобрать kubernetes.md) и
+# apply_proofs.py.
+#
+# decision: accept | reject | pending
+batch: kubernetes
+clusters:
+- key: header-repeated-lines-accepted
+  decision: accept
+  check_id: HTTP-HEADER-REPEATED-LINES-ACCEPTED
+  file: checks/rest/http-protocol.yaml
+  bugs: [kubernetes/kubernetes#142606]
+  idea: Законный запрос с сотнями повторяющихся строк одного заголовка (группы при имперсонации, от аутентифицирующего прокси) в пределах лимита размера обслуживается одинаково по HTTP/1.1 и HTTP/2; лимит числа строк, если есть, задокументирован, а отказ попадает в аудит или лог; позитивная пара к HTTP-HEADER-SIZE-LIMIT
+- key: authz-fallback-path
+  decision: accept
+  check_id: SEC-AUTHZ-FALLBACK-PATH
+  file: checks/security/access-control/SEC-AUTHZ-FALLBACK-PATH.yaml
+  bugs: [kubernetes/kubernetes#140159]
+  idea: Если право выводится двумя путями (по цепочке связанных объектов или явным правом в авторизаторе), ошибка основного пути (связанный объект не найден) не отменяет запасной — решение по явному праву, без права — 403 с причиной; ни fail-open, ни ложного отказа
+- key: dependency-tls-verify-recovery
+  decision: accept
+  check_id: RESIL-DEPENDENCY-TLS-RECOVERY
+  file: checks/common/resilience.yaml
+  bugs: [kubernetes/kubernetes#135883]
+  idea: Проверка доступности внешнего бэкенда проверяет его сертификат (с заданным CA, без пропуска проверки TLS) и сама восстанавливается, когда на адрес вернулся настоящий бэкенд, — без перезапуска сервиса
+- key: tls-cert-hot-reload
+  decision: accept
+  check_id: RESIL-TLS-CERT-RELOAD
+  file: checks/common/resilience.yaml
+  bugs: [kubernetes/kubernetes#133001]
+  idea: Сервер подхватывает заменённые файлы TLS-сертификата и ключа (внешняя ротация) без перезапуска; после истечения старого сертификата соединения успешны; нужен доступ к файлам сертификата на стенде
+- key: upgrade-stored-data-stable
+  decision: accept
+  check_id: COMPAT-UPGRADE-STORED-DATA-STABLE
+  file: checks/common/compatibility.yaml
+  bugs: [kubernetes/kubernetes#134773, kubernetes/kubernetes#128986]
+  idea: Обновление сервера, в том числе поэтапное (старая и новая версии работают одновременно), не меняет сохранённые объекты без действий пользователя — ревизии не растут, производные действия не запускаются, общий служебный объект не перезаписывается версиями по кругу; нужна возможность развернуть две версии
+- key: uploaded-schema-formats
+  decision: accept
+  check_id: VAL-UPLOADED-SCHEMA-FORMATS
+  file: checks/rest/input-validation.yaml
+  bugs: [kubernetes/kubernetes#133880]
+  idea: API, принимающий от клиента схемы данных (пользовательские типы, JSON Schema, OpenAPI), принимает все документированные форматы (int32, int64, float, double и т. п.) без ложных предупреждений в заголовке Warning и теле ответа
+- key: config-endpoint-accurate
+  decision: accept
+  check_id: OBS-CONFIG-ENDPOINT-ACCURATE
+  file: checks/common/observability.yaml
+  bugs: [kubernetes/kubernetes#129994]
+  idea: Служебный эндпоинт текущей конфигурации (флаги запуска, flagz, configz, env) отражает фактически переданные значения; доступ к нему — по HARD-DEBUG-ENDPOINTS
+- key: no-unneeded-dependency-calls
+  decision: accept
+  check_id: PERF-NO-UNNEEDED-DEPENDENCY-CALLS
+  file: checks/common/performance.yaml
+  bugs: [kubernetes/kubernetes#129979]
+  idea: Внешняя зависимость (вебхук преобразования, валидации, обогащения) вызывается только тогда, когда её результат нужен; лишних вызовов по счётчику на заглушке нет
+- key: legacy-form-parity
+  decision: accept
+  check_id: COMPAT-LEGACY-FORM-PARITY
+  file: checks/common/compatibility.yaml
+  bugs: [kubernetes/kubernetes#129935]
+  idea: Ресурс, заданный в устаревшей форме и переведённый на новую реализацию (migration), обрабатывается теми же правилами — права, выдача токенов, ограничения, — что и ресурс в новой форме
+- key: validation-tightening-stored-data
+  decision: accept
+  check_id: VAL-TIGHTENED-RULES-STORED-DATA
+  file: checks/rest/input-validation.yaml
+  bugs: [kubernetes/kubernetes#129503]
+  idea: После ужесточения правил валидации сохранённые ранее значения, которые им не соответствуют, обрабатываются одинаково на всех путях записи (основной эндпоинт, подресурс status, PATCH/PUT) — по документированному правилу (не перепроверять неизменённое или требовать исправления), без расхождения между путями
+- key: identity-attributes-all-schemes
+  decision: accept
+  check_id: AUTH-IDENTITY-ATTRIBUTES-ALL-SCHEMES
+  file: checks/security/authentication-session.yaml
+  bugs: [kubernetes/kubernetes#127860]
+  idea: Идентичность содержит одинаковый набор атрибутов (UID, группы, extra) при любом способе аутентификации, если источник их содержит (UID из сертификата X.509, claims OIDC); сравнение через «кто я»; пара к AUTH-ACCOUNT-STATE-ALL-SCHEMES
+- key: pool-value-release-final-delete
+  decision: accept
+  check_id: RES-ALLOCATED-VALUE-RELEASE
+  file: checks/common/resource-lifecycle.yaml
+  bugs: [kubernetes/kubernetes#127792]
+  idea: Значение, выделенное объекту из пула (адрес, номер, уникальное имя), не выдаётся повторно, пока прежний владелец не удалён окончательно (отложенное удаление, финализаторы, мягкое удаление); дублей нет
+proofs:
+  exclude: []
+  no_variant: []

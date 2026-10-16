@@ -80,6 +80,10 @@ Claude работает с одним источником. План, списо
    --batch <batch> --checks A,B,C` — пакет `ideas/mined/<batch>.proofcheck.md` для 2–3 других LLM; вердикт Claude —
    отдельно в `<batch>.proofcheck.claude.yaml`, ответы моделей — `<batch>.proofcheck.answer-N.md`. Правка — только
    там, где замечание у обеих моделей (`proofs.exclude`, `proofs.no_variant`), до `apply_proofs.py`. Образец — ghsa-maven.
+7. **Перекрёстное ревью новых идей** (по решению человека — сверить его ревью с другой LLM): `python tools/mining/reviewcheck.py
+   --batch <batch>` — пакет `ideas/mined/<batch>.reviewcheck.md` (предложения Claude, первоисточники, индекс библиотеки);
+   `--blind` — без решений Claude (`<batch>.reviewcheck.blind.md`). Ответ модели — `<batch>.reviewcheck.answer-N.md`;
+   расхождения с решениями человека разбираются до записей draft.
 
 ## Бережная нагрузка на источники
 
