@@ -1,0 +1,76 @@
+# Ревью кандидатов партии ghsa-maven (шаги 6–7, docs/BUG_MINING_PLAN.md, Api/mining/sessions.md — внутренняя сессия, п. 3).
+#
+# Шаг 6 (Claude, 2026-10-16): 20 new-паттернов склеены в 10 идей (clusters); для каждой — предложение: accept (новая
+# запись draft с предложенным ID в указанном файле) или reject (с причиной). Пруфы к существующим (extends/covered)
+# берутся из batches/*.out.jsonl автоматически.
+# Шаг 7 (человек): поменять decision / check_id / file кластера; неверные совпадения пруфов — в proofs.exclude
+# (ID бага), вариант пруфа без нового шага — в proofs.no_variant. Затем: cluster.py (пересобрать ghsa-maven.md) и
+# apply_proofs.py.
+#
+# decision: accept | reject | pending
+batch: ghsa-maven
+clusters:
+- key: client-input-internal-control
+  decision: accept
+  check_id: SEC-INTERNAL-CONTROL-PARAMS
+  file: checks/security/api-hardening.yaml
+  bugs: [GHSA-gcc7-c8mp-34qx, GHSA-4h4f-v54q-7pq8, GHSA-hcm8-x79p-wx2w, GHSA-64gv-6cq2-45jr, GHSA-566h-v38h-3xp3,
+         GHSA-rp9m-hfv5-pfvr, GHSA-rcvm-6r79-cf4r, GHSA-hgg5-gp4c-gpcg]
+  idea: Заголовки запроса и параметры подключения (в том числе WebSocket) с именами внутренних управляющих параметров (запрос к хранилищу или поиску, операция, ID объекта, адрес исходящего запроса, DNS-сервер, ключи во внешней системе) не меняют внутреннюю операцию сервиса — выполняется настроенная
+- key: user-code-sandbox
+  decision: accept
+  check_id: INJ-USER-CODE-EXECUTION
+  file: checks/security/injection.yaml
+  bugs: [GHSA-2g95-6x5q-xjwj, GHSA-vmwp-vh32-rj75, GHSA-524g-x36v-9wm6]
+  idea: Пользовательский код (скрипт, выражение, алгоритм), который сервер принимает через API и исполняет, не получает доступа к классам и функциям вне разрешённого набора (запуск процессов, файловая система, сеть)
+- key: disabled-feature-enforced
+  decision: accept
+  check_id: SEC-DISABLED-FEATURE-ENFORCED
+  file: checks/security/api-hardening.yaml
+  bugs: [GHSA-4q93-v92x-p89f]
+  idea: Функция, отключённая настройкой, недоступна через все API и не попадает в токены (scope, claims), даже если у пользователя остались её данные
+- key: path-rule-precedence
+  decision: accept
+  check_id: SEC-AUTHZ-PATH-RULE-PRECEDENCE
+  file: checks/security/access-control/SEC-AUTHZ-PATH-RULE-PRECEDENCE.yaml
+  bugs: [GHSA-gcx9-497g-6cp6]
+  idea: Правила доступа по путям применяются по наиболее точному совпадению независимо от порядка объявления — строгое правило подпути не перекрывается общим правилом
+- key: opaque-id-integrity
+  decision: accept
+  check_id: SEC-OPAQUE-ID-INTEGRITY
+  file: checks/security/api-hardening.yaml
+  bugs: [GHSA-fp43-vj7g-pg92]
+  idea: Непрозрачный идентификатор, который выдаёт сервер и из которого он выводит внутренние ресурсы, проверяется на подлинность — сфабрикованный клиентом ID отклоняется до распаковки и обращения к ресурсам
+- key: client-assertion-binding
+  decision: accept
+  check_id: AUTH-CLIENT-ASSERTION-BINDING
+  file: checks/security/authentication-session.yaml
+  bugs: [GHSA-f2cx-463q-7m2c]
+  idea: Client assertion (private_key_jwt) принимается только с ключом того клиента, чей client_id в ней указан — клиент не аутентифицируется от имени другого
+- key: account-state-all-schemes
+  decision: accept
+  check_id: AUTH-ACCOUNT-STATE-ALL-SCHEMES
+  file: checks/security/authentication-session.yaml
+  bugs: [GHSA-6mfm-98wv-32wm]
+  idea: Отключённая, заблокированная или истёкшая учётка не аутентифицируется ни одной схемой (пароль, сертификат клиента, токен, ключ API)
+- key: client-cert-identity
+  decision: accept
+  check_id: AUTH-CLIENT-CERT-IDENTITY
+  file: checks/security/authentication-session.yaml
+  bugs: [GHSA-293q-567p-wmwq]
+  idea: Личность из сертификата клиента (CN, SAN) извлекается однозначно — нестандартно сформированное поле не даёт войти под именем другого пользователя
+- key: ip-allowlist-subnets
+  decision: accept
+  check_id: HARD-IP-ALLOWLIST
+  file: checks/security/api-hardening.yaml
+  bugs: [GHSA-3qp7-7mw8-wx86]
+  idea: Ограничение доступа по списку адресов и подсетей работает на границах подсети для IPv4 и IPv6 — адреса вне разрешённой подсети получают отказ
+- key: http2-flow-control
+  decision: accept
+  check_id: HTTP-HTTP2-RESOURCE-LIMITS
+  file: checks/rest/http-protocol.yaml
+  bugs: [GHSA-6m4x-pp6q-5jmm, GHSA-563q-j3cm-6jxm]
+  idea: Параметры HTTP/2 со стороны клиента (окно управления потоком при медленном чтении тела, малый SETTINGS_MAX_HEADER_LIST_SIZE) не заставляют сервер буферизовать без предела или выполнять работу впустую
+proofs:
+  exclude: []
+  no_variant: []
