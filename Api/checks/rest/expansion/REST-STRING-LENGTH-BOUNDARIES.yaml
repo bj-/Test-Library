@@ -28,6 +28,9 @@ checks:
     notes: 'Real-world bug: RWB-0137 (strapi/strapi#26113)'
   - action: Вставить и изменить значение максимальной длины в колонки char(n) и bit(n) и проверить, что оно принято
     notes: 'Real-world bug: RWB-0137 (PostgREST/postgrest#2861)'
+  - action: Передать строку длиной max в символах и в байтах (кириллица, эмодзи) — сохраняется целиком; max+1 — 400 с лимитом;
+      maxLength контракта = лимит хранения
+    notes: inbox №66
   expected:
   - min-1/min/max/max+1 проверяются относительно ограничений
   applicability:

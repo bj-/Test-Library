@@ -750,3 +750,40 @@ checks:
   references:
   - Смежная — FILE-TRANSFORM-LIMITS
   - 'Real-world bug: RWB-0260'
+- id: FILE-ROUNDTRIP-EXACT
+  status: draft
+  title: Загруженный файл скачивается байт в байт
+  category: files
+  protocols:
+  - rest
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - files
+  - regression
+  - nightly
+  preconditions:
+  - Есть загрузка и скачивание файлов.
+  steps:
+  - action: Загрузить файлы разных форматов и размеров с именами на кириллице и с пробелами; скачать и сравнить хэш.
+  expected:
+  - Хэш совпадает; Content-Type и Content-Disposition (с именем по RFC 6266) корректны.
+  applicability:
+    when:
+    - Есть загрузка файлов.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - RFC 6266
+  - Смежная — FILE-DOWNLOAD-HEADERS
+  - inbox №72

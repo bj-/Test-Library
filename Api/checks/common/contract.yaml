@@ -183,3 +183,37 @@ checks:
   - OpenAPI 3.1
   - JSON Schema 2020-12
   - 'Real-world bug: RWB-0049'
+- id: CONTRACT-RESPONSE-LINKS-RESOLVE
+  status: draft
+  title: URL в ответах открываются
+  category: contract
+  protocols:
+  - rest
+  - graphql
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - regression
+  preconditions:
+  - Ответы содержат URL — ссылки на ресурсы, файлы, изображения, next и prev, Location.
+  steps:
+  - action: Собрать все URL из ответов основных операций и запросить каждый с теми же правами.
+  expected:
+  - Каждый URL отвечает 200 (или документированным статусом) с ожидаемым Content-Type; битых ссылок нет.
+  applicability:
+    when:
+    - Есть URL в ответах.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - Смежные — PAGE-NEXT-LINK-VALID, HTTP-ABSOLUTE-URL-BASE-PATH
+  - inbox №60

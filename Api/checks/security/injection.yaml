@@ -1041,6 +1041,8 @@ checks:
   - action: Отправить заголовок Signature с keyId на внутренний адрес (127.0.0.1, 169.254.169.254) и проверить, что сервер
       не обращается к нему
     notes: 'Real-world bug: RWB-0090 (GHSA-vw42-752g-5mrp)'
+  - action: Передать внутренний IPv4, вложенный в IPv6-адрес NAT64 (64:ff9b::/96), в параметрах с URL и URL вебхуков
+    notes: inbox №149
   expected:
   - Запросы к внутренним адресам и неразрешённым схемам блокируются, в том числе после редиректа и DNS rebinding.
   applicability:
@@ -1379,3 +1381,42 @@ checks:
   - CWE-470, CWE-94
   - Смежная — INJ-USER-CODE-EXECUTION (исполнение пользовательского кода)
   - 'Real-world bug: RWB-0303'
+- id: INJ-DOWNSTREAM-BODY-INJECTION
+  status: draft
+  title: Значение поля не внедряет ключи в тело запроса к другой системе
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - injection
+  - negative
+  - regression
+  - nightly
+  preconditions:
+  - Сервис пересылает данные пользователя дальше — в другой API, очередь, XML- или JSON-сообщение; есть наблюдение за нижестоящим
+    запросом.
+  steps:
+  - action: 'Передать значения вида x", "role": "admin", "y": " и </name><role>admin</role><name>; посмотреть тело нижестоящего
+      запроса и результат.'
+  expected:
+  - Значение передаётся экранированным как одно поле; новых ключей и элементов в нижестоящем запросе нет.
+  applicability:
+    when:
+    - Есть пересылка данных в другие системы.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - CWE-74, CWE-91
+  - inbox №47

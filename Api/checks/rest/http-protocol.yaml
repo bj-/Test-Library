@@ -23,6 +23,9 @@ checks:
     notes: 'Real-world bug: RWB-0336 (PostgREST/postgrest#4463)'
   - action: Запросить несуществующий ресурс с параметром вложения связанных ресурсов и проверить 404, а не 400
     notes: 'Real-world bug: RWB-0336 (PostgREST/postgrest#3602)'
+  - action: Запросить несуществующий путь со скриптом в пути — тело не содержит отпечатка фреймворка (Cannot GET) и не отражает
+      путь неэкранированным
+    notes: inbox №9
   expected:
   - Ответ 404 в формате модели ошибок.
   - Не возвращается HTML-страница по умолчанию и не раскрывается фреймворк.
@@ -324,6 +327,8 @@ checks:
   - action: Отправить серию анонимных запросов с уникальными несуществующими именами культур в Accept-Language и параметре
       культуры и проверить, что память сервиса не растёт
     notes: 'Real-world bug: RWB-0324 (GHSA-f4g7-52wc-p8x7)'
+  - action: Проверить тексты ошибок на опечатки и соответствие коду и полю, а не общее «Ошибка»
+    notes: inbox №57
   expected:
   - Используется запрошенный язык или задокументированный fallback.
   - Коды ошибок не зависят от языка.
@@ -428,6 +433,9 @@ checks:
   - Есть GET или DELETE.
   steps:
   - action: Отправить GET и DELETE с телом, содержащим фильтры или id.
+  - action: 'Отправить GET, DELETE и HEAD с Content-Type: application/json и пустым телом — запрос принимается, заголовок
+      не делает его невалидным'
+    notes: inbox №3
   expected:
   - Тело не меняет семантику запроса, если контракт этого не описывает.
   applicability:
@@ -961,3 +969,37 @@ checks:
   references:
   - RFC 7240 §3
   - 'Real-world bug: RWB-0332'
+- id: HTTP-REDIRECT-ENDPOINT-PARITY
+  status: draft
+  title: Вызов через перенаправляющий адрес работает как прямой вызов
+  category: http-semantics
+  protocols:
+  - rest
+  kind: compatibility
+  priority: P3
+  tags:
+  - compatibility
+  - regression
+  preconditions:
+  - Старый адрес перенаправляет на новый (совместимость, смена версии, канонизация).
+  steps:
+  - action: Выполнить операции через старый адрес с 301, 302, 307, 308 и напрямую; сравнить метод, тело, права и побочные
+      эффекты.
+  expected:
+  - Результат, права и побочные эффекты те же, что при прямом вызове; при 307 и 308 метод и тело сохраняются.
+  applicability:
+    when:
+    - Есть перенаправления.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - RFC 9110 §15.4
+  - inbox №56

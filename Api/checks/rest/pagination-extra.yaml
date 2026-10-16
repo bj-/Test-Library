@@ -327,3 +327,41 @@ checks:
   references:
   - RFC 8288 (Link)
   - 'Real-world bug: RWB-0271'
+- id: PAGE-SORT-FIELD-TYPE-MATRIX
+  status: draft
+  title: Сортировка по каждому полю учитывает его тип, локаль и направление
+  category: pagination
+  protocols:
+  - rest
+  - graphql
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - sorting
+  - regression
+  - nightly
+  preconditions:
+  - Список поддерживает сортировку по нескольким полям разных типов.
+  steps:
+  - action: Для каждого сортируемого поля запросить asc и desc на данных с числами, датами, строками в разном регистре и с буквами ё и е.
+  - action: Запросить без параметра сортировки.
+  expected:
+  - Числа сортируются как числа, даты как даты; регистр и локаль — по документации; null — в задокументированном месте; порядок по умолчанию задокументирован.
+  applicability:
+    when:
+    - Есть сортировка.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - Смежные — PAGE-SORT-NULLS-TIES, REST-SORT-INVALID-FIELD
+  - inbox №70

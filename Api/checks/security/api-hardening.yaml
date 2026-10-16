@@ -281,6 +281,12 @@ checks:
   - action: Устаревший маршрут доверяет описанию сущности из тела запроса - сравнить объём выдачи с актуальной операцией при
       подменённых атрибутах
     notes: 'Real-world bug: RWB-0079 (GHSA-r9ph-3637-55px)'
+  - action: Перебрать типовые пути (/api/docs, /swagger, /api-json, /health, /metrics, /debug, /admin, /v1, /api/v0, /graphql,
+      /.env, /actuator/*) и проверить, что отвечающее есть в контракте или закрыто
+    notes: inbox №5
+  - action: Запросить операции, удалённые из контракта или устаревшие с прошедшим сроком (по истории версий), — 404 или 410,
+      а до срока Deprecation и Sunset (RFC 8594, RFC 9745)
+    notes: inbox №143
   expected:
   - Устаревшие версии отключены или защищены не слабее текущей.
   applicability:
@@ -1455,3 +1461,118 @@ checks:
   - RFC 9110 §15.4 (редиректы и учётные данные)
   - Смежная — REST-SSRF-URL-FETCH
   - 'Real-world bug: RWB-0304'
+- id: SEC-CHECK-ORDER
+  status: draft
+  title: Аутентификация и авторизация проверяются раньше разбора и валидации тела
+  category: security
+  protocols:
+  - rest
+  - graphql
+  - grpc
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - authn
+  - authz
+  - negative
+  - regression
+  - nightly
+  preconditions:
+  - Есть защищённые операции с телом запроса.
+  steps:
+  - action: Отправить без учётных данных запрос с битым телом, с Content-Type application/json и пустым телом, с неполным
+      телом.
+  - action: Отправить ролью без доступа запрос с неполным или невалидным телом.
+  expected:
+  - Без учётных данных — 401 (или 404 для несуществующего маршрута), а не 400 от парсера.
+  - 'Без права — 403, а не 400 со списком полей: структура запроса не раскрывается неавторизованным.'
+  applicability:
+    when:
+    - Есть защищённые операции.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - OWASP API2:2023, API5:2023
+  - inbox №2, №34
+- id: HARD-ENVIRONMENT-ISOLATION
+  status: draft
+  title: Тестовый стенд не обращается к ресурсам production
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - hardening
+  - regression
+  preconditions:
+  - Есть описание стенда или служебные ответы с адресами зависимостей.
+  steps:
+  - action: Посмотреть идентификаторы окружения (имя БД, URL зависимостей, очереди) в служебных ответах и конфигурации; выполнить
+      операции с внешними вызовами и проверить адресатов.
+  expected:
+  - Тестовый стенд использует только свои БД, очереди и внешние API (песочницы); идентификаторы production не встречаются.
+  applicability:
+    when:
+    - Есть внешние зависимости.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - Чек-лист guru99 (пер. О. Алифановой)
+  - inbox №82
+- id: HARD-NOT-IMPLEMENTED-INERT
+  status: draft
+  title: Операция, помеченная в контракте как нереализованная, не выполняется
+  category: security
+  protocols:
+  - rest
+  - graphql
+  - grpc
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - hardening
+  - regression
+  preconditions:
+  - В контракте есть операции, помеченные как нереализованные (описание, x-status, ответ 501).
+  steps:
+  - action: Отправить корректный запрос к такой операции и проверить состояние после.
+  expected:
+  - 501 или 404, побочного эффекта нет. Если операция выполняется — находка; серьёзность выше на stage и production.
+  applicability:
+    when:
+    - Есть такие операции.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - OWASP API9:2023 (Improper Inventory Management)
+  - Смежные — HARD-SHADOW-API-VERSIONS, ERR-STATUS-MATCHES-EFFECT
+  - inbox №142

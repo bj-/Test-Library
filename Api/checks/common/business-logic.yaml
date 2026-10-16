@@ -548,3 +548,148 @@ checks:
   references:
   - Смежная — SEC-AUTHZ-PATH-RULE-PRECEDENCE
   - 'Real-world bug: RWB-0270'
+- id: BIZ-AMBIGUOUS-ADDRESS
+  status: draft
+  title: Неоднозначный почтовый адрес не выбирается молча по первому совпадению
+  category: business-logic
+  protocols:
+  - generic
+  kind: boundary
+  priority: P3
+  tags:
+  - boundary
+  - business-logic
+  - regression
+  preconditions:
+  - Адрес используется дальше (почта, геокодирование, доставка, зона обслуживания); есть справочник адресов (ФИАС, геокодер).
+  steps:
+  - action: Передать адрес, которому соответствует несколько объектов («Санкт-Петербург, Казанская улица, 20» — две Казанские улицы), одноимённые улицы разных населённых пунктов и улицу и переулок с одним названием.
+  expected:
+  - Система просит уточнить или возвращает варианты; сохраняется однозначный идентификатор (ФИАС, КЛАДР); геопозиция и отправка — на выбранный адрес.
+  applicability:
+    when:
+    - Есть ввод адресов.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Здравый смысл и практика работы с ФИАС; в ТЗ обычно не описано — REQ-UNSPECIFIED-BEHAVIOR-PROBE
+  - inbox №45
+- id: BIZ-DIVISION-BY-ZERO
+  status: draft
+  title: Входы с нулём в знаменателе не дают 500 и нечисловых значений
+  category: business-logic
+  protocols:
+  - generic
+  kind: boundary
+  priority: P2
+  tags:
+  - boundary
+  - business-logic
+  - regression
+  - nightly
+  preconditions:
+  - Есть расчёты с делением — средние, доли, цена за единицу, скорость, процент.
+  steps:
+  - action: 'Передать входы, дающие ноль в знаменателе: количество 0, цена 0, период 0, пустая выборка для среднего.'
+  expected:
+  - Определённое значение по документации или 400; без 500 и без NaN, Infinity, null в ответе.
+  applicability:
+    when:
+    - Есть расчёты.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Чек-лист guru99 (пер. О. Алифановой)
+  - inbox №65
+- id: BIZ-EMAIL-NOTIFICATION-DELIVERY
+  status: draft
+  title: Письма уходят нужному адресату с верными ссылками и без внедрения заголовков
+  category: business-logic
+  protocols:
+  - generic
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - business-logic
+  - injection
+  - regression
+  - nightly
+  preconditions:
+  - Сервис отправляет письма; нужен тестовый ящик или мок SMTP.
+  steps:
+  - action: Вызвать каждое действие, которое отправляет письмо; проверить адресата, тему, ссылки.
+  - action: 'Передать в поля, попадающие в письмо, значения с \r\nBcc: и повторить действие дважды.'
+  expected:
+  - Письмо одно, адресат и тема верные, ссылки работают; новых заголовков письма нет; повтор не дублирует письмо, если это не новое событие.
+  applicability:
+    when:
+    - Есть почтовые уведомления.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - CWE-93
+  - Смежные — BIZ-SIDE-EFFECTS-ONCE, INJ-HEADER-CRLF
+  - inbox №73
+- id: BIZ-FLAG-EFFECT-MATRIX
+  status: draft
+  title: Каждый флаг сущности влияет на поведение так, как описано
+  category: business-logic
+  protocols:
+  - generic
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - business-logic
+  - regression
+  - nightly
+  preconditions:
+  - У сущности есть флаги (boolean-поля), меняющие поведение.
+  steps:
+  - action: Для каждого флага выполнить затрагиваемые операции при true и false и в комбинациях с другими флагами.
+  expected:
+  - Поведение соответствует описанию; флаг, который ни на что не влияет, — находка.
+  applicability:
+    when:
+    - Есть флаги.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Чек-лист guru99 (пер. О. Алифановой)
+  - inbox №79

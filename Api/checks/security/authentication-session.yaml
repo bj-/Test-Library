@@ -392,6 +392,17 @@ checks:
   - action: Выполнить N неудачных попыток для одного аккаунта, с одного IP по разным аккаунтам, с ротацией заголовков X-Forwarded-For.
   - action: refresh токена или SSO по cookie из существующей сессии не должен сбрасывать блокировку
     notes: 'Real-world bug: RWB-0056 (keycloak/keycloak#49960)'
+  - action: Выполнить N-1 неудачных входов — верный пароль ещё пускает, N-й — блокировка с документированным кодом; N совпадает
+      с ТЗ или настройкой
+    notes: inbox №15
+  - action: Выполнить N-1 неудачных, успешный, снова N-1 неудачных — учётка не заблокирована
+    notes: inbox №17
+  - action: Дождаться окончания периода блокировки — верный пароль пускает; во время блокировки в ответе указано, когда повторить
+    notes: inbox №18
+  - action: Выполнить неудачные входы к разным учёткам с одного IP и к одной учётке с разных IP (без доверия к X-Forwarded-For)
+    notes: inbox №19
+  - action: Перебирать коды доступа и приглашения без авторизации — 429 после серии неверных
+    notes: inbox №36
   expected:
   - Срабатывает блокировка, задержка или CAPTCHA по политике.
   - Ротация X-Forwarded-For не обходит ограничение.
@@ -441,6 +452,11 @@ checks:
   - action: Зарегистрироваться с email существующего пользователя с нестандартной ролью и сравнить все поля ответа, включая
       role, с ответом для нового email
     notes: 'Real-world bug: RWB-0193 (supabase/auth#1365)'
+  - action: Сравнить ответ на попытку после блокировки для существующего и несуществующего логина
+    notes: inbox №20
+  - action: Сравнить регистрацию на существующий идентификатор и вход на несуществующий по коду, телу, заголовкам и времени
+      ответа; проверить, что код фактически не отправлен
+    notes: inbox №40
   expected:
   - Тела, статусы и время ответа неразличимы в пределах допуска.
   applicability:
@@ -483,6 +499,11 @@ checks:
   - Используется OTP (SMS, email, TOTP).
   steps:
   - action: Запросить код и отправить неверные коды до лимита, затем верный.
+  - action: Во время блокировки ввести код через API, перезапустить клиент и запросить новый код — блокировка держится на
+      сервере
+    notes: inbox №38
+  - action: Ввести код неверного формата после N-1 неверных — ошибка формата, попытка не засчитывается
+    notes: inbox №39
   expected:
   - После лимита код инвалидируется, верный код уже не принимается.
   - Перебор 4-6-значного кода невозможен в пределах срока жизни.
@@ -566,6 +587,9 @@ checks:
   steps:
   - action: Успешно использовать код и повторить его.
   - action: Запросить новый код и отправить предыдущий.
+  - action: Запросить код повторно до истечения срока — прежний код сразу недействителен, срок отсчитывается заново, счётчик
+      блокировки не сбрасывается
+    notes: inbox №37
   expected:
   - Повторное и устаревшее использование отклоняется.
   applicability:
@@ -654,6 +678,9 @@ checks:
   - Есть OTP.
   steps:
   - action: Запросить код для номера A и подтвердить им номер B или другую операцию.
+  - action: Подтвердить значимое действие кодом другого действия, кодом канала первичной аутентификации и повторно тем же
+      кодом — отказ
+    notes: inbox №42
   expected:
   - Код отклоняется.
   applicability:
@@ -698,6 +725,11 @@ checks:
   - action: Режим с ограниченным криптопровайдером (FIPS), пароль короче его внутреннего минимума — ошибка политики, а не
       5xx; проверить все пути (смена, сброс, обязательное обновление)
     notes: 'Real-world bug: RWB-0062 (keycloak/keycloak#51674)'
+  - action: Проверить пароли привилегированных учёток стенда по словарю — словарных паролей нет
+    notes: inbox №7
+  - action: Задать слабый пароль на каждой точке — регистрация, сброс, смена, создание учётки администратором, импорт — одна
+      политика везде
+    notes: inbox №85
   expected:
   - Слабые пароли отклоняются сервером независимо от клиента.
   - Очень длинный пароль не вызывает деградации (DoS хеширования).
@@ -839,6 +871,8 @@ checks:
     notes: 'Real-world bug: RWB-0057 (jshttp/cookie#103)'
   - action: Проверить Max-Age и Expires по настройке на всех cookie аутентификации, включая обновление токена
     notes: 'Real-world bug: RWB-0057 (strapi/strapi#26723)'
+  - action: Проверить содержимое cookie — нет пароля, долгоживущих токенов в открытом виде и персональных данных
+    notes: inbox №89
   expected:
   - Secure и HttpOnly установлены, SameSite=Lax или Strict (или None с обоснованием), Domain не шире необходимого, срок жизни
     по политике.
@@ -901,6 +935,9 @@ checks:
   - action: Выполнить с cookie сессии кросс-сайтовую GET-навигацию на маршрут, изменяющий данные или права, и проверить, что
       состояние не изменилось
     notes: 'Real-world bug: RWB-0190 (GHSA-pgcc-vfmc-7cw5)'
+  - action: Отправить на каждую ручку с телом text/plain, application/x-www-form-urlencoded и multipart/form-data — 415, состояние
+      не меняется, сессия не выпускается
+    notes: inbox №24
   expected:
   - Запросы отклоняются; состояние не меняется.
   applicability:
@@ -1192,6 +1229,8 @@ checks:
   steps:
   - action: Войти, выполнить выход с cookie сессии.
   - action: Проверить заголовки Set-Cookie ответа.
+  - action: Сравнить атрибуты Set-Cookie стирания с атрибутами выдачи; для префикса __Host- — Secure, Path=/, без Domain
+    notes: inbox №22
   expected:
   - 'Ответ содержит Set-Cookie с тем же именем, Path и Domain, пустым значением и Max-Age=0 или Expires в прошлом (OWASP Session
     Management Cheat Sheet: Session Expiration; RFC 6265 п. 3.1).'
@@ -2312,3 +2351,565 @@ checks:
   - OASIS SAML 2.0 Profiles §4.1.4.5 (OneTimeUse)
   - Смежная — SEC-TOKEN-REFRESH-REPLAY
   - 'Real-world bug: RWB-0323'
+- id: AUTH-SENSITIVE-CHANGE-REAUTH
+  status: draft
+  title: Изменение защиты учётки требует свежей аутентификации
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - regression
+  - nightly
+  preconditions:
+  - Учётка может менять настройки защиты — MFA, коды восстановления, email, пароль.
+  steps:
+  - action: Только с токеном сессии (без текущего пароля или свежей аутентификации) включить, отключить и перенастроить MFA,
+      перевыпустить коды восстановления, сменить email и пароль.
+  - action: Подтвердить отключение MFA и перевыпуск кодов кодом, уже использованным ранее (для входа или прошлой операции).
+  expected:
+  - Запросы без свежей аутентификации отклоняются 4xx; настройки не меняются, коды не выдаются; уже использованный код не
+    принимается.
+  applicability:
+    when:
+    - Есть настройки защиты учётки.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP ASVS V2.8, V3.7
+  - Смежные — AUTH-MFA-STEP-UP, AUTH-PASSWORD-CHANGE-REQUIRES-CURRENT
+  - inbox №145, №146 (GHSA-7m6h-rg42-m449)
+- id: AUTH-PATH-NORMALIZATION-BYPASS
+  status: draft
+  title: Вариации пути защищённого маршрута не обходят аутентификацию
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - regression
+  - nightly
+  preconditions:
+  - Есть защищённые маршруты.
+  steps:
+  - action: Без учётных данных запросить защищённый маршрут с завершающим слэшем, в другом регистре пути и префикса, с двойным
+      слэшем, сегментами . и .., закодированным слэшем и закодированными символами.
+  expected:
+  - Ни одна вариация не даёт 2xx без учётных данных.
+  applicability:
+    when:
+    - Есть защищённые маршруты.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - Смежная — HTTP-TRAILING-SLASH-CASE
+  - CWE-22, CWE-647
+  - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
+- id: AUTH-CREDENTIAL-CHANNEL-STRICT
+  status: draft
+  title: Учётные данные принимаются только по документированному каналу
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - negative
+  - authn
+  - regression
+  - nightly
+  preconditions:
+  - Аутентификация на cookie-сессии.
+  steps:
+  - action: Передать действующее значение сессии в cookie с другим именем, без префикса __Host-, с префиксом в нижнем регистре,
+      в заголовке Authorization Bearer и в своём заголовке.
+  expected:
+  - '401: сессия принимается только из документированной cookie.'
+  applicability:
+    when:
+    - Cookie-сессии.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - RFC 6265bis §4.1.3
+  - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
+- id: AUTH-SESSION-VALUE-EXACT-MATCH
+  status: draft
+  title: Значение сессии сравнивается целиком и точно
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - session
+  - regression
+  - nightly
+  preconditions:
+  - Аутентификация на cookie-сессии.
+  steps:
+  - action: Передать изменённое, усечённое, дополненное и в другом регистре значение действующей cookie сессии.
+  expected:
+  - 401 во всех вариантах.
+  applicability:
+    when:
+    - Cookie-сессии.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - CWE-287
+  - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
+- id: AUTH-DUPLICATE-CREDENTIALS
+  status: draft
+  title: Повторяющиеся и пустые учётные данные не дают доступа
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - negative
+  - session
+  - regression
+  - nightly
+  preconditions:
+  - Аутентификация на cookie-сессии.
+  steps:
+  - action: Передать две cookie сессии с одним именем — мусор первым, действующая второй; запросить все эндпоинты без cookie,
+      с пустой и с мусорной cookie.
+  expected:
+  - 401 во всех вариантах, ответ одинаковый на всех эндпоинтах.
+  applicability:
+    when:
+    - Cookie-сессии.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - RFC 6265 §5.4
+  - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
+- id: AUTH-SESSION-ID-ENTROPY
+  status: draft
+  title: Идентификатор сессии новый при каждом входе, уникален и непредсказуем
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - session
+  - regression
+  - nightly
+  preconditions:
+  - Аутентификация на cookie-сессии.
+  steps:
+  - action: Выполнить серию входов одной учёткой и разными; собрать идентификаторы сессий.
+  expected:
+  - Каждый вход даёт новый идентификатор; повторов нет; длина и алфавит дают не меньше 128 бит энтропии.
+  applicability:
+    when:
+    - Cookie-сессии.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - OWASP Session Management Cheat Sheet
+  - Смежная — AUTH-SESSION-FIXATION
+  - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
+- id: AUTH-PASSWORD-CHANGE-REQUIRES-CURRENT
+  status: draft
+  title: Смена пароля требует верный текущий пароль
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - regression
+  - nightly
+  preconditions:
+  - Есть смена пароля пользователем.
+  steps:
+  - action: Сменить пароль с неверным и без текущего пароля.
+  expected:
+  - 403/400; пароль не меняется.
+  applicability:
+    when:
+    - Есть смена пароля.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP ASVS V2.1.5
+  - Смежная — AUTH-SENSITIVE-CHANGE-REAUTH
+  - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
+- id: AUTH-NOSQL-OPERATOR-CREDENTIALS
+  status: draft
+  title: Операторы NoSQL в учётных данных входа отклоняются
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - injection
+  - regression
+  - nightly
+  preconditions:
+  - Есть вход по логину и паролю.
+  steps:
+  - action: Передать в логин и пароль объекты с операторами ($ne, $gt, $regex) вместо строк.
+  expected:
+  - 400; вход не выполняется.
+  applicability:
+    when:
+    - Есть вход по паролю.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - Конкретизирует INJ-NOSQL для входа
+  - CWE-943
+  - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
+- id: INJ-NULL-BYTE
+  status: draft
+  title: NUL-байт во входных данных отклоняется или не обрезает значение
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - negative
+  - injection
+  - regression
+  - nightly
+  preconditions:
+  - Есть строковые поля.
+  steps:
+  - action: Передать значение с NUL-байтом в конце и в середине (email входа, имя, путь).
+  expected:
+  - 4xx или значение сохраняется целиком; обрезки по NUL и входа под чужим значением нет.
+  applicability:
+    when:
+    - Есть строковые поля.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - CWE-158
+  - Смежная — VAL-SPECIAL-CHARACTERS
+  - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
+- id: AUTH-REVOKED-COOKIE-RELOGIN
+  status: draft
+  title: Вход с закрытой cookie сессии создаёт новую сессию
+  category: security
+  protocols:
+  - rest
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - session
+  - regression
+  - nightly
+  preconditions:
+  - Аутентификация на cookie-сессии.
+  steps:
+  - action: Закрыть сессию (выход) и выполнить вход, отправив в запросе её cookie.
+  expected:
+  - Вход успешен, выдана новая cookie; закрытая сессия не возобновляется.
+  applicability:
+    when:
+    - Cookie-сессии.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Смежная — AUTH-SESSION-FIXATION
+  - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
+- id: AUTH-LOGOUT-SCOPE
+  status: draft
+  title: Выход завершает только текущую сессию
+  category: security
+  protocols:
+  - rest
+  kind: positive
+  priority: P2
+  tags:
+  - positive
+  - session
+  - regression
+  - nightly
+  preconditions:
+  - Аутентификация на cookie-сессии.
+  steps:
+  - action: Войти одной учёткой дважды; выйти в одной сессии; запросить защищённый ресурс другой.
+  expected:
+  - Другие сессии учётки продолжают работать, если выход «везде» не заявлен.
+  applicability:
+    when:
+    - Несколько сессий на учётку.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Смежная — AUTH-LOGOUT-INVALIDATES
+  - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
+- id: AUTH-SESSION-ID-NOT-EXPOSED
+  status: draft
+  title: Список сессий не раскрывает значение cookie сессии
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - session
+  - regression
+  - nightly
+  preconditions:
+  - Аутентификация на cookie-сессии.
+  steps:
+  - action: Запросить список сессий учётки.
+  expected:
+  - В ответе нет значений cookie и других секретов сессий — только их идентификаторы и метаданные.
+  applicability:
+    when:
+    - Есть список сессий.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP API3:2023
+  - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
+- id: AUTH-SESSION-SLIDING-RENEWAL
+  status: draft
+  title: Активность продлевает сессию по правилам скользящего срока
+  category: security
+  protocols:
+  - rest
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - session
+  - regression
+  - nightly
+  preconditions:
+  - Аутентификация на cookie-сессии.
+  steps:
+  - action: Проявлять активность в сессии с интервалами меньше срока простоя и сравнить срок жизни до и после.
+  expected:
+  - Срок продлевается по заявленному правилу, не превышая абсолютного срока (AUTH-SESSION-TIMEOUT).
+  applicability:
+    when:
+    - Скользящий срок сессии.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - OWASP Session Management Cheat Sheet
+  - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
+- id: AUTH-SESSION-FILTER-SCOPE
+  status: draft
+  title: Операции над сессиями ограничены сессиями своей учётки
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - ownership
+  - regression
+  - nightly
+  preconditions:
+  - Аутентификация на cookie-сессии.
+  steps:
+  - action: Администратором или пользователем завершить сессию другой учётки по её идентификатору.
+  expected:
+  - 404 или 403; чужая сессия продолжает работать, если право на это не заявлено.
+  applicability:
+    when:
+    - Есть управление сессиями.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP API1:2023
+  - Смежная — SEC-OWNERSHIP-DELETE
+  - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
+- id: AUTH-LOGIN-CROSS-ACCOUNT-COOKIE
+  status: draft
+  title: Вход другой учёткой с cookie действующей сессии обрабатывается по правилу
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - session
+  - regression
+  - nightly
+  preconditions:
+  - Аутентификация на cookie-сессии.
+  steps:
+  - action: Войти учёткой A; выполнить вход учёткой B, отправив cookie сессии A.
+  expected:
+  - Документированное поведение (например, 409 и закрытие сессии A); сессия A не переходит к B, данные не смешиваются.
+  applicability:
+    when:
+    - Cookie-сессии.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Смежная — AUTH-SESSION-FIXATION
+  - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)

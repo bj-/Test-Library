@@ -1223,3 +1223,73 @@ checks:
   references:
   - Смежная — RES-BULK-LIMITS
   - 'Real-world bug: RWB-0320'
+- id: RES-VALUE-ROUNDTRIP-EXACT
+  status: draft
+  title: Сохранённое значение возвращается так, как введено, кроме документированной нормализации
+  category: resources
+  protocols:
+  - generic
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - validation
+  - regression
+  - nightly
+  preconditions:
+  - Есть строковые поля, которые сохраняются и читаются.
+  steps:
+  - action: Сохранить значения со спецсимволами, разным регистром, пробелами по краям, Unicode в разных формах нормализации, HTML и кавычками; прочитать.
+  expected:
+  - Значение совпадает с отправленным байт в байт, кроме задокументированной нормализации; незадокументированная трансформация (обрезка, замена, регистр, экранирование при хранении) — находка.
+  applicability:
+    when:
+    - Есть сохраняемые строки.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Здравый смысл — система возвращает то, что ввёл пользователь
+  - Смежные — VAL-WHITESPACE-HANDLING, REST-UNICODE-NORMALIZATION, VAL-SPECIAL-CHARACTERS
+  - inbox №46
+- id: RES-REFERENCE-DATA-COMPLETE
+  status: draft
+  title: Справочники через API полные, упорядочены по документации и управляются без релиза
+  category: resources
+  protocols:
+  - generic
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - regression
+  preconditions:
+  - API отдаёт справочники (значения для выбора в клиенте).
+  steps:
+  - action: Запросить справочник и сравнить с источником (ТЗ, админка); изменить справочник администратором и запросить снова.
+  expected:
+  - Значения полные и не обрезаны; порядок задокументирован; изменение администратором видно без релиза, если так заявлено.
+  applicability:
+    when:
+    - Есть справочники.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - Чек-лист guru99 (пер. О. Алифановой)
+  - inbox №59

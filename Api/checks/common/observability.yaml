@@ -24,6 +24,9 @@ checks:
   - action: Использовать секрет со спецсимволами регулярных выражений ()[]{}|$^ в операции с журналированием и проверить,
       что запрос не падает, а секрет в журнале замаскирован
     notes: 'Real-world bug: RWB-0263 (directus/directus#24641)'
+  - action: Прочитать записи журнала аудита о входе и верификации — нет OTP-кодов, токенов, ссылок подтверждения и лишних
+      данных провайдера
+    notes: inbox №43
   expected:
   - Секреты и ПДн отсутствуют или маскированы.
   applicability:
@@ -494,3 +497,40 @@ checks:
   - Решение bj 2026-10-16 (обе модели перекрёстного ревью — reject как не API)
   - Смежные — OBS-REQUEST-LOG-ALL-ATTEMPTS, INJ-LOG-FORGING
   - 'Real-world bug: RWB-0333'
+- id: OBS-BUILD-VERSION-TRACEABLE
+  status: draft
+  title: Версия сборки доступна для трассировки на тестовых стендах и скрыта в production
+  category: observability
+  protocols:
+  - generic
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - observability
+  - regression
+  preconditions:
+  - Известно, какой стенд тестовый, а какой production.
+  steps:
+  - action: На тестовом стенде запросить версию сборки (служебная ручка, заголовок, health).
+  - action: Повторить на production или по его конфигурации.
+  expected:
+  - На тестовом стенде версия сборки определяется — результат прогона привязан к версии.
+  - На production версия скрыта или доступна только авторизованно (HARD-VERSION-DISCLOSURE).
+  applicability:
+    when:
+    - Есть разные стенды.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - Здравый смысл — тестировать без знания версии нельзя
+  - Смежная — HARD-VERSION-DISCLOSURE
+  - inbox №6

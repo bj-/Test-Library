@@ -30,6 +30,9 @@ checks:
     notes: 'Real-world bug: RWB-0117 (PostgREST/postgrest#3906)'
   - action: Отправить вставку и upsert в несуществующий ресурс и проверить код и сообщение в теле ответа
     notes: 'Real-world bug: RWB-0117 (PostgREST/postgrest#3697)'
+  - action: Вызвать ошибку каждого класса — парсер, 401, 403, 404 маршрута и ресурса, 405, 415, валидация, 5xx — и сравнить
+      схему и типы полей
+    notes: inbox №8
   expected:
   - ошибка соответствует схеме и не раскрывает stack trace/секреты
   applicability:

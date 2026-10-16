@@ -1,0 +1,39 @@
+checks:
+- id: SEC-PRINCIPAL-TYPE-CONFUSION
+  status: draft
+  title: Принципал одного типа не получает прав принципала другого типа с тем же числовым ID
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - authz
+  - negative
+  - regression
+  - nightly
+  preconditions:
+  - Есть принципалы разных типов (пользователь, ссылка-доступ, бот, сервисная учётка) с пересекающимися числовыми ID.
+  steps:
+  - action: Создать принципал одного типа с ID, равным ID пользователя, и выполнить от него операции, доступные этому пользователю (удаление из команды, владение, чтение состава).
+  expected:
+  - 'Отказ: права определяются по паре тип и ID.'
+  applicability:
+    when:
+    - Есть принципалы разных типов.
+    skip_when:
+    - Один тип принципалов.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - CWE-843
+  - Смежная — AUTH-TOKEN-TYPE-CONFUSION
+  - inbox №148 (GHSA-32r8-5843-4qw2)

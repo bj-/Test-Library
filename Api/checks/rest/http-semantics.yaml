@@ -17,6 +17,9 @@ checks:
   - Endpoint and supported methods are known.
   steps:
   - action: Send a request using an unsupported method.
+  - action: Отправить каждый неразрешённый метод (включая нестандартный FOO) с корректным запросом — валидное тело, авторизация,
+      нужная роль — и проверить, что состояние не изменилось
+    notes: inbox №1
   expected:
   - Documented status is returned, typically 405 when the method is known but disallowed.
   - Allow lists supported methods when required by contract.

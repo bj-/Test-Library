@@ -592,3 +592,37 @@ checks:
   references:
   - RFC 9110 §7.2
   - 'Real-world bug: RWB-0268'
+- id: ASYNC-SCHEDULE-DST-TRANSITION
+  status: draft
+  title: Расписание на несуществующее или повторяющееся местное время срабатывает по правилу
+  category: async
+  protocols:
+  - generic
+  kind: boundary
+  priority: P3
+  tags:
+  - boundary
+  - async-jobs
+  - nightly
+  preconditions:
+  - Есть задачи по расписанию в местном времени с переходом на летнее или зимнее время; можно сдвигать время стенда.
+  steps:
+  - action: Назначить задачу на 02:30 в день перехода на летнее время (времени нет) и в день перехода на зимнее (время повторяется).
+  expected:
+  - Задача срабатывает ровно один раз по задокументированному правилу; без пропуска и двойного срабатывания.
+  applicability:
+    when:
+    - Есть расписания в местном времени.
+    skip_when:
+    - Расписания только в UTC.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - IANA tz database
+  - inbox №44
