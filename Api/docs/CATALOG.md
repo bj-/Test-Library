@@ -2,8 +2,8 @@
 
 Файл генерируется `python tools/build_catalog.py .` — не редактируйте вручную.
 
-Всего проверок: **611** — approved: 533, draft: 62, needs_clarification: 16.
-Протоколы: db: 33, generic: 117, graphql: 228, grpc: 149, rest: 420, ui-desktop: 23, ui-mobile: 24, ui-web: 29, websocket: 65.
+Всего проверок: **620** — approved: 533, draft: 71, needs_clarification: 16.
+Протоколы: db: 33, generic: 117, graphql: 228, grpc: 149, rest: 420, ui-desktop: 27, ui-mobile: 28, ui-web: 38, websocket: 65.
 
 | Категория | Описание | Проверок |
 |---|---|---:|
@@ -29,7 +29,7 @@
 | [websocket](#websocket) | WebSocket connection, message, and subscription behavior | 10 |
 | [privacy](#privacy) | Personal data handling, masking, consent, and erasure | 6 |
 | [requirements](#requirements) | Requirement transfer errors - spec vs contract vs implementation, unspecified behavior | 5 |
-| [ui](#ui) | User interface - forms, navigation, state, data and error display, client settings, localization and RTL | 30 |
+| [ui](#ui) | User interface - forms, navigation, state, data and error display, client settings, localization and RTL | 39 |
 | [db](#db) | Database - schema and constraints, migrations, indexes and query plans, stored logic, data integrity, application queries | 33 |
 
 ## contract
@@ -745,31 +745,40 @@ User interface - forms, navigation, state, data and error display, client settin
 | `UI-PLATFORM-SECURITY` | Настольный и мобильный клиенты не открывают недоверенный код и экраны входа другим приложениям | P1 | draft | ui-desktop, ui-mobile | Regression |
 | `UI-SAFE-RENDERING` | Данные отображаются экранированными и не роняют интерфейс | P1 | draft | ui-web | Regression |
 | `UI-ACTIONS-WORK-ONCE` | Каждое действие выполняется ровно один раз и меняет ровно своё | P2 | draft | ui-web, ui-desktop, ui-mobile | Regression |
+| `UI-CLIENT-BASE-PATH-URLS` | Клиент под подпутём строит все URL с учётом базового пути | P2 | draft | ui-web | Regression |
 | `UI-CLIENT-REQUEST-HYGIENE` | Клиент не шлёт лишних, дублирующих и бесконечных запросов | P2 | draft | ui-web | Regression |
+| `UI-CONDITIONAL-FORMATTING` | Условное оформление работает для всех операторов сравнения | P2 | draft | ui-web | Regression |
 | `UI-CONFIRM-DESTRUCTIVE` | Удаление и изменение подтверждаются, отмена ничего не меняет | P2 | draft | ui-web, ui-desktop, ui-mobile | Regression |
 | `UI-DISABLED-AND-READONLY` | Недоступные и доступные только для чтения элементы видны и не выполняют действий | P2 | draft | ui-web, ui-desktop, ui-mobile | Regression |
 | `UI-DOCUMENTS-OPEN` | Загруженные документы открываются и скачиваются в каждом поддерживаемом формате | P2 | draft | ui-web, ui-desktop, ui-mobile | Regression |
 | `UI-DROPDOWN-VALUES` | Выпадающие списки показывают полные, разрешённые и упорядоченные значения | P2 | draft | ui-web, ui-desktop, ui-mobile | Regression |
-| `UI-ERROR-DISPLAY` | Ошибки сервера и сбои показываются понятно, без падения клиента | P2 | draft | ui-web, ui-desktop, ui-mobile | Regression |
+| `UI-ERROR-DISPLAY` | Ошибки сервера при сохранении показываются понятным сообщением | P2 | draft | ui-web, ui-desktop, ui-mobile | Regression |
+| `UI-FAILURE-ROBUSTNESS` | Клиент не падает при сбое и неполных данных | P2 | draft | ui-web, ui-desktop, ui-mobile | Regression |
 | `UI-FORM-REQUIRED-AND-HINTS` | Обязательные поля помечены и проверяются, подсказки объясняют формат | P2 | draft | ui-web, ui-desktop, ui-mobile | Regression |
 | `UI-FORM-STATE` | Форма сохраняет и сбрасывает состояние ожидаемо | P2 | draft | ui-web, ui-desktop, ui-mobile | Regression |
 | `UI-INPUT-VALUES` | Поля ввода принимают, показывают и сохраняют значения по своему типу | P2 | draft | ui-web, ui-desktop, ui-mobile | Regression |
 | `UI-KEYBOARD-ACCESS` | Интерфейс полностью управляется с клавиатуры в логическом порядке | P2 | draft | ui-web, ui-desktop, ui-mobile | Regression |
-| `UI-LIST-SORT-FILTER` | Сортировка и фильтры списков работают и сбрасываются ожидаемо | P2 | draft | ui-web, ui-desktop, ui-mobile | Regression |
+| `UI-LIST-FILTER-STATE` | Фильтры снимаются и не переносятся между списками | P2 | draft | ui-web | Regression |
+| `UI-LIST-FILTER-VALUES` | Фильтры принимают и показывают значения своего типа | P2 | draft | ui-web, ui-desktop, ui-mobile | Regression |
+| `UI-LIST-SORT` | Сортировка списков работает и сохраняется | P2 | draft | ui-web, ui-desktop, ui-mobile | Regression |
 | `UI-NETWORK-RESILIENCE` | Клиент работает при потере сети и без доступа в интернет | P2 | draft | ui-web, ui-mobile | Regression |
 | `UI-PLATFORM-COMPATIBILITY` | Интерфейс одинаково работает в поддерживаемых браузерах, ОС и режимах | P2 | draft | ui-web, ui-desktop, ui-mobile | Regression |
 | `UI-RESPONSIVE-LAYOUT` | Интерфейс работает на всех поддерживаемых размерах экрана | P2 | draft | ui-web, ui-desktop, ui-mobile | Regression |
 | `UI-SECRET-FIELDS` | Поля паролей и секретов не раскрывают и не теряют значение | P2 | draft | ui-web, ui-desktop, ui-mobile | Regression |
 | `UI-SESSION-EXPIRY` | Истечение и потеря сессии обрабатываются в интерфейсе понятно | P2 | draft | ui-web, ui-desktop, ui-mobile | Regression |
+| `UI-STATE-CHANGE-METHODS` | Изменения состояния отправляются небезопасными методами, а не GET | P2 | draft | ui-web | Regression |
 | `UI-CHANGE-HISTORY` | История изменений показывает каждое изменение с автором | P3 | draft | ui-web, ui-desktop, ui-mobile | Regression |
+| `UI-FIELD-LABELS-MATCH-FORM` | Подписи и подсказки полей соответствуют назначению формы | P3 | draft | ui-web, ui-desktop, ui-mobile | Regression |
+| `UI-LAYOUT-OVERFLOW` | Длинные тексты и раскрывающиеся элементы не выходят за границы и не перекрываются | P3 | draft | ui-web, ui-desktop, ui-mobile | Regression |
 | `UI-LEGAL-PAGES` | Условия использования и FAQ доступны там, где нужны | P3 | draft | ui-web, ui-desktop, ui-mobile | Regression |
+| `UI-LIST-COUNTERS-CONSISTENCY` | Счётчики элементов совпадают с фактическим числом записей | P3 | draft | ui-web | Regression |
 | `UI-NAVIGATION` | Навигация последовательна: путь на главную, заголовки, рабочие пункты меню | P3 | draft | ui-web, ui-desktop, ui-mobile | Regression |
 | `UI-NO-BROKEN-RESOURCES` | Ссылки, картинки и ресурсы страниц загружаются | P3 | draft | ui-web | Regression |
-| `UI-RELATED-RECORDS` | Связанные записи редактируются в карточке так же, как отдельно | P3 | draft | ui-web | Regression |
+| `UI-RELATED-RECORDS` | Связанные записи редактируются во вложенной форме так же, как отдельно | P3 | draft | ui-web | Regression |
 | `UI-RICH-EDITOR` | Редактор содержимого сохраняет форматирование и вставки без искажений | P3 | draft | ui-web | Regression |
-| `UI-TEXTS-CORRECT` | Тексты интерфейса без ошибок и по назначению экрана | P3 | draft | ui-web, ui-desktop, ui-mobile | Regression |
+| `UI-TEXTS-CORRECT` | Тексты интерфейса без ошибок и на языке интерфейса | P3 | draft | ui-web, ui-desktop, ui-mobile | Regression |
 | `UI-USABILITY` | Частые сценарии короткие, ожидание и задержки понятны пользователю | P3 | draft | ui-web, ui-desktop, ui-mobile | Regression |
-| `UI-VISUAL-CONSISTENCY` | Вид элементов единообразен и ничего не налезает | P3 | draft | ui-web, ui-desktop, ui-mobile | Regression |
+| `UI-VISUAL-CONSISTENCY` | Шрифты, отступы и кнопки единообразны по макету и гайдлайнам | P3 | draft | ui-web, ui-desktop, ui-mobile | Regression |
 
 ## db
 

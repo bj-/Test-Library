@@ -1,7 +1,7 @@
 checks:
 - id: UI-RELATED-RECORDS
   status: draft
-  title: Связанные записи редактируются в карточке так же, как отдельно
+  title: Связанные записи редактируются во вложенной форме так же, как отдельно
   category: ui
   protocols:
   - ui-web
@@ -20,14 +20,12 @@ checks:
     notes: inbox №210
   - action: Добавить новые несохранённые связанные записи — редактируются в форме так же, как существующие
     notes: inbox №214
-  - action: Сравнить счётчик элементов списка связанных записей с фактическим числом записей
-    notes: inbox №216
   expected:
-  - Таблицы и поля связанных записей активны по правам, предлагают те же действия, что основная форма; новые несохранённые
-    записи редактируются; счётчики совпадают с числом записей.
+  - Таблицы и поля связанных записей активны по правам и предлагают те же действия, что основная форма; новые несохранённые
+    записи редактируются.
   applicability:
     when:
-    - Есть клиент с соответствующими экранами.
+    - Есть вложенные формы или таблицы связанных записей.
     skip_when:
     - Только API без клиента.
   automation:
@@ -41,9 +39,9 @@ checks:
   references:
   - Здравый смысл — одинаковое поведение во вложенной и основной форме
   - ADR 0006 (проверки UI)
-- id: UI-LIST-SORT-FILTER
+- id: UI-LIST-SORT
   status: draft
-  title: Сортировка и фильтры списков работают и сбрасываются ожидаемо
+  title: Сортировка списков работает и сохраняется
   category: ui
   protocols:
   - ui-web
@@ -61,25 +59,11 @@ checks:
   steps:
   - action: Отсортировать по клику на колонку — индикатор направления, порядок сохраняется при пагинации и возврате на экран
     notes: inbox №120
-  - action: Переключить быстрый фильтр по булеву полю — true, false и пусто
-    notes: inbox №206
-  - action: Оставить пустым фильтр текстового поля — отображается пустым, а не строкой null
-    notes: inbox №207
-  - action: Задать условное оформление со всеми операторами сравнения (<, <=, >, >=) — работает не только для равенства
-    notes: inbox №209
-  - action: Задать в редакторе фильтра каждую поддерживаемую сервером динамическую переменную — сохраняется, не сбрасывается
-      в null
-    notes: inbox №224
-  - action: Перейти между списками разных типов сущностей — фильтры одного не переносятся на другой
-    notes: inbox №265
-  - action: Снять каждый применённый фильтр кнопкой сброса при любом выбранном значении
-    notes: inbox №269
   expected:
-  - Сортировка по клику с индикатором, сохраняется при пагинации и возврате; фильтры переключаются, снимаются, не переносятся
-    между типами; динамические переменные принимаются; пустое значение не «null».
+  - Сортировка по клику с индикатором направления; порядок сохраняется при пагинации и возврате на экран, если так задумано.
   applicability:
     when:
-    - Есть клиент с соответствующими экранами.
+    - Есть сортируемые таблицы и списки.
     skip_when:
     - Только API без клиента.
   automation:
@@ -116,7 +100,7 @@ checks:
   - Вставленные ссылки и изображения сохраняют исходные адреса и расширения; списки нумеруются правильно.
   applicability:
     when:
-    - Есть клиент с соответствующими экранами.
+    - Есть редактор форматированного текста.
     skip_when:
     - Только API без клиента.
   automation:
@@ -153,7 +137,7 @@ checks:
   - Просмотр в приложении и скачивание работают для каждого поддерживаемого формата; на mobile — открытие во внешнем приложении.
   applicability:
     when:
-    - Есть клиент с соответствующими экранами.
+    - Есть загрузка документов и их просмотр или скачивание в клиенте.
     skip_when:
     - Только API без клиента.
   automation:
@@ -188,10 +172,11 @@ checks:
   - action: Удалить связь у объекта из другого проекта — изменение отражено в истории изменений с автором
     notes: inbox №229
   expected:
-  - Изменения, в том числе неявные (исчезновение связи из-за действия в другом проекте), отражены в истории с автором и временем.
+  - Изменения объекта, включая неявные (вызванные действиями в других объектах и проектах), отражены в истории с автором;
+    время — если требуется.
   applicability:
     when:
-    - Есть клиент с соответствующими экранами.
+    - Есть интерфейс истории изменений.
     skip_when:
     - Только API без клиента.
   automation:
@@ -204,4 +189,159 @@ checks:
     likelihood: medium
   references:
   - Серверная сторона — OBS-AUDIT-TRAIL
+  - ADR 0006 (проверки UI)
+- id: UI-LIST-COUNTERS-CONSISTENCY
+  status: draft
+  title: Счётчики элементов совпадают с фактическим числом записей
+  category: ui
+  protocols:
+  - ui-web
+  kind: contract
+  priority: P3
+  tags:
+  - ui
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Сравнить счётчик элементов списка связанных записей с фактическим числом записей
+    notes: inbox №216
+  expected:
+  - Счётчик совпадает с числом записей в той же области подсчёта (фильтры, права, пагинация).
+  applicability:
+    when:
+    - Есть счётчики элементов списков.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Здравый смысл — одинаковое поведение во вложенной и основной форме
+  - ADR 0006 (проверки UI)
+- id: UI-LIST-FILTER-VALUES
+  status: draft
+  title: Фильтры принимают и показывают значения своего типа
+  category: ui
+  protocols:
+  - ui-web
+  - ui-desktop
+  - ui-mobile
+  kind: contract
+  priority: P2
+  tags:
+  - ui
+  - filtering
+  - sorting
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Переключить быстрый фильтр по булеву полю — true, false и пусто
+    notes: inbox №206
+  - action: Оставить пустым фильтр текстового поля — отображается пустым, а не строкой null
+    notes: inbox №207
+  - action: Задать в редакторе фильтра каждую поддерживаемую сервером динамическую переменную — сохраняется, не сбрасывается
+      в null
+    notes: inbox №224
+  expected:
+  - Булев фильтр переключается между true, false и пусто; пустое значение отображается пустым, а не «null»; динамические переменные
+    сохраняются.
+  applicability:
+    when:
+    - Есть фильтры списков.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Чек-лист guru99 (пер. О. Алифановой)
+  - Серверная сторона — PAGE-SORT-FIELD-TYPE-MATRIX, REST-FILTER-OPERATOR-TYPE-MATRIX
+  - ADR 0006 (проверки UI)
+- id: UI-LIST-FILTER-STATE
+  status: draft
+  title: Фильтры снимаются и не переносятся между списками
+  category: ui
+  protocols:
+  - ui-web
+  kind: contract
+  priority: P2
+  tags:
+  - ui
+  - filtering
+  - sorting
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Перейти между списками разных типов сущностей — фильтры одного не переносятся на другой
+    notes: inbox №265
+  - action: Снять каждый применённый фильтр кнопкой сброса при любом выбранном значении
+    notes: inbox №269
+  expected:
+  - Каждый фильтр снимается сбросом; фильтры одного типа сущностей не применяются к списку другого.
+  applicability:
+    when:
+    - Есть фильтры списков.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Чек-лист guru99 (пер. О. Алифановой)
+  - Серверная сторона — PAGE-SORT-FIELD-TYPE-MATRIX, REST-FILTER-OPERATOR-TYPE-MATRIX
+  - ADR 0006 (проверки UI)
+- id: UI-CONDITIONAL-FORMATTING
+  status: draft
+  title: Условное оформление работает для всех операторов сравнения
+  category: ui
+  protocols:
+  - ui-web
+  kind: contract
+  priority: P2
+  tags:
+  - ui
+  - filtering
+  - sorting
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Задать условное оформление со всеми операторами сравнения (<, <=, >, >=) — работает не только для равенства
+    notes: inbox №209
+  expected:
+  - Условное оформление применяется для <, <=, >, >= и равенства по заданному правилу.
+  applicability:
+    when:
+    - Есть условное оформление значений.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Чек-лист guru99 (пер. О. Алифановой)
+  - Серверная сторона — PAGE-SORT-FIELD-TYPE-MATRIX, REST-FILTER-OPERATOR-TYPE-MATRIX
   - ADR 0006 (проверки UI)

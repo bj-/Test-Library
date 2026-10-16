@@ -1,7 +1,7 @@
 checks:
 - id: UI-TEXTS-CORRECT
   status: draft
-  title: Тексты интерфейса без ошибок и по назначению экрана
+  title: Тексты интерфейса без ошибок и на языке интерфейса
   category: ui
   protocols:
   - ui-web
@@ -19,21 +19,19 @@ checks:
   - action: Прочитать тексты экранов, подписи, подсказки и сообщения об ошибках — без ошибок, на языке интерфейса, сообщение
       соответствует заголовку окна и ситуации
     notes: inbox №99
-  - action: Сравнить placeholder и подписи полей с назначением формы — не скопированы с соседней формы
-    notes: inbox №168
   - action: Вызвать пустые состояния (нет результатов поиска) — тексты без опечаток, термины написаны правильно
     notes: inbox №180
   expected:
-  - Тексты, подписи, подсказки, пустые состояния и ошибки без орфографических и грамматических ошибок, на языке интерфейса,
-    соответствуют экрану и ситуации.
+  - Тексты экранов, пустых состояний и сообщений без орфографических и грамматических ошибок, на языке интерфейса, термины
+    единообразны.
   applicability:
     when:
-    - Есть клиент с соответствующими экранами.
+    - Есть клиент с текстами интерфейса.
     skip_when:
     - Только API без клиента.
   automation:
     level: partial
-    deterministic: true
+    deterministic: false
   profiles:
   - Regression
   risk:
@@ -44,7 +42,7 @@ checks:
   - ADR 0006 (проверки UI)
 - id: UI-VISUAL-CONSISTENCY
   status: draft
-  title: Вид элементов единообразен и ничего не налезает
+  title: Шрифты, отступы и кнопки единообразны по макету и гайдлайнам
   category: ui
   protocols:
   - ui-web
@@ -64,21 +62,17 @@ checks:
     notes: inbox №101
   - action: Сравнить кнопки одного типа действий по виду и размеру; на mobile зона нажатия не меньше 44 pt или 48 dp
     notes: inbox №103
-  - action: Ввести длинные названия элементов — обрезаются с многоточием и подсказкой или переносятся, не выходят за блок
-    notes: inbox №279
-  - action: Открыть выпадающие элементы соседних блоков — не перекрывают друг друга
-    notes: inbox №284
   expected:
-  - Шрифты, отступы, кнопки одного типа единообразны; длинные тексты обрезаются с подсказкой или переносятся; элементы не
-    перекрываются.
+  - Шрифты, выравнивание и кнопки одного типа соответствуют макету и гайдлайну платформы; системное увеличение шрифта не ломает
+    вёрстку; зона нажатия на mobile по гайдлайну платформы.
   applicability:
     when:
-    - Есть клиент с соответствующими экранами.
+    - Есть макет или гайдлайн интерфейса.
     skip_when:
     - Только API без клиента.
   automation:
     level: partial
-    deterministic: true
+    deterministic: false
   profiles:
   - Regression
   risk:
@@ -116,7 +110,7 @@ checks:
     страницы на узком экране нет.
   applicability:
     when:
-    - Есть клиент с соответствующими экранами.
+    - Клиент поддерживает несколько размеров экрана.
     skip_when:
     - Только API без клиента.
   automation:
@@ -159,7 +153,7 @@ checks:
     RTL.
   applicability:
     when:
-    - Есть клиент с соответствующими экранами.
+    - Заявлен список поддерживаемых браузеров, ОС или устройств.
     skip_when:
     - Только API без клиента.
   automation:
@@ -201,7 +195,7 @@ checks:
     браузерах.
   applicability:
     when:
-    - Есть клиент с соответствующими экранами.
+    - Есть клиент, управляемый с клавиатуры.
     skip_when:
     - Только API без клиента.
   automation:
@@ -214,4 +208,81 @@ checks:
     likelihood: medium
   references:
   - WCAG 2.1 — 2.1.1, 2.4.3, 2.4.7
+  - ADR 0006 (проверки UI)
+- id: UI-FIELD-LABELS-MATCH-FORM
+  status: draft
+  title: Подписи и подсказки полей соответствуют назначению формы
+  category: ui
+  protocols:
+  - ui-web
+  - ui-desktop
+  - ui-mobile
+  kind: contract
+  priority: P3
+  tags:
+  - ui
+  - i18n
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Сравнить placeholder и подписи полей с назначением формы — не скопированы с соседней формы
+    notes: inbox №168
+  expected:
+  - Подписи и placeholder каждого поля соответствуют назначению этой формы и смыслу поля.
+  applicability:
+    when:
+    - Есть формы.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Чек-лист guru99 (пер. О. Алифановой)
+  - ADR 0006 (проверки UI)
+- id: UI-LAYOUT-OVERFLOW
+  status: draft
+  title: Длинные тексты и раскрывающиеся элементы не выходят за границы и не перекрываются
+  category: ui
+  protocols:
+  - ui-web
+  - ui-desktop
+  - ui-mobile
+  kind: contract
+  priority: P3
+  tags:
+  - ui
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Ввести длинные названия элементов — обрезаются с многоточием и подсказкой или переносятся, не выходят за блок
+    notes: inbox №279
+  - action: Открыть выпадающие элементы соседних блоков — не перекрывают друг друга
+    notes: inbox №284
+  expected:
+  - Длинные названия обрезаются с подсказкой или переносятся; раскрывающиеся элементы соседних блоков не перекрывают друг
+    друга.
+  applicability:
+    when:
+    - Есть списки, карточки или формы с переменной длиной текста.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Чек-лист guru99 (пер. О. Алифановой)
+  - Apple HIG (44 pt), Material Design (48 dp)
   - ADR 0006 (проверки UI)
