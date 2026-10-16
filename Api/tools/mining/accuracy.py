@@ -5,6 +5,9 @@ Usage (from Api/):
   accuracy.py build --batch pilot    ideas/mined/<batch>.accuracy.xlsx: sample (evaluate.sample) + Claude's first
                                      pass (<batch>.accuracy.claude.yaml) + human marks kept from the existing workbook
   accuracy.py score --batch pilot    accuracy by section from the filled workbook
+  accuracy.py build --batch a,b,c --name scale-01 --match-only
+                                     one sample over several batches (sources); --match-only — matching only,
+                                     --n — sample size; files are named by --name
 
 The human fills «Верно (человек)» (да / нет / не знаю) and «Комментарий». Rows to check are marked
 «обязательно» (Claude doubts or found a mismatch) and «выборочно» (random spot check of Claude's «совпадает»).
@@ -25,8 +28,8 @@ from openpyxl.worksheet.datavalidation import DataValidation
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from cluster import MINED, load_sources  # noqa: E402
-from evaluate import SEED, sample  # noqa: E402
+from cluster import MINED, load_results, load_sources  # noqa: E402
+from evaluate import SAMPLE_MATCH, SEED, sample  # noqa: E402
 from library import load_yaml, setup_console  # noqa: E402
 
 SPOT_PER_SECTION = 6
@@ -53,14 +56,32 @@ HELP = [
     "4. Идеи новых проверок — тоже в «Комментарий»: Claude перенесёт их в Api/ideas/inbox.md.",
     "",
     f"Цель — не меньше {TARGET:.0f} % верных отдельно для триажа и для сопоставления (ADR 0005).",
-    "Итог считает лист «Итог»; точный расчёт — python tools/mining/accuracy.py score --batch pilot.",
+    "Итог считает лист «Итог»; точный расчёт — python tools/mining/accuracy.py score --batch {name}.",
 ]
 
 
-def rows(batch: str) -> list[dict]:
-    triage, matched = sample(batch)
-    claude = load_yaml(MINED / f"{batch}.accuracy.claude.yaml")
-    sources = load_sources(batch)
+def batches(args) -> list[str]:
+    return [b.strip() for b in args.batch.split(",") if b.strip()]
+
+
+def name(args) -> str:
+    return args.name or args.batch
+
+
+def sample_many(names: list[str], n: int, match_only: bool) -> tuple[list[dict], list[dict]]:
+    """Pilot (one batch, full sample) stays as evaluate.sample; otherwise one pool over all batches, seed SEED."""
+    if len(names) == 1 and not match_only:
+        return sample(names[0])
+    rnd = random.Random(SEED)
+    pool = [r for b in names for r in load_results(b) if r["verdict"] == "api" and r["match"]["type"] != "new"]
+    return [], rnd.sample(pool, n)
+
+
+def rows(args) -> list[dict]:
+    names = batches(args)
+    triage, matched = sample_many(names, args.n, args.match_only)
+    claude = load_yaml(MINED / f"{name(args)}.accuracy.claude.yaml")
+    sources = {k: v for b in names for k, v in load_sources(b).items()}
     out = []
     for prefix, section, recs in (("T", "Триаж", triage), ("M", "Сопоставление", matched)):
         for n, r in enumerate(recs, 1):
@@ -87,7 +108,8 @@ def check_marks(items: list[dict]) -> None:
         sec = [i for i in items if i["section"] == section]
         for i in sec:
             i["check"] = "обязательно" if i["verdict"] in ("doubt", "wrong") else ""
-        for i in rnd.sample([i for i in sec if i["verdict"] == "ok"], SPOT_PER_SECTION):
+        ok = [i for i in sec if i["verdict"] == "ok"]
+        for i in rnd.sample(ok, min(SPOT_PER_SECTION, len(ok))):
             i["check"] = "выборочно"
 
 
@@ -99,8 +121,8 @@ def old_marks(path: Path) -> dict[str, tuple]:
 
 
 def cmd_build(args) -> int:
-    path = MINED / f"{args.batch}.accuracy.xlsx"
-    items = rows(args.batch)
+    path = MINED / f"{name(args)}.accuracy.xlsx"
+    items = rows(args)
     missing = [i["key"] for i in items if not i["verdict"]]
     if missing:
         print("ОШИБКА: нет вывода Claude для", ", ".join(missing))
@@ -171,7 +193,7 @@ def cmd_build(args) -> int:
 
     hp = wb.create_sheet("Как заполнять", 0)
     for line in HELP:
-        hp.append([line])
+        hp.append([line.replace("{name}", name(args))])
     hp.column_dimensions["A"].width = 140
     for r in (1, 8):
         hp.cell(r, 1).font = Font(bold=True, size=12)
@@ -184,7 +206,7 @@ def cmd_build(args) -> int:
 
 
 def cmd_score(args) -> int:
-    path = MINED / f"{args.batch}.accuracy.xlsx"
+    path = MINED / f"{name(args)}.accuracy.xlsx"
     ws = load_workbook(path)["Выборка"]
     back = {v: k for k, v in VERDICT.items()}
     result = 0
@@ -201,6 +223,8 @@ def cmd_score(args) -> int:
                 bad += 1
             else:
                 open_ += 1
+        if not good + bad + open_:
+            continue
         pct = 100 * good / (good + bad) if good + bad else 0
         ok = "цель достигнута" if pct >= TARGET and not open_ else "открыто" if open_ else "ниже цели"
         print(f"{section}: верно {good}, неверно {bad}, открыто {open_} — {pct:.1f} % ({ok})")
@@ -212,7 +236,10 @@ def main() -> int:
     setup_console()
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("cmd", choices=["build", "score"])
-    ap.add_argument("--batch", default="pilot")
+    ap.add_argument("--batch", default="pilot", help="партия или несколько через запятую")
+    ap.add_argument("--name", help="имя выборки (файлы <name>.accuracy.*); по умолчанию — --batch")
+    ap.add_argument("--match-only", action="store_true", help="только сопоставление, без триажа")
+    ap.add_argument("--n", type=int, default=SAMPLE_MATCH, help="размер выборки сопоставления (не для пилота)")
     ap.add_argument("--marks", help="перенос отметок: файл со строками KEY=отметка|комментарий")
     args = ap.parse_args()
     return {"build": cmd_build, "score": cmd_score}[args.cmd](args)
