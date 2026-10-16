@@ -809,3 +809,45 @@ checks:
   - OWASP Top 10 for LLM — LLM01
   - CWE-94
   - 'Real-world bug: RWB-0046'
+- id: INJ-USER-CODE-EXECUTION
+  status: draft
+  title: Пользовательский код, исполняемый сервером, не получает доступа к ОС, файлам и сети
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - injection
+  - regression
+  - nightly
+  preconditions:
+  - API принимает и исполняет пользовательский код — скрипт, выражение, алгоритм, правило (JavaScript, Python, Groovy,
+    Java-выражения, SpEL/OGNL).
+  steps:
+  - action: Сохранить через API код, обращающийся к запуску процессов (java.lang.Runtime, Java.type, os, subprocess),
+      и вызвать его исполнение; признак выполнения — обращение к внешнему адресу тестировщика.
+  - action: Повторить с чтением локального файла и с исходящим сетевым запросом.
+  - action: Повторить пользователем с минимальными правами и без аутентификации, если установка это допускает.
+  expected:
+  - Код отклоняется при сохранении или исполняется в песочнице без доступа к запрещённым классам и функциям.
+  - Команда не выполняется, файл не читается, исходящего запроса нет.
+  applicability:
+    when:
+    - Есть операции, исполняющие пользовательский код.
+    skip_when:
+    - Пользовательский код не исполняется.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: critical
+    likelihood: medium
+  references:
+  - CWE-94
+  - Отличается от INJ-TEMPLATE-SSTI (шаблоны) и INJ-OS-COMMAND (подстановка ввода в команду ОС)

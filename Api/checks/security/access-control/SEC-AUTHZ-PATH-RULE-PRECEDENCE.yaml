@@ -1,0 +1,38 @@
+checks:
+- id: SEC-AUTHZ-PATH-RULE-PRECEDENCE
+  status: draft
+  title: Правила доступа по путям применяются по наиболее точному совпадению, независимо от порядка объявления
+  category: security
+  protocols:
+  - rest
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - negative
+  - authz
+  - regression
+  - nightly
+  preconditions:
+  - Доступ задаётся правилами по путям (шаблоны URL), есть общее правило и более строгое для подпути.
+  steps:
+  - action: Запросить ресурс под строгим подпутём пользователем, у которого есть доступ только по общему правилу.
+  - action: Повторить для конфигурации, где общее правило объявлено раньше строгого, и наоборот.
+  expected:
+  - Действует строгое правило — 403 независимо от порядка объявления.
+  applicability:
+    when:
+    - Правила доступа заданы по путям и пересекаются.
+    skip_when:
+    - Доступ не зависит от пути.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - Связано с SEC-AUTHZ-FUNCTION (нет проверки права) — здесь проверка есть, но её перекрывает общее правило

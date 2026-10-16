@@ -469,3 +469,42 @@ checks:
   references:
   - Конфигурация публичного URL
   - 'Real-world bug: RWB-0027'
+- id: HTTP-HTTP2-RESOURCE-LIMITS
+  status: draft
+  title: Параметры HTTP/2 со стороны клиента не заставляют сервер буферизовать и работать без предела
+  category: http-semantics
+  protocols:
+  - rest
+  - grpc
+  kind: boundary
+  priority: P3
+  tags:
+  - boundary
+  - hardening
+  - nightly
+  preconditions:
+  - Сервер поддерживает HTTP/2.
+  - Нужны инструменты — клиент HTTP/2 с управлением кадрами (h2load, h2spec, собственный клиент) и мониторинг памяти
+    и CPU сервера; без них проверка пропускается осознанно.
+  steps:
+  - action: Передавать по HTTP/2 большое или бесконечное тело на маршрут, который не читает тело или читает его медленно;
+      наблюдать память сервера.
+  - action: Объявить в SETTINGS малый MAX_HEADER_LIST_SIZE и отправить много запросов, ответы которых его превышают.
+  expected:
+  - Окно управления потоком не расширяется сверх прочитанного приложением, память ограничена.
+  - Сервер не выполняет запросы впустую ради ответа, который клиент не примет; нагрузка не растёт.
+  applicability:
+    when:
+    - HTTP/2 включён и есть инструменты из предусловий.
+    skip_when:
+    - Только HTTP/1.1 или нет доступа к мониторингу сервера.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - RFC 9113 п. 5.2, 6.5.2

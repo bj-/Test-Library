@@ -729,3 +729,167 @@ checks:
   - RFC 7239
   - CWE-348
   - 'Real-world bug: RWB-0030'
+- id: SEC-INTERNAL-CONTROL-PARAMS
+  status: draft
+  title: Заголовки и параметры подключения клиента не задают внутренние управляющие параметры операции
+  category: security
+  protocols:
+  - rest
+  - websocket
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - injection
+  - hardening
+  - regression
+  - nightly
+  preconditions:
+  - Сервис передаёт заголовки входящего запроса или параметры подключения (query, path WebSocket) во внутренний
+    конвейер интеграции (маршрутизатор сообщений, клиент поиска, хранилища, DNS, внешней системы).
+  steps:
+  - action: Отправить заголовки с именами управляющих параметров внутренней операции без служебного префикса — запрос
+      к хранилищу или поиску («всё», дорогой regex), тип операции (удаление), ID объекта, адрес исходящего запроса,
+      адрес DNS-сервера, ключи объекта во внешней системе.
+  - action: Подключиться по WebSocket с query- и path-параметрами, совпадающими по имени с внутренними заголовками, в том
+      числе с адресом исходящего запроса на внутренний хост.
+  - action: Повторить с префиксами параметров движка (параметры запроса к поиску, поля индексируемого документа).
+  expected:
+  - Внутренняя операция выполняется с настроенными параметрами; клиентские значения игнорируются или запрос отклоняется 4xx.
+  - Исходящих запросов на заданные клиентом адреса нет; чужие объекты не читаются и не меняются.
+  applicability:
+    when:
+    - Сервис построен на конвейере интеграции, который переносит заголовки запроса во внутренние сообщения.
+    skip_when:
+    - Внутренние операции не получают данных из заголовков и параметров подключения.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: critical
+    likelihood: medium
+  references:
+  - CWE-15 (внешнее управление настройкой), CWE-918
+  - Apache Camel — фильтр заголовков отсекает только служебный префикс
+- id: SEC-DISABLED-FEATURE-ENFORCED
+  status: draft
+  title: Отключённая настройкой функция недоступна через все API и не попадает в токены
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - negative
+  - authz
+  - regression
+  - nightly
+  preconditions:
+  - Функцию (модуль, организации, интеграцию) можно отключить настройкой; у пользователя остались её данные.
+  steps:
+  - action: Отключить функцию и запросить её данные через все API, где они встречаются (профиль, аккаунт, списки, поиск).
+  - action: Выпустить токен со scope этой функции и прочитать claims.
+  - action: Выполнить операции функции напрямую по известным маршрутам.
+  expected:
+  - Данные отключённой функции не отдаются, операции отклоняются (403/404).
+  - Scope и claims функции не попадают в токены.
+  applicability:
+    when:
+    - Есть функции, отключаемые настройкой.
+    skip_when:
+    - Набор функций не настраивается.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Keycloak — данные организаций в API аккаунта и токенах после отключения функции
+- id: SEC-OPAQUE-ID-INTEGRITY
+  status: draft
+  title: Непрозрачный идентификатор, выданный сервером, проверяется на подлинность
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - negative
+  - hardening
+  - regression
+  - nightly
+  preconditions:
+  - Идентификатор ресурса кодирует внутренние данные (список ресурсов, параметры) — сжатие, base64, сериализация.
+  steps:
+  - action: Раскодировать выданный ID, изменить содержимое (добавить исключённые или чужие ресурсы, внутренний адрес) и
+      закодировать обратно.
+  - action: Сформировать ID с большим коэффициентом распаковки и большое число уникальных ID подряд.
+  expected:
+  - Неподписанный, чужой или изменённый ID отклоняется 4xx до распаковки и обращения к ресурсам.
+  - Память и кэш не растут от сфабрикованных ID.
+  applicability:
+    when:
+    - Сервер выдаёт составные идентификаторы и принимает их обратно.
+    skip_when:
+    - ID — простые ключи без внутренней структуры.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - CWE-565, CWE-409
+  - Связано с PAGE-CURSOR-TAMPERING (курсоры пагинации)
+- id: HARD-IP-ALLOWLIST
+  status: draft
+  title: Ограничение доступа по адресам и подсетям работает на границах для IPv4 и IPv6
+  category: security
+  protocols:
+  - generic
+  kind: boundary
+  priority: P2
+  tags:
+  - security
+  - negative
+  - boundary
+  - hardening
+  - regression
+  - nightly
+  preconditions:
+  - Доступ (к API, административным операциям, токенам) ограничен списком адресов и подсетей.
+  steps:
+  - action: Отправить запросы с первого и последнего адреса разрешённой подсети и с соседних адресов вне её — для IPv4
+      и IPv6 (разные длины префикса).
+  - action: Повторить с IPv4-адресом в IPv6-записи (::ffff:a.b.c.d).
+  expected:
+  - Адреса внутри подсети проходят, адреса вне её получают отказ.
+  applicability:
+    when:
+    - Есть ограничение по IP; стенд позволяет отправлять запросы с разных адресов (или доверенный прокси передаёт адрес).
+    skip_when:
+    - Ограничений по IP нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - Связано с HARD-CLIENT-IP-TRUSTED-PROXIES (определение адреса клиента)

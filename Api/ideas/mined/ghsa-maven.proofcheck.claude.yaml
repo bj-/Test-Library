@@ -1,0 +1,32 @@
+# Вердикт Claude (Opus 5.5, внутренняя сессия, 2026-10-16) по пакету ghsa-maven.proofcheck.md — для сравнения с ответами
+# других LLM. Отдельным файлом, чтобы не влиять на них. Поля как в задании: bind (ok/doubt/wrong), type_ok, variant.
+P1:  {bind: ok, type_ok: true, variant: ok, why: "Квадратичная работа парсера без regex — по правилу механизма"}
+P2:  {bind: ok, type_ok: true, variant: ok, why: "O(n²) разбор длинного числа в строковом поле"}
+P3:  {bind: ok, type_ok: true, variant: ok, why: "Повторное сканирование буфера при порционной подаче"}
+P4:  {bind: ok, type_ok: true, variant: ok, why: "Обход лимита длины числа при потоковой подаче"}
+P5:  {bind: ok, type_ok: true, variant: ok, why: "Тот же класс, что P3, но для JSON-токена — отдельный вход"}
+P6:  {bind: ok, type_ok: true, variant: ok, why: "Бесконечный цикл парсера — по правилу механизма"}
+P7:  {bind: ok, type_ok: true, variant: "—", why: "Тот же механизм, что P6 — только пруф верно"}
+P8:  {bind: ok, type_ok: true, variant: ok, why: "Число элементов кадра без предела"}
+P9:  {bind: ok, type_ok: true, variant: ok, why: "Заголовок-список без лимита элементов; не размер заголовка, а стоимость разбора"}
+P10: {bind: ok, type_ok: true, variant: ok, why: "Число частей multipart без предела"}
+P11: {bind: ok, type_ok: true, variant: "—", why: "Механизм не описан, следствие — избыточная память; covered по правилу, пруф слабый"}
+P12: {bind: ok, type_ok: true, variant: "—", why: "Механизм не описан (DoS на multipart); covered по правилу, пруф слабый"}
+P13: {bind: doubt, type_ok: true, variant: "—", why: "DoS при разрешении статических ресурсов — механизм не описан, а запись про экспорт, поиск, массовые операции; связь только через «DoS»"}
+P14: {bind: ok, type_ok: true, variant: ok, why: "Разрешение DNS при разборе поля адреса — SSRF без исходящего HTTP"}
+P15: {bind: ok, type_ok: true, variant: "—", why: "Тот же механизм, что P14 — только пруф"}
+P16: {bind: ok, type_ok: true, variant: "—", why: "Классический SSRF по URL картинки"}
+P17: {bind: ok, type_ok: true, variant: ok, why: "URL в функции шаблона сценария — отдельный вход"}
+P18: {bind: ok, type_ok: true, variant: "—", why: "SSRF и file: — шаги записи это ловят"}
+P19: {bind: ok, type_ok: true, variant: "—", why: "SSRF и file read через импорт по URL"}
+P20: {bind: ok, type_ok: true, variant: "—", why: "Шаг «сервер прикладывает к исходящему вызову свои учётные данные» уже в записи"}
+P21: {bind: ok, type_ok: true, variant: ok, why: "Адрес ответа WS-Addressing — новый вход"}
+P22: {bind: ok, type_ok: true, variant: ok, why: "Неоднозначный разбор хоста; вариант общий, но выполним"}
+P23: {bind: ok, type_ok: true, variant: ok, why: "Обход ограничения записи поля через развёрнутый объект"}
+P24: {bind: ok, type_ok: true, variant: ok, why: "Обход через стратегию именования"}
+P25: {bind: ok, type_ok: true, variant: ok, why: "Поле-коллекция без сеттера"}
+P26: {bind: ok, type_ok: true, variant: "—", why: "Тот же механизм, что P23 — только пруф"}
+P27: {bind: ok, type_ok: true, variant: ok, why: "Полиморфное поле с внешним дискриминатором"}
+P28: {bind: ok, type_ok: true, variant: ok, why: "Регистр имени поля"}
+P29: {bind: ok, type_ok: true, variant: ok, why: "JSON Patch, промежуточные сегменты пути"}
+P30: {bind: ok, type_ok: true, variant: ok, why: "Альтернативные медиатипы тела"}
