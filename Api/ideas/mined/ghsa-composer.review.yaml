@@ -1,0 +1,46 @@
+# Ревью кандидатов партии ghsa-composer (шаги 6–7, docs/BUG_MINING_PLAN.md, Api/mining/sessions.md — внутренняя сессия, п. 3).
+#
+# Шаг 6 (Claude, 2026-10-16): 8 new-паттернов — 4 идеи (clusters) и 1 перенос в вариант существующей записи
+# (proofs.retarget: SEC-ALT-REPRESENTATION-ACCESS добавлена в ghsa-rubygems уже после триажа ghsa-composer, поиск в ней
+# назван). Для каждой идеи — предложение: accept (новая запись draft с предложенным ID в указанном файле) или reject
+# (с причиной). Пруфы к существующим берутся из batches/*.out.jsonl автоматически. Идеи UI/DB — inbox №247–255.
+# Шаг 7 (человек): поменять decision / check_id / file кластера; неверные совпадения пруфов — в proofs.exclude
+# (ID бага), вариант пруфа без нового шага — в proofs.no_variant, new-паттерн как вариант существующей записи —
+# в proofs.retarget. Затем: cluster.py (пересобрать ghsa-composer.md) и apply_proofs.py. Перекрёстное ревью другими
+# LLM — reviewcheck.py (mining/README.md, шаги 6–7, п. 7).
+#
+# decision: accept | reject | pending
+batch: ghsa-composer
+clusters:
+- key: schema-identifier-codegen
+  decision: accept
+  check_id: INJ-SCHEMA-IDENTIFIER-CODEGEN
+  file: checks/security/injection.yaml
+  bugs: [GHSA-9x44-4gxf-8c25]
+  idea: Идентификаторы из пользовательского определения схемы (имена полей, таблиц, индексов), по которым сервер генерирует исходный код или DDL, не внедряют код и SQL — символы, закрывающие объявление (;, кавычки, скобки, комментарии), отклоняются 4xx или экранируются по правилам целевого языка; пара к RES-DB-OBJECT-NAMES (законные имена со спецсимволами работают)
+- key: user-data-callable
+  decision: accept
+  check_id: INJ-USER-DATA-CALLABLE
+  file: checks/security/injection.yaml
+  bugs: [GHSA-r94f-hx44-8jqf, GHSA-f8wv-xp27-6gq7, GHSA-7pgq-cr25-xvc8, GHSA-fj2p-qj2f-74v5]
+  idea: Данные пользователя (поле формы, настройки, фронтматтер страницы), которые называют серверную функцию — источник данных, обработчик, callback, — не позволяют вызвать функцию вне allowlist в любой форме записи (строка, Класс::метод, массив класс-метод, вложенный callable) и с любыми аргументами; denylist опасных функций недостаточен
+- key: outbound-credentials-scope
+  decision: accept
+  check_id: HARD-OUTBOUND-CREDENTIALS-SCOPE
+  file: checks/security/api-hardening.yaml
+  bugs: [GHSA-3mr9-p497-58f6]
+  idea: Учётные данные, настроенные сервером для своего сайта или интеграции (Authorization, Cookie, ключи), не уходят в исходящие запросы к другим хостам — при обходе ссылок, проверке битых ссылок, следовании редиректам, загрузке по URL
+- key: external-id-exact-match
+  decision: accept
+  check_id: AUTH-EXTERNAL-ID-EXACT-MATCH
+  file: checks/security/authentication-session.yaml
+  bugs: [GHSA-cmwh-g2h8-c222]
+  idea: Внешний идентификатор субъекта (OIDC sub, SAML NameID, ID в провайдере) сравнивается побайтно — без нормализации регистра, диакритики и Unicode; sub, отличающийся от sub жертвы только регистром или акцентом, даёт новую учётку или отказ, но не вход в чужую; пара к AUTH-LOGIN-IDENTIFIER-NORMALIZATION (там нормализация нужна)
+proofs:
+  exclude: []
+  no_variant: []
+  retarget:
+  - bug: GHSA-x2rp-9qf7-2fmq
+    check_id: SEC-ALT-REPRESENTATION-ACCESS
+    variant: Проиндексировать закрытый контент, затем выключить его индексацию или закрыть доступ и анонимно искать по словам из него — в результатах нет заголовков, URL и фрагментов закрытого контента
+    note: 'Перенесено на ревью из new: поиск по ранее проиндексированному закрытому контенту — альтернативное представление (запись добавлена после триажа ghsa-composer)'

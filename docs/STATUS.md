@@ -23,7 +23,8 @@ _Последнее обновление: 2026-10-16_
 - [x] Выгрузка багов, directus: шаги 6–7 выполнены (2026-10-16) — сверка с ChatGPT и Qwen: 11 записей draft (RWB-0251…0261; №2 разбит на права и валидацию, №9 сужен до трансформаций); пруфы: 34 записи, 47 RWB, +73 бага
 - [x] Выгрузка багов, kong: шаги 6–7 выполнены (2026-10-16) — сверка с ChatGPT и Qwen: 10 записей draft (RWB-0267…0276; №8 принят по обеим моделям, №11 reject); пруфы: 19 записей, 35 RWB, +42 бага
 - [x] Выгрузка багов, ghsa-go: шаги 6–7 выполнены (2026-10-16) — сверка с ChatGPT и Qwen (оборван на №8): 9 записей draft (RWB-0282…0290); №8 → вариант INJ-USER-CODE-EXECUTION, №11 → вариант HTTP-HTTP2-RESOURCE-LIMITS (решение bj); пруфы: 67 записей, 80 RWB, +211 багов
-- [ ] Выгрузка багов, шаги 6–7 дальше: ghsa-composer (8), supabase-auth (6), apollo-server (4), strapi (2), ghsa-nuget (1); postgrest (13) — после дообработки
+- [ ] Выгрузка багов, ghsa-composer: **ждёт ответов других LLM** (`Api/ideas/mined/ghsa-composer.reviewcheck.md`, `.blind.md`) — 8 new → 4 идеи (все accept) + 1 вариант к SEC-ALT-REPRESENTATION-ACCESS; inbox №247–255
+- [ ] Выгрузка багов, шаги 6–7 дальше: supabase-auth (6), apollo-server (4), strapi (2), ghsa-nuget (1); postgrest (13) — после дообработки
 - [ ] Выгрузка багов, масштабирование: сессии сбора по `Api/mining/sessions.md` (20 источников, ≈ 35–40 пачек), внутренняя сессия — синхронизация, сводка, шаги 6–7
 - [ ] Выгрузка багов: вычитать 50 draft-записей пилота (→ `approved` или `needs_clarification`) и шаги-варианты с префиксом «Добавить …»
 - [ ] Баг-трекеры, пилот: `collect_github.py` + `filter.py` → трассировка и метка `real-world-bug` → калибровка лимита (≤ 5 % недельного в день) → партии
@@ -98,3 +99,4 @@ _Последнее обновление: 2026-10-16_
 | 2026-10-16 | Claude / bj | kong, шаг 7: ответы ChatGPT (только сводка решений) и Qwen (`kong.reviewcheck.answer-1.md`, `-2.md`), решения по правилу сверки без bj — №2 сужен до Host, №3 accept (ChatGPT против), №8 accept (Claude согласился с моделями); 10 записей draft, `apply_proofs.py` — 19 записей, 35 RWB, +42 бага; `validate_library.py` 0 ошибок |
 | 2026-10-16 | Claude | ghsa-go, шаг 6: inbox №229–246 (UI/DB), 11 new → 10 идей на ревью + 1 `proofs.retarget`; `reviewcheck.py` показывает и переносы retarget |
 | 2026-10-16 | Claude / bj | ghsa-go, шаг 7: ответы ChatGPT и Qwen (`ghsa-go.reviewcheck.answer-1.md`, `-2.md`); по правилу сверки — №7 одной записью (Qwen, Claude), №8 перенесён в INJ-USER-CODE-EXECUTION (обе модели); №11 — расхождение, решение bj: вариант к HTTP-HTTP2-RESOURCE-LIMITS (ChatGPT ссылался на несуществующую запись); 9 записей draft, `apply_proofs.py` — 67 записей, 80 RWB, +211 багов; `validate_library.py` 0 ошибок |
+| 2026-10-16 | Claude | ghsa-composer, шаг 6: inbox №247–255 (UI/DB), 8 new → 4 идеи на ревью + 1 `proofs.retarget`; пакеты `reviewcheck.py` |
