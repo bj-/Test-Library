@@ -7,6 +7,7 @@
 # the session name «Выгрузка багов — <id> b-NN» names its reports, the ID is their first line.
 # -Loop runs non-interactive sessions (claude -p) one after another; it stops when the source is exhausted,
 # when a batch is left unfinished (limit, error, a question for the human) or after MaxBatches.
+[CmdletBinding(PositionalBinding = $false)]  # otherwise bare source ids bind to -RunLoop/-MaxBatches by position
 param(
     [Parameter(ValueFromRemainingArguments = $true)][string[]]$Sources,
     [switch]$Internal,
@@ -44,7 +45,27 @@ function Collect-Prompt([string]$id, [string]$batch, [string]$sid, [bool]$auto) 
     return $p
 }
 
+function Format-Event($line) {  # a stream-json line of claude -p → short readable lines
+    $s = "$line"
+    try { $e = $s | ConvertFrom-Json } catch { return $s }  # not JSON (stderr) — as is
+    $t = Get-Date -Format 'HH:mm:ss'
+    switch ($e.type) {
+        'assistant' {
+            foreach ($c in $e.message.content) {
+                if ($c.type -eq 'text' -and $c.text.Trim()) { "[$t] $($c.text.Trim())" }
+                elseif ($c.type -eq 'tool_use') {
+                    $arg = ($c.input | ConvertTo-Json -Compress -Depth 3) -replace '\s+', ' '
+                    if ($arg.Length -gt 160) { $arg = $arg.Substring(0, 160) + '…' }
+                    "[$t] → $($c.name) $arg"
+                }
+            }
+        }
+        'result' { "[$t] ИТОГ ($($e.subtype), $([math]::Round($e.duration_ms / 60000)) мин): $($e.result)" }
+    }
+}
+
 function Invoke-Loop([string]$id) {
+    [Console]::OutputEncoding = [Text.Encoding]::UTF8  # claude prints UTF-8; PS 5.1 would decode it as OEM
     Set-Location $root
     $log = Join-Path $root "Api\build\mining\$id\loop.log"
     New-Item -ItemType Directory -Force (Split-Path $log) | Out-Null
@@ -55,8 +76,9 @@ function Invoke-Loop([string]$id) {
         $sid = [guid]::NewGuid().ToString()
         $name = "Выгрузка багов — $id $batch"
         Write-Host "[$(Get-Date -Format 'HH:mm')] $name — запуск (сессия $sid), вывод — $log"
-        & claude -p -n $name --session-id $sid --permission-mode auto (Collect-Prompt $id $batch $sid $true) 2>&1 |
-            ForEach-Object { $_; Add-Content -Path $log -Value $_ -Encoding UTF8 }
+        # claude -p prints nothing until the batch ends — stream events and show each step as it happens
+        & claude -p -n $name --session-id $sid --permission-mode auto --output-format stream-json --verbose (Collect-Prompt $id $batch $sid $true) 2>&1 |
+            ForEach-Object { Format-Event $_ } | ForEach-Object { Write-Host $_; Add-Content -Path $log -Value $_ -Encoding UTF8 }
         if (-not (Test-Path (Join-Path (Batch-Dir $id) "$batch.out.jsonl"))) {
             if ((Remaining $id) -eq 0 -and -not (Test-Path (Join-Path (Batch-Dir $id) "$batch.ids"))) {
                 Write-Host "$id`: источник исчерпан"; return
@@ -91,7 +113,7 @@ foreach ($id in $loopIds) {
     if ($Here) { Invoke-Loop $id; continue }  # sources one after another in this window
     $cmd = "powershell -NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" -RunLoop $id -MaxBatches $MaxBatches"
     if ($wt) { Start-Process wt -ArgumentList "-w mining new-tab -d `"$root`" --title `"$id loop`" $cmd" }
-    else { Start-Process powershell -WorkingDirectory $root -ArgumentList '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', "`"$PSCommandPath`"", '-RunLoop', $id }
+    else { Start-Process powershell -WorkingDirectory $root -ArgumentList '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', "`"$PSCommandPath`"", '-RunLoop', $id, '-MaxBatches', $MaxBatches }
     Start-Sleep -Seconds 2
 }
 foreach ($j in $jobs) {
@@ -103,7 +125,11 @@ foreach ($j in $jobs) {
     } elseif ($wt) {
         Start-Process wt -ArgumentList "-w mining new-tab -d `"$root`" --title `"$($j.Title)`" $claude"
     } else {
-        Start-Process powershell -WorkingDirectory $root -ArgumentList '-NoExit', '-Command', $claude
+        # -Command loses the quotes and the prompt splits (its «(ID сессии …)» runs as an expression) — pass it encoded
+        $q = { param($s) "'" + ($s -replace "'", "''") + "'" }
+        $ps = "& claude -n $(& $q $j.Name) --session-id $($j.Id) --permission-mode auto $(& $q $j.Prompt)"
+        $enc = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($ps))
+        Start-Process powershell -WorkingDirectory $root -ArgumentList '-NoExit', '-EncodedCommand', $enc
     }
     Start-Sleep -Seconds 2
 }
