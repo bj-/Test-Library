@@ -14,6 +14,9 @@ _Последнее обновление: 2026-10-16_
 
 ## Следующие шаги
 
+- [ ] Выгрузка багов, **keycloak: шаги 6–7 не выполнены** (145/146, 21 new, 80 extends) — пропущен в 2026-10-16
+- [ ] Выгрузка багов по итогам метрик (`Api/mining/metrics.md`): ещё пачки kong и postgrest (затем kubernetes, hasura); gRPC-источники (не начаты); ghsa-nuget, supabase-auth, strapi (API) — не продолжать
+
 - [x] Выгрузка багов: повторная выборка сопоставления `scale-01` — 95 % (2026-10-16)
 - [ ] Выгрузка багов: **перепроверить пруфы (extends/covered) другой LLM** — сопоставление делала Claude Opus 5.5 (`claude-opus-5-5`), человек пруфы не проверяет (объём). Пробный пакет ghsa-maven (30 пруфов) проверен двумя моделями: без оговорок совпало 23/30, исправлены P11–P13 (`covered` без механизма) и P22 (`Api/ideas/mined/ghsa-maven.proofcheck.answer-*.md`). Большая перепроверка всех источников — на будущее; генератор пакета — по образцу `ghsa-maven.proofcheck.md`
 - [x] Выгрузка багов, ghsa-maven: шаги 6–7 выполнены (2026-10-16) — 10 записей draft, пруфы к 55 записям, RWB-0180…0205 и др. (71 RWB), +191 бага в трассировку
@@ -126,3 +129,4 @@ _Последнее обновление: 2026-10-16_
 | 2026-10-17 | Claude / bj | Повторная сверка DB (`inbox-db-2`, ChatGPT, Gemini, Grok): DB-API-DATA-MATCH и DB-ACCESS-SCOPE-IN-QUERY разделены (ChatGPT + Grok), шаг №194 → DB-METADATA-CACHE-FRESH, правки формулировок в 5 записях; DB-записей 33 (новые унаследовали approved); итог — `inbox-db-2.decisions.md` |
 | 2026-10-17 | Claude / bj | Пакет inbox-ui (Gemini, Grok, ChatGPT 5.5 instant, Mistral): 6 сборников разделены на 15 записей (UI-записей 39), правки в UI-AUTH-FLOWS (OIDC redirect_uri), UI-SECRET-FIELDS, UI-PLATFORM-SECURITY и др., конкретные `when` у 26 записей; итог — `inbox-ui.decisions.md` |
 | 2026-10-17 | Claude / bj | 39 UI-записей → `approved` (решение bj); вычитка draft из inbox завершена: в библиотеке approved 572, draft 32 (`REAL-*`), needs_clarification 16 |
+| 2026-10-17 | Claude | Внутренняя сессия, п. 6: метрики по источникам — `Api/mining/metrics.md`, `build/mining/<id>/REPORT.md`; копать глубже — kong и postgrest (6,7 идеи на 100), затем kubernetes и hasura; GHSA — в основном пруфы; strapi и directus — кандидаты для UI-выгрузки; не начаты gRPC-источники (gRPC слабее всего покрыт пруфами); найдено: keycloak не прошёл шаги 6–7 (21 new, 80 extends) |
