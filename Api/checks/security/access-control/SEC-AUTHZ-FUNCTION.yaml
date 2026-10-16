@@ -31,6 +31,25 @@ checks:
     notes: 'Real-world bug: RWB-0146 (nestjs/nest#879)'
   - action: Имена методов/маршрутов с общим префиксом и разным регистром при правилах по имени
     notes: 'Real-world bug: RWB-0146 (GHSA-88h9-xgvx-hvf2)'
+  - action: Под пользователем с правом отправки или чтения выполнить операцию с параметром, неявно меняющим настройку ресурса
+      (тип маршрутизации адреса), и проверить отказ без права на изменение ресурса
+    notes: 'Real-world bug: RWB-0146 (GHSA-rf99-f9j2-gv3f)'
+  - action: Повторить операцию на каждом поддерживаемом языке команд (SQL, скриптовые) под ролью только для чтения
+    notes: 'Real-world bug: RWB-0146 (GHSA-48qw-824m-86pr)'
+  - action: Повторить проверку права для каждой операции группы (все команды изменения схемы), а не только для одной
+    notes: 'Real-world bug: RWB-0146 (GHSA-vg6x-6pg9-6qwg)'
+  - action: Повторить операции над данными без прав через каждый альтернативный интерфейс к тем же данным (HTTP API хранилища,
+      а не только SQL)
+    notes: 'Real-world bug: RWB-0146 (GHSA-2xv8-gjwh-fv8p)'
+  - action: Вызвать операцию под пользователем с глобальным правом того же типа, но без права на конкретный объект
+    notes: 'Real-world bug: RWB-0146 (GHSA-jhcq-6wqp-qcfx)'
+  - action: Заменить родительскую группу, включив в неё объект, требующий дополнительной привилегии, под пользователем только
+      с общим правом записи
+    notes: 'Real-world bug: RWB-0146 (GHSA-r2g5-993q-664g)'
+  - action: Отправить запрос проверки (dry-run) с предлагаемыми значениями под пользователем только с правом чтения
+    notes: 'Real-world bug: RWB-0146 (GHSA-qvj8-gwpm-4x49)'
+  - action: Выполнить операцию над объектом под пользователем с правом на операцию, но без права чтения этого объекта
+    notes: 'Real-world bug: RWB-0146 (GHSA-mw82-xcg6-gx79)'
   expected:
   - Access is denied according to policy; no protected side effect occurs.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

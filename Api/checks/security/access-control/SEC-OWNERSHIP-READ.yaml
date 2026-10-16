@@ -27,6 +27,8 @@ checks:
     notes: 'Matrix axis: Resource ownership; scenario: Cross-owner read. Use isolated synthetic identities and data.'
   - action: Косвенное чтение через clone/copy/duplicate — права проверяются и на источник, а не только на место назначения
     notes: 'Real-world bug: RWB-0150 (GHSA-8xcj-9hfr-fh9j)'
+  - action: Запросить сессии другого пользователя по его идентификатору через эндпоинт управления сессиями
+    notes: 'Real-world bug: RWB-0150 (GHSA-vvhj-w2jq-263q)'
   expected:
   - Deny or conceal the resource according to policy; response contains no owner data and no side effect occurs.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

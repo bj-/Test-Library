@@ -178,6 +178,7 @@ checks:
   - negative
   - rate-limiting
   - hardening
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -185,6 +186,8 @@ checks:
   - Нет.
   steps:
   - action: Отправить сообщение 10MB и 1000 сообщений в секунду.
+  - action: Отправить сообщение из множества мелких кадров продолжения без FIN и проверить, что суммарный размер ограничен
+    notes: 'Real-world bug: RWB-0205 (GHSA-7ppr-r889-mcf2)'
   expected:
   - Соединение закрывается с кодом 1009/1008 или сообщения отклоняются.
   applicability:
@@ -202,6 +205,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0205'
 - id: WS-MALFORMED-MESSAGE
   status: approved
   title: Некорректные сообщения не рвут соединение без ответа

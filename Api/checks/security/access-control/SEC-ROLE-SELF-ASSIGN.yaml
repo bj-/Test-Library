@@ -28,6 +28,12 @@ checks:
     notes: 'Real-world bug: RWB-0153 (GHSA-4pvx-fwjj-8gpc)'
   - action: Самоназначение членства в арендаторах (поле массива), а не роли
     notes: 'Real-world bug: RWB-0153 (GHSA-p96c-xwx8-3cqj)'
+  - action: Под учёткой с правом редактирования ресурса отправить его обновление с настройками доступа, дающими роль владельца
+      другой своей учётке
+    notes: 'Real-world bug: RWB-0153 (GHSA-m9c2-85gv-8xr5)'
+  - action: Выдать себе более высокое право через универсальный API редактирования данных объекта и проверить, что применяются
+      те же проверки, что в основном пути
+    notes: 'Real-world bug: RWB-0153 (GHSA-45ph-gxxr-gwgw)'
   expected:
   - Privileged fields are ignored or rejected unless the caller has explicit grant permission; effective privileges do not
     increase.

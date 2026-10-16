@@ -28,6 +28,14 @@ checks:
     notes: 'Real-world bug: RWB-0125 (keycloak/keycloak#51712)'
   - action: Редирект на внутренний маршрут, где пользовательское значение — сегмент пути; проверить scheme-relative '//host'
     notes: 'Real-world bug: RWB-0125 (GHSA-2m6q-8v3h-jqww)'
+  - action: Передать URL возврата с сегментами ./ и ../
+    notes: 'Real-world bug: RWB-0125 (GHSA-3rqh-hch3-jhpc)'
+  - action: Передать URL возврата с табуляцией или переводом строки между //
+    notes: 'Real-world bug: RWB-0125 (GHSA-463r-5m89-4xfr)'
+  - action: Подставить внешний URL в cookie сохранённого запроса и выполнить вход
+    notes: 'Real-world bug: RWB-0125 (GHSA-x2r2-rvhq-2mqv)'
+  - action: 'Запросить путь с префиксом redirect: и внешним URL'
+    notes: 'Real-world bug: RWB-0125 (GHSA-h3qp-gqrc-q736)'
   expected:
   - разрешены только адреса по allowlist/политике
   applicability:

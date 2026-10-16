@@ -7,7 +7,7 @@
 ## Сводка
 
 - Новых паттернов: 20 → идей: 10 (принять: 10, отклонить: 0, не решено: 0).
-- Пруфы к существующим: 174 багов → 61 записей; новых шагов-вариантов: 96.
+- Пруфы к существующим: 171 багов → 61 записей; новых шагов-вариантов: 95.
 
 ## Новые идеи
 
@@ -150,7 +150,7 @@
 |---|---|---|
 | [GHSA-hpj9-grjp-7vc7](https://github.com/advisories/GHSA-hpj9-grjp-7vc7) | covered | _только пруф_: Служебные эндпоинты доступны извне без аутентификации |
 
-### HARD-EXPENSIVE-OPERATION-LIMITS — Дорогие операции ограничены по ресурсам (RWB-0077, багов: 13)
+### HARD-EXPENSIVE-OPERATION-LIMITS — Дорогие операции ограничены по ресурсам (RWB-0077, багов: 10)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -164,9 +164,6 @@
 | [GHSA-6jqx-86gh-f27w](https://github.com/advisories/GHSA-6jqx-86gh-f27w) | extends | Отправить один кадр настроек соединения с сотнями тысяч уникальных параметров и проверить, что сервер его ограничивает |
 | [GHSA-74xj-wh4w-vqxc](https://github.com/advisories/GHSA-74xj-wh4w-vqxc) | extends | Отправить заголовок baggage (или другой заголовок-список) с десятками тысяч элементов и проверить, что разбор ограничен лимитом |
 | [GHSA-ghvc-7hp8-2g2v](https://github.com/advisories/GHSA-ghvc-7hp8-2g2v) | extends | Отправить multipart-сообщение с тысячами частей-вложений |
-| [GHSA-5m4m-73w9-8433](https://github.com/advisories/GHSA-5m4m-73w9-8433) | covered | _только пруф_: Механизм не описан; запись проверяет описанное следствие |
-| [GHSA-83f7-v6px-pp3h](https://github.com/advisories/GHSA-83f7-v6px-pp3h) | covered | _только пруф_: Механизм не описан; запись проверяет следствие |
-| [GHSA-x23c-287f-qqv5](https://github.com/advisories/GHSA-x23c-287f-qqv5) | covered | _только пруф_: Механизм не описан; запись проверяет следствие |
 
 ### HARD-SHADOW-API-VERSIONS — Старые версии API и недокументированные маршруты не обходят защиту (RWB-0079, багов: 1)
 
@@ -261,7 +258,7 @@
 | [GHSA-8w86-m9h8-hvqg](https://github.com/advisories/GHSA-8w86-m9h8-hvqg) | covered | _только пруф_: Внутренние адреса и file:// уже в шагах записи |
 | [GHSA-x939-7fq5-v9v6](https://github.com/advisories/GHSA-x939-7fq5-v9v6) | covered | _только пруф_: Шаг записи «сервер прикладывает к исходящему вызову свои учётные данные» |
 | [GHSA-whpp-xv3h-rwxf](https://github.com/advisories/GHSA-whpp-xv3h-rwxf) | extends | Указать внутренний адрес в заголовках адреса ответа (WS-Addressing ReplyTo, FaultTo) |
-| [GHSA-7m2p-62gw-p8qq](https://github.com/advisories/GHSA-7m2p-62gw-p8qq) | extends | Передать URL, хост которого неоднозначен для разных парсеров |
+| [GHSA-7m2p-62gw-p8qq](https://github.com/advisories/GHSA-7m2p-62gw-p8qq) | extends | _только пруф_: SSRF; вариант — расхождение разбора хоста |
 
 ### INJ-TEMPLATE-SSTI — Инъекция в серверные шаблоны не исполняется (RWB-0091, багов: 4)
 

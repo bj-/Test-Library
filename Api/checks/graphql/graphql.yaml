@@ -161,6 +161,7 @@ checks:
   - security
   - negative
   - authz
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -189,6 +190,8 @@ checks:
   risk:
     impact: critical
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0194'
 - id: GQL-ERRORS-NO-LEAK
   status: approved
   title: Ошибки GraphQL не раскрывают внутренние детали

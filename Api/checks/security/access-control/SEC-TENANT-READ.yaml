@@ -28,6 +28,9 @@ checks:
   - action: Глобальное функциональное право (управление ролями) не заменяет проверку доступа к конкретному проекту/арендатору
       из параметра
     notes: 'Real-world bug: RWB-0157 (GHSA-cqr2-h44g-v75v)'
+  - action: Повторить доступ к чужой базе через все вспомогательные эндпоинты (пакетная запись, временные ряды, интеграции
+      мониторинга), а не только через основной
+    notes: 'Real-world bug: RWB-0157 (GHSA-x8mg-6r4p-87pf)'
   expected:
   - Tenant B data is not disclosed; response and side effects match the documented denial/concealment policy.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

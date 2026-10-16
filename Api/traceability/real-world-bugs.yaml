@@ -93,6 +93,31 @@ RWB-0006:
     product: Keycloak
     closed: '2026-07-10'
     summary: Если клиент не прислал поле authenticatorAttachment, проверка политики WebAuthn пропускалась
+  - url: https://github.com/advisories/GHSA-8xjq-pr36-ccgf
+    fix: https://github.com/yamcs/yamcs/commit/b566beceba98cc35514b0e1519be126b8c5a0438
+    product: org.yamcs:yamcs-core
+    closed: '2026-08-28'
+    summary: Экспорт без списка имён пропускает проверку прав на объекты и отдаёт все пакеты
+  - url: https://github.com/advisories/GHSA-h4pc-58cc-hc95
+    fix: https://github.com/apolloconfig/apollo/commit/310809d557e01c6803051736cd525e333ffe00ec
+    product: com.ctrip.framework.apollo:apollo
+    closed: '2026-07-13'
+    summary: На маршруте raw ID приложения разбирается как «raw»; ключей для него нет — проверка подписи пропускается
+  - url: https://github.com/advisories/GHSA-4w3q-qpfq-v992
+    fix: https://github.com/apolloconfig/apollo/commit/310809d557e01c6803051736cd525e333ffe00ec
+    product: com.ctrip.framework.apollo:apollo
+    closed: '2026-07-13'
+    summary: Неканонический ID приложения (диакритика, пробел в конце) не находит ключей при аутентификации, но совпадает
+      в БД
+  - url: https://github.com/advisories/GHSA-582q-v28r-7cxr
+    product: org.geonetwork-opensource:geonetwork
+    closed: '2026-07-01'
+    summary: Если в теле поиска нет поля query, фильтры доступа не добавляются — закрытые записи доступны анонимно
+  - url: https://github.com/advisories/GHSA-jrv5-8w28-4265
+    fix: https://github.com/spring-projects/spring-ldap/commit/30b90c9fb61af87208ed051fc31349ef4d418f75
+    product: org.springframework.ldap:spring-ldap-core
+    closed: '2026-06-09'
+    summary: Вход с непустым логином и пустым паролем проходил
 RWB-0007:
   pattern: Параллельные запросы разных пользователей получают только свой контекст и свой ответ (в том числе через общий канал
     к нижележащему сервису)
@@ -113,6 +138,11 @@ RWB-0007:
     closed: '2018-04-20'
     summary: Параллельные запросы через клиент микросервиса получали несоответствующие результаты — проверяется параллельными
       вызовами.
+  - url: https://github.com/advisories/GHSA-f4v5-65jj-pcr2
+    fix: https://github.com/jetty/jetty.project/pull/15162
+    product: org.eclipse.jetty:jetty-server
+    closed: '2026-07-22'
+    summary: Трейлеры запроса N на keep-alive соединении переходят к запросу N+1
 RWB-0008:
   pattern: Параллельные независимые запросы одной операции выполняются без 5xx (общая кэшированная конфигурация)
   checks:
@@ -153,6 +183,10 @@ RWB-0010:
     product: Keycloak
     closed: '2026-09-22'
     summary: 'После ужесточения проверки aud интроспекция refresh-токена всегда возвращала active: false'
+  - url: https://github.com/advisories/GHSA-542g-m3fx-q86f
+    product: org.apache.cxf:cxf-rt-rs-security-oauth2
+    closed: '2026-06-12'
+    summary: Эндпоинт интроспекции OAuth2 доступен без аутентификации из-за пропущенного throw
 RWB-0011:
   pattern: Анонимный запрос без входа не получает cookie сессии и не создаёт серверную сессию
   checks:
@@ -354,6 +388,44 @@ RWB-0024:
     closed: '2026-09-30'
     summary: TCP-транспорт микросервисов без аутентификации неограниченно копил память на незавершённых пакетах и непрочитанных
       ответах
+  - url: https://github.com/advisories/GHSA-cqgj-h8vf-4w59
+    fix: https://github.com/cometd/cometd/pull/2118
+    product: org.cometd.java:cometd-java-server-common
+    closed: '2026-06-10'
+    summary: Клиент с постоянным значением подтверждения доставки растит очередь неподтверждённых сообщений без предела
+  - url: https://github.com/advisories/GHSA-gq9p-f254-h286
+    fix: https://github.com/http4s/http4s/commit/87cf334fa3f608ef7d3eb359e71e037ba3336d29
+    product: org.http4s:http4s-ember-core_2.12, org.http4s:http4s-ember-core_2.13, org.http4s:http4s-ember-core_3
+    closed: '2026-09-15'
+    summary: HTTP/2-сервер буферизует весь payload фрейма до проверки SETTINGS_MAX_FRAME_SIZE
+  - url: https://github.com/advisories/GHSA-8f3q-3jmv-7prw
+    fix: https://github.com/http4s/http4s/commit/13fe24d6440bde2f1eb70121486cf59c278e6bae
+    product: org.http4s:http4s-ember-core_2.12, org.http4s:http4s-ember-core_2.13, org.http4s:http4s-ember-core_3
+    closed: '2026-09-15'
+    summary: Очередь исходящих фреймов HTTP/2 растёт без предела, если клиент шлёт PING и SETTINGS и не читает ответы
+  - url: https://github.com/advisories/GHSA-q4f6-jm68-57ww
+    product: io.netty:netty-codec-http
+    closed: '2026-07-22'
+    summary: Очередь Accept-Encoding растёт без предела при конвейерной отправке запросов HTTP/1.1
+  - url: https://github.com/advisories/GHSA-hpcc-26xq-25fv
+    fix: https://github.com/netty/netty/commit/5b68c61f37aa4a3045cba624cbea239655c9003b
+    product: io.netty:netty-codec-http3
+    closed: '2026-07-22'
+    summary: Кадры зарезервированного типа HTTP/3 буферизуются до заявленной длины без лимита
+  - url: https://github.com/advisories/GHSA-q6cq-mhr2-jmr5
+    fix: https://github.com/netty/netty/commit/5b68c61f37aa4a3045cba624cbea239655c9003b
+    product: io.netty:netty-codec-haproxy
+    closed: '2026-07-22'
+    summary: Байт версии 0xFF в заголовке PROXY v2 зацикливает определение версии, входные данные копятся без лимита
+  - url: https://github.com/advisories/GHSA-4grm-h2qv-h6w6
+    fix: https://github.com/netty/netty/commit/75127cab731ee35068d1f0667bffa188bc332f5d
+    product: io.netty:netty-codec-http3
+    closed: '2026-06-15'
+    summary: 'HTTP/3: лимит заблокированных потоков QPACK не работал при значении по умолчанию, потоки копились до OOM'
+  - url: https://github.com/advisories/GHSA-x4gw-5cx5-pgmh
+    product: io.netty:netty-handler
+    closed: '2026-06-08'
+    summary: По длине из начала TLS ClientHello сервер сразу выделял до 16 МБ и держал до закрытия
 RWB-0025:
   pattern: Права и согласия не переходят к пересозданному пользователю с тем же логином; привязка к неизменяемому id
   checks:
@@ -444,6 +516,15 @@ RWB-0031:
     product: music-metadata
     closed: '2026-10-08'
     summary: Специально сформированный медиафайл роняет процесс при разборе метаданных
+  - url: https://github.com/advisories/GHSA-gq9c-wmrm-5hvr
+    fix: https://github.com/hapifhir/org.hl7.fhir.core/pull/2493
+    product: ca.uhn.hapi.fhir:org.hl7.fhir.r5, ca.uhn.hapi.fhir:org.hl7.fhir.validation, ca.uhn.hapi.fhir:org.hl7.fhir.validation.cli
+    closed: '2026-09-17'
+    summary: Пустой или обрезанный DEFLATE-payload в JWT зацикливает распаковку
+  - url: https://github.com/advisories/GHSA-gc95-3vw8-vg43
+    product: org.docx4j:docx4j-core
+    closed: '2026-08-17'
+    summary: Циклическая цепочка наследования стилей в загруженном docx вызывает StackOverflowError при обработке
 RWB-0032:
   pattern: Ошибка обработчика в схеме запрос-ответ через брокер возвращается вызывающему в документированном формате, а не
     таймаутом
@@ -555,6 +636,11 @@ RWB-0040:
     closed: '2026-10-07'
     summary: Событийная загрузка пользователей организации GitLab допускает идентичность вне заданной области, которую плановая
       загрузка отсекает.
+  - url: https://github.com/advisories/GHSA-pw9q-pq7c-rfqw
+    fix: https://github.com/apache/camel/pull/23285
+    product: org.apache.camel:camel-iggy
+    closed: '2026-07-06'
+    summary: Пользовательские заголовки сообщений брокера попадают во внутренние управляющие заголовки без фильтра
 RWB-0041:
   pattern: Вход через внешний IdP не связывается с существующей учёткой по неподтверждённому email (email_verified=false или
     нет признака)
@@ -740,6 +826,10 @@ RWB-0054:
     product: ghost
     closed: '2026-10-07'
     summary: SSRF через URL вебхука — сотрудник опрашивает внутренние хосты с сервера.
+  - url: https://github.com/advisories/GHSA-c556-q2mh-477v
+    product: org.openidentityplatform.openam:openam-core
+    closed: '2026-06-22'
+    summary: URL для уведомлений о событиях сессии регистрируется без ограничений, сервер делает запросы на чужие адреса
 RWB-0055:
   pattern: API-ключи ограничены по правам, отзываются и не раскрываются
   checks:
@@ -837,6 +927,19 @@ RWB-0061:
     product: Keycloak
     closed: '2026-06-23'
     summary: Запрет HTTP redirect_uri не применялся к клиентам, разрешённым через документ метаданных
+  - url: https://github.com/advisories/GHSA-fxr3-gvm4-m8vc
+    fix: https://github.com/hs-web/hsweb-framework/pull/355
+    product: org.hswebframework.web:hsweb-authorization-oauth2
+    closed: '2026-06-08'
+    summary: Проверка redirect_uri OAuth2-клиента пропускает чужие адреса
+  - url: https://github.com/advisories/GHSA-4v2w-2wqp-mc85
+    product: org.openidentityplatform.openam:openam-oauth2
+    closed: '2026-06-29'
+    summary: Код с PKCE-вызовом обменивается на токены без code_verifier
+  - url: https://github.com/advisories/GHSA-4r8w-73jc-3m7q
+    product: org.springframework.security:spring-security-oauth2-authorization-server
+    closed: '2026-06-10'
+    summary: Невалидный request_uri с произвольным redirect_uri приводил к open redirect
 RWB-0062:
   pattern: Политика паролей применяется на сервере
   checks:
@@ -896,6 +999,11 @@ RWB-0066:
     closed: '2026-09-10'
     summary: Токен возобновления, выданный анонимному отправителю формы, принимался другим каналом (chat WebSocket) и снимал
       шаг согласования.
+  - url: https://github.com/advisories/GHSA-4gv3-mc9p-5wqc
+    fix: https://github.com/keycloak/keycloak/pull/51844
+    product: org.keycloak:keycloak-services
+    closed: '2026-08-18'
+    summary: Поток сброса пароля позволяет задать новый пароль без перехода по ссылке из письма
 RWB-0067:
   pattern: Реализация соответствует опубликованному контракту
   checks:
@@ -946,6 +1054,20 @@ RWB-0068:
     closed: '2018-02-15'
     summary: Ошибка, возвращённая обработчиком асинхронно (Observable.throw), не превращалась в ответ — необработанный reject
       вместо ошибки клиенту.
+  - url: https://github.com/advisories/GHSA-hjg2-f45w-c566
+    fix: https://github.com/apache/camel/pull/23913
+    product: org.apache.camel:camel-undertow
+    closed: '2026-07-06'
+    summary: Ошибка обработки возвращает полный стек Java в теле ответа
+  - url: https://github.com/advisories/GHSA-42q5-xw42-xf9g
+    fix: https://github.com/apache/camel/pull/23913
+    product: org.apache.camel:camel-netty-http
+    closed: '2026-07-06'
+    summary: Ошибка обработки возвращает полный стек Java в теле ответа
+  - url: https://github.com/advisories/GHSA-p5mm-xwgq-whfr
+    product: org.springframework.data:spring-data-rest-core
+    closed: '2026-06-10'
+    summary: В тело ошибки выводилась вся цепочка причин исключения со сведениями о слое хранения
 RWB-0069:
   pattern: Архивные и графические бомбы не исчерпывают ресурсы
   checks:
@@ -968,6 +1090,20 @@ RWB-0069:
     product: adm-zip
     closed: '2026-09-29'
     summary: Повреждённый DEFLATE-поток в ZIP при асинхронной распаковке даёт необработанную ошибку и роняет процесс.
+  - url: https://github.com/advisories/GHSA-3w98-rrpr-fprr
+    fix: https://github.com/hapifhir/org.hl7.fhir.core/pull/2493
+    product: ca.uhn.hapi.fhir:org.hl7.fhir.r5, ca.uhn.hapi.fhir:org.hl7.fhir.validation, ca.uhn.hapi.fhir:org.hl7.fhir.validation.cli
+    closed: '2026-09-17'
+    summary: Сжатый payload JWT распаковывается без ограничения размера
+  - url: https://github.com/advisories/GHSA-gm45-99xc-r7wv
+    fix: https://github.com/yawkat/lz4-java/commit/2acc0ec1ead226145c62a817c18c8ed49233a283
+    product: at.yawk.lz4:lz4-java, org.lz4:lz4-java
+    closed: '2026-10-07'
+    summary: Каждый пустой LZ4-фрейм заставляет выделять 8 МиБ — усиление CPU и GC от маленького входа
+  - url: https://github.com/advisories/GHSA-m69x-pw9p-7j3q
+    product: org.springframework.security:spring-security-saml2-service-provider
+    closed: '2026-06-10'
+    summary: Сжатое SAML-сообщение при REDIRECT-привязке распаковывалось в память без лимита
 RWB-0070:
   pattern: Скачивание файлов проверяет права и срок действия ссылок
   checks:
@@ -980,6 +1116,11 @@ RWB-0070:
     closed: '2026-10-07'
     summary: Специально составленный URL статического контента документации отдаёт документацию другой сущности при внешнем
       хранилище.
+  - url: https://github.com/advisories/GHSA-jr45-52cw-69h5
+    fix: https://github.com/nl-portal/nl-portal-backend-libraries/pull/690
+    product: nl.nl-portal:documenten-api
+    closed: '2026-06-18'
+    summary: Содержимое документа скачивается любым вошедшим пользователем по ID через REST и GraphQL
 RWB-0071:
   pattern: Пустой файл и некорректный multipart обрабатываются корректно
   checks:
@@ -1051,6 +1192,10 @@ RWB-0075:
     product: '@mockoon/cli, @mockoon/commons-server'
     closed: '2026-09-11'
     summary: Admin API мок-сервера без аутентификации и с CORS * позволял читать секреты и переписывать ответы
+  - url: https://github.com/advisories/GHSA-hpj9-grjp-7vc7
+    product: io.kestra:kestra
+    closed: '2026-09-17'
+    summary: Служебные эндпоинты на отдельном порту доступны без аутентификации при включённой защите основного API
 RWB-0076:
   pattern: Ответы не содержат внутренних полей сверх контракта
   checks:
@@ -1098,6 +1243,53 @@ RWB-0077:
     product: js-yaml
     closed: '2026-09-29'
     summary: Лимит merge-ключей YAML не учитывает пустые отображения — документ 500 КБ занимает процессор на 13 с.
+  - url: https://github.com/advisories/GHSA-cxp5-3px4-pw24
+    fix: https://github.com/FasterXML/jackson-databind/pull/6204
+    product: com.fasterxml.jackson.core:jackson-databind, tools.jackson.core:jackson-databind
+    closed: '2026-09-30'
+    summary: Разрешение прямых ссылок на объекты по ID в коллекции работает за квадратичное время
+  - url: https://github.com/advisories/GHSA-q4xh-88c3-wmh7
+    fix: https://github.com/FasterXML/jackson-databind/pull/6127
+    product: com.fasterxml.jackson.core:jackson-databind, tools.jackson.core:jackson-databind
+    closed: '2026-09-28'
+    summary: Строка длительности или XML-даты с огромной числовой компонентой разбирается за квадратичное время без лимита
+      длины
+  - url: https://github.com/advisories/GHSA-v74w-7mr3-4qg3
+    fix: https://github.com/netty/netty/pull/17063
+    product: io.netty:netty-codec-xml
+    closed: '2026-07-24'
+    summary: Декодер XML-фреймов заново сканирует весь буфер на каждой порции данных
+  - url: https://github.com/advisories/GHSA-r7wm-3cxj-wff9
+    fix: https://github.com/FasterXML/jackson-core/pull/1611
+    product: com.fasterxml.jackson.core:jackson-core, tools.jackson.core:jackson-core
+    closed: '2026-07-21'
+    summary: Лимит длины числа не проверяется, пока цифры приходят порциями без завершающего символа
+  - url: https://github.com/advisories/GHSA-w4cm-gvhj-cgw6
+    fix: https://github.com/typelevel/jawn/commit/cddcd5e3387c356b05953f7b2af103d309687e4b
+    product: org.typelevel:jawn-parser_2.12, org.typelevel:jawn-parser_2.13, org.typelevel:jawn-parser_3
+    closed: '2026-09-23'
+    summary: Асинхронный JSON-парсер заново сканирует незавершённый токен на каждой порции
+  - url: https://github.com/advisories/GHSA-4899-mpch-38p3
+    product: io.netty.incubator:netty-incubator-codec-bhttp
+    closed: '2026-08-20'
+    summary: Цикл разбора секции полей Binary HTTP не продвигается на некорректных данных — CPU 100 % без аутентификации
+  - url: https://github.com/advisories/GHSA-8cfx-wx3q-mh5q
+    product: io.netty.incubator:netty-incubator-codec-bhttp
+    closed: '2026-08-20'
+    summary: Секция полей известной длины, заканчивающаяся ровно после полной строки поля, зацикливает парсер
+  - url: https://github.com/advisories/GHSA-6jqx-86gh-f27w
+    fix: https://github.com/netty/netty/commit/5b68c61f37aa4a3045cba624cbea239655c9003b
+    product: io.netty:netty-codec-http
+    closed: '2026-07-22'
+    summary: Один кадр SETTINGS SPDY с сотнями тысяч уникальных параметров создаёт столько же записей в памяти
+  - url: https://github.com/advisories/GHSA-74xj-wh4w-vqxc
+    product: com.datadoghq:dd-java-agent
+    closed: '2026-07-15'
+    summary: Заголовок baggage разбирается без лимита числа пар и размера — CPU и память на каждый запрос
+  - url: https://github.com/advisories/GHSA-ghvc-7hp8-2g2v
+    product: org.apache.cxf:cxf-core
+    closed: '2026-06-12'
+    summary: Число вложений в сообщении при разборе не ограничивалось
 RWB-0078:
   pattern: Подмена Host и X-Forwarded-Host не влияет на ссылки и маршрутизацию
   checks:
@@ -1120,6 +1312,10 @@ RWB-0079:
     product: '@backstage/plugin-kubernetes-backend'
     closed: '2026-10-07'
     summary: Устаревший маршрут принимает данные сущности от клиента и по ним отдаёт объекты вне области прав пользователя.
+  - url: https://github.com/advisories/GHSA-85g9-8j9g-p486
+    product: org.apache.dolphinscheduler:dolphinscheduler-api
+    closed: '2026-06-17'
+    summary: Экспериментальный интерфейс /v2 не проверял права
 RWB-0080:
   pattern: Ответы сторонних API валидируются перед использованием
   checks:
@@ -1191,6 +1387,20 @@ RWB-0082:
     closed: '2026-09-17'
     summary: Обязательный фильтр видимости объединялся с клиентским через управляемый клиентом OR — публичный API отдавал
       скрытые сущности.
+  - url: https://github.com/advisories/GHSA-c64q-hj4j-375f
+    fix: https://github.com/yamcs/yamcs/commit/640e1598b7097b521692e89dd47a39b6cb1fc663
+    product: org.yamcs:yamcs-core
+    closed: '2026-08-28'
+    summary: Шаблон LIKE из поискового выражения вставляется в генерируемый Java-код без экранирования
+  - url: https://github.com/advisories/GHSA-cmwh-w62w-r2mf
+    fix: https://github.com/spring-projects/spring-ai/commit/2b20cfc8f478444f942d4be7a867d254441ff991
+    product: org.springframework.ai:spring-ai-elasticsearch-store, org.springframework.ai:spring-ai-gemfire-store, org.springframework.ai:spring-ai-opensearch-store
+    closed: '2026-06-15'
+    summary: Спецсимволы в фильтре метаданных позволяли выполнять произвольные запросы к поисковому хранилищу
+  - url: https://github.com/advisories/GHSA-mwpv-rg79-863c
+    product: org.springframework.data:spring-data-rest-core
+    closed: '2026-06-10'
+    summary: Фильтр query-параметрами принимал любые пути свойств сущности, включая скрытые от сериализации
 RWB-0083:
   pattern: Пользовательские данные не позволяют подделывать записи журналов
   checks:
@@ -1213,6 +1423,16 @@ RWB-0084:
     product: '@langchain/mongodb'
     closed: '2026-10-08'
     summary: Структурированный идентификатор сессии превращался в условие запроса NoSQL
+  - url: https://github.com/advisories/GHSA-q86m-qjpm-vqcw
+    fix: https://github.com/apache/camel/pull/23258
+    product: org.apache.camel:camel-neo4j
+    closed: '2026-07-06'
+    summary: Имена ключей JSON из условий поиска вставляются в запрос Cypher без проверки
+  - url: https://github.com/advisories/GHSA-hc43-m36c-8v33
+    fix: https://github.com/spring-projects/spring-data-mongodb/commit/24d5afc0c7df223150e06fce3f64c226bcc88ca2
+    product: org.springframework.data:spring-data-mongodb
+    closed: '2026-06-10'
+    summary: Параметр, подставляемый в регулярное выражение запроса, мог выйти из экранирования
 RWB-0085:
   pattern: Инъекция команд ОС не исполняется
   checks:
@@ -1235,6 +1455,10 @@ RWB-0085:
     product: shell-quote
     closed: '2026-10-06'
     summary: Перевод строки в аргументе после токена-комментария в quote() выводит строку из-под кавычек — инъекция команды.
+  - url: https://github.com/advisories/GHSA-x9f9-r4m8-9xc2
+    product: com.arcadedb:arcadedb-engine
+    closed: '2026-07-16'
+    summary: Скрипт триггера, созданный администратором схемы, вызывает java.lang.Runtime — выполнение команд ОС
 RWB-0086:
   pattern: Обход каталогов через параметры файлов и путей невозможен
   checks:
@@ -1252,6 +1476,10 @@ RWB-0086:
     closed: '2026-09-25'
     summary: Инструменты MCP документов и памяти склеивали путь пользователя без проверки — чтение, запись и удаление вне
       проекта; переименование с удалением шло по праву записи.
+  - url: https://github.com/advisories/GHSA-5g75-477j-2c2f
+    product: pro.gravit.launcher:launchserver-api
+    closed: '2026-07-02'
+    summary: Request-target без ведущего слэша обходит нормализацию пути — чтение любого файла
 RWB-0087:
   pattern: Специальные ключи __proto__ и constructor не меняют поведение сервера
   checks:
@@ -1401,6 +1629,27 @@ RWB-0088:
     product: '@vendure/core'
     closed: '2026-09-17'
     summary: Публичный фильтр regex передаёт шаблон клиента в движок регулярных выражений без ограничений — ReDoS без аутентификации.
+  - url: https://github.com/advisories/GHSA-p6pp-m3f8-5c89
+    fix: https://github.com/FasterXML/jackson-core/pull/1650
+    product: com.fasterxml.jackson.core:jackson-core, tools.jackson.core:jackson-core
+    closed: '2026-10-01'
+    summary: Проверка строки на похожесть на число регулярным выражением с квадратичным backtracking
+  - url: https://github.com/advisories/GHSA-7cmj-v6x8-frvv
+    product: ca.uhn.hapi.fhir:org.hl7.fhir.dstu2, ca.uhn.hapi.fhir:org.hl7.fhir.dstu2016may, ca.uhn.hapi.fhir:org.hl7.fhir.dstu3,
+      ca.uhn.hapi.fhir:org.hl7.fhir.r4, ca.uhn.hapi.fhir:org.hl7.fhir.r4b, ca.uhn.hapi.fhir:org.hl7.fhir.r5, ca.uhn.hapi.fhir:org.hl7.fhir.validation,
+      ca.uhn.hapi.fhir:org.hl7.fhir.validation.cli
+    closed: '2026-07-09'
+    summary: Регулярное выражение из FHIRPath-выражения в запросе выполняется без действующего тайм-аута
+  - url: https://github.com/advisories/GHSA-fxj4-p9xp-37v5
+    product: ca.uhn.hapi.fhir:org.hl7.fhir.convertors, ca.uhn.hapi.fhir:org.hl7.fhir.dstu2, ca.uhn.hapi.fhir:org.hl7.fhir.validation,
+      ca.uhn.hapi.fhir:org.hl7.fhir.validation.cli
+    closed: '2026-06-17'
+    summary: 'Неполный фикс ReDoS: в одной версии модуля функция matches() выражения пути осталась без тайм-аута'
+  - url: https://github.com/advisories/GHSA-659m-px2c-25wj
+    fix: https://github.com/spring-projects/spring-framework/commit/12b44f2545a1bec6150c7a05e66092c732597a94
+    product: org.springframework:spring-core
+    closed: '2026-06-09'
+    summary: Шаблон пути от пользователя вызывал ReDoS в сопоставителе путей
 RWB-0089:
   pattern: SQL-инъекция во входных параметрах не исполняется
   checks:
@@ -1432,6 +1681,20 @@ RWB-0089:
     product: '@fecommunity/reactpress'
     closed: '2026-09-23'
     summary: Имена query-параметров подставлялись в SQL как имена столбцов — слепая SQL-инъекция без аутентификации.
+  - url: https://github.com/advisories/GHSA-mqjf-5f49-2fjh
+    fix: https://github.com/geotools/geotools/pull/5829
+    product: org.geotools.jdbc:gt-jdbc-postgis
+    closed: '2026-08-21'
+    summary: Значение аргумента функции фильтра записывается в SQL без экранирования
+  - url: https://github.com/advisories/GHSA-cgfv-jrfp-2r7v
+    fix: https://github.com/openremote/openremote/commit/02ac83074b81617add814b2a72d459abdf374147
+    product: io.openremote:openremote-manager
+    closed: '2026-07-06'
+    summary: Имя объекта конкатенируется в SQL запроса экспорта — SQL-инъекция второго порядка
+  - url: https://github.com/advisories/GHSA-2mfg-cc43-9pcj
+    product: dev.langchain4j:langchain4j-mariadb, dev.langchain4j:langchain4j-pgvector
+    closed: '2026-06-17'
+    summary: Ключи фильтра метаданных (и значения с обратным слэшем) вставлялись в SQL без экранирования
 RWB-0090:
   pattern: Параметры с URL и хостами не дают доступа к внутренней сети
   checks:
@@ -1496,6 +1759,48 @@ RWB-0090:
     closed: '2026-09-10'
     summary: Unicode-пробел в начале пути проходит проверку same-origin, но при SSR обрезается — запрос с учётными данными
       уходит на чужой хост.
+  - url: https://github.com/advisories/GHSA-vvgp-rfg2-7rr6
+    fix: https://github.com/FasterXML/jackson-databind/pull/6058
+    product: com.fasterxml.jackson.core:jackson-databind, tools.jackson.core:jackson-databind
+    closed: '2026-09-28'
+    summary: Разбор поля типа IP-адреса выполняет DNS-запрос по имени хоста из ввода
+  - url: https://github.com/advisories/GHSA-hgj6-7826-r7m5
+    fix: https://github.com/FasterXML/jackson-databind/pull/5951
+    product: com.fasterxml.jackson.core:jackson-databind, tools.jackson.core:jackson-databind
+    closed: '2026-06-23'
+    summary: Разбор поля адреса с портом выполняет DNS-запрос по имени хоста из ввода
+  - url: https://github.com/advisories/GHSA-vqc2-c9jh-3jjv
+    fix: https://github.com/apache/fesod/pull/917
+    product: org.apache.fesod:fesod-sheet
+    closed: '2026-06-01'
+    summary: URL изображения из пользовательских данных запрашивается сервером при формировании таблицы
+  - url: https://github.com/advisories/GHSA-r56g-q4p6-m3p6
+    product: io.kestra:core, io.kestra:kestra-core
+    closed: '2026-09-17'
+    summary: Функция HTTP-запроса в шаблоне пользовательского сценария обращается к любому адресу
+  - url: https://github.com/advisories/GHSA-68r5-9hpg-7qw9
+    fix: https://github.com/OpenIdentityPlatform/OpenDJ/commit/131e8576dcf3613f944c3e02527959bbf52370c3
+    product: org.openidentityplatform.opendj:opendj-dsml-servlet
+    closed: '2026-07-24'
+    summary: 'SOAP-шлюз без аутентификации загружает значения xsd:anyURI: SSRF, чтение file:, неограниченное чтение'
+  - url: https://github.com/advisories/GHSA-8w86-m9h8-hvqg
+    product: com.arcadedb:arcadedb-engine
+    closed: '2026-07-16'
+    summary: 'IMPORT DATABASE доступен любому пользователю с SQL и принимает URL без проверки: SSRF и чтение file://'
+  - url: https://github.com/advisories/GHSA-x939-7fq5-v9v6
+    fix: https://github.com/payara/Payara/pull/8229
+    product: fish.payara.distributions:payara
+    closed: '2026-06-24'
+    summary: Сервлет загрузки админ-консоли отправляет токен администратора на хост из URL запроса; CSRF-защиты нет
+  - url: https://github.com/advisories/GHSA-whpp-xv3h-rwxf
+    fix: https://github.com/spring-projects/spring-ws/commit/5121a4e545803c4925e63c4ed015391be2605ba5
+    product: org.springframework.ws:spring-ws-core
+    closed: '2026-06-11'
+    summary: Адреса ReplyTo/FaultTo WS-Addressing из запроса использовались для исходящих соединений без проверки
+  - url: https://github.com/advisories/GHSA-7m2p-62gw-p8qq
+    product: org.springframework:spring-web
+    closed: '2026-06-09'
+    summary: Неверный разбор хоста в построителе URI позволял обойти проверку URL
 RWB-0091:
   pattern: Инъекция в серверные шаблоны не исполняется
   checks:
@@ -1507,6 +1812,25 @@ RWB-0091:
     product: handlebars
     closed: '2026-10-08'
     summary: Объект вместо строки шаблона приводит к исполнению кода
+  - url: https://github.com/advisories/GHSA-73mf-m39p-wpm9
+    fix: https://github.com/yamcs/yamcs/commit/549f295cf8c5496a5e799d6bec2432ef976c82aa
+    product: org.yamcs:yamcs-core
+    closed: '2026-08-28'
+    summary: Аргументы шаблона конфигурации вставляются в YAML без экранирования и проверки по объявленным переменным
+  - url: https://github.com/advisories/GHSA-3g44-3m7x-cgg2
+    fix: https://github.com/yamcs/yamcs/commit/8c1070b12c0a6c003903325cb2a1013347e2dbde
+    product: org.yamcs:yamcs-core
+    closed: '2026-08-28'
+    summary: Имя столбца без экранирования вставляется в динамически компилируемый Java-код агрегата — RCE через SQL-эндпоинт
+  - url: https://github.com/advisories/GHSA-9x82-rm84-c6x7
+    fix: https://github.com/DSpace/DSpace/pull/12548
+    product: org.dspace:dspace-api
+    closed: '2026-07-08'
+    summary: Шаблоны Velocity для сообщений LDN позволяют через рефлексию выполнить Java-код
+  - url: https://github.com/advisories/GHSA-9f52-rjqv-25qv
+    product: org.springframework:spring-expression
+    closed: '2026-06-09'
+    summary: Выражения в ограниченном контексте позволяли вызывать произвольные методы без аргументов
 RWB-0092:
   pattern: Чувствительные действия фиксируются в журнале аудита
   checks:
@@ -1550,6 +1874,10 @@ RWB-0094:
     product: Keycloak
     closed: '2026-08-10'
     summary: Некорректный поисковый запрос с незакрытым экранированием даёт необработанное исключение
+  - url: https://github.com/advisories/GHSA-8r2h-xh92-gq57
+    product: org.springframework.data:spring-data-relational
+    closed: '2026-06-10'
+    summary: Подстановочные символы в строке поиска по образцу не экранировались — вывод данных перебором
 RWB-0095:
   pattern: Общее число элементов согласовано с суммой страниц
   checks:
@@ -1828,6 +2156,10 @@ RWB-0112:
     product: NestJS
     closed: '2020-01-28'
     summary: После обновления CORS на Fastify-адаптере перестал работать — заголовки не отдаются.
+  - url: https://github.com/advisories/GHSA-6cqp-g7gg-8hr5
+    product: io.netty:netty-codec-http
+    closed: '2026-07-22'
+    summary: 'Запрос с Origin: null проходит короткое замыкание CORS, даже если null-origin не разрешён'
 RWB-0113:
   pattern: Дата, время и timezone
   checks:
@@ -1973,6 +2305,45 @@ RWB-0121:
     product: 9router
     closed: '2026-09-23'
     summary: PATCH настроек записывал всё тело без белого списка — пользователь отключал требование входа для всего приложения.
+  - url: https://github.com/advisories/GHSA-5gvw-p9qm-jgwh
+    fix: https://github.com/FasterXML/jackson-databind/pull/6056
+    product: com.fasterxml.jackson.core:jackson-databind, tools.jackson.core:jackson-databind
+    closed: '2026-07-21'
+    summary: Ограничение записи по представлению не применяется к полям развёрнутого вложенного объекта
+  - url: https://github.com/advisories/GHSA-3pjw-73gf-8qr5
+    fix: https://github.com/FasterXML/jackson-databind/pull/5974
+    product: com.fasterxml.jackson.core:jackson-databind, tools.jackson.core:jackson-databind
+    closed: '2026-07-21'
+    summary: Игнорируемое поле записывается из запроса под именем после стратегии именования
+  - url: https://github.com/advisories/GHSA-5hh8-q8hv-fr38
+    fix: https://github.com/FasterXML/jackson-databind/pull/5969
+    product: com.fasterxml.jackson.core:jackson-databind, tools.jackson.core:jackson-databind
+    closed: '2026-06-23'
+    summary: Привилегированная коллекция без сеттера заполняется из запроса в обход ограничения представления
+  - url: https://github.com/advisories/GHSA-rcqc-6cw3-h962
+    fix: https://github.com/FasterXML/jackson-databind/pull/5971
+    product: com.fasterxml.jackson.core:jackson-databind, tools.jackson.core:jackson-databind
+    closed: '2026-06-23'
+    summary: Ограничение записи по представлению не применяется к развёрнутым параметрам конструктора
+  - url: https://github.com/advisories/GHSA-mhm7-754m-9p8w
+    fix: https://github.com/FasterXML/jackson-databind/commit/c628b357ed143d8492756d5c1458cfb9fbeb29ed
+    product: com.fasterxml.jackson.core:jackson-databind
+    closed: '2026-07-21'
+    summary: Ограничение по представлению не применяется к параметру конструктора с внешним идентификатором типа
+  - url: https://github.com/advisories/GHSA-5jmj-h7xm-6q6v
+    fix: https://github.com/FasterXML/jackson-databind/commit/0e1b0b211f7a53baa62ba2f4c9bd006c7bf4d5fa
+    product: com.fasterxml.jackson.core:jackson-databind, tools.jackson.core:jackson-databind
+    closed: '2026-06-23'
+    summary: При включённом регистронезависимом сопоставлении игнорируемое свойство снова становится записываемым из JSON
+  - url: https://github.com/advisories/GHSA-cv39-x4c6-hhp2
+    product: org.springframework.data:spring-data-rest-core
+    closed: '2026-06-10'
+    summary: JSON Patch не применял фильтр записи к промежуточным сегментам пути
+  - url: https://github.com/advisories/GHSA-7fxc-486f-32q9
+    fix: https://github.com/spring-projects/spring-hateoas/commit/2c127edd741e43e6e6f06f4081af92d400209990
+    product: org.springframework.hateoas:spring-hateoas
+    closed: '2026-06-09'
+    summary: Десериализаторы альтернативных медиатипов связывали свойства без учёта аннотаций доступа
 RWB-0122:
   pattern: Null и отсутствующее поле
   checks:
@@ -2037,6 +2408,39 @@ RWB-0125:
     product: '@payloadcms/next, payload'
     closed: '2026-10-06'
     summary: Параметр redirect после аутентификации отправлял пользователя на недоверенный адрес.
+  - url: https://github.com/advisories/GHSA-pjp7-q6wp-97qx
+    fix: https://github.com/geonetwork/core-geonetwork/pull/9307
+    product: org.geonetwork-opensource:geonetwork
+    closed: '2026-07-31'
+    summary: Проверка адреса перенаправления после входа через SSO обходится
+  - url: https://github.com/advisories/GHSA-3rqh-hch3-jhpc
+    fix: https://github.com/jenkinsci/jenkins/commit/8ef52891b07eb639b38271e4bab5dab3c0f10fda
+    product: org.jenkins-ci.main:jenkins-core
+    closed: '2026-06-10'
+    summary: Проверка редиректа после входа пропускала URL с сегментами ./ и ../
+  - url: https://github.com/advisories/GHSA-463r-5m89-4xfr
+    fix: https://github.com/jenkinsci/jenkins/commit/8ef52891b07eb639b38271e4bab5dab3c0f10fda
+    product: org.jenkins-ci.main:jenkins-core
+    closed: '2026-06-10'
+    summary: Проверка редиректа после входа пропускала табуляцию и перевод строки между //
+  - url: https://github.com/advisories/GHSA-92m7-4fpw-2wxm
+    fix: https://github.com/jenkinsci/jenkins/commit/38071826c9a2113e1104714595262827a87b392f
+    product: org.jenkins-ci.main:jenkins-core
+    closed: '2026-06-10'
+    summary: Параметр from не проверялся при входе через одну из схем аутентификации
+  - url: https://github.com/advisories/GHSA-x2r2-rvhq-2mqv
+    product: org.springframework.security:spring-security-web
+    closed: '2026-06-10'
+    summary: Сохранённый в cookie URL до входа использовался для редиректа без проверки
+  - url: https://github.com/advisories/GHSA-h3qp-gqrc-q736
+    fix: https://github.com/spring-projects/spring-framework/commit/3aaec987651cf82fd4ed7e0ed9b3deddcdf58853
+    product: org.springframework:spring-webflux, org.springframework:spring-webmvc
+    closed: '2026-06-09'
+    summary: 'Маршрут /** без имени представления позволял редирект через префикс redirect: в пути'
+  - url: https://github.com/advisories/GHSA-r8fj-rff6-f7h5
+    product: org.jenkins-ci.plugins:bitbucket-oauth
+    closed: '2026-05-27'
+    summary: После входа через OAuth сервер перенаправляет на произвольный внешний URL
 RWB-0126:
   pattern: Границы размера страницы
   checks:
@@ -2096,6 +2500,11 @@ RWB-0129:
     closed: '2026-06-08'
     summary: Изменение только имени и описания клиента через admin API стирает его секрет - видно по последующему чтению и
       аутентификации клиента.
+  - url: https://github.com/advisories/GHSA-9fxm-vc8v-hj55
+    fix: https://github.com/FasterXML/jackson-databind/pull/5967
+    product: com.fasterxml.jackson.core:jackson-databind, tools.jackson.core:jackson-databind
+    closed: '2026-06-23'
+    summary: Поле только для чтения записывается из запроса через скрытое поле класса
 RWB-0130:
   pattern: Лимит размера тела
   checks:
@@ -2169,6 +2578,10 @@ RWB-0134:
     product: payload
     closed: '2026-10-06'
     summary: Сортировка по защищённым полям раскрывала сведения об их значениях.
+  - url: https://github.com/advisories/GHSA-5vpf-xvv7-c8vh
+    product: org.springframework.data:spring-data-commons
+    closed: '2026-06-10'
+    summary: Разбор параметров сортировки вызывал StackOverflow
 RWB-0135:
   pattern: Контроль server-side URL fetch
   checks:
@@ -2243,6 +2656,16 @@ RWB-0135:
     product: n8n
     closed: '2026-09-10'
     summary: URL проверки учётных данных принимался без сверки с источником интеграции — секреты отправлялись на адрес атакующего.
+  - url: https://github.com/advisories/GHSA-5hx7-j24v-rffj
+    fix: https://github.com/geonetwork/core-geonetwork/pull/9343
+    product: org.geonetwork-opensource:gn-web-app
+    closed: '2026-09-09'
+    summary: Анонимный эндпоинт выполняет GET по URL сервера из запроса без проверки
+  - url: https://github.com/advisories/GHSA-xm3x-9cfw-jhx4
+    fix: https://github.com/nl-portal/nl-portal-backend-libraries/pull/700
+    product: nl.nl-portal:form
+    closed: '2026-06-19'
+    summary: Анонимный GraphQL-запрос заставляет сервер обратиться к URL вызывающего со служебным токеном
 RWB-0136:
   pattern: Статус ответа соответствует контракту
   checks:
@@ -2363,6 +2786,10 @@ RWB-0143:
     closed: '2026-09-23'
     summary: Сервер доверяет запросам с loopback-адреса без ключа; за обратным прокси на том же хосте все внешние запросы
       выглядят локальными — 200 без ключа.
+  - url: https://github.com/advisories/GHSA-p462-xxwx-pqf4
+    product: org.openidentityplatform.openam:openam-federation-library
+    closed: '2026-06-24'
+    summary: SOAP-эндпоинт без аутентификации записывает данные в профиль любого пользователя с правами сервера
 RWB-0144:
   pattern: Authorization is rechecked for asynchronous job access
   checks:
@@ -2406,6 +2833,106 @@ RWB-0146:
     closed: '2026-09-28'
     summary: RBAC gRPC при нечувствительном к регистру сравнении применял префиксное совпадение имени метода — правило одного
       метода действовало на другой.
+  - url: https://github.com/advisories/GHSA-9v77-j4xv-34gq
+    fix: https://github.com/jenkinsci/ec2-fleet-plugin/pull/531
+    product: com.amazon.jenkins.fleet:ec2-fleet
+    closed: '2026-06-24'
+    summary: Эндпоинты проверки настроек без проверки прав подключаются к URL атакующего с сохранёнными учётными данными
+  - url: https://github.com/advisories/GHSA-rf99-f9j2-gv3f
+    fix: https://github.com/apache/artemis/pull/6395
+    product: org.apache.artemis:artemis-stomp-protocol
+    closed: '2026-05-28'
+    summary: Отправка или чтение с другим типом маршрутизации меняет настройку адреса без права на её изменение
+  - url: https://github.com/advisories/GHSA-cvw4-55pp-3hfq
+    fix: https://github.com/yamcs/yamcs/commit/c2aec1c242e656e48b52c7f87deea88183bb592d
+    product: org.yamcs:yamcs-core
+    closed: '2026-08-28'
+    summary: Эндпоинты списка ролей и привилегий не проверяют права
+  - url: https://github.com/advisories/GHSA-962x-ccwf-8x6p
+    product: org.yamcs:yamcs-core
+    closed: '2026-08-28'
+    summary: Административные эндпоинты (управление каналом связи, время симуляции, индексы архива) доступны любому аутентифицированному
+      пользователю
+  - url: https://github.com/advisories/GHSA-48qw-824m-86pr
+    product: com.arcadedb:arcadedb-server
+    closed: '2026-07-16'
+    summary: Пользователь с ролью только чтения выполняет JS-команду и через рефлексию читает файлы хоста
+  - url: https://github.com/advisories/GHSA-vg6x-6pg9-6qwg
+    product: com.arcadedb:arcadedb-engine
+    closed: '2026-07-16'
+    summary: Права изменения схемы проверялись только в одной операции; остальные команды DROP/ALTER доступны ролям только
+      чтения
+  - url: https://github.com/advisories/GHSA-xj53-j257-hxvg
+    fix: https://github.com/openremote/openremote/commit/583dbbfb96076ba099be8729ddf506acf9e48325
+    product: io.openremote:openremote-manager
+    closed: '2026-07-06'
+    summary: Эндпоинт записи прогнозных значений проверяет право чтения вместо записи
+  - url: https://github.com/advisories/GHSA-2xv8-gjwh-fv8p
+    product: io.crate:crate
+    closed: '2026-07-01'
+    summary: HTTP API блобов не проверяет права на таблицу, которые проверяет SQL
+  - url: https://github.com/advisories/GHSA-2r5w-jh6g-8hff
+    product: org.jenkins-ci.plugins:assembla
+    closed: '2026-06-24'
+    summary: Эндпоинт проверки подключения доступен пользователю с правом только чтения
+  - url: https://github.com/advisories/GHSA-xx59-jv36-5r44
+    product: io.jenkins.plugins:zdevops
+    closed: '2026-06-24'
+    summary: Пользователь с правом чтения подключает сервер к своему URL с ID сохранённых учётных данных и перехватывает их
+  - url: https://github.com/advisories/GHSA-mpff-xhg4-vr45
+    fix: https://github.com/jenkinsci/mcp-server-plugin/commit/ffe5ae770f3bd7e88c99aea3018263af0b2f9cc4
+    product: io.jenkins.plugins:mcp-server
+    closed: '2026-06-24'
+    summary: Инструмент MCP отдаёт скрипт пайплайна без расширенного права чтения
+  - url: https://github.com/advisories/GHSA-8263-qv4g-vfxr
+    fix: https://github.com/jenkinsci/contrast-continuous-application-security-plugin/commit/d7776646af26d928cb0d50922d61dadc2c6aa11c
+    product: org.jenkins-ci.plugins:contrast-continuous-application-security
+    closed: '2026-06-24'
+    summary: Эндпоинты заполнения выпадающих списков отдают имена настроенных метаданных без проверки права
+  - url: https://github.com/advisories/GHSA-p44q-fmwr-jqr7
+    fix: https://github.com/jenkinsci/contrast-continuous-application-security-plugin/commit/ddea0a815aec52c0695d8c0c7f09f9cfce4989e5
+    product: org.jenkins-ci.plugins:contrast-continuous-application-security
+    closed: '2026-06-24'
+    summary: Эндпоинт проверки подключения доступен пользователю с правом только чтения
+  - url: https://github.com/advisories/GHSA-wjmq-rpqq-w4h9
+    fix: https://github.com/jenkinsci/gitee-plugin/pull/199
+    product: org.jenkins-ci.plugins:gitee
+    closed: '2026-06-24'
+    summary: Эндпоинты валидации формы конфигурации доступны пользователю с правом только чтения
+  - url: https://github.com/advisories/GHSA-hwvp-7xqv-8jx3
+    fix: https://github.com/jenkinsci/git-parameter-plugin/commit/496a59f698e5ada712dea1ebf980709f0040e394
+    product: org.jenkins-ci.tools:git-parameter
+    closed: '2026-06-24'
+    summary: Эндпоинт значений параметра отдаёт ветки и теги репозитория без права запуска сборки
+  - url: https://github.com/advisories/GHSA-jhcq-6wqp-qcfx
+    fix: https://github.com/jenkinsci/gitee-plugin/pull/199
+    product: org.jenkins-ci.plugins:gitee
+    closed: '2026-06-24'
+    summary: Эндпоинт перечисления ID учётных данных проверял глобальное право настройки вместо права на конкретный объект
+  - url: https://github.com/advisories/GHSA-g7c6-wxjf-8564
+    fix: https://github.com/jenkinsci/github-branch-source-plugin/commit/d869797365462234fe061c74fe6bf0bcae8777ea
+    product: org.jenkins-ci.plugins:github-branch-source
+    closed: '2026-06-24'
+    summary: Эндпоинт списка настроенных адресов внешних серверов не проверял права, доступен любому читателю
+  - url: https://github.com/advisories/GHSA-r2g5-993q-664g
+    fix: https://github.com/apache/nifi/commit/8fb3240441282825b6ef131b856c67b2476aeb28
+    product: org.apache.nifi:nifi-web-api
+    closed: '2026-06-22'
+    summary: Замена группы объектов не проверяла дополнительную привилегию для ограниченных компонентов
+  - url: https://github.com/advisories/GHSA-qvj8-gwpm-4x49
+    fix: https://github.com/apache/nifi/commit/f30f877fb3e0e2a0db7850be8b6d586203860a45
+    product: org.apache.nifi:nifi-web-api
+    closed: '2026-06-22'
+    summary: Пользователь с правом чтения мог отправить запрос проверки конфигурации с подменёнными свойствами
+  - url: https://github.com/advisories/GHSA-mw82-xcg6-gx79
+    fix: https://github.com/jenkinsci/jenkins/commit/a154e1108f3170dc036ecbe6b2a89f164ff1554e
+    product: org.jenkins-ci.main:jenkins-core
+    closed: '2026-06-10'
+    summary: Отмена элементов очереди выполнялась без права чтения этих элементов
+  - url: https://github.com/advisories/GHSA-p2rj-mrmc-9w29
+    product: org.yamcs:yamcs-core
+    closed: '2026-05-27'
+    summary: Эндпоинты списка и чтения пользователей и групп не проверяют привилегию — видно по ответу
 RWB-0147:
   pattern: Authorization is enforced for every method
   checks:
@@ -2417,6 +2944,16 @@ RWB-0147:
     product: trigger.dev
     closed: '2026-10-02'
     summary: POST-действие повтора запуска не проверяло ни пользователя, ни организацию, хотя GET того же маршрута проверял
+  - url: https://github.com/advisories/GHSA-9jjc-fw8x-fmwx
+    fix: https://github.com/moquette-io/moquette/commit/e23df019f6a11e22c7d2047d4f86d07095466c97
+    product: io.moquette:moquette-broker
+    closed: '2026-09-18'
+    summary: Публикация сообщения-завещания MQTT обходит проверку прав записи в тему
+  - url: https://github.com/advisories/GHSA-h3x4-894j-xpx5
+    fix: https://github.com/apache/tomcat/commit/10d048e16034ddf12055e0cede0da05b15c823b8
+    product: org.apache.tomcat.embed:tomcat-embed-core, org.apache.tomcat:tomcat, org.apache.tomcat:tomcat-catalina
+    closed: '2026-08-26'
+    summary: Процесс входа через форму позволяет обойти ограничение, разрешающее пользователю POST, но не GET
 RWB-0148:
   pattern: Bulk endpoint enforces ownership per item
   checks:
@@ -2434,6 +2971,11 @@ RWB-0148:
     closed: '2026-09-22'
     summary: Права проверяются по проекту из URL, а ID стратегий из тела пишутся без проверки принадлежности — запись в чужой
       проект и без аудита.
+  - url: https://github.com/advisories/GHSA-h3m5-97jq-qjrf
+    fix: https://github.com/openremote/openremote/commit/9fad55e5a448c82772d241d395826e5d6fe1ce2d
+    product: io.openremote:openremote-manager
+    closed: '2026-06-19'
+    summary: Массовое удаление тревог не проверяло принадлежность каждой записи арендатору вызывающего
 RWB-0149:
   pattern: User cannot delete another owner’s resource
   checks:
@@ -2445,6 +2987,20 @@ RWB-0149:
     product: ghost
     closed: '2026-10-07'
     summary: Пользователь с ролью автора удаляет чужие посты и страницы.
+  - url: https://github.com/advisories/GHSA-j769-9gv9-65gr
+    fix: https://github.com/Graylog2/graylog2-server/pull/26049
+    product: org.graylog2:graylog2-server
+    closed: '2026-08-28'
+    summary: Эндпоинт отзыва токена удаляет токены других пользователей по ID
+  - url: https://github.com/advisories/GHSA-9284-fjc3-fmmj
+    fix: https://github.com/sakaiproject/sakai/commit/a092dbf3dc6bf343131f50007c207a9abd95e852
+    product: org.sakaiproject.profile2:profile2-api, org.sakaiproject.profile2:profile2-impl
+    closed: '2026-08-24'
+    summary: Удаление фото профиля по userId из пути без проверки, что это свой профиль
+  - url: https://github.com/advisories/GHSA-wh3w-v6gj-fqh2
+    product: org.apache.dolphinscheduler:dolphinscheduler-api
+    closed: '2026-06-17'
+    summary: Пользователь с правом входа мог удалять определения задач в чужих проектах
 RWB-0150:
   pattern: User cannot read another owner’s resource
   checks:
@@ -2457,6 +3013,32 @@ RWB-0150:
     closed: '2026-09-22'
     summary: Клонирование фичи проверяет права только на целевой проект — копия раскрывает настройки фичи из проекта, недоступного
       на чтение.
+  - url: https://github.com/advisories/GHSA-jxpj-9j24-w337
+    fix: https://github.com/apolloconfig/apollo/pull/5378
+    product: com.ctrip.framework.apollo:apollo
+    closed: '2026-07-13'
+    summary: Релиз по ID отдаётся без проверки прав на приложение и пространство имён
+  - url: https://github.com/advisories/GHSA-qpm9-h556-mwxm
+    product: nl.nl-portal:besluiten, nl.nl-portal:documenten-api
+    closed: '2026-07-08'
+    summary: GraphQL-запросы документов и решений не проверяют принадлежность данных пользователю
+  - url: https://github.com/advisories/GHSA-vvhj-w2jq-263q
+    product: org.openidentityplatform.openam:openam-core
+    closed: '2026-06-23'
+    summary: Эндпоинт управления сессиями отдаёт токены активных сессий других пользователей
+  - url: https://github.com/advisories/GHSA-wv7f-c794-82v6
+    product: org.apache.dolphinscheduler:dolphinscheduler-api
+    closed: '2026-06-17'
+    summary: Информация экземпляров процессов доступна пользователям без прав на проект
+  - url: https://github.com/advisories/GHSA-r989-cjhx-3v49
+    product: org.apache.dolphinscheduler:dolphinscheduler-api
+    closed: '2026-06-17'
+    summary: API источников данных отдавал метаданные любого источника без проверки прав
+  - url: https://github.com/advisories/GHSA-g28p-6mcc-v4rv
+    fix: https://github.com/jenkinsci/jenkins/commit/0586de425598497cfb4dcdafa5007e507a440a77
+    product: org.jenkins-ci.main:jenkins-core
+    closed: '2026-06-10'
+    summary: Пользователь с правом чтения видел часовой пояс и имена личных представлений других пользователей
 RWB-0151:
   pattern: Indirect resource references preserve authorization
   checks:
@@ -2493,6 +3075,10 @@ RWB-0151:
     closed: '2026-09-10'
     summary: Назначение стриминга логов ссылалось на учётные данные по ID без проверки доступа — расшифрованный секрет чужого
       проекта уходил на адрес атакующего.
+  - url: https://github.com/advisories/GHSA-694g-j8pj-cjj5
+    product: org.apache.dolphinscheduler:dolphinscheduler-api
+    closed: '2026-06-17'
+    summary: Экземпляры оповещений доступны пользователю без прав на группу оповещений
 RWB-0152:
   pattern: User cannot modify another owner’s resource
   checks:
@@ -2504,6 +3090,10 @@ RWB-0152:
     product: payload
     closed: '2026-10-07'
     summary: Вспомогательный эндпоинт упорядочивания менял документы в обход прав
+  - url: https://github.com/advisories/GHSA-6h3c-r723-7fx3
+    product: nl.nl-portal:taak
+    closed: '2026-07-08'
+    summary: GraphQL-мутация отправки задачи не проверяет, что задача принадлежит пользователю
 RWB-0153:
   pattern: User cannot grant self a higher role
   checks:
@@ -2520,6 +3110,16 @@ RWB-0153:
     product: '@payloadcms/plugin-multi-tenant'
     closed: '2026-10-07'
     summary: Пользователь мог добавить себе членство в чужих арендаторах через поле массива арендаторов
+  - url: https://github.com/advisories/GHSA-m9c2-85gv-8xr5
+    fix: https://github.com/Graylog2/graylog2-server/pull/26344
+    product: org.graylog2:graylog2-server
+    closed: '2026-09-22'
+    summary: Пользователь с правом редактирования через обновление ресурса выдаёт права владельца любой учётке
+  - url: https://github.com/advisories/GHSA-45ph-gxxr-gwgw
+    fix: https://github.com/xwiki/xwiki-platform/commit/448b0f074cc6711410eb2647c4740454c92d1626
+    product: org.xwiki.platform:xwiki-platform-livedata-livetable
+    closed: '2026-08-19'
+    summary: REST API табличного редактирования позволяет пользователю с правом правки изменить права на странице
 RWB-0154:
   pattern: Client cannot add scopes by request parameter
   checks:
@@ -2579,6 +3179,15 @@ RWB-0157:
     closed: '2026-09-10'
     summary: Эндпоинты назначений ролей проверяли право управлять ролями, но не видимость проекта — раскрытие участников (имена,
       email) любого проекта.
+  - url: https://github.com/advisories/GHSA-x8mg-6r4p-87pf
+    product: com.arcadedb:arcadedb-server
+    closed: '2026-07-16'
+    summary: Вспомогательные эндпоинты (batch, временные ряды, Prometheus, Grafana) не проверяют доступ к базе из пути
+  - url: https://github.com/advisories/GHSA-xqr9-4wvv-gvch
+    fix: https://github.com/openremote/openremote/commit/de89b8d3af272d717bf297934c2cbc97243f08b7
+    product: io.openremote:openremote-manager
+    closed: '2026-07-06'
+    summary: Администратор одного realm читает профиль и роли пользователей других realm по UUID
 RWB-0158:
   pattern: Tenant filter cannot be bypassed in list/search
   checks:
@@ -2647,6 +3256,11 @@ RWB-0161:
     product: Keycloak
     closed: '2026-06-12'
     summary: Просроченный токен на эндпоинте регистрации клиентов даёт 500 вместо 401
+  - url: https://github.com/advisories/GHSA-mqwc-6qwc-v9gq
+    fix: https://github.com/apache/camel/pull/23197
+    product: org.apache.camel:camel-keycloak
+    closed: '2026-07-06'
+    summary: Проверка токена не включает проверку exp и nbf
 RWB-0162:
   pattern: Protected operation rejects unauthenticated requests
   checks:
@@ -2658,6 +3272,11 @@ RWB-0162:
     closed: '2018-05-25'
     summary: Middleware аутентификации, привязанный к контроллеру, не срабатывал при глобальном префиксе — маршрут без проверки
       токена.
+  - url: https://github.com/advisories/GHSA-c82x-f4xr-qv33
+    fix: https://github.com/oviva-ag/epa4all-client/pull/43
+    product: com.oviva.telematik:epa4all-rest-service
+    closed: '2026-06-04'
+    summary: REST API записи документов в медкарты пациентов работал без аутентификации
 RWB-0163:
   pattern: 'Границы массивов: minItems, maxItems, uniqueItems'
   checks:
@@ -2696,6 +3315,21 @@ RWB-0165:
     product: brace-expansion
     closed: '2026-09-29'
     summary: Разбор списков в brace-шаблоне рекурсивен и использует push.apply — 29 КБ шаблона исчерпывают стек и роняют процесс.
+  - url: https://github.com/advisories/GHSA-65r4-943x-97jj
+    fix: https://github.com/jhy/jsoup/pull/2556
+    product: org.jsoup:jsoup
+    closed: '2026-08-20'
+    summary: Глубокая вложенность XML с уникальными пространствами имён даёт квадратичный расход памяти
+  - url: https://github.com/advisories/GHSA-cc4v-rvgp-2pf3
+    fix: https://github.com/typelevel/jawn/commit/191cb3a44e77f1afab439ee636bf66bdf3c54a04
+    product: org.typelevel:jawn-parser_2.12, org.typelevel:jawn-parser_2.13, org.typelevel:jawn-parser_3
+    closed: '2026-09-23'
+    summary: Глубина вложенности JSON не ограничена — исчерпание памяти
+  - url: https://github.com/advisories/GHSA-3wrr-7qpf-2prh
+    fix: https://github.com/FasterXML/jackson-databind/commit/a1fa4ae4ecf5cee16da465985f135f3e81816f8c
+    product: com.fasterxml.jackson.core:jackson-databind
+    closed: '2026-06-23'
+    summary: Глубоко вложенный JSON вызывал переполнение стека при сериализации дерева
 RWB-0166:
   pattern: Опущенные необязательные поля получают задокументированные значения по умолчанию
   checks:
@@ -2765,6 +3399,11 @@ RWB-0170:
     product: NestJS
     closed: '2018-02-15'
     summary: Ошибка разбора невалидного JSON обходила фильтр исключений — ответ не в модели ошибок приложения.
+  - url: https://github.com/advisories/GHSA-7hhh-6rmp-j9qf
+    fix: https://github.com/FasterXML/jackson-core/pull/1698
+    product: com.fasterxml.jackson.core:jackson-core, tools.jackson.core:jackson-core
+    closed: '2026-10-01'
+    summary: Сообщение об ошибке разбора JSON включает весь некорректный токен без ограничения длины
 RWB-0171:
   pattern: Ошибка во вложенном объекте указывает точный путь к полю
   checks:
@@ -2883,3 +3522,429 @@ RWB-0179:
     closed: '2026-09-22'
     summary: Действие PATCH_MULTI не описано в карте правил — по умолчанию разрешается, любой пользователь пишет в любую запись
       по WebSocket.
+  - url: https://github.com/advisories/GHSA-fwww-cp23-7f5g
+    fix: https://github.com/yamcs/yamcs/commit/0691731846c5a0aca81b88fabbd2cd51d56fe076
+    product: org.yamcs:yamcs-core
+    closed: '2026-08-28'
+    summary: Подписки WebSocket не проверяют права, которые проверяют аналогичные REST-эндпоинты
+RWB-0180:
+  pattern: Заголовки запроса и параметры подключения (в том числе WebSocket) с именами внутренних управляющих параметров (запрос
+    к хранилищу или поиску, операция, ID объекта, адрес исходящего запроса, DNS-сервер, ключи во внешней системе) не меняют
+    внутреннюю операцию сервиса — выполняется настроенная
+  checks:
+  - SEC-INTERNAL-CONTROL-PARAMS
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-gcc7-c8mp-34qx
+    fix: https://github.com/apache/camel/pull/23887
+    product: org.apache.camel:camel-salesforce
+    closed: '2026-07-06'
+    summary: Заголовки HTTP-запроса переопределяют параметры внутренней операции (запрос, объект, URL)
+  - url: https://github.com/advisories/GHSA-4h4f-v54q-7pq8
+    fix: https://github.com/apache/camel/pull/23410
+    product: org.apache.camel:camel-solr
+    closed: '2026-07-06'
+    summary: Заголовки HTTP-запроса с неслужебным префиксом попадают в параметры запроса к поисковому движку и поля документа
+  - url: https://github.com/advisories/GHSA-hcm8-x79p-wx2w
+    fix: https://github.com/apache/camel/commit/bdd40cf23f2b22cd293ddad319069a7b3b3c6c70
+    product: org.apache.camel:camel-dns
+    closed: '2026-07-06'
+    summary: HTTP-заголовки без служебного префикса задают DNS-сервер и имя для внутренней операции — SSRF через DNS и разведка
+  - url: https://github.com/advisories/GHSA-64gv-6cq2-45jr
+    fix: https://github.com/apache/camel/pull/23417
+    product: org.apache.camel:camel-jira
+    closed: '2026-07-06'
+    summary: HTTP-заголовки без служебного префикса задают ключ задачи, проект и переход для операций во внешнем трекере
+  - url: https://github.com/advisories/GHSA-566h-v38h-3xp3
+    fix: https://github.com/apache/camel/pull/23208
+    product: org.apache.camel:camel-lucene
+    closed: '2026-07-06'
+    summary: HTTP-заголовок QUERY подменяет полнотекстовый запрос маршрута
+  - url: https://github.com/advisories/GHSA-rp9m-hfv5-pfvr
+    fix: https://github.com/apache/camel/pull/23212
+    product: org.apache.camel:camel-elasticsearch-rest-client
+    closed: '2026-07-06'
+    summary: HTTP-заголовки SEARCH_QUERY, OPERATION, ID подменяют запрос и операцию поискового движка
+  - url: https://github.com/advisories/GHSA-rcvm-6r79-cf4r
+    fix: https://github.com/apache/camel/pull/23285
+    product: org.apache.camel:camel-atmosphere-websocket
+    closed: '2026-07-06'
+    summary: Query-параметры WebSocket попадают во внутренние управляющие заголовки, в том числе адрес исходящего запроса
+  - url: https://github.com/advisories/GHSA-hgg5-gp4c-gpcg
+    fix: https://github.com/apache/camel/pull/23285
+    product: org.apache.camel:camel-vertx-websocket
+    closed: '2026-07-06'
+    summary: Query- и path-параметры WebSocket попадают во внутренние управляющие заголовки
+RWB-0181:
+  pattern: Пользовательский код (скрипт, выражение, алгоритм), который сервер принимает через API и исполняет, не получает
+    доступа к классам и функциям вне разрешённого набора (запуск процессов, файловая система, сеть)
+  checks:
+  - INJ-USER-CODE-EXECUTION
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-2g95-6x5q-xjwj
+    product: org.yamcs:yamcs-core
+    closed: '2026-05-27'
+    summary: Текст алгоритма из REST-запроса исполняется Jython без песочницы — RCE через API
+  - url: https://github.com/advisories/GHSA-vmwp-vh32-rj75
+    product: org.yamcs:yamcs-core
+    closed: '2026-05-27'
+    summary: Текст алгоритма из REST-запроса исполняется Nashorn без ClassFilter — RCE, в конфигурации по умолчанию без аутентификации
+  - url: https://github.com/advisories/GHSA-524g-x36v-9wm6
+    product: org.yamcs:yamcs-core
+    closed: '2026-05-27'
+    summary: Текст Java-выражения из PATCH-запроса компилируется Janino без песочницы — RCE через API
+RWB-0182:
+  pattern: Функция, отключённая настройкой, недоступна через все API и не попадает в токены (scope, claims), даже если у пользователя
+    остались её данные
+  checks:
+  - SEC-DISABLED-FEATURE-ENFORCED
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-4q93-v92x-p89f
+    fix: https://github.com/keycloak/keycloak/pull/49541
+    product: org.keycloak:keycloak-server-spi-private, org.keycloak:keycloak-services
+    closed: '2026-05-28'
+    summary: После отключения функции организаций их данные продолжают отдаваться в API аккаунта и в токенах
+RWB-0183:
+  pattern: Правила доступа по путям применяются по наиболее точному совпадению независимо от порядка объявления — строгое
+    правило подпути не перекрывается общим правилом
+  checks:
+  - SEC-AUTHZ-PATH-RULE-PRECEDENCE
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-gcx9-497g-6cp6
+    fix: https://github.com/apache/tomcat/commit/8bafd79a3b54684e80e9cb1bafd4746aede7d3f5
+    product: org.apache.tomcat.embed:tomcat-embed-core, org.apache.tomcat:tomcat, org.apache.tomcat:tomcat-catalina
+    closed: '2026-08-26'
+    summary: Ограничение доступа для более короткого подпути не действует, если ограничение для длинного пути объявлено раньше
+RWB-0184:
+  pattern: Непрозрачный идентификатор, который выдаёт сервер и из которого он выводит внутренние ресурсы, проверяется на подлинность
+    — сфабрикованный клиентом ID отклоняется до распаковки и обращения к ресурсам
+  checks:
+  - SEC-OPAQUE-ID-INTEGRITY
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-fp43-vj7g-pg92
+    fix: https://github.com/omnifaces/omnifaces/commit/59d6c5188c39418546fe500d05036645987a77d1
+    product: org.omnifaces:omnifaces
+    closed: '2026-07-24'
+    summary: 'Сервер принимает сфабрикованные клиентом ID составных ресурсов: распаковка без лимита, вечный кэш, обход исключённых
+      ресурсов и SSRF'
+RWB-0185:
+  pattern: Client assertion (private_key_jwt) принимается только с ключом того клиента, чей client_id в ней указан — клиент
+    не аутентифицируется от имени другого
+  checks:
+  - AUTH-CLIENT-ASSERTION-BINDING
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-f2cx-463q-7m2c
+    product: org.openidentityplatform.openam:openam-oauth2
+    closed: '2026-06-29'
+    summary: Клиент OAuth с private_key_jwt получает токены от имени другого клиента через кэш JWKS
+RWB-0186:
+  pattern: Отключённая, заблокированная или истёкшая учётка не аутентифицируется ни одной схемой (пароль, сертификат клиента,
+    токен, ключ API)
+  checks:
+  - AUTH-ACCOUNT-STATE-ALL-SCHEMES
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-6mfm-98wv-32wm
+    fix: https://github.com/spring-projects/spring-ws/commit/e5dc311359e14f5b25bcb33f20d43cc3513e9d10
+    product: org.springframework.ws:spring-ws-security
+    closed: '2026-06-11'
+    summary: Аутентификация по сертификату X.509 не проверяла отключённые, заблокированные и истёкшие учётки
+RWB-0187:
+  pattern: Личность из сертификата клиента (CN, SAN) извлекается однозначно — нестандартно сформированное поле не даёт войти
+    под именем другого пользователя
+  checks:
+  - AUTH-CLIENT-CERT-IDENTITY
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-293q-567p-wmwq
+    product: org.springframework.security:spring-security-web
+    closed: '2026-06-10'
+    summary: Нестандартный CN сертификата клиента приводил к чтению неверного имени пользователя
+RWB-0188:
+  pattern: Ограничение доступа по списку адресов и подсетей работает на границах подсети для IPv4 и IPv6 — адреса вне разрешённой
+    подсети получают отказ
+  checks:
+  - HARD-IP-ALLOWLIST
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-3qp7-7mw8-wx86
+    product: io.netty:netty-handler
+    closed: '2026-06-08'
+    summary: IPv6-фильтр подсети маскировал адрес адресом сети вместо маски, пропуская посторонние адреса
+RWB-0189:
+  pattern: Параметры HTTP/2 со стороны клиента (окно управления потоком при медленном чтении тела, малый SETTINGS_MAX_HEADER_LIST_SIZE)
+    не заставляют сервер буферизовать без предела или выполнять работу впустую
+  checks:
+  - HTTP-HTTP2-RESOURCE-LIMITS
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-6m4x-pp6q-5jmm
+    fix: https://github.com/http4s/http4s/commit/22d2335975d02dc9fb9fb75cfe002279521d86ac
+    product: org.http4s:http4s-ember-core_2.12, org.http4s:http4s-ember-core_2.13, org.http4s:http4s-ember-core_3
+    closed: '2026-09-15'
+    summary: Окно управления потоком HTTP/2 пополняется по полученным, а не прочитанным байтам — тело буферизуется без предела
+  - url: https://github.com/advisories/GHSA-563q-j3cm-6jxm
+    product: io.netty:netty-codec-http2
+    closed: '2026-06-15'
+    summary: Клиент через SETTINGS_MAX_HEADER_LIST_SIZE заставлял сервер выполнить запрос и упасть на записи заголовков ответа
+RWB-0190:
+  pattern: Изменяющие операции с cookie-аутентификацией защищены от CSRF
+  checks:
+  - AUTH-CSRF
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-2x9c-vp3g-hvv2
+    fix: https://github.com/jenkinsci/ec2-fleet-plugin/pull/531
+    product: com.amazon.jenkins.fleet:ec2-fleet
+    closed: '2026-06-24'
+    summary: Эндпоинты с побочным эффектом работают по GET — CSRF
+  - url: https://github.com/advisories/GHSA-4j38-rw27-97gx
+    product: org.xwiki.contrib:discussions-server
+    closed: '2026-07-27'
+    summary: Удаление сообщения выполняется поддельным межсайтовым запросом
+  - url: https://github.com/advisories/GHSA-43m2-hcmm-qpm7
+    product: io.jenkins.plugins:zdevops
+    closed: '2026-06-24'
+    summary: Эндпоинт проверки подключения принимает GET без CSRF-защиты и без проверки права
+  - url: https://github.com/advisories/GHSA-429r-3j78-2pxm
+    product: org.jenkins-ci.plugins:assembla
+    closed: '2026-06-24'
+    summary: Эндпоинт проверки подключения принимает GET без CSRF-защиты
+  - url: https://github.com/advisories/GHSA-6qc4-57v3-28rr
+    fix: https://github.com/jenkinsci/contrast-continuous-application-security-plugin/commit/ddea0a815aec52c0695d8c0c7f09f9cfce4989e5
+    product: org.jenkins-ci.plugins:contrast-continuous-application-security
+    closed: '2026-06-24'
+    summary: Эндпоинт проверки подключения принимает GET без CSRF-защиты
+  - url: https://github.com/advisories/GHSA-w794-rwp2-jc9m
+    fix: https://github.com/jenkinsci/gitee-plugin/pull/199
+    product: org.jenkins-ci.plugins:gitee
+    closed: '2026-06-24'
+    summary: Эндпоинты валидации формы глобальной конфигурации принимают GET без CSRF-защиты
+  - url: https://github.com/advisories/GHSA-fq56-wvv2-p8jf
+    fix: https://github.com/jenkinsci/priority-sorter-plugin/commit/5581d0b2ccbae6743dccabda90bc7b671dcaffd1
+    product: org.jenkins-ci.plugins:PrioritySorter
+    closed: '2026-06-24'
+    summary: Сохранение глобальной конфигурации приоритетов выполняется GET-запросом без CSRF-защиты
+  - url: https://github.com/advisories/GHSA-hj3h-r49w-34wh
+    product: org.jenkins-ci.plugins:jenkins-multijob-plugin
+    closed: '2026-05-27'
+    summary: Изменяющий эндпоинт принимает GET — CSRF
+  - url: https://github.com/advisories/GHSA-rf8w-7c3g-7h3g
+    product: org.jenkins-ci.plugins:github-integration-parent
+    closed: '2026-05-27'
+    summary: Изменяющий эндпоинт принимает GET — CSRF
+RWB-0191:
+  pattern: Идентификатор сессии меняется после входа
+  checks:
+  - AUTH-SESSION-FIXATION
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-4hfh-6x8g-gwpp
+    fix: https://github.com/spring-projects/spring-framework/commit/b8ddd2c690fe3f00bb5e3d9f913a37504aab49a0
+    product: org.springframework:spring-webflux
+    closed: '2026-06-09'
+    summary: 'Фиксация сессии: известный ID сессии сохранялся после входа'
+RWB-0192:
+  pattern: Refresh, ID или сервисный токен не принимается как access-токен
+  checks:
+  - AUTH-TOKEN-TYPE-CONFUSION
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-cj8f-2fhf-826r
+    product: org.openidentityplatform.openam:openam-oauth2
+    closed: '2026-06-25'
+    summary: Путь чтения OAuth-токена принимает любую запись общего хранилища под известным ID, включая созданную атакующим
+RWB-0193:
+  pattern: Ответы входа, регистрации и восстановления не раскрывают существование аккаунта
+  checks:
+  - AUTH-USER-ENUMERATION
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-5x25-c2rf-f2jx
+    fix: https://github.com/spring-projects/spring-ws/commit/5051fae1a836c4d7fa12dedebdca23494764e421
+    product: org.springframework.ws:spring-ws-security
+    closed: '2026-06-11'
+    summary: Ошибки SOAP-аутентификации раскрывали состояние учётки (заблокирована, отключена)
+RWB-0194:
+  pattern: Авторизация применяется на уровне полей и вложенных резолверов
+  checks:
+  - GQL-FIELD-LEVEL-AUTHZ
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-phxq-526m-79px
+    fix: https://github.com/spring-projects/spring-graphql/commit/63a89ed1379be646822dca9779b15dbf2ce45839
+    product: org.springframework.graphql:spring-graphql
+    closed: '2026-06-11'
+    summary: Аннотации авторизации на методах в иерархии типов игнорировались для резолверов GraphQL
+RWB-0195:
+  pattern: Число одновременных стримов и их длительность ограничены
+  checks:
+  - GRPC-STREAM-RESOURCE-LIMITS
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-9vwc-pc8p-253q
+    fix: https://github.com/http4s/http4s/commit/4983de1f93f2caaa3b9de310cf6a9db32c50d66e
+    product: org.http4s:http4s-ember-core_2.12, org.http4s:http4s-ember-core_2.13, org.http4s:http4s-ember-core_3
+    closed: '2026-09-15'
+    summary: HTTP/2-сервер не соблюдает SETTINGS_MAX_CONCURRENT_STREAMS
+  - url: https://github.com/advisories/GHSA-5x3r-wrvg-rp6q
+    product: io.netty:netty-codec-http2
+    closed: '2026-06-08'
+    summary: HTTP/2-сервер не объявлял и не соблюдал MAX_CONCURRENT_STREAMS
+RWB-0196:
+  pattern: Слишком большие заголовки отклоняются контролируемо
+  checks:
+  - HTTP-HEADER-SIZE-LIMIT
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-cp4q-fqw9-4hf6
+    fix: https://github.com/http4s/http4s/commit/6e8eccd64a6a74ab4811897881e95e0e1b3a818e
+    product: org.http4s:http4s-ember-core_2.12, org.http4s:http4s-ember-core_2.13, org.http4s:http4s-ember-core_3
+    closed: '2026-09-15'
+    summary: Фрагменты заголовков HTTP/2 в CONTINUATION накапливаются без лимита
+  - url: https://github.com/advisories/GHSA-hmq9-67w8-j5pw
+    product: io.netty.incubator:netty-incubator-codec-bhttp
+    closed: '2026-08-20'
+    summary: Заявленные удалённой стороной длины полей не ограничены — данные буферизуются до OOM
+  - url: https://github.com/advisories/GHSA-mvh2-crg5-v77c
+    fix: https://github.com/netty/netty/commit/5b68c61f37aa4a3045cba624cbea239655c9003b
+    product: io.netty:netty-codec-http
+    closed: '2026-07-22'
+    summary: Сжатый блок заголовков SPDY распаковывается дальше после превышения maxHeaderSize
+  - url: https://github.com/advisories/GHSA-vhch-2wf3-m8rp
+    product: io.netty:netty-codec-stomp
+    closed: '2026-07-14'
+    summary: Число заголовков в кадре STOMP не ограничено — OOM от множества коротких заголовков
+  - url: https://github.com/advisories/GHSA-v3jc-474w-2wm6
+    fix: https://github.com/apache/httpcomponents-core/commit/1ea1239bbbe3442a8382a87279c0a8119a7e358e
+    product: org.apache.httpcomponents.core5:httpcore5-h2
+    closed: '2026-07-01'
+    summary: Лимит списка заголовков HTTP/2 применяется только после подтверждения SETTINGS
+  - url: https://github.com/advisories/GHSA-hf6x-8p5f-cgmf
+    fix: https://github.com/apache/httpcomponents-core/commit/d96a00fec9b2e19f8005e35681df5f6cd6e21a9e
+    product: org.apache.httpcomponents.core5:httpcore5
+    closed: '2026-07-01'
+    summary: Парсер HTTP/1.1 не ограничивает число и длину заголовков
+  - url: https://github.com/advisories/GHSA-c2rx-5r8w-8xr2
+    product: io.netty:netty-codec-http3
+    closed: '2026-06-08'
+    summary: HTTP/3 по умолчанию не ограничивал размер секции заголовков
+RWB-0197:
+  pattern: Вариации пути (слэш в конце, регистр, двойной слэш) обрабатываются единообразно
+  checks:
+  - HTTP-TRAILING-SLASH-CASE
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-qcxp-gm7m-4j5v
+    fix: https://github.com/quarkusio/quarkus/commit/919b80017d85564143a845b38e9cca54aff5b3cc
+    product: io.quarkus:quarkus-vertx-http
+    closed: '2026-07-29'
+    summary: Закодированные ; / \ в пути обходят правила доступа по путям из-за разной нормализации в слое безопасности и
+      обработчике
+RWB-0198:
+  pattern: Небезопасная десериализация пользовательских данных невозможна
+  checks:
+  - INJ-UNSAFE-DESERIALIZATION
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-gx83-3vf8-gh7j
+    fix: https://github.com/FasterXML/jackson-databind/pull/6155
+    product: com.fasterxml.jackson.core:jackson-databind, tools.jackson.core:jackson-databind
+    closed: '2026-09-28'
+    summary: Полиморфная десериализация по имени класса разрешена для широкого базового типа Comparable
+  - url: https://github.com/advisories/GHSA-wg5r-wc3x-39vc
+    fix: https://github.com/OpenIdentityPlatform/OpenAM/commit/edcf968cad91a78b932dba4ad559ef94cbf35f5a
+    product: org.openidentityplatform.openam:openam-core
+    closed: '2026-07-24'
+    summary: Эндпоинт удалённой аутентификации загружает и создаёт класс, имя которого пришло в XML — RCE без аутентификации
+  - url: https://github.com/advisories/GHSA-72c8-3wwg-r59w
+    fix: https://github.com/jenkinsci/workflow-cps-plugin/commit/50ab076c519907ebc0f63c8d73f37fcb81686b99
+    product: io.jenkins.plugins:pipeline-groovy-lib
+    closed: '2026-06-24'
+    summary: Генератор сниппетов создаёт объекты любых разрешённых аннотацией типов из запроса, доступен через GET
+RWB-0199:
+  pattern: Внешние сущности XML не обрабатываются
+  checks:
+  - INJ-XXE
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-x4r9-gmw3-hxww
+    fix: https://github.com/geoserver/geoserver/pull/8622
+    product: org.geoserver.web:gs-web-app, org.geoserver:gs-main
+    closed: '2026-06-12'
+    summary: Список разрешённых адресов внешних сущностей XML обходится при определённом публичном адресе сервиса
+  - url: https://github.com/advisories/GHSA-2q27-6p2h-q6r3
+    product: org.jenkins-ci.plugins:assembla
+    closed: '2026-06-24'
+    summary: XML-ответы настроенного внешнего сервера разбираются с внешними сущностями
+RWB-0200:
+  pattern: Circuit breaker размыкается и восстанавливается по политике
+  checks:
+  - RESIL-CIRCUIT-BREAKER
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-2827-2mxx-j8pv
+    fix: https://github.com/spring-attic/spring-retry/commit/6f351edae3d3575fffbde3c0f62fef963dacd152
+    product: org.springframework.retry:spring-retry
+    closed: '2026-06-09'
+    summary: Переполнение общего кэша повторов ломало все повторы и circuit breaker в приложении
+RWB-0201:
+  pattern: Ошибки аутентификации без утечки
+  checks:
+  - REST-AUTH-ERROR-NO-LEAK
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-fqjh-8322-vgrv
+    fix: https://github.com/keycloak/keycloak/pull/49684
+    product: org.keycloak:keycloak-services
+    closed: '2026-05-28'
+    summary: Разные тексты SOAP-ошибок по разным client_id раскрывают тип протокола клиента
+RWB-0202:
+  pattern: Token from untrusted issuer is rejected
+  checks:
+  - SEC-TOKEN-ISSUER
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-fpm2-m4qq-wghr
+    fix: https://github.com/apache/camel/pull/25187
+    product: org.apache.camel:camel-platform-http-main
+    closed: '2026-08-24'
+    summary: Без настроенных issuer и audience сервер проверял у JWT только подпись и срок
+RWB-0203:
+  pattern: Revoked token cannot be reused
+  checks:
+  - SEC-TOKEN-REVOKED
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-v5g5-wwmp-jppw
+    fix: https://github.com/keycloak/keycloak/pull/49542
+    product: org.keycloak:keycloak-services
+    closed: '2026-05-28'
+    summary: Отозванный refresh-токен снова принимается после перезапуска сервера — видно по ответу эндпоинта токенов
+RWB-0204:
+  pattern: Token with invalid signature is rejected
+  checks:
+  - SEC-TOKEN-SIGNATURE
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-qvc3-6q9x-95pj
+    fix: https://github.com/apache/camel/commit/1477cb4e87b2c301f1cdcddca5b153fbbef6934b
+    product: org.apache.camel:camel-keycloak
+    closed: '2026-07-06'
+    summary: Без настроенных ролей и разрешений токен не проверяется — принимается любая строка в Bearer
+RWB-0205:
+  pattern: Размер и частота сообщений ограничены
+  checks:
+  - WS-MESSAGE-LIMITS
+  batch: ghsa-maven
+  bugs:
+  - url: https://github.com/advisories/GHSA-7ppr-r889-mcf2
+    fix: https://github.com/http4s/blaze/commit/173e8ca820a0d12110bfe409c72e9b9c3d28d471
+    product: org.http4s:http4s-blaze-server_2.12, org.http4s:http4s-blaze-server_2.13, org.http4s:http4s-blaze-server_3
+    closed: '2026-07-24'
+    summary: Фрагменты WebSocket-сообщения собираются без лимита общего размера и числа фрагментов

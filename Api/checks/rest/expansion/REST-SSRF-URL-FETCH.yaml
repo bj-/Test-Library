@@ -49,6 +49,9 @@ checks:
     notes: 'Real-world bug: RWB-0135 (GHSA-2vr4-cq9g-pvrc)'
   - action: Исходящие запросы с учётными данными сервера — назначение ограничено origin интеграции, и после редиректа тоже
     notes: 'Real-world bug: RWB-0135 (GHSA-q5wm-mgqx-fv2f)'
+  - action: Передать в параметр URL адрес на разрешённом хосте с произвольным путём и проверить, что без авторизации вызывающего
+      сервер не отправляет туда служебный токен
+    notes: 'Real-world bug: RWB-0135 (GHSA-xm3x-9cfw-jhx4)'
   expected:
   - запрещённые схемы и internal/private targets блокируются
   applicability:

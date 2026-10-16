@@ -80,12 +80,16 @@ checks:
   - boundary
   - contract
   - security
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Существующий эндпоинт.
   steps:
   - action: Вызвать /items/, /Items, //items, /items;param, /./items - с сессией и без.
+  - action: Вызвать защищённый путь с закодированными %3B, %2F и %5C в сегментах без прав и проверить, что правило доступа
+      по пути срабатывает
+    notes: 'Real-world bug: RWB-0197 (GHSA-qcxp-gm7m-4j5v)'
   expected:
   - Поведение одинаково для всех ручек API (либо вариация ведёт на ту же ручку, либо везде 404).
   - Вариации пути не обходят авторизацию или правила шлюза.
@@ -105,6 +109,8 @@ checks:
   risk:
     impact: low
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0197'
 - id: HTTP-COMPRESSION
   status: approved
   title: Сжатие ответа согласуется через Accept-Encoding
@@ -195,6 +201,7 @@ checks:
   tags:
   - boundary
   - hardening
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -202,6 +209,21 @@ checks:
   - Нет.
   steps:
   - action: Отправить заголовок 16KB, 64KB, 1000 заголовков, огромный Cookie.
+  - action: По HTTP/2 отправить HEADERS без END_HEADERS и непрерывный поток CONTINUATION-фреймов и проверить разрыв по лимиту
+      размера заголовков
+    notes: 'Real-world bug: RWB-0196 (GHSA-cp4q-fqw9-4hf6)'
+  - action: Отправить в бинарном представлении HTTP поле с заявленной длиной сверх лимита и проверить отказ до буферизации
+      данных
+    notes: 'Real-world bug: RWB-0196 (GHSA-hmq9-67w8-j5pw)'
+  - action: Отправить сжатый блок заголовков, раскрывающийся далеко за лимит, и проверить, что распаковка прекращается на
+      лимите
+    notes: 'Real-world bug: RWB-0196 (GHSA-mvh2-crg5-v77c)'
+  - action: Отправить кадр STOMP с огромным числом коротких заголовков и проверить, что сервер его отклоняет
+    notes: 'Real-world bug: RWB-0196 (GHSA-vhch-2wf3-m8rp)'
+  - action: Отправить по HTTP/2 крупный сжатый блок заголовков до подтверждения SETTINGS и проверить, что лимит уже действует
+    notes: 'Real-world bug: RWB-0196 (GHSA-v3jc-474w-2wm6)'
+  - action: Повторить отправку чрезмерных заголовков по HTTP/3
+    notes: 'Real-world bug: RWB-0196 (GHSA-c2rx-5r8w-8xr2)'
   expected:
   - Ответ 431 или 400, без 5xx и разрыва без ответа.
   applicability:
@@ -219,6 +241,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0196'
 - id: HTTP-URL-LENGTH-LIMIT
   status: approved
   title: Очень длинный URL отклоняется контролируемо
@@ -481,11 +505,12 @@ checks:
   tags:
   - boundary
   - hardening
+  - real-world-bug
   - nightly
   preconditions:
   - Сервер поддерживает HTTP/2.
-  - Нужны инструменты — клиент HTTP/2 с управлением кадрами (h2load, h2spec, собственный клиент) и мониторинг памяти
-    и CPU сервера; без них проверка пропускается осознанно.
+  - Нужны инструменты — клиент HTTP/2 с управлением кадрами (h2load, h2spec, собственный клиент) и мониторинг памяти и CPU
+    сервера; без них проверка пропускается осознанно.
   steps:
   - action: Передавать по HTTP/2 большое или бесконечное тело на маршрут, который не читает тело или читает его медленно;
       наблюдать память сервера.
@@ -508,3 +533,4 @@ checks:
     likelihood: low
   references:
   - RFC 9113 п. 5.2, 6.5.2
+  - 'Real-world bug: RWB-0189'

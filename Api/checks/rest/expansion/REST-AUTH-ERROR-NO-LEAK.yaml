@@ -13,6 +13,7 @@ checks:
   - authn
   - negative
   - rest
+  - real-world-bug
   - smoke
   - pr
   - ci
@@ -44,4 +45,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0201'

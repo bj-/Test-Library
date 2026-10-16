@@ -185,6 +185,7 @@ checks:
   - negative
   - authn
   - token-lifecycle
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -193,6 +194,9 @@ checks:
   - Выдаются разные типы токенов.
   steps:
   - action: Вызвать защищённую операцию с refresh-токеном, id_token, токеном другого клиента и токеном сброса пароля.
+  - action: Предъявить как токен идентификатор записи другого типа из того же хранилища (регистрация, сессия), содержимое
+      которой задал клиент, и проверить 401
+    notes: 'Real-world bug: RWB-0192 (GHSA-cj8f-2fhf-826r)'
   expected:
   - Все варианты отклоняются.
   applicability:
@@ -211,6 +215,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0192'
 - id: AUTH-TOKEN-IN-URL
   status: approved
   title: Учётные данные не передаются и не принимаются в URL
@@ -398,12 +404,15 @@ checks:
   - negative
   - authn
   - enumeration
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Есть вход, регистрация или сброс пароля.
   steps:
   - action: Сравнить ответы и время для существующего и несуществующего логина/email/телефона.
+  - action: Выполнить вход для заблокированной, отключённой и несуществующей учёток и сравнить ответы
+    notes: 'Real-world bug: RWB-0193 (GHSA-5x25-c2rf-f2jx)'
   expected:
   - Тела, статусы и время ответа неразличимы в пределах допуска.
   applicability:
@@ -420,6 +429,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0193'
 - id: AUTH-OTP-ATTEMPT-LIMIT
   status: approved
   title: Количество попыток ввода одноразового кода ограничено
@@ -726,6 +737,7 @@ checks:
   - security
   - negative
   - session
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -752,6 +764,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0191'
 - id: AUTH-COOKIE-ATTRIBUTES
   status: approved
   title: Сессионные cookie имеют Secure, HttpOnly, SameSite и узкие Domain/Path
@@ -813,6 +827,7 @@ checks:
   - security
   - negative
   - session
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -841,6 +856,8 @@ checks:
   risk:
     impact: critical
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0190'
 - id: AUTH-API-KEY-LIFECYCLE
   status: approved
   title: API-ключи ограничены по правам, отзываются и не раскрываются
@@ -1043,6 +1060,8 @@ checks:
     notes: 'Real-world bug: RWB-0061 (directus/directus#26237)'
   - action: Клиенты, зарегистрированные динамически/через метаданные, — те же ограничения redirect_uri
     notes: 'Real-world bug: RWB-0061 (keycloak/keycloak#49456)'
+  - action: Отправить запрос авторизации с невалидным request_uri и незарегистрированным redirect_uri
+    notes: 'Real-world bug: RWB-0061 (GHSA-4r8w-73jc-3m7q)'
   expected:
   - redirect_uri сравнивается точно; без state и PKCE обмен отклоняется; code одноразовый.
   applicability:
@@ -1187,6 +1206,8 @@ checks:
       клиента-владельца.
   - action: Сравнить claims токена и ответа (sub, act, scope, exp, aud).
   - action: Интроспектировать отозванный и истёкший токен.
+  - action: Вызвать эндпоинт интроспекции без аутентификации клиента
+    notes: 'Real-world bug: RWB-0010 (GHSA-542g-m3fx-q86f)'
   expected:
   - Действующий токен — active true, значимые claims совпадают с токеном.
   - Отозванный или истёкший — active false без лишних атрибутов.
@@ -1591,6 +1612,7 @@ checks:
   - security
   - negative
   - authn
+  - real-world-bug
   - regression
   - nightly
   preconditions:
@@ -1616,6 +1638,7 @@ checks:
     likelihood: low
   references:
   - RFC 7523, RFC 7521 п. 5.2
+  - 'Real-world bug: RWB-0185'
 - id: AUTH-ACCOUNT-STATE-ALL-SCHEMES
   status: draft
   title: Отключённая, заблокированная или истёкшая учётка не аутентифицируется ни одной схемой
@@ -1628,6 +1651,7 @@ checks:
   - security
   - negative
   - authn
+  - real-world-bug
   - regression
   - nightly
   preconditions:
@@ -1653,6 +1677,7 @@ checks:
     likelihood: medium
   references:
   - Блокировка учёток — по правилам запуска (лимит попыток и путь разблокировки)
+  - 'Real-world bug: RWB-0186'
 - id: AUTH-CLIENT-CERT-IDENTITY
   status: draft
   title: Личность из сертификата клиента извлекается однозначно
@@ -1665,13 +1690,14 @@ checks:
   - security
   - negative
   - authn
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Аутентификация по сертификату клиента, имя пользователя берётся из CN или SAN.
   steps:
-  - action: Предъявить сертификат с нестандартно сформированным CN — несколько CN, имя другого пользователя внутри
-      значения, экранированные разделители.
+  - action: Предъявить сертификат с нестандартно сформированным CN — несколько CN, имя другого пользователя внутри значения,
+      экранированные разделители.
   expected:
   - Отказ или имя, совпадающее с фактическим полем сертификата; вход под другим пользователем невозможен.
   applicability:
@@ -1690,3 +1716,4 @@ checks:
     likelihood: low
   references:
   - Дополняет AUTH-ACCOUNT-STATE-ALL-SCHEMES и GRPC-TLS-MTLS
+  - 'Real-world bug: RWB-0187'

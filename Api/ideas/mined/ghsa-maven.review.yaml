@@ -72,5 +72,8 @@ clusters:
   bugs: [GHSA-6m4x-pp6q-5jmm, GHSA-563q-j3cm-6jxm]
   idea: Параметры HTTP/2 со стороны клиента (окно управления потоком при медленном чтении тела, малый SETTINGS_MAX_HEADER_LIST_SIZE) не заставляют сервер буферизовать без предела или выполнять работу впустую
 proofs:
-  exclude: []
-  no_variant: []
+  # Перекрёстная проверка двумя LLM (ghsa-maven.proofcheck.answer-1.md, answer-2.md), 2026-10-16:
+  # covered по бюллетеню без механизма — шагов записи под баг нет (обе модели).
+  exclude: [GHSA-5m4m-73w9-8433, GHSA-83f7-v6px-pp3h, GHSA-x23c-287f-qqv5]
+  # Вариант «хост, неоднозначный для разных парсеров» не следует из бага (обе модели).
+  no_variant: [GHSA-7m2p-62gw-p8qq]

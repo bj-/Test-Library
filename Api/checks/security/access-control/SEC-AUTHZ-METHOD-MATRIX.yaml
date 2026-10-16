@@ -25,6 +25,12 @@ checks:
     notes: 'Matrix axis: Authorization; scenario: Method bypass. Use isolated synthetic identities and data.'
   - action: action-обработчик формы (POST) на маршруте с защищённым GET
     notes: 'Real-world bug: RWB-0147 (GHSA-pp95-gc86-jq6q)'
+  - action: Указать защищённую тему как тему завещания при подключении MQTT без права записи, оборвать соединение и проверить,
+      что сообщение не опубликовано
+    notes: 'Real-world bug: RWB-0147 (GHSA-9jjc-fw8x-fmwx)'
+  - action: Повторить матрицу методов для ресурса, запрошенного до входа через форму, после возврата на него по завершении
+      входа
+    notes: 'Real-world bug: RWB-0147 (GHSA-h3x4-894j-xpx5)'
   expected:
   - GET/POST/PUT/PATCH/DELETE and other supported methods each enforce their declared permissions.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

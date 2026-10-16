@@ -157,12 +157,16 @@ checks:
   - streaming
   - rate-limiting
   - costly
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Есть стримы.
   steps:
   - action: Открыть сотни параллельных стримов от одного клиента; держать стрим без активности.
+  - action: По HTTP/2 открыть потоков больше объявленного SETTINGS_MAX_CONCURRENT_STREAMS и проверить отказ REFUSED_STREAM
+      или PROTOCOL_ERROR
+    notes: 'Real-world bug: RWB-0195 (GHSA-9vwc-pc8p-253q)'
   expected:
   - Действуют лимиты MAX_CONCURRENT_STREAMS и idle timeout; сервер доступен другим клиентам.
   applicability:
@@ -179,6 +183,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0195'
 - id: GRPC-REFLECTION-EXPOSURE
   status: approved
   title: Server reflection отключён или защищён в продуктиве

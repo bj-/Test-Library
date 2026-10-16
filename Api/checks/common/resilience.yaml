@@ -149,12 +149,15 @@ checks:
   tags:
   - resilience
   - costly
+  - real-world-bug
   - regression
   - nightly
   preconditions:
   - Используется circuit breaker.
   steps:
   - action: Вызвать серию ошибок зависимости, затем восстановить её.
+  - action: Отправить много уникальных сбойных запросов и проверить, что circuit breaker и повторы для других запросов работают
+    notes: 'Real-world bug: RWB-0200 (GHSA-2827-2mxx-j8pv)'
   expected:
   - Разомкнутое состояние возвращает быструю ошибку; полуоткрытое восстанавливается.
   applicability:
@@ -171,6 +174,8 @@ checks:
   risk:
     impact: low
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0200'
 - id: RESIL-BROKER-DOWN
   status: approved
   title: Недоступность брокера сообщений не теряет события

@@ -11,6 +11,7 @@ checks:
   - security
   - negative
   - authz
+  - real-world-bug
   - regression
   - nightly
   preconditions:
@@ -36,3 +37,4 @@ checks:
     likelihood: low
   references:
   - Связано с SEC-AUTHZ-FUNCTION (нет проверки права) — здесь проверка есть, но её перекрывает общее правило
+  - 'Real-world bug: RWB-0183'
