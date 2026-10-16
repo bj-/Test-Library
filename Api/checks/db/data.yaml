@@ -18,16 +18,12 @@ checks:
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
-  - Известны допустимые побочные изменения операции (триггеры, аудит, мягкое удаление).
   steps:
   - action: После каждого create, update, delete через API сравнить запись в БД с запросом и ответом — значения, типы, default,
       null
     notes: inbox №75
-  - action: Сравнить снимок затронутых таблиц до и после операции — изменены именно ожидаемые строки и никакие другие
-    notes: inbox №136
   expected:
-  - Затронуты только ожидаемые таблицы и строки, кроме описанных побочных изменений; значения, типы, default и null совпадают
-    с запросом и ответом; удаление удаляет или помечает по правилу.
+  - Значения, типы, default и null в БД совпадают с запросом и ответом; удаление удаляет или помечает по правилу.
   applicability:
     when:
     - Есть доступ к БД.
@@ -120,20 +116,14 @@ checks:
   steps:
   - action: Проверить в журнале запросов, что выборка дочерних объектов по ID содержит условие на родительский проект
     notes: inbox №233
-  - action: Удалить запись с зависимыми строками — каскад ограничен тем же project_id
-    notes: inbox №234
   - action: Выполнить операцию пользователем без разрешённых объектов — условие IN по пустому списку не превращается в запрос
       без условия
     notes: inbox №236
   - action: Проверить, что фильтр доступа применяется в запросе к БД, а не по полям результата после выборки
     notes: inbox №241
-  - action: Сменить видимость ресурса на приватную каждым путём изменения — производные записи (подписки, звёзды) пользователей
-      без доступа удаляются
-    notes: inbox №246
   expected:
-  - Граница доступа применяется при выборке и изменении (условие в запросе, RLS или эквивалент), а не фильтрацией результата;
-    каскады ограничены своим проектом; пустой список разрешённых даёт пустой результат; производные данные чистятся при смене
-    видимости; чужие данные не утекают и не меняются.
+  - Граница доступа применяется в самом запросе (условие, RLS или эквивалент), а не фильтрацией результата; пустой список
+    разрешённых даёт пустой результат; чужие данные не возвращаются.
   applicability:
     when:
     - Есть доступ к журналу запросов.
@@ -198,4 +188,143 @@ checks:
     likelihood: medium
   references:
   - Смежная — RES-EXPORT-IMPORT-ROUNDTRIP
+  - ADR 0006 (проверки БД)
+- id: DB-MUTATION-SCOPE
+  status: approved
+  title: Операция API меняет в БД только ожидаемые таблицы и строки
+  category: db
+  protocols:
+  - db
+  kind: contract
+  priority: P1
+  tags:
+  - db
+  - contract
+  - data-integrity
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
+    осознанно.
+  - Известны допустимые побочные изменения операции (триггеры, аудит, мягкое удаление).
+  steps:
+  - action: Сравнить снимок затронутых таблиц до и после операции — изменены именно ожидаемые строки и никакие другие
+    notes: inbox №136
+  expected:
+  - Снимок до и после отличается только ожидаемыми строками и описанными побочными изменениями (триггеры, аудит, мягкое удаление).
+  applicability:
+    when:
+    - Есть доступ к БД.
+    skip_when:
+    - Нет доступа к БД стенда.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - Смежная — DB-API-DATA-MATCH
+  - Чек-лист guru99 (пер. О. Алифановой)
+  - ADR 0006 (проверки БД)
+- id: DB-CASCADE-SCOPE
+  status: approved
+  title: Каскадные изменения ограничены областью удаляемой записи
+  category: db
+  protocols:
+  - db
+  kind: security
+  priority: P1
+  tags:
+  - db
+  - security
+  - authz
+  - tenant-isolation
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
+    осознанно.
+  steps:
+  - action: Удалить запись с зависимыми строками — каскад ограничен тем же project_id
+    notes: inbox №234
+  expected:
+  - Каскадное удаление и изменение затрагивают только зависимые строки той же области (проекта, арендатора).
+  applicability:
+    when:
+    - Есть доступ к журналу запросов.
+    skip_when:
+    - Нет доступа к БД стенда.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - Смежная — RES-DELETE-WITH-DEPENDENTS
+  - OWASP API1:2023
+  - Смежные — SEC-TENANT-READ, SEC-OWNERSHIP-REFERENCE-INDIRECT
+  - ADR 0006 (проверки БД)
+- id: DB-VISIBILITY-CHANGE-CLEANUP
+  status: approved
+  title: Смена видимости ресурса очищает производные данные пользователей без доступа
+  category: db
+  protocols:
+  - db
+  kind: security
+  priority: P1
+  tags:
+  - db
+  - security
+  - authz
+  - tenant-isolation
+  - ci
+  - regression
+  - nightly
+  - release
+  preconditions:
+  - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
+    осознанно.
+  steps:
+  - action: Сменить видимость ресурса на приватную каждым путём изменения — производные записи (подписки, звёзды) пользователей
+      без доступа удаляются
+    notes: inbox №246
+  expected:
+  - После смены видимости на приватную каждым путём изменения производные записи (подписки, звёзды) пользователей без доступа
+    удалены или недоступны.
+  applicability:
+    when:
+    - Есть доступ к журналу запросов.
+    skip_when:
+    - Нет доступа к БД стенда.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - CI
+  - Regression
+  - Nightly
+  - Release
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - Смежная — SEC-AUTHZ-REVOKE-ROLE
+  - OWASP API1:2023
+  - Смежные — SEC-TENANT-READ, SEC-OWNERSHIP-REFERENCE-INDIRECT
   - ADR 0006 (проверки БД)

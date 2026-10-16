@@ -2,8 +2,8 @@
 
 Файл генерируется `python tools/build_catalog.py .` — не редактируйте вручную.
 
-Всего проверок: **608** — approved: 530, draft: 62, needs_clarification: 16.
-Протоколы: db: 30, generic: 117, graphql: 228, grpc: 149, rest: 420, ui-desktop: 23, ui-mobile: 24, ui-web: 29, websocket: 65.
+Всего проверок: **611** — approved: 533, draft: 62, needs_clarification: 16.
+Протоколы: db: 33, generic: 117, graphql: 228, grpc: 149, rest: 420, ui-desktop: 23, ui-mobile: 24, ui-web: 29, websocket: 65.
 
 | Категория | Описание | Проверок |
 |---|---|---:|
@@ -30,7 +30,7 @@
 | [privacy](#privacy) | Personal data handling, masking, consent, and erasure | 6 |
 | [requirements](#requirements) | Requirement transfer errors - spec vs contract vs implementation, unspecified behavior | 5 |
 | [ui](#ui) | User interface - forms, navigation, state, data and error display, client settings, localization and RTL | 30 |
-| [db](#db) | Database - schema and constraints, migrations, indexes and query plans, stored logic, data integrity, application queries | 30 |
+| [db](#db) | Database - schema and constraints, migrations, indexes and query plans, stored logic, data integrity, application queries | 33 |
 
 ## contract
 
@@ -779,17 +779,20 @@ Database - schema and constraints, migrations, indexes and query plans, stored l
 |---|---|---|---|---|---|
 | `DB-ACCESS-SCOPE-IN-QUERY` | Граница доступа задаётся в самом запросе к БД | P1 | approved | db | CI, Regression, Nightly, Release |
 | `DB-API-DATA-MATCH` | После операции API в БД изменены ровно ожидаемые строки с ожидаемыми значениями | P1 | approved | db | CI, Regression, Nightly, Release |
+| `DB-CASCADE-SCOPE` | Каскадные изменения ограничены областью удаляемой записи | P1 | approved | db | CI, Regression, Nightly, Release |
 | `DB-DYNAMIC-SQL-PARAMETERIZED` | Значения и идентификаторы из ввода и из БД попадают в SQL параметрами или по allowlist | P1 | approved | db | CI, Regression, Nightly, Release |
 | `DB-KEYS-AND-CONSTRAINTS` | Ключи и ограничения защищают целостность независимо от приложения | P1 | approved | db | CI, Regression, Nightly, Release |
+| `DB-MUTATION-SCOPE` | Операция API меняет в БД только ожидаемые таблицы и строки | P1 | approved | db | CI, Regression, Nightly, Release |
 | `DB-SENSITIVE-DATA-PROTECTED` | Чувствительные данные хранятся защищённо | P1 | approved | db | CI, Regression, Nightly, Release |
 | `DB-SERVICE-ROLE-LEAST-PRIVILEGE` | Роль подключения сервиса имеет минимальные права | P1 | approved | db | CI, Regression, Nightly, Release |
+| `DB-VISIBILITY-CHANGE-CLEANUP` | Смена видимости ресурса очищает производные данные пользователей без доступа | P1 | approved | db | CI, Regression, Nightly, Release |
 | `DB-ALTER-PRESERVES-COLUMN` | Изменение столбца или ограничения сохраняет его остальные свойства | P2 | approved | db | CI, Regression, Nightly |
 | `DB-COLLATION-COMPARISON` | Сравнение строк в БД соответствует назначению колонки | P2 | approved | db | CI, Regression, Nightly |
 | `DB-IDENTIFIER-QUOTING` | Имена объектов БД экранируются во всех служебных и генерируемых запросах | P2 | approved | db | CI, Regression, Nightly |
 | `DB-IMPORT-CONSISTENCY` | Импорт не оставляет частичного состояния вне документированной политики | P2 | approved | db | CI, Regression, Nightly |
 | `DB-METADATA-CACHE-FRESH` | Кэш метаданных схемы в сервисе актуален после изменений БД | P2 | approved | db | CI, Regression, Nightly |
 | `DB-MIGRATION-CLEAN-INSTALL` | Миграции разворачиваются на чистой БД, в том числе в нестандартной схеме | P2 | approved | db | CI, Regression, Nightly |
-| `DB-MIGRATION-DATA-PRESERVED` | Миграции переносят данные и связи и учитывают актуальные ограничения | P2 | approved | db | CI, Regression, Nightly |
+| `DB-MIGRATION-DATA-PRESERVED` | Миграции переносят данные и связи без искажений | P2 | approved | db | CI, Regression, Nightly |
 | `DB-MIGRATION-STATE-TRACKED` | Применённые миграции учитываются, повторный запуск безопасен | P2 | approved | db | CI, Regression, Nightly |
 | `DB-MIN-VERSION-COMPATIBILITY` | Сервис работает на минимальной поддерживаемой версии СУБД | P2 | approved | db | CI, Regression, Nightly |
 | `DB-QUERY-INDEX-USAGE` | Запросы приложения используют подходящие индексы на реалистичном объёме | P2 | approved | db | CI, Nightly |
