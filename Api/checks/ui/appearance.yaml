@@ -1,0 +1,208 @@
+checks:
+- id: UI-TEXTS-CORRECT
+  status: draft
+  title: Тексты интерфейса без ошибок и по назначению экрана
+  category: ui
+  protocols:
+  - ui-web
+  - ui-desktop
+  - ui-mobile
+  kind: contract
+  priority: P3
+  tags:
+  - ui
+  - i18n
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Прочитать тексты экранов, подписи, подсказки и сообщения об ошибках — без ошибок, на языке интерфейса, сообщение соответствует заголовку окна и ситуации
+    notes: 'inbox №99'
+  - action: Сравнить placeholder и подписи полей с назначением формы — не скопированы с соседней формы
+    notes: 'inbox №168'
+  - action: Вызвать пустые состояния (нет результатов поиска) — тексты без опечаток, термины написаны правильно
+    notes: 'inbox №180'
+  expected:
+  - Тексты, подписи, подсказки, пустые состояния и ошибки без орфографических и грамматических ошибок, на языке интерфейса, соответствуют экрану и ситуации.
+  applicability:
+    when:
+    - Есть клиент с соответствующими экранами.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Чек-лист guru99 (пер. О. Алифановой)
+  - ADR 0006 (проверки UI)
+- id: UI-VISUAL-CONSISTENCY
+  status: draft
+  title: Вид элементов единообразен и ничего не налезает
+  category: ui
+  protocols:
+  - ui-web
+  - ui-desktop
+  - ui-mobile
+  kind: contract
+  priority: P3
+  tags:
+  - ui
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Сравнить гарнитуру, размер и начертание с макетом; включить системное увеличение шрифта — вёрстка не ломается
+    notes: 'inbox №100'
+  - action: Проверить выравнивание текстов, полей, колонок и сообщений об ошибках — ничего не налезает
+    notes: 'inbox №101'
+  - action: Сравнить кнопки одного типа действий по виду и размеру; на mobile зона нажатия не меньше 44 pt или 48 dp
+    notes: 'inbox №103'
+  - action: Ввести длинные названия элементов — обрезаются с многоточием и подсказкой или переносятся, не выходят за блок
+    notes: 'inbox №279'
+  - action: Открыть выпадающие элементы соседних блоков — не перекрывают друг друга
+    notes: 'inbox №284'
+  expected:
+  - Шрифты, отступы, кнопки одного типа единообразны; длинные тексты обрезаются с подсказкой или переносятся; элементы не перекрываются.
+  applicability:
+    when:
+    - Есть клиент с соответствующими экранами.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Чек-лист guru99 (пер. О. Алифановой)
+  - Apple HIG (44 pt), Material Design (48 dp)
+  - ADR 0006 (проверки UI)
+- id: UI-RESPONSIVE-LAYOUT
+  status: draft
+  title: Интерфейс работает на всех поддерживаемых размерах экрана
+  category: ui
+  protocols:
+  - ui-web
+  - ui-desktop
+  - ui-mobile
+  kind: compatibility
+  priority: P2
+  tags:
+  - ui
+  - compatibility
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Проверить web от 640×480 до 4K и масштаб браузера; desktop — размер окна, DPI 100–200 %, несколько мониторов; mobile — малые и большие экраны, планшеты, портрет и ландшафт, вырезы
+    notes: 'inbox №108'
+  - action: Проверить, что прокрутка появляется только когда содержимое не помещается; в web на узком экране нет горизонтальной прокрутки страницы
+    notes: 'inbox №111'
+  expected:
+  - Вёрстка корректна на всех размерах и масштабах; прокрутка появляется только при необходимости; горизонтальной прокрутки страницы на узком экране нет.
+  applicability:
+    when:
+    - Есть клиент с соответствующими экранами.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Чек-лист guru99 (пер. О. Алифановой)
+  - ADR 0006 (проверки UI)
+- id: UI-PLATFORM-COMPATIBILITY
+  status: draft
+  title: Интерфейс одинаково работает в поддерживаемых браузерах, ОС и режимах
+  category: ui
+  protocols:
+  - ui-web
+  - ui-desktop
+  - ui-mobile
+  kind: compatibility
+  priority: P2
+  tags:
+  - ui
+  - compatibility
+  - i18n
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Проверить отображение, картинки, шрифты, анимацию и JavaScript в поддерживаемых браузерах и версиях, включая мобильные
+    notes: 'inbox №127'
+  - action: Проверить поддерживаемые версии ОС, производителей и размеры экрана, тёмную тему и системный язык
+    notes: 'inbox №128'
+  - action: Включить RTL — элементы, не зависящие от языка (редактор кода, цветовых значений), не переворачиваются
+    notes: 'inbox №202'
+  expected:
+  - Отображение и поведение одинаковы в поддерживаемых браузерах, ОС и устройствах, в тёмной теме, на системном языке и в RTL.
+  applicability:
+    when:
+    - Есть клиент с соответствующими экранами.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Чек-лист guru99 (пер. О. Алифановой)
+  - ADR 0006 (проверки UI)
+- id: UI-KEYBOARD-ACCESS
+  status: draft
+  title: Интерфейс полностью управляется с клавиатуры в логическом порядке
+  category: ui
+  protocols:
+  - ui-web
+  - ui-desktop
+  - ui-mobile
+  kind: contract
+  priority: P2
+  tags:
+  - ui
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Пройти форму по TAB и Shift+TAB — логический порядок, фокус виден; на mobile «Далее» ведёт к следующему полю
+    notes: 'inbox №110'
+  - action: Пройти сценарии без мыши — все поля, списки, радиокнопки, чекбоксы и кнопки управляются с клавиатуры
+    notes: 'inbox №113'
+  - action: Нажать горячие клавиши редактора в каждом поддерживаемом браузере — перехватываются и не вызывают встроенные действия браузера
+    notes: 'inbox №278'
+  expected:
+  - Все элементы доступны с клавиатуры; порядок фокуса логичен и виден; горячие клавиши перехватываются приложением во всех браузерах.
+  applicability:
+    when:
+    - Есть клиент с соответствующими экранами.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - WCAG 2.1 — 2.1.1, 2.4.3, 2.4.7
+  - ADR 0006 (проверки UI)

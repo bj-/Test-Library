@@ -1,0 +1,203 @@
+checks:
+- id: UI-RELATED-RECORDS
+  status: draft
+  title: Связанные записи редактируются в карточке так же, как отдельно
+  category: ui
+  protocols:
+  - ui-web
+  kind: contract
+  priority: P3
+  tags:
+  - ui
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Открыть поле файла во вложенной панели связанной записи — те же действия (загрузить, выбрать), что в основной форме
+    notes: 'inbox №204'
+  - action: Открыть таблицу связанных записей многие-ко-многим в карточке пользователем с правами — активна и открывает запись
+    notes: 'inbox №210'
+  - action: Добавить новые несохранённые связанные записи — редактируются в форме так же, как существующие
+    notes: 'inbox №214'
+  - action: Сравнить счётчик элементов списка связанных записей с фактическим числом записей
+    notes: 'inbox №216'
+  expected:
+  - Таблицы и поля связанных записей активны по правам, предлагают те же действия, что основная форма; новые несохранённые записи редактируются; счётчики совпадают с числом записей.
+  applicability:
+    when:
+    - Есть клиент с соответствующими экранами.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Здравый смысл — одинаковое поведение во вложенной и основной форме
+  - ADR 0006 (проверки UI)
+- id: UI-LIST-SORT-FILTER
+  status: draft
+  title: Сортировка и фильтры списков работают и сбрасываются ожидаемо
+  category: ui
+  protocols:
+  - ui-web
+  - ui-desktop
+  - ui-mobile
+  kind: contract
+  priority: P2
+  tags:
+  - ui
+  - filtering
+  - sorting
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Отсортировать по клику на колонку — индикатор направления, порядок сохраняется при пагинации и возврате на экран
+    notes: 'inbox №120'
+  - action: Переключить быстрый фильтр по булеву полю — true, false и пусто
+    notes: 'inbox №206'
+  - action: Оставить пустым фильтр текстового поля — отображается пустым, а не строкой null
+    notes: 'inbox №207'
+  - action: Задать условное оформление со всеми операторами сравнения (<, <=, >, >=) — работает не только для равенства
+    notes: 'inbox №209'
+  - action: Задать в редакторе фильтра каждую поддерживаемую сервером динамическую переменную — сохраняется, не сбрасывается в null
+    notes: 'inbox №224'
+  - action: Перейти между списками разных типов сущностей — фильтры одного не переносятся на другой
+    notes: 'inbox №265'
+  - action: Снять каждый применённый фильтр кнопкой сброса при любом выбранном значении
+    notes: 'inbox №269'
+  expected:
+  - Сортировка по клику с индикатором, сохраняется при пагинации и возврате; фильтры переключаются, снимаются, не переносятся между типами; динамические переменные принимаются; пустое значение не «null».
+  applicability:
+    when:
+    - Есть клиент с соответствующими экранами.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Чек-лист guru99 (пер. О. Алифановой)
+  - Серверная сторона — PAGE-SORT-FIELD-TYPE-MATRIX, REST-FILTER-OPERATOR-TYPE-MATRIX
+  - ADR 0006 (проверки UI)
+- id: UI-RICH-EDITOR
+  status: draft
+  title: Редактор содержимого сохраняет форматирование и вставки без искажений
+  category: ui
+  protocols:
+  - ui-web
+  kind: contract
+  priority: P3
+  tags:
+  - ui
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Вставить ссылку на изображение — сохраняется исходное расширение файла (jpeg, а не jpg)
+    notes: 'inbox №197'
+  - action: Создать нумерованный список в середине текста — начинается с 1
+    notes: 'inbox №287'
+  expected:
+  - Вставленные ссылки и изображения сохраняют исходные адреса и расширения; списки нумеруются правильно.
+  applicability:
+    when:
+    - Есть клиент с соответствующими экранами.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Здравый смысл — редактор не меняет содержимое
+  - ADR 0006 (проверки UI)
+- id: UI-DOCUMENTS-OPEN
+  status: draft
+  title: Загруженные документы открываются и скачиваются в каждом поддерживаемом формате
+  category: ui
+  protocols:
+  - ui-web
+  - ui-desktop
+  - ui-mobile
+  kind: contract
+  priority: P2
+  tags:
+  - ui
+  - files
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Открыть и скачать загруженный документ каждого поддерживаемого формата; на mobile — открыть во внешнем приложении
+    notes: 'inbox №124'
+  expected:
+  - Просмотр в приложении и скачивание работают для каждого поддерживаемого формата; на mobile — открытие во внешнем приложении.
+  applicability:
+    when:
+    - Есть клиент с соответствующими экранами.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Чек-лист guru99 (пер. О. Алифановой)
+  - Серверная сторона — FILE-ROUNDTRIP-EXACT
+  - ADR 0006 (проверки UI)
+- id: UI-CHANGE-HISTORY
+  status: draft
+  title: История изменений показывает каждое изменение с автором
+  category: ui
+  protocols:
+  - ui-web
+  - ui-desktop
+  - ui-mobile
+  kind: contract
+  priority: P3
+  tags:
+  - ui
+  - audit
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Удалить связь у объекта из другого проекта — изменение отражено в истории изменений с автором
+    notes: 'inbox №229'
+  expected:
+  - Изменения, в том числе неявные (исчезновение связи из-за действия в другом проекте), отражены в истории с автором и временем.
+  applicability:
+    when:
+    - Есть клиент с соответствующими экранами.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Серверная сторона — OBS-AUDIT-TRAIL
+  - ADR 0006 (проверки UI)

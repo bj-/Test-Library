@@ -1,0 +1,214 @@
+checks:
+- id: UI-ERROR-DISPLAY
+  status: draft
+  title: Ошибки сервера и сбои показываются понятно, без падения клиента
+  category: ui
+  protocols:
+  - ui-web
+  - ui-desktop
+  - ui-mobile
+  kind: negative
+  priority: P2
+  tags:
+  - ui
+  - error-handling
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Вызвать отказ функциональности — понятный экран ошибки с действием (повторить, на главную), без стектрейса; на mobile приложение не падает
+    notes: 'inbox №123'
+  - action: Получить конфигурацию, где необязательный список равен null, — экран не падает
+    notes: 'inbox №161'
+  - action: Получить список уведомлений, где у элемента нет вложенного объекта (null), — список не падает
+    notes: 'inbox №169'
+  - action: Сохранить данные, нарушающие ограничение БД, — сообщение об ошибке показано
+    notes: 'inbox №200'
+  - action: Сохранить без прав — понятное сообщение с полем и причиной
+    notes: 'inbox №220'
+  - action: Сохранить при сбое сети и 5xx — уведомление пользователю, а не только запись в консоли
+    notes: 'inbox №286'
+  - action: Получить от сервера ошибку без тела или без поля сообщения — понятное сообщение
+    notes: 'inbox №301'
+  expected:
+  - Сбой — понятный экран с действием, без стектрейса и падения приложения; ошибки сохранения (ограничение БД, права, сеть, 5xx, ответ без тела) — уведомлением с полем и причиной; null в необязательных данных не роняет экран.
+  applicability:
+    when:
+    - Есть клиент с соответствующими экранами.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Чек-лист guru99 (пер. О. Алифановой)
+  - Серверная сторона — REST-ERROR-SCHEMA
+  - ADR 0006 (проверки UI)
+- id: UI-NO-BROKEN-RESOURCES
+  status: draft
+  title: Ссылки, картинки и ресурсы страниц загружаются
+  category: ui
+  protocols:
+  - ui-web
+  kind: contract
+  priority: P3
+  tags:
+  - ui
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Обойти сайт краулером — все ссылки и изображения загружаются, в консоли нет 404
+    notes: 'inbox №106'
+  - action: Открыть встроенную страницу среды разработки — все скрипты и стили загружаются, ошибок нет
+    notes: 'inbox №260'
+  expected:
+  - Краулер не находит битых ссылок и изображений; в консоли нет 404 ресурсов; встроенные страницы загружают все скрипты и стили.
+  applicability:
+    when:
+    - Есть клиент с соответствующими экранами.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Чек-лист guru99 (пер. О. Алифановой)
+  - ADR 0006 (проверки UI)
+- id: UI-NETWORK-RESILIENCE
+  status: draft
+  title: Клиент работает при потере сети и без доступа в интернет
+  category: ui
+  protocols:
+  - ui-web
+  - ui-mobile
+  kind: reliability
+  priority: P2
+  tags:
+  - ui
+  - resilience
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Отключить и вернуть сеть на mobile — realtime-соединение и подписки восстанавливаются без перезапуска приложения
+    notes: 'inbox №205'
+  - action: Открыть встроенную страницу без доступа в интернет — ресурсы отдаются локально или понятное сообщение
+    notes: 'inbox №262'
+  expected:
+  - После потери сети realtime-соединение и подписки восстанавливаются без перезапуска; без интернета ресурсы отдаются локально или есть понятное сообщение.
+  applicability:
+    when:
+    - Есть клиент с соответствующими экранами.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Серверная сторона — WS-RECONNECT-RESUME
+  - ADR 0006 (проверки UI)
+- id: UI-CLIENT-REQUEST-HYGIENE
+  status: draft
+  title: Клиент не шлёт лишних, дублирующих и бесконечных запросов
+  category: ui
+  protocols:
+  - ui-web
+  kind: performance
+  priority: P2
+  tags:
+  - ui
+  - performance
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Открыть экран, загружающий большую схему, — прогресс и работа с частью данных, без падения по тайм-ауту
+    notes: 'inbox №166'
+  - action: Открыть вкладку и посчитать запросы метаданных — бесконечной очереди повторов нет
+    notes: 'inbox №170'
+  - action: Подменить настройки клиента в localStorage (интервал опроса) — значение проверяется, лавины запросов нет
+    notes: 'inbox №185'
+  - action: Выполнить действия, меняющие состояние, — отправляются POST, PUT или DELETE, а не GET-ссылкой
+    notes: 'inbox №187'
+  - action: Открыть и переключить список — нет дублирующихся запросов к API, общее количество считается один раз
+    notes: 'inbox №192'
+  - action: Переключиться между закладками разных коллекций — запросы не содержат полей прежней коллекции
+    notes: 'inbox №225'
+  - action: Открыть клиент под подпутём — все URL, включая WebSocket, учитывают базовый путь
+    notes: 'inbox №227'
+  - action: Открыть встроенную среду разработки под префиксом — запросы идут на тот же публичный путь
+    notes: 'inbox №261'
+  expected:
+  - Запросы не дублируются и не повторяются бесконечно; изменения состояния — не GET-ссылками; URL и WebSocket учитывают базовый путь; настройки из localStorage проверяются; долгая загрузка показывает прогресс.
+  applicability:
+    when:
+    - Есть клиент с соответствующими экранами.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - RFC 9110 §9.2.1 (безопасные методы)
+  - Смежная — HTTP-ABSOLUTE-URL-BASE-PATH
+  - ADR 0006 (проверки UI)
+- id: UI-USABILITY
+  status: draft
+  title: Частые сценарии короткие, ожидание и задержки понятны пользователю
+  category: ui
+  protocols:
+  - ui-web
+  - ui-desktop
+  - ui-mobile
+  kind: performance
+  priority: P3
+  tags:
+  - ui
+  - performance
+  - regression
+  preconditions:
+  - Есть клиент (web, desktop или mobile) и учётки нужных ролей.
+  steps:
+  - action: Оценить частые сценарии — минимум шагов, нет лишних подтверждений, индикатор при ожидании
+    notes: 'inbox №109'
+  - action: Вводить текст в поле формы большого документа (динамические блоки) — без заметной задержки
+    notes: 'inbox №288'
+  expected:
+  - Частые сценарии — в минимум шагов без лишних подтверждений; при ожидании показан индикатор; ввод отображается без заметной задержки.
+  applicability:
+    when:
+    - Есть клиент с соответствующими экранами.
+    skip_when:
+    - Только API без клиента.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Чек-лист guru99 (пер. О. Алифановой) — экспертная оценка
+  - ADR 0006 (проверки UI)
