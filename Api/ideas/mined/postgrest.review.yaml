@@ -1,0 +1,101 @@
+# Ревью кандидатов партии postgrest (шаги 6–7, docs/BUG_MINING_PLAN.md, Api/mining/sessions.md — внутренняя сессия, п. 3).
+#
+# Шаг 6 (Claude, 2026-10-16): 17 new-паттернов — 14 идей (clusters: 9 accept, 5 reject) и 1 перенос в вариант
+# существующей записи (proofs.retarget: AUTH-JWT-VALID-ACCEPTED с claims по пути добавлена в hasura после триажа).
+# Отклонённые — специфика PostgreSQL и API по функциям БД; их идеи сохранены в inbox как DB. Идеи UI/DB (поле ideas
+# и build/mining/postgrest/ideas.md) — inbox №295–317.
+# Шаг 7 (человек): поменять decision / check_id / file кластера; неверные совпадения пруфов — в proofs.exclude
+# (ID бага), вариант пруфа без нового шага — в proofs.no_variant, new-паттерн как вариант существующей записи —
+# в proofs.retarget. Затем: cluster.py (пересобрать postgrest.md) и apply_proofs.py. Перекрёстное ревью другими LLM —
+# reviewcheck.py (mining/README.md, шаги 6–7, п. 7).
+#
+# decision: accept | reject | pending
+batch: postgrest
+clusters:
+- key: metrics-value-range
+  decision: accept
+  check_id: OBS-METRICS-VALUE-RANGE
+  file: checks/common/observability.yaml
+  bugs: [PostgREST/postgrest#4622]
+  idea: Значения метрик остаются в допустимом диапазоне и восстанавливаются после сбоев — gauge доступных соединений в пределах от 0 до размера пула при обрывах и переподключениях к БД, счётчики не уменьшаются
+- key: server-timing-accurate
+  decision: accept
+  check_id: OBS-SERVER-TIMING-ACCURATE
+  file: checks/common/observability.yaml
+  bugs: [PostgREST/postgrest#4522]
+  idea: Заголовок Server-Timing отражает фактическую длительность этапов — значения в миллисекундах, сумма согласуется с измеренным временем ответа при запросе с известной задержкой
+- key: aliased-embed-filters
+  decision: accept
+  check_id: REST-ALIASED-EMBED-FILTER-INDEPENDENCE
+  file: checks/rest/pagination.yaml
+  bugs: [PostgREST/postgrest#4075]
+  idea: Один связанный ресурс, вложенный в ответ несколько раз под разными алиасами со своими фильтрами (REST-вложения, алиасы GraphQL), фильтруется независимо — каждое вложение совпадает с отдельным запросом с его фильтром
+- key: filter-unselected-field
+  decision: accept
+  check_id: REST-FILTER-UNSELECTED-FIELD
+  file: checks/rest/pagination.yaml
+  bugs: [PostgREST/postgrest#3965]
+  idea: Фильтр по полю, не входящему в выбор полей (select, fields, sparse fieldsets), работает для любых источников — таблица, представление, результат функции — и для простого, логического и вложенного фильтра; ответ содержит только выбранные поля
+- key: filter-name-collision-embed
+  decision: accept
+  check_id: REST-FILTER-NAME-COLLISION
+  file: checks/rest/pagination.yaml
+  bugs: [PostgREST/postgrest#2862, PostgREST/postgrest#2588]
+  idea: Фильтр по полю, имя которого совпадает с именем вложенного (встраиваемого) ресурса или связи, применяется к значению поля — совпадение имён не меняет смысл фильтра и не даёт ошибку
+- key: in-db-config-on-start
+  decision: reject
+  bugs: [PostgREST/postgrest#3660]
+  idea: Настройки, хранящиеся в БД, применяются при старте ко всем видам ресурсов
+  reason: Специфика конфигурации PostgREST из самой БД (in-db config); идея сохранена в inbox как DB (№317); общая часть — обновление не меняет поведение — в COMPAT-UPGRADE-STORED-DATA-STABLE
+- key: function-settings-isolation
+  decision: reject
+  bugs: [PostgREST/postgrest#3242]
+  idea: Настройки, заданные на уровне функции (SET search_path), не меняют окружение остальной части запроса
+  reason: Специфика PostgreSQL (SET у функции, search_path) — проверка уровня БД, а не API; идея — в inbox как DB (SECURITY DEFINER и фиксированный search_path)
+- key: connection-role-settings
+  decision: reject
+  bugs: [PostgREST/postgrest#2896]
+  idea: Настройки роли подключения не ломают запросы пользователей с меньшими правами
+  reason: Специфика переключения ролей PostgreSQL (SET ROLE и параметры суперпользователя) — проверка уровня БД; идея — в inbox как DB
+- key: overloaded-functions
+  decision: reject
+  bugs: [PostgREST/postgrest#2963]
+  idea: Перегруженные функции разрешаются по типу аргумента во всех местах использования
+  reason: Специфика API, построенного по функциям PostgreSQL (перегрузка по типу аргумента); идея — в inbox как DB (№315)
+- key: function-return-kinds
+  decision: reject
+  bugs: [PostgREST/postgrest#2881]
+  idea: Функции с любым поддерживаемым видом возвращаемого значения вызываются через API
+  reason: Специфика API, построенного по функциям PostgreSQL (record, setof record, составные типы); идея — в inbox как DB (№316)
+- key: negotiated-format-conformance
+  decision: accept
+  check_id: REST-NEGOTIATED-FORMAT-CONFORMANCE
+  file: checks/rest/http-protocol.yaml
+  bugs: [PostgREST/postgrest#2699, PostgREST/postgrest#3126]
+  idea: Ответ в согласованном формате (GeoJSON, CSV, NDJSON, пользовательский бинарный медиатип) соответствует спецификации этого формата — структура по RFC 7946 для GeoJSON — в том числе для пустого результата и null (200 с пустым телом того же Content-Type или документированный 404, без 5xx); пара к REST-ACCEPT-NEGOTIATION
+- key: preference-applied-accurate
+  decision: accept
+  check_id: HTTP-PREFERENCE-APPLIED-ACCURATE
+  file: checks/rest/http-protocol.yaml
+  bugs: [PostgREST/postgrest#2939]
+  idea: Заголовок Preference-Applied перечисляет ровно применённые предпочтения из Prefer (return, count, handling, tx и др.) — нет неприменённых, в том числе в ответе с ошибкой (RFC 7240)
+- key: log-entry-integrity
+  decision: accept
+  check_id: OBS-LOG-ENTRY-INTEGRITY
+  file: checks/common/observability.yaml
+  bugs: [PostgREST/postgrest#5234]
+  idea: Записи журнала при всплеске параллельных запросов не склеиваются и не разрываются — каждая запись отдельной строкой с собственной меткой времени, структурированный журнал разбирается построчно; нужен доступ к журналу
+- key: metadata-reload-under-load
+  decision: accept
+  check_id: PERF-METADATA-RELOAD-NO-BLOCK
+  file: checks/common/performance.yaml
+  bugs: [PostgREST/postgrest#4360]
+  idea: Перезагрузка кэша метаданных (схема, конфигурация, маршруты) на большом объёме не блокирует обслуживание запросов надолго — запросы идут по старому состоянию или с короткой задержкой в пределах SLO
+proofs:
+  exclude: []
+  no_variant: []
+  retarget:
+  - bug: PostgREST/postgrest#4039
+    check_id: AUTH-JWT-VALID-ACCEPTED
+    variant: Передать роль в claim по настроенному пути с индексом массива — массив из одного элемента, из нескольких элементов и строка; роль определяется одинаково, неподходящее значение даёт 401, а не тихий переход к анонимной роли
+    note: 'Перенесено на ревью из new: claims по настроенному пути — AUTH-JWT-VALID-ACCEPTED (добавлена в hasura после триажа)'
