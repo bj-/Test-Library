@@ -14,7 +14,7 @@ _Последнее обновление: 2026-10-16_
 
 ## Следующие шаги
 
-- [ ] Выгрузка багов, **keycloak: шаги 6–7 не выполнены** (145/146, 21 new, 80 extends) — пропущен в 2026-10-16
+- [ ] Выгрузка багов, keycloak: **ждёт ответов других LLM** (`Api/ideas/mined/keycloak.reviewcheck.md`, `.blind.md`) — 21 new → 10 идей (все accept) + 9 вариантов к существующим; inbox №318–344
 - [ ] Выгрузка багов по итогам метрик (`Api/mining/metrics.md`): ещё пачки kong и postgrest (затем kubernetes, hasura); gRPC-источники (не начаты); ghsa-nuget, supabase-auth, strapi (API) — не продолжать
 
 - [x] Выгрузка багов: повторная выборка сопоставления `scale-01` — 95 % (2026-10-16)
@@ -130,3 +130,4 @@ _Последнее обновление: 2026-10-16_
 | 2026-10-17 | Claude / bj | Пакет inbox-ui (Gemini, Grok, ChatGPT 5.5 instant, Mistral): 6 сборников разделены на 15 записей (UI-записей 39), правки в UI-AUTH-FLOWS (OIDC redirect_uri), UI-SECRET-FIELDS, UI-PLATFORM-SECURITY и др., конкретные `when` у 26 записей; итог — `inbox-ui.decisions.md` |
 | 2026-10-17 | Claude / bj | 39 UI-записей → `approved` (решение bj); вычитка draft из inbox завершена: в библиотеке approved 572, draft 32 (`REAL-*`), needs_clarification 16 |
 | 2026-10-17 | Claude | Внутренняя сессия, п. 6: метрики по источникам — `Api/mining/metrics.md`, `build/mining/<id>/REPORT.md`; копать глубже — kong и postgrest (6,7 идеи на 100), затем kubernetes и hasura; GHSA — в основном пруфы; strapi и directus — кандидаты для UI-выгрузки; не начаты gRPC-источники (gRPC слабее всего покрыт пруфами); найдено: keycloak не прошёл шаги 6–7 (21 new, 80 extends) |
+| 2026-10-17 | Claude | keycloak, шаг 6 (пропущен 2026-10-16): inbox №318–344 (27 идей UI/DB), 21 new → 10 идей + 9 `proofs.retarget`; пакеты `reviewcheck.py` |

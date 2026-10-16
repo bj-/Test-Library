@@ -1,0 +1,112 @@
+# Ревью кандидатов партии keycloak (шаги 6–7, docs/BUG_MINING_PLAN.md, Api/mining/sessions.md — внутренняя сессия, п. 3).
+#
+# Шаг 6 (Claude, 2026-10-17): keycloak пропущен 2026-10-16 (найдено при метриках, mining/metrics.md). 21 new-паттерн —
+# 10 идей (clusters) и 9 переносов в варианты существующих записей (proofs.retarget: часть записей добавлена после
+# триажа keycloak, часть — позитивные пары к негативным записям). Идеи UI/DB — inbox №318–344. Обработано 145 из 146.
+# Шаг 7 (человек): поменять decision / check_id / file кластера; неверные совпадения пруфов — в proofs.exclude
+# (ID бага), вариант пруфа без нового шага — в proofs.no_variant, new-паттерн как вариант существующей записи —
+# в proofs.retarget. Затем: cluster.py и apply_proofs.py. Перекрёстное ревью — reviewcheck.py (mining/README.md, п. 7).
+#
+# decision: accept | reject | pending
+batch: keycloak
+clusters:
+- key: generated-uri-encoding
+  decision: accept
+  check_id: CONTRACT-GENERATED-URI-ENCODING
+  file: checks/common/contract.yaml
+  bugs: [keycloak/keycloak#52296]
+  idea: URI, которые формирует сервер (otpauth, ссылки в письмах, Location, redirect), кодируют значения по правилам своей части (пробел — %20 в пути, + только в query по форме) — после декодирования значение совпадает с исходным
+- key: impossible-step-not-assigned
+  decision: accept
+  check_id: BIZ-IMPOSSIBLE-STEP-NOT-ASSIGNED
+  file: checks/common/business-logic.yaml
+  bugs: [keycloak/keycloak#48634]
+  idea: Обязательный шаг процесса (подтверждение email, смена пароля, настройка второго фактора) не назначается пользователю, который не может его выполнить (нет email, нет нужного канала), — законная операция не блокируется невыполнимым шагом; позитивная пара к BIZ-WORKFLOW-STEP-SKIP
+- key: multistep-login-state-recheck
+  decision: accept
+  check_id: AUTH-MULTISTEP-LOGIN-STATE-RECHECK
+  file: checks/security/authentication-session.yaml
+  bugs: [keycloak/keycloak#48487, keycloak/keycloak#46738]
+  idea: Если во время многошагового входа (обязательные действия, второй фактор, согласие) пользователя или клиента отключили, последний шаг проверяет их состояние заново — понятная ошибка «отключён», токен не выдаётся, 5xx нет
+- key: pre-account-takeover
+  decision: accept
+  check_id: AUTH-PRE-ACCOUNT-TAKEOVER
+  file: checks/security/authentication-session.yaml
+  bugs: [keycloak/keycloak#48206, keycloak/keycloak#45568]
+  idea: Регистрация на чужой email с живой незавершённой сессией не даёт входа в аккаунт после того, как владелец сбросил пароль и подтвердил email, — подтверждение и сброс завершают чужие незавершённые сессии регистрации (pre-account takeover)
+- key: typed-path-lookup
+  decision: accept
+  check_id: RES-TYPED-PATH-LOOKUP
+  file: checks/common/resource-lifecycle.yaml
+  bugs: [keycloak/keycloak#48094]
+  idea: Операция, где тип ресурса задан в пути (/{type}/{id}), находит идентификатор среди объектов указанного типа для каждого поддерживаемого типа — позитивная матрица по типам; объект другого типа с тем же id не подставляется
+- key: tokens-survive-restart
+  decision: accept
+  check_id: RESIL-TOKENS-SURVIVE-RESTART
+  file: checks/common/resilience.yaml
+  bugs: [keycloak/keycloak#47495]
+  idea: Выданные токены остаются действительными после перезапуска сервера (и между экземплярами) — идентификатор ключа подписи (kid) стабилен, ключ публикуется в JWKS, интроспекция и userinfo принимают токен до истечения
+- key: login-params-preserved
+  decision: accept
+  check_id: AUTH-LOGIN-PARAMS-PRESERVED
+  file: checks/security/authentication-session.yaml
+  bugs: [keycloak/keycloak#47017]
+  idea: Параметры входа, заданные на первом шаге (запомнить меня, locale, scope, prompt), сохраняются через все шаги аутентификации (выбор организации, второй фактор) и влияют на результат — длительная сессия и cookie remember me при rememberMe
+- key: token-exchange-default-scope
+  decision: accept
+  check_id: AUTH-TOKEN-EXCHANGE-DEFAULT-SCOPE
+  file: checks/security/authentication-session.yaml
+  bugs: [keycloak/keycloak#45716]
+  idea: Обмен токена (RFC 8693) без явного scope выдаёт области по умолчанию клиента, запросившего обмен, по документированному правилу — не области исходного или другого клиента
+- key: rules-deterministic
+  decision: accept
+  check_id: BIZ-RULES-DETERMINISTIC
+  file: checks/common/business-logic.yaml
+  bugs: [keycloak/keycloak#44480]
+  idea: Итог нескольких правил над одним значением в одном запросе (маппинг групп и ролей при входе, правила скидок, политики) детерминирован и соответствует документированному приоритету — повтор операции даёт тот же результат
+- key: role-identity-not-name
+  decision: accept
+  check_id: SEC-ROLE-IDENTITY-NOT-NAME
+  file: checks/security/access-control/SEC-ROLE-IDENTITY-NOT-NAME.yaml
+  bugs: [keycloak/keycloak#43578]
+  idea: Ограничения системных и административных ролей применяются по идентичности роли (id, область), а не по совпадению имени — пользовательская роль с таким же именем назначается законно, настоящая административная — по правилам
+proofs:
+  exclude: []
+  no_variant: []
+  retarget:
+  - bug: keycloak/keycloak#48324
+    check_id: SEC-TENANT-SEARCH
+    variant: Передать в список флаг или дополнительный фильтр (IS_ADMIN=true и т. п.) и проверить, что ограничение по родительскому контейнеру (серверу ресурсов, проекту) сохраняется, а следующий запрос другого контейнера находит свои объекты
+    note: 'Перенесено на ревью из new: дополнительный фильтр снимает ограничение по контейнеру — обход фильтра области'
+  - bug: keycloak/keycloak#48024
+    check_id: AUTH-CLIENT-ASSERTION-BINDING
+    variant: Отправить client_credentials с федеративным client assertion, где client_id — внутренний клиент, а sub — внешний субъект, настроенный для этого клиента; токен выдаётся по настройке
+    note: 'Перенесено на ревью из new: позитивная пара (запись добавлена в ghsa-maven после триажа keycloak)'
+  - bug: keycloak/keycloak#46718
+    check_id: SEC-FAIL-CLOSED-INPUT
+    variant: Запросить операцию, проверка прав которой не поддерживается текущей моделью прав (token exchange с audience другого клиента при выключенной функции), — отказ 4xx, а не 5xx
+    note: 'Перенесено на ревью из new: неподдерживаемая проверка прав должна отказывать, а не падать'
+  - bug: keycloak/keycloak#46647
+    check_id: AUTH-CLIENT-CERT-IDENTITY
+    variant: Передать через прокси цепочку клиентских сертификатов длиннее настроенной — используются первые N, аутентификация по сертификату проходит
+    note: 'Перенесено на ревью из new: сертификат клиента через заголовки прокси (запись добавлена в ghsa-maven после триажа)'
+  - bug: keycloak/keycloak#46379
+    check_id: AUTH-LOGOUT-INVALIDATES
+    variant: Вызвать выход с id_token_hint и post_logout_redirect_uri без активной сессии — перенаправление на post_logout_redirect_uri без ошибки
+    note: 'Перенесено на ревью из new: выход без активной сессии'
+  - bug: keycloak/keycloak#45587
+    check_id: VAL-STRING-FORMAT
+    variant: Сохранить в поле URI документированное значение-маркер (webOrigins «+», «*») — принимается проверкой формата
+    note: 'Перенесено на ревью из new: позитивная сторона проверки формата'
+  - bug: keycloak/keycloak#45250
+    check_id: REST-JSON-DUPLICATE-KEYS
+    variant: Разобрать JSON ответа и payload выданного токена строгим парсером — дублирующихся ключей нет
+    note: 'Перенесено на ревью из new: дубли ключей в JSON, который формирует сервер'
+  - bug: keycloak/keycloak#44257
+    check_id: BIZ-FLAG-EFFECT-MATRIX
+    variant: Включить флаг изменением существующего объекта, а не при создании (в том числе через DCR), — зависимые объекты создаются так же, при выключении — удаляются
+    note: 'Перенесено на ревью из new: флаг при изменении (запись добавлена из inbox после триажа)'
+  - bug: keycloak/keycloak#51315
+    check_id: AUTH-OAUTH-REDIRECT-STATE
+    variant: Сохранить клиент с корректным redirect URI через административный API — принимается; отказ — только для адресов, нарушающих политику, с указанием отвергнутого значения
+    note: 'Перенесено на ревью из new: позитивная сторона политики redirect URI'
