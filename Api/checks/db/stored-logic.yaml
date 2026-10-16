@@ -1,6 +1,6 @@
 checks:
 - id: DB-STORED-ROUTINES
-  status: draft
+  status: approved
   title: Хранимые процедуры и функции установлены и работают по спецификации
   category: db
   protocols:
@@ -10,7 +10,9 @@ checks:
   tags:
   - db
   - contract
+  - ci
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -43,7 +45,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -51,7 +55,7 @@ checks:
   - Чек-лист guru99 (пер. О. Алифановой)
   - ADR 0006 (проверки БД)
 - id: DB-TRIGGERS
-  status: draft
+  status: approved
   title: Триггеры срабатывают ровно на нужные события и изолированы
   category: db
   protocols:
@@ -62,7 +66,9 @@ checks:
   - db
   - reliability
   - security
+  - ci
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -86,7 +92,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium

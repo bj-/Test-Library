@@ -1,6 +1,6 @@
 checks:
 - id: DB-QUERY-INDEX-USAGE
-  status: draft
+  status: approved
   title: Запросы приложения используют подходящие индексы на реалистичном объёме
   category: db
   protocols:
@@ -10,7 +10,8 @@ checks:
   tags:
   - db
   - performance
-  - regression
+  - ci
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -42,7 +43,8 @@ checks:
     level: partial
     deterministic: true
   profiles:
-  - Regression
+  - CI
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -51,7 +53,7 @@ checks:
   - Смежная — PERF-DEEP-PAGINATION
   - ADR 0006 (проверки БД)
 - id: DB-GENERATED-SQL-SHAPE
-  status: draft
+  status: approved
   title: Генерируемый SQL не выполняет лишней работы
   category: db
   protocols:
@@ -61,7 +63,7 @@ checks:
   tags:
   - db
   - performance
-  - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -86,7 +88,7 @@ checks:
     level: partial
     deterministic: true
   profiles:
-  - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -94,7 +96,7 @@ checks:
   - Смежная — REST-FILTER-RELATION-NO-DUPLICATES
   - ADR 0006 (проверки БД)
 - id: DB-IDENTIFIER-QUOTING
-  status: draft
+  status: approved
   title: Имена объектов БД экранируются во всех служебных и генерируемых запросах
   category: db
   protocols:
@@ -104,7 +106,9 @@ checks:
   tags:
   - db
   - boundary
+  - ci
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -136,7 +140,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -145,7 +151,7 @@ checks:
   - Смежная — RES-DB-OBJECT-NAMES
   - ADR 0006 (проверки БД)
 - id: DB-DYNAMIC-SQL-PARAMETERIZED
-  status: draft
+  status: approved
   title: Значения и идентификаторы из ввода и из БД попадают в SQL параметрами или по allowlist
   category: db
   protocols:
@@ -156,7 +162,10 @@ checks:
   - db
   - security
   - injection
+  - ci
   - regression
+  - nightly
+  - release
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -191,7 +200,10 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -200,7 +212,7 @@ checks:
   - Смежные — INJ-SQL, INJ-SCHEMA-IDENTIFIER-CODEGEN
   - ADR 0006 (проверки БД)
 - id: DB-CATALOG-READ-PERFORMANCE
-  status: draft
+  status: approved
   title: Чтение каталога схемы быстрое и не повторяется без нужды
   category: db
   protocols:
@@ -210,7 +222,7 @@ checks:
   tags:
   - db
   - performance
-  - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -235,7 +247,7 @@ checks:
     level: partial
     deterministic: true
   profiles:
-  - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -243,7 +255,7 @@ checks:
   - Документация СУБД (системные каталоги)
   - ADR 0006 (проверки БД)
 - id: DB-CATALOG-READ-CORRECTNESS
-  status: draft
+  status: approved
   title: Чтение каталога схемы даёт точную модель объектов
   category: db
   protocols:
@@ -254,6 +266,7 @@ checks:
   - db
   - contract
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -274,6 +287,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -281,7 +295,7 @@ checks:
   - Документация СУБД (системные каталоги)
   - ADR 0006 (проверки БД)
 - id: DB-MIN-VERSION-COMPATIBILITY
-  status: draft
+  status: approved
   title: Сервис работает на минимальной поддерживаемой версии СУБД
   category: db
   protocols:
@@ -291,7 +305,9 @@ checks:
   tags:
   - db
   - compatibility
+  - ci
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -311,7 +327,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium

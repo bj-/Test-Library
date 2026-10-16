@@ -1,6 +1,6 @@
 checks:
 - id: DB-API-DATA-MATCH
-  status: draft
+  status: approved
   title: После операции API в БД изменены ровно ожидаемые строки с ожидаемыми значениями
   category: db
   protocols:
@@ -11,7 +11,10 @@ checks:
   - db
   - contract
   - data-integrity
+  - ci
   - regression
+  - nightly
+  - release
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -34,7 +37,10 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -42,7 +48,7 @@ checks:
   - Чек-лист guru99 (пер. О. Алифановой)
   - ADR 0006 (проверки БД)
 - id: DB-SENSITIVE-DATA-PROTECTED
-  status: draft
+  status: approved
   title: Чувствительные данные хранятся защищённо
   category: db
   protocols:
@@ -53,7 +59,10 @@ checks:
   - db
   - security
   - privacy
+  - ci
   - regression
+  - nightly
+  - release
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -77,7 +86,10 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -86,7 +98,7 @@ checks:
   - Смежные — PRIV-DATA-MASKING, AUTH-IMPORTED-PASSWORD-HASH
   - ADR 0006 (проверки БД)
 - id: DB-ACCESS-SCOPE-IN-QUERY
-  status: draft
+  status: approved
   title: Граница доступа задаётся в самом запросе к БД
   category: db
   protocols:
@@ -98,7 +110,10 @@ checks:
   - security
   - authz
   - tenant-isolation
+  - ci
   - regression
+  - nightly
+  - release
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -128,7 +143,10 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -137,7 +155,7 @@ checks:
   - Смежные — SEC-TENANT-READ, SEC-OWNERSHIP-REFERENCE-INDIRECT
   - ADR 0006 (проверки БД)
 - id: DB-IMPORT-CONSISTENCY
-  status: draft
+  status: approved
   title: Импорт не оставляет частичного состояния вне документированной политики
   category: db
   protocols:
@@ -148,7 +166,9 @@ checks:
   - db
   - reliability
   - data-integrity
+  - ci
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -170,7 +190,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium

@@ -1,6 +1,6 @@
 checks:
 - id: DB-MIGRATION-STATE-TRACKED
-  status: draft
+  status: approved
   title: Применённые миграции учитываются, повторный запуск безопасен
   category: db
   protocols:
@@ -10,7 +10,9 @@ checks:
   tags:
   - db
   - reliability
+  - ci
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -32,7 +34,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -40,7 +44,7 @@ checks:
   - Практика миграций
   - ADR 0006 (проверки БД)
 - id: DB-MIGRATION-CLEAN-INSTALL
-  status: draft
+  status: approved
   title: Миграции разворачиваются на чистой БД, в том числе в нестандартной схеме
   category: db
   protocols:
@@ -50,7 +54,9 @@ checks:
   tags:
   - db
   - reliability
+  - ci
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -69,7 +75,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -77,7 +85,7 @@ checks:
   - Практика миграций
   - ADR 0006 (проверки БД)
 - id: DB-ALTER-PRESERVES-COLUMN
-  status: draft
+  status: approved
   title: Изменение столбца или ограничения сохраняет его остальные свойства
   category: db
   protocols:
@@ -88,7 +96,9 @@ checks:
   - db
   - reliability
   - data-integrity
+  - ci
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -108,7 +118,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -116,7 +128,7 @@ checks:
   - Документация СУБД (ALTER TABLE)
   - ADR 0006 (проверки БД)
 - id: DB-MIGRATION-DATA-PRESERVED
-  status: draft
+  status: approved
   title: Миграции переносят данные и связи и учитывают актуальные ограничения
   category: db
   protocols:
@@ -127,7 +139,9 @@ checks:
   - db
   - reliability
   - data-integrity
+  - ci
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -149,7 +163,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -158,7 +174,7 @@ checks:
   - Смежная — COMPAT-UPGRADE-STORED-DATA-STABLE
   - ADR 0006 (проверки БД)
 - id: DB-SCHEMA-CHANGE-VALIDATED
-  status: draft
+  status: approved
   title: Запрос изменения схемы проверяется до выполнения DDL
   category: db
   protocols:
@@ -169,6 +185,7 @@ checks:
   - db
   - validation
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -187,6 +204,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -194,7 +212,7 @@ checks:
   - Здравый смысл
   - ADR 0006 (проверки БД)
 - id: DB-CONNECTION-POOL-LIFECYCLE
-  status: draft
+  status: approved
   title: Соединения пула освобождаются и не оставляют фоновой нагрузки
   category: db
   protocols:
@@ -205,6 +223,7 @@ checks:
   - db
   - reliability
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -226,6 +245,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -233,7 +253,7 @@ checks:
   - Документация пула соединений
   - ADR 0006 (проверки БД)
 - id: DB-CONNECTION-CONFIG-HANDLING
-  status: draft
+  status: approved
   title: Ошибки и формы настройки подключения к БД обрабатываются предсказуемо
   category: db
   protocols:
@@ -244,6 +264,7 @@ checks:
   - db
   - reliability
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -267,6 +288,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -274,7 +296,7 @@ checks:
   - Документация драйвера
   - ADR 0006 (проверки БД)
 - id: DB-DRIVER-LARGE-PARAMS
-  status: draft
+  status: approved
   title: Драйвер БД обрабатывает параметры очень большого размера
   category: db
   protocols:
@@ -285,6 +307,7 @@ checks:
   - db
   - boundary
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -306,6 +329,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -313,7 +337,7 @@ checks:
   - Документация драйвера
   - ADR 0006 (проверки БД)
 - id: DB-METADATA-CACHE-FRESH
-  status: draft
+  status: approved
   title: Кэш метаданных схемы в сервисе актуален после изменений БД
   category: db
   protocols:
@@ -323,7 +347,9 @@ checks:
   tags:
   - db
   - reliability
+  - ci
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -343,7 +369,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -351,7 +379,7 @@ checks:
   - Смежная — PERF-METADATA-RELOAD-NO-BLOCK
   - ADR 0006 (проверки БД)
 - id: DB-IN-DB-CONFIG-APPLIED
-  status: draft
+  status: approved
   title: Настройки сервиса, хранящиеся в БД, применяются ко всем видам ресурсов
   category: db
   protocols:
@@ -362,6 +390,7 @@ checks:
   - db
   - contract
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -381,6 +410,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -388,7 +418,7 @@ checks:
   - Документация продукта
   - ADR 0006 (проверки БД)
 - id: DB-SERVICE-ROLE-LEAST-PRIVILEGE
-  status: draft
+  status: approved
   title: Роль подключения сервиса имеет минимальные права
   category: db
   protocols:
@@ -399,7 +429,10 @@ checks:
   - db
   - security
   - authz
+  - ci
   - regression
+  - nightly
+  - release
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -421,7 +454,10 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -430,7 +466,7 @@ checks:
   - Документация СУБД (GRANT)
   - ADR 0006 (проверки БД)
 - id: DB-ROLE-SWITCH-SETTINGS
-  status: draft
+  status: approved
   title: При переключении роли применяются только допустимые для неё настройки
   category: db
   protocols:
@@ -440,7 +476,9 @@ checks:
   tags:
   - db
   - security
+  - ci
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -460,7 +498,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium

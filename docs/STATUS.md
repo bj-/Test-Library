@@ -31,7 +31,7 @@ _Последнее обновление: 2026-10-16_
 - [x] Выгрузка багов: 90 draft масштабирования переведены в `approved` (решение bj, 2026-10-16, по `Api/ideas/mined/scale.drafts-review.md`); в библиотеке approved 467, draft 32 (`REAL-*` из реальных контрактов), needs_clarification 16
 - [ ] Баг-трекеры, пилот: `collect_github.py` + `filter.py` → трассировка и метка `real-world-bug` → калибровка лимита (≤ 5 % недельного в день) → партии
 - [x] Разобран `Api/ideas/inbox.md` целиком (317 идей, 2026-10-16): API — 33 записи draft и 47 шагов; DB — 20 записей `DB-*`; UI — 30 записей `UI-*`; 4 отклонены как правила процесса (`docs/ideas.md`), остальные — шаги или уже покрыты
-- [ ] Вычитка 83 draft из разбора inbox: inbox-api (33) — **approved** (решение bj); **ждут ответов других LLM** — `Api/ideas/draftcheck/inbox-db.md` (20), `inbox-ui.md` (30); ответы — `<пакет>.answer-N.md`, решения по правилу сверки (`Api/mining/README.md`, шаги 6–7, п. 7), `approved` — bj. 32 `REAL-*` — свой процесс
+- [ ] Вычитка 83 draft из разбора inbox: inbox-api (33) и DB (30, после разделения) — **approved** (решение bj); повторная сверка DB — `Api/ideas/draftcheck/inbox-db-2.md`; **ждёт ответов других LLM** — `inbox-ui.md` (30); ответы — `<пакет>.answer-N.md`, решения по правилу сверки (`Api/mining/README.md`, шаги 6–7, п. 7), `approved` — bj. 32 `REAL-*` — свой процесс
 - [ ] Доработать оформление багов по итогам первых разборов (`Process/bugs.md`), затем — перенос в трекер
 - [ ] Свести текущий этап из `Api/docs/IMPLEMENTATION_PLAN.md` / `STAGE_REPORTS.md` в «Цель / текущий фокус»
 
@@ -122,3 +122,4 @@ _Последнее обновление: 2026-10-16_
 | 2026-10-16 | Claude / bj | 33 записи пакета inbox-api → `approved` (решение bj); `assign_profiles.py` — профили и run-теги |
 | 2026-10-17 | Claude / bj | Пакет inbox-db: ответы ChatGPT и Gemini (`inbox-db.answers.md`), итог — `inbox-db.decisions.md`: правки в 14 записях (оракулы смягчены, шаги перенесены), на решение bj — структура (разделять ли тематические записи) и DB-DYNAMIC-SQL-PARAMETERIZED |
 | 2026-10-17 | Claude / bj | inbox-db, решения bj: 5 тематических DB-сборников разделены на 15 записей по инвариантам (DB-записей 30), DB-DYNAMIC-SQL-PARAMETERIZED оставлена, обратная ссылка в INJ-SQL |
+| 2026-10-17 | Claude / bj | 30 DB-записей → `approved` (решение bj); пакет повторной сверки `inbox-db-2.md` (все 30 DB-записей, в том числе 15 после разделения) |

@@ -1,6 +1,6 @@
 checks:
 - id: DB-SCHEMA-MATCHES-SPEC
-  status: draft
+  status: approved
   title: Схема БД совпадает со спецификацией и контрактом API
   category: db
   protocols:
@@ -10,7 +10,9 @@ checks:
   tags:
   - db
   - contract
+  - ci
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -34,7 +36,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -42,7 +46,7 @@ checks:
   - Чек-лист guru99 (пер. О. Алифановой)
   - ADR 0006 (проверки БД)
 - id: DB-KEYS-AND-CONSTRAINTS
-  status: draft
+  status: approved
   title: Ключи и ограничения защищают целостность независимо от приложения
   category: db
   protocols:
@@ -53,7 +57,10 @@ checks:
   - db
   - contract
   - data-integrity
+  - ci
   - regression
+  - nightly
+  - release
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -84,7 +91,10 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -92,7 +102,7 @@ checks:
   - Чек-лист guru99 (пер. О. Алифановой)
   - ADR 0006 (проверки БД)
 - id: DB-DEFAULT-PRECEDENCE
-  status: draft
+  status: approved
   title: Значения по умолчанию применяются по правилам СУБД при любом способе вставки
   category: db
   protocols:
@@ -103,6 +113,7 @@ checks:
   - db
   - contract
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -125,6 +136,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -132,7 +144,7 @@ checks:
   - Документация СУБД (CREATE DOMAIN, DEFAULT)
   - ADR 0006 (проверки БД)
 - id: DB-COLLATION-COMPARISON
-  status: draft
+  status: approved
   title: Сравнение строк в БД соответствует назначению колонки
   category: db
   protocols:
@@ -143,7 +155,9 @@ checks:
   - db
   - security
   - data-integrity
+  - ci
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -168,7 +182,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -177,7 +193,7 @@ checks:
   - Смежные — AUTH-EXTERNAL-ID-EXACT-MATCH, RES-DB-OBJECT-NAMES
   - ADR 0006 (проверки БД)
 - id: DB-TYPED-COMPARISONS
-  status: draft
+  status: approved
   title: Значения сравниваются и приводятся в типе колонки
   category: db
   protocols:
@@ -188,7 +204,9 @@ checks:
   - db
   - boundary
   - data-integrity
+  - ci
   - regression
+  - nightly
   preconditions:
   - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается
     осознанно.
@@ -214,7 +232,9 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
