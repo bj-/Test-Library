@@ -24,8 +24,8 @@ checks:
   steps:
   - action: Authenticate as a user lacking the permission and call the protected operation.
     notes: 'Matrix axis: Authorization; scenario: Missing permission. Use isolated synthetic identities and data.'
-  - action: 'Добавить позитивную сторону матрицы прав: минимальная достаточная роль получает полный ответ, вложенные коллекции
-      не отфильтровываются молча при 200; сравнивать с ответом полной учётки и прежней версией'
+  - action: Запросить ресурс минимальной достаточной ролью и сравнить с ответом полной учётки и прежней версии — вложенные
+      коллекции не отфильтрованы молча при 200
     notes: 'Real-world bug: RWB-0146 (keycloak/keycloak#52753)'
   - action: Маршруты из базовых/общих обработчиков — проверять каждый отдельно, а не по одному представителю
     notes: 'Real-world bug: RWB-0146 (nestjs/nest#879)'

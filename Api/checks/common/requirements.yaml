@@ -210,9 +210,9 @@ checks:
   - action: Выполнить одинаковые граничные запросы в каждом API.
   - action: Одна сущность через разные эндпоинты и протоколы, сравнение полей и связей
     notes: 'Real-world bug: RWB-0099 (strapi/strapi#27447)'
-  - action: Добавить сравнение одной сущности в разных версиях API
+  - action: Прочитать одну сущность в разных версиях API и сравнить данные
     notes: 'Real-world bug: RWB-0099 (keycloak/keycloak#53117)'
-  - action: Добавить сравнение REST и GraphQL одного продукта на агрегатах с группировкой по функциям
+  - action: Запросить агрегаты с группировкой по функциям через REST и GraphQL одного продукта и сравнить результаты
     notes: 'Real-world bug: RWB-0099 (directus/directus#26703)'
   - action: Разные транспорты одного API (REST и WebSocket) — валидация параметров должна совпадать
     notes: 'Real-world bug: RWB-0099 (directus/directus#27844)'

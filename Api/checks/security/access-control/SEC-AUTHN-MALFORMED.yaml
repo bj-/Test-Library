@@ -23,11 +23,11 @@ checks:
   steps:
   - action: Send an invalidly formatted, truncated, or syntactically malformed credential.
     notes: 'Matrix axis: Authentication; scenario: Malformed credential. Use isolated synthetic identities and data.'
-  - action: Добавить синтаксически битый и пустой заголовок Cookie и вариант для WebSocket-рукопожатия
+  - action: Передать синтаксически битый и пустой заголовок Cookie, в том числе в рукопожатии WebSocket
     notes: 'Real-world bug: RWB-0142 (jshttp/cookie#35)'
   - action: Basic без части с паролем или с пустым секретом
     notes: 'Real-world bug: RWB-0142 (keycloak/keycloak#50791)'
-  - action: Добавить варианты заголовка JWT без alg, с alg=null и пустым объектом (не только alg=none из AUTH-JWT-ALG-NONE)
+  - action: Передать JWT, в заголовке которого нет alg, alg=null или пустой объект
     notes: 'Real-world bug: RWB-0142 (keycloak/keycloak#49969)'
   - action: Отправить в сброс пароля строку, не являющуюся JWT, и в проверку хеша строку, не являющуюся хешем, без аутентификации
     notes: 'Real-world bug: RWB-0142 (directus/directus#23941)'

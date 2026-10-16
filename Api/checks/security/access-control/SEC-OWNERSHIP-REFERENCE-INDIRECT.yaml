@@ -23,7 +23,7 @@ checks:
   steps:
   - action: Use a foreign resource identifier in nested paths, relationship fields, parent IDs, or linked-object references.
     notes: 'Matrix axis: Resource ownership; scenario: Nested reference bypass. Use isolated synthetic identities and data.'
-  - action: Добавить ссылку на скрытый объект при создании, после которой ответ раскрывает его фрагмент (snippet)
+  - action: Создать объект со ссылкой на скрытый объект и проверить, что ответ не раскрывает его фрагмент
     notes: 'Real-world bug: RWB-0151 (GHSA-6q6j-f24j-p477)'
   - action: Косвенная ссылка через параметр scope в запросе токена — данные цели раскрываются в claims
     notes: 'Real-world bug: RWB-0151 (keycloak/keycloak#51061)'

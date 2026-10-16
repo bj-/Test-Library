@@ -24,7 +24,7 @@ checks:
   steps:
   - action: Отправить корректное по содержанию тело с Content-Type text/plain, application/x-www-form-urlencoded, multipart/form-data,
       application/xml, без Content-Type, с application/json; charset=utf-16.
-  - action: Добавить синтаксически неверный media type и проверку схемы тела ошибки, а не только статуса
+  - action: Передать синтаксически неверный media type и проверить схему тела ошибки, а не только статус
     notes: 'Real-world bug: RWB-0140 (nestjs/nest#15022)'
   - action: Синтаксически некорректный (а не просто неподдерживаемый) Content-Type и пустое значение
     notes: 'Real-world bug: RWB-0140 (keycloak/keycloak#49964)'

@@ -59,7 +59,7 @@ checks:
   - Dataset can verify filters and sort order.
   steps:
   - action: Request a collection with two filters and a supported sort field.
-  - action: Добавить сортировку по вычисляемым полям при фильтре по связи (DISTINCT) и проверку на разных СУБД
+  - action: Отсортировать по вычисляемому полю при фильтре по связи (DISTINCT) и сравнить результат на разных СУБД
     notes: 'Real-world bug: RWB-0118 (strapi/strapi#26746)'
   - action: Сортировка на уровне раскрываемой связи вместе с сортировкой верхнего уровня
     notes: 'Real-world bug: RWB-0118 (strapi/strapi#26359)'

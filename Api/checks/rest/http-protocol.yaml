@@ -149,7 +149,7 @@ checks:
   steps:
   - action: 'Запросить с Accept-Encoding: gzip, br и identity.'
   - action: Отправить сжатое тело запроса с Content-Encoding.
-  - action: Добавить сжатие одновременно с установкой cookie сессии и проверку живости сервиса
+  - action: Запросить сжатый ответ, который устанавливает cookie сессии, и проверить живость сервиса
     notes: 'Real-world bug: RWB-0081 (expressjs/session#72)'
   expected:
   - Content-Encoding соответствует запрошенному.

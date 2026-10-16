@@ -24,7 +24,7 @@ checks:
   steps:
   - action: Attempt to modify own role, group, privilege flags, or permission assignments through writable fields.
     notes: 'Matrix axis: Roles/Scopes; scenario: Self role assignment. Use isolated synthetic identities and data.'
-  - action: Добавить назначение своей и более высокой роли другим пользователям, а не только себе
+  - action: Назначить свою и более высокую роль другим пользователям
     notes: 'Real-world bug: RWB-0153 (GHSA-4pvx-fwjj-8gpc)'
   - action: Самоназначение членства в арендаторах (поле массива), а не роли
     notes: 'Real-world bug: RWB-0153 (GHSA-p96c-xwx8-3cqj)'

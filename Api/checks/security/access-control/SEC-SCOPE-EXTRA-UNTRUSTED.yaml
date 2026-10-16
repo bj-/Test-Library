@@ -24,7 +24,7 @@ checks:
   steps:
   - action: Attempt to supply extra scopes or permission claims in query, body, or untrusted headers.
     notes: 'Matrix axis: Roles/Scopes; scenario: Scope injection. Use isolated synthetic identities and data.'
-  - action: Добавить проверку по всем grant-типам, включая device flow, и единообразие ошибки invalid_scope
+  - action: Запросить лишний scope в каждом grant-типе, включая device flow, и проверить единообразие ошибки invalid_scope
     notes: 'Real-world bug: RWB-0154 (keycloak/keycloak#52785)'
   - action: 'Позитивный вариант для token exchange: разрешённый scope выдаётся, неразрешённый — нет'
     notes: 'Real-world bug: RWB-0154 (keycloak/keycloak#49952)'

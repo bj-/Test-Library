@@ -22,7 +22,7 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
-  - action: Добавить опасные схемы (javascript:, data:)
+  - action: Передать redirect URL с опасными схемами (javascript:, data:)
     notes: 'Real-world bug: RWB-0125 (expressjs/express#6614)'
   - action: Параметры внутри redirect URI и кодированные имена параметров (регрессия от защитного фикса)
     notes: 'Real-world bug: RWB-0125 (keycloak/keycloak#51712)'

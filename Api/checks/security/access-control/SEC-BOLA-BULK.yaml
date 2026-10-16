@@ -24,7 +24,7 @@ checks:
   steps:
   - action: Submit a bulk request containing resources owned by the caller and by another user.
     notes: 'Matrix axis: Resource ownership; scenario: Mixed-owner batch. Use isolated synthetic identities and data.'
-  - action: Добавить аутентификацию массового варианта (не только владение по элементам)
+  - action: Вызвать массовый вариант операции без аутентификации и с недействительным токеном
     notes: 'Real-world bug: RWB-0148 (directus/directus#28161)'
   - action: Операции порядка/сортировки и привязки со списком ID в теле при проверке прав по родителю из пути; сверять все
       «соседние» операции одного ресурса
