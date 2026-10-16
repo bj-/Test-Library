@@ -433,6 +433,9 @@ checks:
     notes: 'Real-world bug: RWB-0065 (strapi/strapi#26610)'
   - action: Обработчик WebSocket-события, зарегистрированный дважды (наследование)
     notes: 'Real-world bug: RWB-0065 (nestjs/nest#2557)'
+  - action: Загрузить файл через протокол возобновляемой загрузки (TUS) и проверить, что событие загрузки и связанные вебхуки
+      срабатывают так же, как при обычной загрузке
+    notes: 'Real-world bug: RWB-0065 (directus/directus#24542)'
   expected:
   - Эффект один раз при успехе и ни разу при отказе.
   applicability:

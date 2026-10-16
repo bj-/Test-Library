@@ -1,0 +1,42 @@
+checks:
+- id: SEC-AUTHZ-DYNAMIC-VARIABLES
+  status: draft
+  title: Динамические переменные в правилах доступа действуют как эквивалентные статические значения
+  category: security
+  protocols:
+  - rest
+  - graphql
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - authz
+  - positive
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Правила доступа поддерживают переменные контекста ($CURRENT_USER, его поля, $CURRENT_ROLES, $CURRENT_POLICIES и т. п.).
+  steps:
+  - action: Для каждой поддерживаемой переменной задать правило (в том числе с _in и через связь) и выполнить операцию
+      пользователем, которому правило разрешает доступ, и пользователем, которому запрещает.
+  - action: Заменить переменную эквивалентным статическим значением и повторить.
+  expected:
+  - Разрешение и запрет совпадают с вариантом со статическим значением для каждой переменной.
+  applicability:
+    when:
+    - Есть правила доступа с переменными контекста.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - Смежные — SEC-AUTHZ-ROLE-POSITIVE-MATRIX, SEC-AUTHZ-RULE-READ-WRITE-PARITY; в валидации — VAL-DYNAMIC-VARIABLES-TYPE
+  - 'Real-world bug: RWB-0252'

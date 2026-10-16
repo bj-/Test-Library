@@ -155,6 +155,9 @@ checks:
   - Тело запроса содержит вложенные объекты или массивы объектов.
   steps:
   - action: Сделать невалидным поле на 2-3 уровне вложенности и в n-м элементе массива.
+  - action: Отправить запись с превышением длины одного строкового поля при валидных остальных и проверить, что ошибка не
+      называет другое поле (например, первичный ключ)
+    notes: 'Real-world bug: RWB-0171 (directus/directus#26197)'
   expected:
   - Ошибка содержит путь вида items[3].address.zip или эквивалент по модели ошибок.
   - Ответ не 5xx.
@@ -738,6 +741,10 @@ checks:
     notes: 'Real-world bug: RWB-0166 (keycloak/keycloak#50882)'
   - action: Наличие необязательного поля отключает применение умолчаний к связанному набору
     notes: 'Real-world bug: RWB-0166 (keycloak/keycloak#50807)'
+  - action: Передать необязательный параметр явно со значением по умолчанию и сравнить ответ с запросом без параметра
+    notes: 'Real-world bug: RWB-0166 (directus/directus#25977)'
+  - action: Отправить агрегацию только с одной функцией, опустив остальные необязательные (sum, avg, min, max)
+    notes: 'Real-world bug: RWB-0166 (directus/directus#25914)'
   expected:
   - Поля имеют значения из контракта, а не null или случайные значения.
   applicability:
@@ -1023,6 +1030,11 @@ checks:
   - action: Создать определение типа в устаревшей форме без схем по версиям и проверить, что PUT подресурса status его объектов
       через каждую версию не даёт 5xx
     notes: 'Real-world bug: RWB-0003 (kubernetes/kubernetes#133651)'
+  - action: 'Сохранить правило доступа с фильтром {"_eq": null} и выполнить чтение под ролью с этим правилом'
+    notes: 'Real-world bug: RWB-0003 (directus/directus#25653)'
+  - action: Сохранить правило доступа с фильтром по связанной коллекции политик и прочитать список пользователей под ролью
+      с этим правилом
+    notes: 'Real-world bug: RWB-0003 (directus/directus#23838)'
   expected:
   - Запись либо отклоняется 400, либо значение нормализуется к отсутствующему.
   - Ни одна зависимая операция не возвращает 5xx из-за ранее принятых данных.
@@ -1127,3 +1139,40 @@ checks:
   - Источники расходятся — находка; ожидание — по документированной политике
   - Смежная — VAL-DEFERRED-FAILURE
   - 'Real-world bug: RWB-0225'
+- id: VAL-DYNAMIC-VARIABLES-TYPE
+  status: draft
+  title: Правило валидации с динамической переменной сравнивает значения по типу поля
+  category: validation
+  protocols:
+  - rest
+  - graphql
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - validation
+  - real-world-bug
+  - regression
+  preconditions:
+  - Правила валидации поддерживают переменные контекста ($CURRENT_USER.company и т. п.).
+  steps:
+  - action: Задать правило «поле = переменная» для целого, строкового и UUID-поля; создать запись со значением, равным значению
+      переменной, и с отличающимся значением.
+  expected:
+  - Равное значение принимается, отличающееся отклоняется 4xx — так же, как со статическим значением.
+  applicability:
+    when:
+    - Есть правила валидации с переменными.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Смежные — SEC-AUTHZ-DYNAMIC-VARIABLES, VAL-NUMBER-REPRESENTATION
+  - 'Real-world bug: RWB-0253'

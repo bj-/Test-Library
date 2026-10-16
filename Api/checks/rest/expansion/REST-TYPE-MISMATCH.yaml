@@ -27,6 +27,8 @@ checks:
   - action: 'Отправить DELETE с телом параметров удаления, где поля переданы неверного типа (apiVersion: true), и проверить
       ответ 400, а не 500'
     notes: 'Real-world bug: RWB-0138 (kubernetes/kubernetes#132359)'
+  - action: Передать нечисловое значение в числовых query-параметрах трансформации файла (quality, width, height)
+    notes: 'Real-world bug: RWB-0138 (directus/directus#24442)'
   expected:
   - неверный тип обрабатывается по контракту без неожиданного coercion
   applicability:

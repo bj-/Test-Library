@@ -303,6 +303,8 @@ checks:
     notes: 'Real-world bug: RWB-0070 (GHSA-3mvf-82qp-8qh5)'
   - action: Скачать собственный файл через защищённый эндпоинт и повторить запрос по URL из Location без сессии
     notes: 'Real-world bug: RWB-0070 (GHSA-767h-63j4-5226)'
+  - action: 'Запретить роли чтение поля имени файла и скачать файл: Content-Disposition не содержит запрещённого имени'
+    notes: 'Real-world bug: RWB-0070 (directus/directus#24057)'
   expected:
   - Доступ отклоняется во всех случаях.
   applicability:
@@ -336,6 +338,7 @@ checks:
   - contract
   - files
   - security
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -343,6 +346,8 @@ checks:
   - Есть скачивание.
   steps:
   - action: Скачать файлы разных типов, включая имена с unicode и кавычками.
+  - action: Скачать файл и проверить, что ответ успешный и содержит корректный Content-Security-Policy (default-src 'none')
+    notes: 'Real-world bug: RWB-0262 (directus/directus#23849)'
   expected:
   - 'Content-Disposition с корректным кодированием имени; X-Content-Type-Options: nosniff; нет inline для опасных типов.'
   applicability:
@@ -360,6 +365,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0262'
 - id: FILE-RANGE-REQUESTS
   status: approved
   title: Частичное скачивание через Range работает по контракту
@@ -603,3 +610,77 @@ checks:
   - OWASP API4:2023
   - CWE-459
   - 'Real-world bug: RWB-0048'
+- id: FILE-MULTIPART-METADATA-SAVED
+  status: draft
+  title: Метаданные из полей multipart сохраняются вместе с файлом
+  category: files
+  protocols:
+  - rest
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - files
+  - real-world-bug
+  - regression
+  preconditions:
+  - Загрузка файла через multipart/form-data принимает поля метаданных (имя для скачивания, заголовок, описание, папка).
+  steps:
+  - action: Загрузить файл с полями метаданных до и после файловой части; прочитать запись файла.
+  expected:
+  - Все переданные метаданные сохранены и возвращаются при чтении, независимо от порядка частей.
+  applicability:
+    when:
+    - Есть загрузка с метаданными.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - RFC 7578
+  - Смежные — FILE-FILENAME-SANITIZATION, RES-CREATE-RESPONSE-MATCHES-READ
+  - 'Real-world bug: RWB-0256'
+- id: FILE-TRANSFORM-STORAGE-PARITY
+  status: draft
+  title: Трансформации файла работают на каждом поддерживаемом хранилище
+  category: files
+  protocols:
+  - rest
+  kind: compatibility
+  priority: P3
+  tags:
+  - compatibility
+  - files
+  - real-world-bug
+  - nightly
+  preconditions:
+  - Поддерживается несколько драйверов хранилища (локальный диск, S3, GCS, Azure, Cloudinary и т. п.) и трансформации изображений
+    (пресеты key, параметры).
+  - Нужны стенды или конфигурации с несколькими драйверами; отсутствие драйвера — неприменимость, а не пройденная проверка.
+  steps:
+  - action: Для каждого драйвера загрузить одно и то же изображение и запросить его без параметров, с параметрами трансформации
+      и с пресетом.
+  expected:
+  - Все формы запроса отдают изображение так же, как на локальном диске.
+  applicability:
+    when:
+    - Несколько драйверов хранилища и трансформации.
+    skip_when:
+    - Один драйвер.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - Смежная — FILE-TRANSFORM-LIMITS
+  - 'Real-world bug: RWB-0260'

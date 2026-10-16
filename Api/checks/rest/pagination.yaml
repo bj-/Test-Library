@@ -147,6 +147,14 @@ checks:
   steps:
   - action: Выполнить один и тот же фильтр (в том числе по связи) в плоской форме и обёрнутым в $and/$or разной глубины вложенности.
   - action: Сравнить состав выборки и заполненность связанных полей.
+  - action: Записать условие диапазона по полю связанной коллекции как _and внутри поля и сравнить ответ с _and на верхнем
+      уровне
+    notes: 'Real-world bug: RWB-0002 (directus/directus#24367)'
+  - action: Передать в query-строке фильтр с вложенностью групп $and/$or глубже лимита разбора query-параметров и сравнить
+      с той же формой в теле запроса
+    notes: 'Real-world bug: RWB-0002 (directus/directus#24190)'
+  - action: Передать параметры чтения (version, fields) в теле запроса SEARCH и сравнить ответ с тем же запросом GET с query-строкой
+    notes: 'Real-world bug: RWB-0002 (directus/directus#24038)'
   expected:
   - Состав и содержимое ответа одинаковы во всех эквивалентных формах.
   applicability:
@@ -184,8 +192,8 @@ checks:
   preconditions:
   - Список поддерживает фильтр по полям связанной коллекции (один-ко-многим).
   steps:
-  - action: Создать запись с несколькими связанными элементами, каждый из которых подходит под фильтр; запросить список
-      с этим фильтром.
+  - action: Создать запись с несколькими связанными элементами, каждый из которых подходит под фильтр; запросить список с
+      этим фильтром.
   - action: Повторить с фильтром внутри _or/_and и вместе с пагинацией и подсчётом total.
   expected:
   - Каждая подходящая запись в выдаче ровно один раз; total и страницы согласованы с выдачей.
@@ -206,3 +214,42 @@ checks:
   references:
   - Здравый смысл — фильтр не размножает записи (JOIN без DISTINCT/EXISTS)
   - 'Real-world bug: RWB-0212'
+- id: REST-FILTER-OPERATION-PARITY
+  status: draft
+  title: Один фильтр даёт согласованный результат в списке, агрегации и вложенной выборке
+  category: pagination
+  protocols:
+  - rest
+  - graphql
+  kind: contract
+  priority: P2
+  tags:
+  - contract
+  - filtering
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Фильтр поддерживается в нескольких операциях — список, агрегация (count, group by), вложенная выборка (deep), экспорт.
+  steps:
+  - action: Применить один и тот же фильтр (по обычному полю, по связи, по полиморфной связи, на нескольких уровнях вложенности)
+      в каждой операции.
+  expected:
+  - Фильтр принимается во всех операциях; результаты согласованы (count = числу записей списка, deep — те же записи).
+  applicability:
+    when:
+    - Фильтр есть больше чем в одной операции.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Смежная — REST-FILTER-EQUIVALENT-FORMS (формы записи фильтра)
+  - 'Real-world bug: RWB-0251'

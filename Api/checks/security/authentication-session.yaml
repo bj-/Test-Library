@@ -1898,3 +1898,39 @@ checks:
   - RFC 8252 §8.6
   - Смежная — AUTH-OAUTH-REDIRECT-STATE
   - 'Real-world bug: RWB-0234'
+- id: AUTH-EXTERNAL-IDP-MISSING-ATTRIBUTES
+  status: draft
+  title: Вход через внешний IdP без необязательных атрибутов профиля обрабатывается по требованиям
+  category: security
+  protocols:
+  - generic
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - authn
+  - real-world-bug
+  - regression
+  preconditions:
+  - Вход через внешний IdP (OIDC, OAuth, SAML); есть тестовый IdP с профилями без необязательных атрибутов.
+  steps:
+  - action: Войти учёткой IdP без email, без имени, без групп.
+  expected:
+  - Допустимый по требованиям вход успешен, пользователь создан; недопустимый — 4xx с понятной причиной; 5xx нет.
+  applicability:
+    when:
+    - Есть вход через внешний IdP.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - OpenID Connect Core §5.1 (стандартные claims необязательны)
+  - Пара к AUTH-EXTERNAL-IDP-UNVERIFIED-EMAIL
+  - 'Real-world bug: RWB-0259'

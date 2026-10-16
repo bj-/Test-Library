@@ -232,6 +232,9 @@ checks:
   - action: Отправить невалидный JSON, неизвестный тип, бинарный кадр вместо текстового.
   - action: Синтаксически корректное сообщение с невалидной по схеме нагрузкой
     notes: 'Real-world bug: RWB-0178 (nestjs/nest#3127)'
+  - action: Отправить сообщение подписки с необязательным полем, равным null, и сравнить с ответами при отсутствующем поле
+      и пустом объекте
+    notes: 'Real-world bug: RWB-0178 (directus/directus#24147)'
   expected:
   - Ответ-ошибка по протоколу или закрытие с кодом; сервер стабилен.
   applicability:
@@ -322,3 +325,78 @@ checks:
   references:
   - RFC 6455
   - 'Real-world bug: RWB-0209'
+- id: WS-SUBSCRIPTION-EVENTS-DELIVERED
+  status: draft
+  title: Подписка получает события создания, изменения и удаления
+  category: websocket
+  protocols:
+  - websocket
+  - graphql
+  kind: positive
+  priority: P2
+  tags:
+  - positive
+  - websocket
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Есть подписки на изменения коллекций или ресурсов.
+  steps:
+  - action: Подписаться на коллекцию (в том числе системную, если доступна) и дождаться подтверждения.
+  - action: Создать, изменить и удалить запись через API, в том числе пакетной операцией.
+  expected:
+  - Подписчик получает события create, update и delete с данными записи.
+  applicability:
+    when:
+    - Есть подписки.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Смежные — WS-SUBSCRIPTION-AUTHZ, WS-RECONNECT-RESUME
+  - 'Real-world bug: RWB-0255'
+- id: WS-MULTIPLE-ENDPOINTS-INDEPENDENT
+  status: draft
+  title: Несколько WebSocket-эндпоинтов на разных путях работают независимо
+  category: websocket
+  protocols:
+  - websocket
+  kind: reliability
+  priority: P3
+  tags:
+  - reliability
+  - websocket
+  - real-world-bug
+  - regression
+  preconditions:
+  - Сервер поддерживает несколько WebSocket-эндпоинтов (realtime, GraphQL subscriptions, журналы, служебные).
+  steps:
+  - action: Включить все эндпоинты; подключиться к каждому, пройти аутентификацию и обменяться сообщениями — по отдельности
+      и одновременно.
+  expected:
+  - Рукопожатие, подтверждение аутентификации и сообщения на каждом пути работают так же, как при одном включённом.
+  applicability:
+    when:
+    - Больше одного WebSocket-эндпоинта.
+    skip_when:
+    - Один эндпоинт.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - Смежная — WS-HANDSHAKE-AUTH
+  - 'Real-world bug: RWB-0261'

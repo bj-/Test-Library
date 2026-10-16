@@ -43,6 +43,21 @@ RWB-0002:
     product: Strapi
     closed: '2026-08-05'
     summary: Связи, выведенные из фильтра, терялись в ответе в зависимости от глубины вложенности $and/$or
+  - url: https://github.com/directus/directus/issues/24367
+    fix: https://github.com/directus/directus/pull/24564
+    product: Directus
+    closed: '2025-02-18'
+    summary: Фильтр с логическим оператором внутри поля связи даёт 500 при построении SQL
+  - url: https://github.com/directus/directus/issues/24190
+    fix: https://github.com/directus/directus/pull/24833
+    product: Directus
+    closed: '2025-03-16'
+    summary: Фильтр с 4+ вложенными группами and/or в query-строке обрезается парсером и даёт ошибку
+  - url: https://github.com/directus/directus/issues/24038
+    fix: https://github.com/directus/directus/pull/24040
+    product: Directus
+    closed: '2024-11-13'
+    summary: Параметр version игнорируется при чтении через SEARCH с телом запроса
 RWB-0003:
   pattern: Данные, принятые при записи, не вызывают 5xx в зависимых операциях (чтение, поиск, экспорт, политика)
   checks:
@@ -71,6 +86,16 @@ RWB-0003:
     closed: '2025-10-14'
     summary: Обновление status объекта, тип которого задан в устаревшей форме определения, даёт панику сервера после обновления
       версии
+  - url: https://github.com/directus/directus/issues/25653
+    fix: https://github.com/directus/directus/pull/25753
+    product: Directus
+    closed: '2025-08-26'
+    summary: 'Правило доступа с фильтром _eq: null вызывает TypeError при запросах роли'
+  - url: https://github.com/directus/directus/issues/23838
+    fix: https://github.com/directus/directus/pull/23871
+    product: Directus
+    closed: '2025-02-13'
+    summary: Правило доступа с фильтром по политикам сохраняется, а чтение пользователей под ним падает с ошибкой БД
 RWB-0004:
   pattern: Разрешённая операция работает для каждой роли с правом, а не только для администратора (позитивная матрица прав)
   checks:
@@ -82,6 +107,53 @@ RWB-0004:
     product: Directus
     closed: '2026-09-23'
     summary: Чтение, доступное не-админу по правам, падает 500, у админа работает
+  - url: https://github.com/directus/directus/issues/26118
+    fix: https://github.com/directus/directus/pull/26126
+    product: Directus
+    closed: '2025-11-13'
+    summary: Замена файла через возобновляемую загрузку не работает у не-администратора с правами
+  - url: https://github.com/directus/directus/issues/25212
+    fix: https://github.com/directus/directus/pull/25362
+    product: Directus
+    closed: '2025-10-05'
+    summary: Подсчёт отфильтрованных записей стал требовать право чтения первичного ключа
+  - url: https://github.com/directus/directus/issues/24257
+    fix: https://github.com/directus/directus/pull/24316
+    product: Directus
+    closed: '2025-02-13'
+    summary: Чтение записей со связями падает 500 «parentsByForeignKey.get is not a function»; фикс — роль без права на ключ
+      связанной записи
+  - url: https://github.com/directus/directus/issues/24125
+    fix: https://github.com/directus/directus/pull/24604
+    product: Directus
+    closed: '2025-03-07'
+    summary: Запрос под ролью с правилом по текущему пользователю падает 500 из-за переиспользования параметра SQL разного
+      типа
+  - url: https://github.com/directus/directus/issues/24008
+    fix: https://github.com/directus/directus/pull/24027
+    product: Directus
+    closed: '2024-11-12'
+    summary: На Oracle запросы не-администратора падают из-за неверных позиционных параметров при повторе значения
+  - url: https://github.com/directus/directus/issues/23952
+    fix: https://github.com/directus/directus/pull/24635
+    product: Directus
+    closed: '2025-03-24'
+    summary: Пользовательское правило доступа к системной коллекции закладок не применяется
+  - url: https://github.com/directus/directus/issues/24336
+    fix: https://github.com/directus/directus/pull/24511
+    product: Directus
+    closed: '2025-02-13'
+    summary: Удаление файла требует права чтения служебных полей файла
+  - url: https://github.com/directus/directus/issues/24011
+    fix: https://github.com/directus/directus/pull/24026
+    product: Directus
+    closed: '2024-11-12'
+    summary: PATCH под не-администратором с настроенными политиками даёт FORBIDDEN после обновления
+  - url: https://github.com/directus/directus/issues/23876
+    fix: https://github.com/directus/directus/pull/24609
+    product: Directus
+    closed: '2025-03-07'
+    summary: Вложенное изменение связанной записи отклоняется, если у роли нет права менять её первичный ключ
 RWB-0005:
   pattern: Делегированный администратор над собственной учёткой — явное разрешение или 403 по политике, без 5xx
   checks:
@@ -180,6 +252,11 @@ RWB-0008:
     product: Keycloak
     closed: '2026-06-24'
     summary: Параллельные регистрации клиентов падают из-за гонки на общем кэшированном состоянии
+  - url: https://github.com/directus/directus/issues/24239
+    fix: https://github.com/directus/directus/pull/24667
+    product: Directus
+    closed: '2025-02-25'
+    summary: Параллельные GraphQL-запросы после сброса кэша схемы каждый строят схему, процесс падает по памяти
 RWB-0009:
   pattern: Ответ не содержит фрагментов данных других запросов и памяти процесса (общие буферы сериализации)
   checks:
@@ -273,6 +350,11 @@ RWB-0014:
     product: Directus
     closed: '2025-11-21'
     summary: Фильтр по полю полиморфной связи работал в запросе списка и падал в запросе по id
+  - url: https://github.com/directus/directus/issues/26133
+    fix: https://github.com/directus/directus/pull/26148
+    product: Directus
+    closed: '2025-11-17'
+    summary: Алиас поля в GraphQL ломает проверку прав для фильтра по связи many-to-any
 RWB-0015:
   pattern: Публикация черновика переносит все изменения (включая связи и их порядок), не удаляет объект из связей других и
     работает между типами с разными режимами
@@ -296,6 +378,11 @@ RWB-0015:
     product: Strapi
     closed: '2026-06-29'
     summary: 'Публикация с many-to-many связью на нелокализованный тип падала: locale "null" not found'
+  - url: https://github.com/directus/directus/issues/26084
+    fix: https://github.com/directus/directus/pull/27040
+    product: Directus
+    closed: '2026-04-10'
+    summary: Публикация версии (черновика) падает «Invalid time value», версию нельзя опубликовать
 RWB-0016:
   pattern: Изменение связанного ресурса не меняет ручной порядок связей у другой стороны
   checks:
@@ -386,6 +473,11 @@ RWB-0022:
     product: Keycloak
     closed: '2026-08-25'
     summary: Запрос с IN по большому числу связанных ролей превышал лимит параметров СУБД (2100 в MSSQL) — админка не открывалась
+  - url: https://github.com/directus/directus/issues/25066
+    fix: https://github.com/directus/directus/pull/25087
+    product: Directus
+    closed: '2025-04-22'
+    summary: Изменение связи M2M списком больше 100 элементов создаёт дубли связей
 RWB-0023:
   pattern: Серверный кэш различает ответы по всем значимым параметрам запроса и по типу ресурса при одинаковых id
   checks:
@@ -485,6 +577,21 @@ RWB-0026:
     product: Directus
     closed: '2026-02-06'
     summary: После обновления выборка с указанием полей теряла первичный ключ — элементы списков приходили без id
+  - url: https://github.com/directus/directus/issues/25521
+    fix: https://github.com/directus/directus/pull/28197
+    product: Directus
+    closed: '2026-09-15'
+    summary: Экспорт в CSV не соблюдает порядок запрошенных полей
+  - url: https://github.com/directus/directus/issues/25138
+    fix: https://github.com/directus/directus/pull/25139
+    product: Directus
+    closed: '2025-07-10'
+    summary: 'Имя алиаса вида функции year(test) разбиралось как функция: ключ переименован, значение не преобразовано'
+  - url: https://github.com/directus/directus/issues/25121
+    fix: https://github.com/directus/directus/pull/25128
+    product: Directus
+    closed: '2025-05-20'
+    summary: Алиас не попадает в ответ при выборе полей по маске *
 RWB-0027:
   pattern: Абсолютные URL, которые формирует сервер (Location, callback, ссылки в письмах), учитывают публичный базовый путь
   checks:
@@ -528,6 +635,41 @@ RWB-0029:
     product: Hasura
     closed: '2024-08-06'
     summary: Выгруженные метаданные с resource_version не принимаются операцией замены
+  - url: https://github.com/directus/directus/issues/24961
+    fix: https://github.com/directus/directus/pull/25204
+    product: Directus
+    closed: '2025-05-23'
+    summary: Применение снимка схемы с удалением коллекции и полей падает; фикс — чтение внешних ключей без кэша
+  - url: https://github.com/directus/directus/issues/25453
+    fix: https://github.com/directus/directus/pull/25454
+    product: Directus
+    closed: '2025-07-15'
+    summary: Импорт CSV с заголовками через точку не заполняет связи, хотя экспорт использует такую нотацию
+  - url: https://github.com/directus/directus/issues/24648
+    fix: https://github.com/directus/directus/pull/25271
+    product: Directus
+    closed: '2025-07-10'
+    summary: Снимок схемы через API включает незарегистрированные таблицы, применение снимка падает с 400
+  - url: https://github.com/directus/directus/issues/24440
+    fix: https://github.com/directus/directus/pull/24441
+    product: Directus
+    closed: '2025-02-13'
+    summary: Импорт CSV дописывает _1 к значению поля, совпадающему со значением id
+  - url: https://github.com/directus/directus/issues/24082
+    fix: https://github.com/directus/directus/pull/24096
+    product: Directus
+    closed: '2024-11-26'
+    summary: Клиент передаёт числовой ключ одиночной записи, API требует строку и отклоняет создание версии
+  - url: https://github.com/directus/directus/issues/23859
+    fix: https://github.com/directus/directus/pull/23861
+    product: Directus
+    closed: '2024-10-15'
+    summary: Индексы полей не попадают в снимок схемы и не создаются при применении
+  - url: https://github.com/directus/directus/issues/23667
+    fix: https://github.com/directus/directus/pull/23706
+    product: Directus
+    closed: '2024-09-21'
+    summary: 'Снимок схемы без признака уникальности первичного ключа не применяется: «Primary key must be unique»'
 RWB-0030:
   pattern: IP клиента определяется по X-Forwarded-For с учётом числа доверенных прокси, одинаково на всех маршрутах и модулях
   checks:
@@ -623,6 +765,11 @@ RWB-0035:
     product: Keycloak
     closed: '2026-06-29'
     summary: Удаление системного клиента даёт неинформативную ошибку unknown_error, по-разному в v1 и v2
+  - url: https://github.com/directus/directus/issues/24816
+    fix: https://github.com/directus/directus/pull/24820
+    product: Directus
+    closed: '2025-10-28'
+    summary: Системные поля можно изменить через API полей
 RWB-0036:
   pattern: Все задокументированные схемы Authorization принимаются на своих эндпоинтах; неподдерживаемые — 401 с WWW-Authenticate
   checks:
@@ -779,6 +926,11 @@ RWB-0045:
     product: Hasura
     closed: '2025-02-21'
     summary: 'Применение метаданных возвращает 500, хотя изменение применено: гонка с закрытием WebSocket-соединений'
+  - url: https://github.com/directus/directus/issues/25871
+    fix: https://github.com/directus/directus/pull/25883
+    product: Directus
+    closed: '2025-09-26'
+    summary: Загрузка файла считается успешной, но файл не сохранён и метаданные пустые
 RWB-0046:
   pattern: Код и вызовы инструментов, сгенерированные LLM по вводу пользователя, не выполняют исходящих запросов и опасных
     операций (prompt injection)
@@ -829,6 +981,11 @@ RWB-0049:
     product: Hasura
     closed: '2024-10-17'
     summary: Introspection возвращает null в non-null поле isRepeatable, клиенты не разбирают схему
+  - url: https://github.com/directus/directus/issues/24155
+    fix: https://github.com/directus/directus/pull/27884
+    product: Directus
+    closed: '2026-07-10'
+    summary: Сгенерированная сервисом спецификация OpenAPI не импортируется в Postman и Hoppscotch
 RWB-0050:
   pattern: Потоковый ответ SSE работает для всех методов (включая POST с телом), отдаёт text/event-stream и события до закрытия
     клиентом
@@ -1083,6 +1240,11 @@ RWB-0065:
     product: NestJS
     closed: '2019-09-16'
     summary: При наследовании WebSocket-шлюза одно событие обрабатывается дважды — клиент получает два ответа.
+  - url: https://github.com/directus/directus/issues/24542
+    fix: https://github.com/directus/directus/pull/24771
+    product: Directus
+    closed: '2025-03-05'
+    summary: Загрузка файла через TUS не порождает событие files.upload, хуки и flows не срабатывают
 RWB-0066:
   pattern: Нельзя пропустить обязательный шаг бизнес-процесса
   checks:
@@ -1138,6 +1300,11 @@ RWB-0067:
     product: Hasura
     closed: '2025-03-20'
     summary: Задокументированный флаг no_transaction в запросе run_sql игнорируется
+  - url: https://github.com/directus/directus/issues/25888
+    fix: https://github.com/directus/directus/pull/28280
+    product: Directus
+    closed: '2026-10-01'
+    summary: Схема GraphQL помечает необнуляемое поле с default как nullable
 RWB-0068:
   pattern: Внутренняя ошибка сервера возвращается в общей модели без утечек
   checks:
@@ -1239,6 +1406,11 @@ RWB-0070:
     product: decidim-core
     closed: '2026-07-13'
     summary: Защищённый эндпоинт скачивания экспорта редиректит на подписанный URL, который работает без сессии
+  - url: https://github.com/directus/directus/issues/24057
+    fix: https://github.com/directus/directus/pull/25905
+    product: Directus
+    closed: '2026-01-12'
+    summary: Имя файла раскрывается в Content-Disposition, хотя чтение поля имени запрещено правами
 RWB-0071:
   pattern: Пустой файл и некорректный multipart обрабатываются корректно
   checks:
@@ -2362,6 +2534,16 @@ RWB-0092:
     product: Kubernetes
     closed: '2026-01-16'
     summary: В событии аудита медленного запроса нет аннотаций с общей задержкой и её разбивкой
+  - url: https://github.com/directus/directus/issues/25720
+    fix: https://github.com/directus/directus/pull/27407
+    product: Directus
+    closed: '2026-06-10'
+    summary: Пакетное изменение записей с полем сортировки сохраняет в ревизии чужие данные
+  - url: https://github.com/directus/directus/issues/25894
+    fix: https://github.com/directus/directus/commit/6e1d59d3fb1924b067a6c2a62b4007b12e8b1811
+    product: Directus
+    closed: '2026-04-16'
+    summary: Сохранение версии создаёт записи активности и ревизий, хотя журналирование коллекции отключено
 RWB-0093:
   pattern: Health-эндпоинты отражают состояние и не раскрывают детали
   checks:
@@ -2385,6 +2567,16 @@ RWB-0093:
     product: fluentd
     closed: '2026-06-26'
     summary: API мониторинга отдавал внутренние переменные плагинов, включая пароли и ключи
+  - url: https://github.com/directus/directus/issues/26191
+    fix: https://github.com/directus/directus/pull/26987
+    product: Directus
+    closed: '2026-04-10'
+    summary: Health-проверка хранилища с нескольких экземпляров изменяет один общий объект и упирается в лимит хранилища
+  - url: https://github.com/directus/directus/issues/23635
+    fix: https://github.com/directus/directus/pull/23821
+    product: Directus
+    closed: '2024-10-09'
+    summary: Health-эндпоинт сообщает ошибку исправного хранилища после обновления
 RWB-0094:
   pattern: Поиск со спецсимволами и wildcard не ломается и не расширяет выборку
   checks:
@@ -2411,6 +2603,11 @@ RWB-0095:
     product: Directus
     closed: '2026-03-05'
     summary: GraphQL-агрегат countAll выполнял выборку с лимитом по умолчанию вместо подсчёта
+  - url: https://github.com/directus/directus/issues/24719
+    fix: https://github.com/directus/directus/pull/24718
+    product: Directus
+    closed: '2025-02-27'
+    summary: filter_count с фильтром по связи M2M считает строки соединения, а не записи
 RWB-0096:
   pattern: Задержка ключевых операций в пределах SLO при обычной нагрузке
   checks:
@@ -2432,6 +2629,11 @@ RWB-0096:
     product: Kubernetes
     closed: '2025-09-03'
     summary: Регрессия задержки POST событий при большом масштабе кластера
+  - url: https://github.com/directus/directus/issues/25581
+    fix: https://github.com/directus/directus/pull/26393
+    product: Directus
+    closed: '2026-01-30'
+    summary: Операции изменения схемы на CockroachDB выполняются 15–25 секунд
 RWB-0097:
   pattern: Размер ответов разумен и не растёт неограниченно
   checks:
@@ -2490,6 +2692,11 @@ RWB-0099:
     product: Keycloak
     closed: '2026-06-22'
     summary: Клиент, созданный альтернативным способом (CIMD), не проходит политики, применяемые при сохранении из консоли
+  - url: https://github.com/directus/directus/issues/23898
+    fix: https://github.com/directus/directus/pull/23905
+    product: Directus
+    closed: '2024-10-24'
+    summary: GraphQL не отдаёт поля описания столбца, которые есть в REST
 RWB-0100:
   pattern: Массовые операции соблюдают лимиты и сообщают о каждом элементе
   checks:
@@ -2539,6 +2746,11 @@ RWB-0102:
     closed: '2026-02-20'
     summary: Автоматически созданный зависимый объект получает неверный apiVersion владельца, и сборщик мусора не удаляет
       его после удаления владельца
+  - url: https://github.com/directus/directus/issues/23923
+    fix: https://github.com/directus/directus/pull/24654
+    product: Directus
+    closed: '2025-04-07'
+    summary: Удалённое поле остаётся в настройках коллекции (поля для дублирования), запросы копирования падают
 RWB-0103:
   pattern: Неизменяемые поля нельзя изменить после создания
   checks:
@@ -2724,6 +2936,16 @@ RWB-0113:
     product: Directus
     closed: '2026-09-21'
     summary: Функция year() в фильтре/сортировке давала ISO-год вместо календарного
+  - url: https://github.com/directus/directus/issues/25113
+    fix: https://github.com/directus/directus/pull/25160
+    product: Directus
+    closed: '2025-05-13'
+    summary: Дата с годом меньше 1000 принимается, но возвращается не в формате ISO 8601
+  - url: https://github.com/directus/directus/issues/25060
+    fix: https://github.com/directus/directus/pull/25064
+    product: Directus
+    closed: '2025-04-22'
+    summary: Агрегация max по метке времени возвращает значение со сдвигом часового пояса относительно обычного чтения
 RWB-0114:
   pattern: Дублирование уникального ключа
   checks:
@@ -2740,6 +2962,11 @@ RWB-0114:
     product: Directus
     closed: '2026-03-30'
     summary: 'Замена файла отклонялась FORBIDDEN: проверка уникальности filename_disk находила сам обновляемый файл'
+  - url: https://github.com/directus/directus/issues/25784
+    fix: https://github.com/directus/directus/pull/25801
+    product: Directus
+    closed: '2025-09-09'
+    summary: На MSSQL нарушение составного уникального ограничения не превращается в обычную ошибку, интерфейс её не показывает
 RWB-0115:
   pattern: Пустые объект, массив и строка
   checks:
@@ -2767,6 +2994,11 @@ RWB-0115:
     product: Hasura
     closed: '2024-07-29'
     summary: update_*_many с пустым updates возвращает объект вместо списка
+  - url: https://github.com/directus/directus/issues/23939
+    fix: https://github.com/directus/directus/pull/24960
+    product: Directus
+    closed: '2025-03-25'
+    summary: Создание коллекции с числом в имени или с пустой схемой без полей даёт 500
 RWB-0116:
   pattern: Допустимые и неизвестные enum
   checks:
@@ -3087,6 +3319,16 @@ RWB-0127:
     product: Keycloak
     closed: '2026-08-03'
     summary: PATCH с null и PUT без поля не удаляли сертификат подписи — старый ключ оставался доверенным
+  - url: https://github.com/directus/directus/issues/24319
+    fix: https://github.com/directus/directus/pull/24386
+    product: Directus
+    closed: '2025-02-13'
+    summary: Изменение unique у столбца-автоинкремента сбрасывает тип и значение по умолчанию
+  - url: https://github.com/directus/directus/issues/23992
+    fix: https://github.com/directus/directus/pull/25346
+    product: Directus
+    closed: '2025-06-24'
+    summary: Изменение другого свойства строкового поля сбрасывает длину varchar к 255
 RWB-0128:
   pattern: Location при создании
   checks:
@@ -3369,6 +3611,11 @@ RWB-0138:
     product: Kubernetes
     closed: '2025-08-28'
     summary: Параметры удаления в теле DELETE с неверным типом поля дают 500 вместо 400
+  - url: https://github.com/directus/directus/issues/24442
+    fix: https://github.com/directus/directus/pull/24817
+    product: Directus
+    closed: '2025-03-12'
+    summary: Нечисловое значение параметра трансформации изображения даёт 500 вместо 400
 RWB-0139:
   pattern: Политика неизвестных полей
   checks:
@@ -3431,6 +3678,11 @@ RWB-0142:
     product: Keycloak
     closed: '2026-06-16'
     summary: JWT с alg null, без alg или с пустым заголовком даёт 500 вместо 401
+  - url: https://github.com/directus/directus/issues/23941
+    fix: https://github.com/directus/directus/pull/24788
+    product: Directus
+    closed: '2025-03-06'
+    summary: Сброс пароля с токеном не-JWT и проверка хеша с некорректным хешем дают 500
 RWB-0143:
   pattern: Protected operation rejects missing credentials
   checks:
@@ -4096,6 +4348,16 @@ RWB-0166:
     product: Kubernetes
     closed: '2026-09-11'
     summary: Опущенный делитель получает значение 0 вместо документированного 1
+  - url: https://github.com/directus/directus/issues/25977
+    fix: https://github.com/directus/directus/pull/25986
+    product: Directus
+    closed: '2025-10-16'
+    summary: Явная передача ключа версии по умолчанию (main) даёт 403
+  - url: https://github.com/directus/directus/issues/25914
+    fix: https://github.com/directus/directus/pull/25915
+    product: Directus
+    closed: '2025-10-06'
+    summary: Инструмент MCP отклоняет агрегацию, если не переданы все необязательные агрегатные функции
 RWB-0167:
   pattern: Взаимозависимые поля валидируются совместно
   checks:
@@ -4170,6 +4432,11 @@ RWB-0171:
     product: NestJS
     closed: '2020-03-25'
     summary: Ошибка валидации во вложенном массиве объектов возвращает 400 с пустым списком ошибок.
+  - url: https://github.com/directus/directus/issues/26197
+    fix: https://github.com/directus/directus/pull/27768
+    product: Directus
+    closed: '2026-06-30'
+    summary: Ошибка валидации длины указывает не то поле (первичный ключ вместо реально длинного)
 RWB-0172:
   pattern: Массивы в query передаются в задокументированном формате
   checks:
@@ -4271,6 +4538,11 @@ RWB-0178:
     product: NestJS
     closed: '2018-05-25'
     summary: Строка вместо JSON в сообщении WebSocket роняла сервер.
+  - url: https://github.com/directus/directus/issues/24147
+    fix: https://github.com/directus/directus/pull/24772
+    product: Directus
+    closed: '2025-03-05'
+    summary: 'Подписка WebSocket с query: null не получает ни подтверждения, ни ошибки'
 RWB-0179:
   pattern: Подписки и сообщения авторизуются по каждому каналу
   checks:
@@ -5063,6 +5335,16 @@ RWB-0228:
     closed: '2025-11-25'
     summary: Создание объекта сразу после создания его пространства имён изредка отклоняется ложным «namespace not found»
       политикой допуска
+  - url: https://github.com/directus/directus/issues/25270
+    fix: https://github.com/directus/directus/pull/26192
+    product: Directus
+    closed: '2025-12-09'
+    summary: Расширение, установленное через API на одном экземпляре кластера, не появляется на остальных
+  - url: https://github.com/directus/directus/issues/25923
+    fix: https://github.com/directus/directus/pull/25931
+    product: Directus
+    closed: '2025-10-06'
+    summary: Для одиночной записи (singleton) чтение версии возвращает данные основной версии
 RWB-0229:
   pattern: Совместимость версий API
   checks:
@@ -5348,3 +5630,197 @@ RWB-0250:
     product: activesupport
     closed: '2026-03-23'
     summary: Хелперы форматирования чисел разворачивали 1e10000 в огромную десятичную строку
+RWB-0251:
+  pattern: Один и тот же фильтр (в том числе по полиморфной связи и на нескольких уровнях вложенности) принимается и даёт
+    согласованный результат во всех операциях — список, агрегация (count = числу записей списка), вложенная выборка (deep),
+    экспорт
+  checks:
+  - REST-FILTER-OPERATION-PARITY
+  batch: directus
+  bugs:
+  - url: https://github.com/directus/directus/issues/25975
+    fix: https://github.com/directus/directus/pull/25976
+    product: Directus
+    closed: '2025-10-17'
+    summary: Агрегация с фильтром по полю many-to-any отклоняется ошибкой прав, хотя у списка работает
+  - url: https://github.com/directus/directus/issues/25892
+    fix: https://github.com/directus/directus/pull/25895
+    product: Directus
+    closed: '2025-10-17'
+    summary: Вложенный фильтр по связи many-to-any в GraphQL даёт ошибку сервера
+RWB-0252:
+  pattern: Каждая динамическая переменная в правилах доступа ($CURRENT_USER, $CURRENT_ROLES, $CURRENT_POLICIES) разрешает
+    и запрещает доступ так же, как эквивалентное статическое значение, в том числе в списках (_in) и через связи
+  checks:
+  - SEC-AUTHZ-DYNAMIC-VARIABLES
+  batch: directus
+  bugs:
+  - url: https://github.com/directus/directus/issues/23695
+    fix: https://github.com/directus/directus/pull/23728
+    product: Directus
+    closed: '2024-09-24'
+    summary: Правило доступа с $CURRENT_POLICIES не даёт права на изменение, хотя аналог с $CURRENT_ROLES работает
+RWB-0253:
+  pattern: Правило валидации с динамической переменной ($CURRENT_USER.company и т. п.) сравнивает значения по типу поля —
+    целое поле совпадает с целым значением переменной; принятие и отклонение данных такие же, как со статическим значением
+  checks:
+  - VAL-DYNAMIC-VARIABLES-TYPE
+  batch: directus
+  bugs:
+  - url: https://github.com/directus/directus/issues/24848
+    fix: https://github.com/directus/directus/pull/24959
+    product: Directus
+    closed: '2025-04-11'
+    summary: Правило валидации с $CURRENT_USER.company отклоняет корректное целое значение из-за сравнения числа со строкой
+RWB-0254:
+  pattern: Задача по расписанию продолжает срабатывать после длительной непрерывной работы процесса (в первоисточнике — около
+    25 суток, библиотека node-schedule; вероятная причина — предел 32-битного таймера в миллисекундах, 24,8 суток); проверка
+    — длительная работа или управляемый сдвиг времени на стенде
+  checks:
+  - ASYNC-SCHEDULE-LONG-UPTIME
+  batch: directus
+  bugs:
+  - url: https://github.com/directus/directus/issues/25855
+    fix: https://github.com/directus/directus/pull/25874
+    product: Directus
+    closed: '2025-10-20'
+    summary: Плановая задача перестаёт запускаться после ~25 дней работы процесса
+RWB-0255:
+  pattern: Подписка на коллекцию (в том числе системную) после подтверждения получает события создания, изменения и удаления,
+    сделанных через API любым способом; базовая доставка, а не права (WS-SUBSCRIPTION-AUTHZ) и не переподключение (WS-RECONNECT-RESUME)
+  checks:
+  - WS-SUBSCRIPTION-EVENTS-DELIVERED
+  batch: directus
+  bugs:
+  - url: https://github.com/directus/directus/issues/25457
+    fix: https://github.com/directus/directus/pull/25464
+    product: Directus
+    closed: '2025-10-17'
+    summary: Подписка WebSocket на системную коллекцию комментариев отдаёт init, но не события изменений
+RWB-0256:
+  pattern: Метаданные, переданные полями multipart вместе с файлом (имя для скачивания, заголовок, описание, папка), сохраняются
+    и возвращаются при чтении записи файла — и при порядке полей до и после файла
+  checks:
+  - FILE-MULTIPART-METADATA-SAVED
+  batch: directus
+  bugs:
+  - url: https://github.com/directus/directus/issues/25055
+    fix: https://github.com/directus/directus/pull/25062
+    product: Directus
+    closed: '2025-04-14'
+    summary: Переданное в multipart поле filename_download игнорируется при загрузке файла
+RWB-0257:
+  pattern: Чтение связи многие-ко-многим возвращает все записи связующей таблицы, в том числе со ссылкой null или на удалённый
+    объект (связанный объект — null), а не теряет их молча
+  checks:
+  - RES-RELATION-NULL-TARGET-ROWS
+  batch: directus
+  bugs:
+  - url: https://github.com/directus/directus/issues/24145
+    fix: https://github.com/directus/directus/pull/24149
+    product: Directus
+    closed: '2024-12-05'
+    summary: Записи связующей таблицы M2M с пустой ссылкой не возвращаются в связи родителя
+RWB-0258:
+  pattern: Несколько связей ресурса через одну общую связующую таблицу (политика ↔ пользователи и политика ↔ роли) возвращают
+    каждая только свои данные — значения связей не смешиваются и не подменяются
+  checks:
+  - RES-RELATIONS-SHARED-JUNCTION-ISOLATION
+  batch: directus
+  bugs:
+  - url: https://github.com/directus/directus/issues/23785
+    fix: https://github.com/directus/directus/pull/23879
+    product: Directus
+    closed: '2024-12-02'
+    summary: Список политик возвращает в полях users и roles одинаковые данные
+RWB-0259:
+  pattern: Вход через внешний IdP с профилем без необязательных атрибутов (email, имя) обрабатывается по требованиям — допустимый
+    вход успешен, недопустимый даёт 4xx с понятной причиной, без 5xx; пара к AUTH-EXTERNAL-IDP-UNVERIFIED-EMAIL
+  checks:
+  - AUTH-EXTERNAL-IDP-MISSING-ATTRIBUTES
+  batch: directus
+  bugs:
+  - url: https://github.com/directus/directus/issues/24099
+    fix: https://github.com/directus/directus/pull/24105
+    product: Directus
+    closed: '2024-11-27'
+    summary: Вход через внешний IdP падает с FAILED_VALIDATION, если в профиле нет email
+RWB-0260:
+  pattern: Поддерживаемые трансформации и пресеты изображений (key, параметры) отдают файл на каждом поддерживаемом драйвере
+    хранилища так же, как на локальном диске; нужны стенды с несколькими драйверами, отсутствие драйвера — неприменимость
+  checks:
+  - FILE-TRANSFORM-STORAGE-PARITY
+  batch: directus
+  bugs:
+  - url: https://github.com/directus/directus/issues/23955
+    fix: https://github.com/directus/directus/pull/23956
+    product: Directus
+    closed: '2025-02-13'
+    summary: Отдача изображения с ключом пресета трансформации не работает на одном из драйверов хранилища
+RWB-0261:
+  pattern: Несколько WebSocket-эндпоинтов на разных путях (realtime, GraphQL subscriptions, служебные) работают независимо
+    — включение одного не ломает рукопожатие, аутентификацию и сообщения другого
+  checks:
+  - WS-MULTIPLE-ENDPOINTS-INDEPENDENT
+  batch: directus
+  bugs:
+  - url: https://github.com/directus/directus/issues/23625
+    fix: https://github.com/directus/directus/pull/23691
+    product: Directus
+    closed: '2024-10-08'
+    summary: Новый WebSocket-эндпоинт журналов перехватывает соединения основного WebSocket, аутентификация не подтверждается
+RWB-0262:
+  pattern: Скачивание отдаёт корректные Content-Type, Content-Disposition и nosniff
+  checks:
+  - FILE-DOWNLOAD-HEADERS
+  batch: directus
+  bugs:
+  - url: https://github.com/directus/directus/issues/23849
+    fix: https://github.com/directus/directus/pull/23853
+    product: Directus
+    closed: '2024-10-14'
+    summary: Отдача файлов падает с 500 из-за неверного значения CSP после обновления библиотеки заголовков
+RWB-0263:
+  pattern: Логи не содержат паролей, токенов и ПДн в открытом виде
+  checks:
+  - OBS-NO-SECRETS-IN-LOGS
+  batch: directus
+  bugs:
+  - url: https://github.com/directus/directus/issues/24641
+    fix: https://github.com/directus/directus/pull/24642
+    product: Directus
+    closed: '2025-03-04'
+    summary: Секрет со спецсимволами regex ломает маскирование логов flow, ответ 500
+RWB-0264:
+  pattern: Глубокая пагинация и большие выборки не деградируют неприемлемо
+  checks:
+  - PERF-DEEP-PAGINATION
+  batch: directus
+  bugs:
+  - url: https://github.com/directus/directus/issues/24594
+    fix: https://github.com/directus/directus/pull/25970
+    product: Directus
+    closed: '2025-10-30'
+    summary: Поиск по большой коллекции выполняется секунды и минуты (полное сканирование по всем текстовым полям)
+RWB-0265:
+  pattern: Отсутствующий и пустой параметр
+  checks:
+  - REST-OPTIONAL-EMPTY-VALUE
+  batch: directus
+  bugs:
+  - url: https://github.com/directus/directus/issues/25385
+    fix: https://github.com/directus/directus/pull/25386
+    product: Directus
+    closed: '2025-07-01'
+    summary: Ручной процесс без выбора записей отклоняется 403 из-за отсутствия ключей
+RWB-0266:
+  pattern: Кодирование path-параметров
+  checks:
+  - REST-PATH-PARAM-ENCODING
+  batch: directus
+  bugs:
+  - url: https://github.com/directus/directus/issues/23986
+    fix: https://github.com/directus/directus/pull/23990
+    product: Directus
+    closed: '2024-11-06'
+    summary: 'Первичный ключ со слэшем ломает служебный маршрут прав: закодированный слэш разбирается как разделитель пути'

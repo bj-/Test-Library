@@ -27,6 +27,8 @@ checks:
   - action: Отправить пустой массив в списковом аргументе пакетной операции и проверить, что ответ — пустой список объявленного
       типа
     notes: 'Real-world bug: RWB-0115 (hasura/graphql-engine#10322)'
+  - action: Создать коллекцию с пустым объектом schema и без полей
+    notes: 'Real-world bug: RWB-0115 (directus/directus#23939)'
   expected:
   - пустые значения принимаются только если допускаются контрактом
   applicability:

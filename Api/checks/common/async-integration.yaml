@@ -492,3 +492,42 @@ checks:
   references:
   - WHATWG HTML — Server-Sent Events
   - 'Real-world bug: RWB-0050'
+- id: ASYNC-SCHEDULE-LONG-UPTIME
+  status: draft
+  title: Задача по расписанию срабатывает и после длительной непрерывной работы процесса
+  category: async
+  protocols:
+  - generic
+  kind: reliability
+  priority: P3
+  tags:
+  - reliability
+  - async-jobs
+  - real-world-bug
+  - nightly
+  preconditions:
+  - Есть задачи по расписанию (cron, плановые потоки).
+  - Нужна длительная работа стенда без перезапуска (больше 25 суток) или управляемый сдвиг времени процесса; без этого
+    проверка пропускается осознанно.
+  steps:
+  - action: Создать ежедневную и ежечасную задачу и наблюдать срабатывания при длительной работе или после сдвига
+      времени за 25 суток.
+  expected:
+  - Задачи срабатывают по расписанию независимо от времени работы процесса.
+  applicability:
+    when:
+    - Есть расписания и условия из предусловий.
+    skip_when:
+    - Нет расписаний или нельзя обеспечить длительную работу.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - Вероятная причина — предел 32-битного таймера в миллисекундах (2^31 мс ≈ 24,8 суток)
+  - Смежная — PERF-SOAK
+  - 'Real-world bug: RWB-0254'

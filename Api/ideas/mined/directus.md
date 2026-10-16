@@ -6,7 +6,7 @@
 
 ## Сводка
 
-- Новых паттернов: 12 → идей: 10 (принять: 10, отклонить: 0, не решено: 0).
+- Новых паттернов: 12 → идей: 11 (принять: 11, отклонить: 0, не решено: 0).
 - Пруфы к существующим: 61 багов → 36 записей; новых шагов-вариантов: 57.
 
 ## Новые идеи
@@ -16,15 +16,16 @@
 | # | Решение | Запись / файл | Идея | Подтверждающие баги |
 |---|---|---|---|---|
 | 1 | accept | `REST-FILTER-OPERATION-PARITY` (RWB-0251)<br>`checks/rest/pagination.yaml` | Один и тот же фильтр (в том числе по полиморфной связи и на нескольких уровнях вложенности) принимается и даёт согласованный результат во всех операциях — список, агрегация (count = числу записей списка), вложенная выборка (deep), экспорт | [directus/directus#25975](https://github.com/directus/directus/issues/25975), [directus/directus#25892](https://github.com/directus/directus/issues/25892) |
-| 2 | accept | `SEC-AUTHZ-DYNAMIC-VARIABLES` (RWB-0252)<br>`checks/security/access-control/SEC-AUTHZ-DYNAMIC-VARIABLES.yaml` | Каждая динамическая переменная в правилах доступа и валидации ($CURRENT_USER, его поля, $CURRENT_ROLES, $CURRENT_POLICIES) даёт тот же результат, что эквивалентное статическое значение, — в том числе для целочисленных полей и списков (_in); позитивная матрица переменных | [directus/directus#23695](https://github.com/directus/directus/issues/23695), [directus/directus#24848](https://github.com/directus/directus/issues/24848) |
-| 3 | accept | `ASYNC-SCHEDULE-LONG-UPTIME` (RWB-0253)<br>`checks/common/async-integration.yaml` | Задача по расписанию продолжает срабатывать после длительной непрерывной работы процесса (больше 24,8 суток — предел 32-битного таймера в миллисекундах); проверка — длительная работа или сдвиг времени на стенде | [directus/directus#25855](https://github.com/directus/directus/issues/25855) |
-| 4 | accept | `WS-SUBSCRIPTION-EVENTS-DELIVERED` (RWB-0254)<br>`checks/websocket/websocket.yaml` | Подписка на коллекцию (в том числе системную) после подтверждения получает события создания, изменения и удаления, сделанных через API любым способом; базовая доставка, а не права (WS-SUBSCRIPTION-AUTHZ) и не переподключение (WS-RECONNECT-RESUME) | [directus/directus#25457](https://github.com/directus/directus/issues/25457) |
-| 5 | accept | `FILE-MULTIPART-METADATA-SAVED` (RWB-0255)<br>`checks/rest/files.yaml` | Метаданные, переданные полями multipart вместе с файлом (имя для скачивания, заголовок, описание, папка), сохраняются и возвращаются при чтении записи файла — и при порядке полей до и после файла | [directus/directus#25055](https://github.com/directus/directus/issues/25055) |
-| 6 | accept | `RES-RELATION-NULL-TARGET-ROWS` (RWB-0256)<br>`checks/common/resource-lifecycle.yaml` | Чтение связи многие-ко-многим возвращает все записи связующей таблицы, в том числе со ссылкой null или на удалённый объект (связанный объект — null), а не теряет их молча | [directus/directus#24145](https://github.com/directus/directus/issues/24145) |
-| 7 | accept | `RES-RELATIONS-SHARED-JUNCTION-ISOLATION` (RWB-0257)<br>`checks/common/resource-lifecycle.yaml` | Несколько связей ресурса через одну общую связующую таблицу (политика ↔ пользователи и политика ↔ роли) возвращают каждая только свои данные — значения связей не смешиваются и не подменяются | [directus/directus#23785](https://github.com/directus/directus/issues/23785) |
-| 8 | accept | `AUTH-EXTERNAL-IDP-MISSING-ATTRIBUTES` (RWB-0258)<br>`checks/security/authentication-session.yaml` | Вход через внешний IdP с профилем без необязательных атрибутов (email, имя) создаёт пользователя и пускает либо даёт понятную ошибку с причиной, а не 5xx; позитивная пара к AUTH-EXTERNAL-IDP-UNVERIFIED-EMAIL | [directus/directus#24099](https://github.com/directus/directus/issues/24099) |
-| 9 | accept | `FILE-STORAGE-BACKEND-PARITY` (RWB-0259)<br>`checks/rest/files.yaml` | Операции с файлами (загрузка, отдача, трансформации и пресеты, Range, удаление) работают одинаково на каждом поддерживаемом хранилище (локальный диск, S3, GCS, Azure и т. п.); нужны стенды с несколькими драйверами хранилища | [directus/directus#23955](https://github.com/directus/directus/issues/23955) |
-| 10 | accept | `WS-MULTIPLE-ENDPOINTS-INDEPENDENT` (RWB-0260)<br>`checks/websocket/websocket.yaml` | Несколько WebSocket-эндпоинтов на разных путях (realtime, GraphQL subscriptions, служебные) работают независимо — включение одного не ломает рукопожатие, аутентификацию и сообщения другого | [directus/directus#23625](https://github.com/directus/directus/issues/23625) |
+| 2 | accept | `SEC-AUTHZ-DYNAMIC-VARIABLES` (RWB-0252)<br>`checks/security/access-control/SEC-AUTHZ-DYNAMIC-VARIABLES.yaml` | Каждая динамическая переменная в правилах доступа ($CURRENT_USER, $CURRENT_ROLES, $CURRENT_POLICIES) разрешает и запрещает доступ так же, как эквивалентное статическое значение, в том числе в списках (_in) и через связи | [directus/directus#23695](https://github.com/directus/directus/issues/23695) |
+| 3 | accept | `VAL-DYNAMIC-VARIABLES-TYPE` (RWB-0253)<br>`checks/rest/input-validation.yaml` | Правило валидации с динамической переменной ($CURRENT_USER.company и т. п.) сравнивает значения по типу поля — целое поле совпадает с целым значением переменной; принятие и отклонение данных такие же, как со статическим значением | [directus/directus#24848](https://github.com/directus/directus/issues/24848) |
+| 4 | accept | `ASYNC-SCHEDULE-LONG-UPTIME` (RWB-0254)<br>`checks/common/async-integration.yaml` | Задача по расписанию продолжает срабатывать после длительной непрерывной работы процесса (в первоисточнике — около 25 суток, библиотека node-schedule; вероятная причина — предел 32-битного таймера в миллисекундах, 24,8 суток); проверка — длительная работа или управляемый сдвиг времени на стенде | [directus/directus#25855](https://github.com/directus/directus/issues/25855) |
+| 5 | accept | `WS-SUBSCRIPTION-EVENTS-DELIVERED` (RWB-0255)<br>`checks/websocket/websocket.yaml` | Подписка на коллекцию (в том числе системную) после подтверждения получает события создания, изменения и удаления, сделанных через API любым способом; базовая доставка, а не права (WS-SUBSCRIPTION-AUTHZ) и не переподключение (WS-RECONNECT-RESUME) | [directus/directus#25457](https://github.com/directus/directus/issues/25457) |
+| 6 | accept | `FILE-MULTIPART-METADATA-SAVED` (RWB-0256)<br>`checks/rest/files.yaml` | Метаданные, переданные полями multipart вместе с файлом (имя для скачивания, заголовок, описание, папка), сохраняются и возвращаются при чтении записи файла — и при порядке полей до и после файла | [directus/directus#25055](https://github.com/directus/directus/issues/25055) |
+| 7 | accept | `RES-RELATION-NULL-TARGET-ROWS` (RWB-0257)<br>`checks/common/resource-lifecycle.yaml` | Чтение связи многие-ко-многим возвращает все записи связующей таблицы, в том числе со ссылкой null или на удалённый объект (связанный объект — null), а не теряет их молча | [directus/directus#24145](https://github.com/directus/directus/issues/24145) |
+| 8 | accept | `RES-RELATIONS-SHARED-JUNCTION-ISOLATION` (RWB-0258)<br>`checks/common/resource-lifecycle.yaml` | Несколько связей ресурса через одну общую связующую таблицу (политика ↔ пользователи и политика ↔ роли) возвращают каждая только свои данные — значения связей не смешиваются и не подменяются | [directus/directus#23785](https://github.com/directus/directus/issues/23785) |
+| 9 | accept | `AUTH-EXTERNAL-IDP-MISSING-ATTRIBUTES` (RWB-0259)<br>`checks/security/authentication-session.yaml` | Вход через внешний IdP с профилем без необязательных атрибутов (email, имя) обрабатывается по требованиям — допустимый вход успешен, недопустимый даёт 4xx с понятной причиной, без 5xx; пара к AUTH-EXTERNAL-IDP-UNVERIFIED-EMAIL | [directus/directus#24099](https://github.com/directus/directus/issues/24099) |
+| 10 | accept | `FILE-TRANSFORM-STORAGE-PARITY` (RWB-0260)<br>`checks/rest/files.yaml` | Поддерживаемые трансформации и пресеты изображений (key, параметры) отдают файл на каждом поддерживаемом драйвере хранилища так же, как на локальном диске; нужны стенды с несколькими драйверами, отсутствие драйвера — неприменимость | [directus/directus#23955](https://github.com/directus/directus/issues/23955) |
+| 11 | accept | `WS-MULTIPLE-ENDPOINTS-INDEPENDENT` (RWB-0261)<br>`checks/websocket/websocket.yaml` | Несколько WebSocket-эндпоинтов на разных путях (realtime, GraphQL subscriptions, служебные) работают независимо — включение одного не ломает рукопожатие, аутентификацию и сообщения другого | [directus/directus#23625](https://github.com/directus/directus/issues/23625) |
 
 ## Пруфы к существующим
 
@@ -76,7 +77,7 @@
 |---|---|---|
 | [directus/directus#24057](https://github.com/directus/directus/issues/24057) | extends | Запретить роли чтение поля имени файла и скачать файл: Content-Disposition не содержит запрещённого имени |
 
-### FILE-DOWNLOAD-HEADERS — Скачивание отдаёт корректные Content-Type, Content-Disposition и nosniff (RWB-0261, багов: 1)
+### FILE-DOWNLOAD-HEADERS — Скачивание отдаёт корректные Content-Type, Content-Disposition и nosniff (RWB-0262, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -102,7 +103,7 @@
 | [directus/directus#26191](https://github.com/directus/directus/issues/26191) | extends | Запустить несколько экземпляров с общим хранилищем и вызывать health-эндпоинт каждого: проверка не изменяет общий объект и не вызывает ошибок лимита хранилища |
 | [directus/directus#23635](https://github.com/directus/directus/issues/23635) | extends | Запросить health при каждом поддерживаемом драйвере хранилища и проверить, что исправное хранилище даёт статус ok |
 
-### OBS-NO-SECRETS-IN-LOGS — Логи не содержат паролей, токенов и ПДн в открытом виде (RWB-0262, багов: 1)
+### OBS-NO-SECRETS-IN-LOGS — Логи не содержат паролей, токенов и ПДн в открытом виде (RWB-0263, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -114,7 +115,7 @@
 |---|---|---|
 | [directus/directus#24719](https://github.com/directus/directus/issues/24719) | extends | Отфильтровать по полю связи многие-ко-многим, где у записи несколько подходящих связанных элементов, и сравнить filter_count с числом записей |
 
-### PERF-DEEP-PAGINATION — Глубокая пагинация и большие выборки не деградируют неприемлемо (RWB-0263, багов: 1)
+### PERF-DEEP-PAGINATION — Глубокая пагинация и большие выборки не деградируют неприемлемо (RWB-0264, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -202,7 +203,7 @@
 | [directus/directus#24190](https://github.com/directus/directus/issues/24190) | extends | Передать в query-строке фильтр с вложенностью групп $and/$or глубже лимита разбора query-параметров и сравнить с той же формой в теле запроса |
 | [directus/directus#24038](https://github.com/directus/directus/issues/24038) | extends | Передать параметры чтения (version, fields) в теле запроса SEARCH и сравнить ответ с тем же запросом GET с query-строкой |
 
-### REST-OPTIONAL-EMPTY-VALUE — Отсутствующий и пустой параметр (RWB-0264, багов: 1)
+### REST-OPTIONAL-EMPTY-VALUE — Отсутствующий и пустой параметр (RWB-0265, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -215,7 +216,7 @@
 | [directus/directus#24319](https://github.com/directus/directus/issues/24319) | extends | Изменить одно свойство столбца-автоинкремента (unique) через API схемы и проверить, что тип и значение по умолчанию не изменились |
 | [directus/directus#23992](https://github.com/directus/directus/issues/23992) | extends | Изменить другое свойство строкового столбца с заданной длиной и проверить, что длина не сброшена к значению по умолчанию |
 
-### REST-PATH-PARAM-ENCODING — Кодирование path-параметров (RWB-0265, багов: 1)
+### REST-PATH-PARAM-ENCODING — Кодирование path-параметров (RWB-0266, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|

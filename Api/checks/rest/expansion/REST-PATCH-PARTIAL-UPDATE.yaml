@@ -25,6 +25,12 @@ checks:
     notes: 'Real-world bug: RWB-0127 (directus/directus#27877)'
   - action: null удаляет поле, PUT без поля очищает его; проверять фактическое применение для атрибутов безопасности
     notes: 'Real-world bug: RWB-0127 (keycloak/keycloak#51213)'
+  - action: Изменить одно свойство столбца-автоинкремента (unique) через API схемы и проверить, что тип и значение по умолчанию
+      не изменились
+    notes: 'Real-world bug: RWB-0127 (directus/directus#24319)'
+  - action: Изменить другое свойство строкового столбца с заданной длиной и проверить, что длина не сброшена к значению по
+      умолчанию
+    notes: 'Real-world bug: RWB-0127 (directus/directus#23992)'
   expected:
   - меняются только указанные поля; null/remove соответствует формату
   applicability:

@@ -29,6 +29,8 @@ checks:
     notes: 'Real-world bug: RWB-0142 (keycloak/keycloak#50791)'
   - action: Добавить варианты заголовка JWT без alg, с alg=null и пустым объектом (не только alg=none из AUTH-JWT-ALG-NONE)
     notes: 'Real-world bug: RWB-0142 (keycloak/keycloak#49969)'
+  - action: Отправить в сброс пароля строку, не являющуюся JWT, и в проверку хеша строку, не являющуюся хешем, без аутентификации
+    notes: 'Real-world bug: RWB-0142 (directus/directus#23941)'
   expected:
   - Reject according to authentication policy; do not fall back to anonymous or weaker authentication.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

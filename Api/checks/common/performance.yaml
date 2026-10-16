@@ -25,6 +25,8 @@ checks:
   - action: Добавить замер при росте числа ролей; проверять все варианты эндпоинта (realm и client) — фикс одного не гарантирует
       другой
     notes: 'Real-world bug: RWB-0096 (keycloak/keycloak#51531)'
+  - action: Замерить время операций изменения схемы (создание коллекции, добавление поля) на каждой поддерживаемой СУБД
+    notes: 'Real-world bug: RWB-0096 (directus/directus#25581)'
   expected:
   - Перцентили в пределах SLO; регрессия относительно базовой линии не выше порога.
   applicability:
@@ -160,11 +162,14 @@ checks:
   - performance
   - pagination
   - costly
+  - real-world-bug
   - nightly
   preconditions:
   - Коллекция большого объёма.
   steps:
   - action: Запросить первые и последние страницы большой коллекции, сложные фильтры.
+  - action: Выполнить поиск по строке в коллекции из 100 000+ записей со многими текстовыми полями и замерить время ответа
+    notes: 'Real-world bug: RWB-0264 (directus/directus#24594)'
   expected:
   - Время ответа в пределах SLO или действуют ограничения глубины.
   applicability:
@@ -180,6 +185,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0264'
 - id: PERF-PAYLOAD-SIZE
   status: approved
   title: Размер ответов разумен и не растёт неограниченно

@@ -2,18 +2,18 @@
 
 Файл генерируется `python tools/build_catalog.py .` — не редактируйте вручную.
 
-Всего проверок: **463** — approved: 327, draft: 120, needs_clarification: 16.
-Протоколы: generic: 79, graphql: 211, grpc: 145, rest: 376, websocket: 63.
+Всего проверок: **474** — approved: 327, draft: 131, needs_clarification: 16.
+Протоколы: generic: 81, graphql: 217, grpc: 145, rest: 383, websocket: 65.
 
 | Категория | Описание | Проверок |
 |---|---|---:|
 | [contract](#contract) | API contract and schema conformance | 27 |
-| [resources](#resources) | Resource lifecycle and state transitions | 28 |
-| [security](#security) | Authentication, authorization, and data isolation | 186 |
-| [validation](#validation) | Input validation and normalization | 40 |
+| [resources](#resources) | Resource lifecycle and state transitions | 30 |
+| [security](#security) | Authentication, authorization, and data isolation | 188 |
+| [validation](#validation) | Input validation and normalization | 41 |
 | [http-semantics](#http-semantics) | HTTP methods, headers, and status semantics | 18 |
 | [errors](#errors) | Error response shape and consistency | 4 |
-| [pagination](#pagination) | Pagination, filtering, and sorting | 17 |
+| [pagination](#pagination) | Pagination, filtering, and sorting | 18 |
 | [idempotency](#idempotency) | Idempotent behavior and retry safety | 1 |
 | [grpc-contract](#grpc-contract) | Protobuf and RPC contract conformance | 17 |
 | [grpc-errors](#grpc-errors) | gRPC status and error details | 16 |
@@ -23,10 +23,10 @@
 | [observability](#observability) | Logs, audit trail, tracing, and health endpoints | 6 |
 | [performance](#performance) | Latency, throughput, load, and resource usage | 7 |
 | [compatibility](#compatibility) | Versioning, backward compatibility, and contract drift | 8 |
-| [files](#files) | File upload, download, and binary content | 14 |
-| [async](#async) | Webhooks, events, background jobs, and messaging | 12 |
+| [files](#files) | File upload, download, and binary content | 16 |
+| [async](#async) | Webhooks, events, background jobs, and messaging | 13 |
 | [graphql](#graphql) | GraphQL-specific query, schema, and abuse controls | 13 |
-| [websocket](#websocket) | WebSocket connection, message, and subscription behavior | 8 |
+| [websocket](#websocket) | WebSocket connection, message, and subscription behavior | 10 |
 | [privacy](#privacy) | Personal data handling, masking, consent, and erasure | 6 |
 | [requirements](#requirements) | Requirement transfer errors - spec vs contract vs implementation, unspecified behavior | 5 |
 
@@ -88,6 +88,7 @@ Resource lifecycle and state transitions
 | `RES-DRAFT-PUBLISH-FIDELITY` | Публикация черновика переносит все изменения и не ломает связи других объектов | P2 | draft | rest, graphql | Regression, Nightly |
 | `RES-LIST-REFLECTS-CHANGES` | Списки и счётчики отражают создание, изменение и удаление | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `RES-READ-AFTER-WRITE` | Чтение после записи соответствует модели согласованности | P2 | approved | rest, grpc, graphql | Regression, Nightly |
+| `RES-RELATIONS-SHARED-JUNCTION-ISOLATION` | Связи через общую связующую таблицу возвращают каждая только свои данные | P2 | draft | rest, graphql | Regression |
 | `RES-SOFT-DELETE-VISIBILITY` | Мягко удалённые ресурсы не видны в обычных операциях | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `RES-SYSTEM-OBJECT-PROTECTED` | Встроенные системные объекты защищены от удаления и изменения при любой конфигурации | P2 | draft | rest | Regression, Nightly |
 | `RES-TIMESTAMPS` | Метки времени создания и изменения ведут себя корректно | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
@@ -97,6 +98,7 @@ Resource lifecycle and state transitions
 | `RES-CACHE-EXPLICIT-INVALIDATION` | Явный сброс кэша через API удаляет закэшированные ответы | P3 | draft | generic | Regression, Nightly |
 | `RES-EXPORT-IMPORT-ROUNDTRIP` | Данные, выгруженные API, принимаются им же обратно без изменений | P3 | draft | rest | Regression, Nightly |
 | `RES-LARGE-RELATION-SET` | Тысячи связанных объектов не дают 5xx из-за лимитов СУБД на параметры запроса | P3 | draft | rest | Regression, Nightly |
+| `RES-RELATION-NULL-TARGET-ROWS` | Связь многие-ко-многим возвращает записи связующей таблицы с пустой ссылкой | P3 | draft | rest, graphql | Regression |
 | `RES-RELATION-ORDER-STABLE` | Изменение связанного ресурса не меняет ручной порядок связей у другой стороны | P3 | draft | rest | Regression, Nightly |
 
 ## security
@@ -281,12 +283,14 @@ Authentication, authorization, and data isolation
 | `REST-CORS-POLICY` | Политика CORS | P2 | approved | rest | CI, Regression, Nightly |
 | `REST-SECURITY-HEADERS` | Защитные HTTP-заголовки | P2 | approved | rest | CI, Regression, Nightly |
 | `SEC-AUTHN-SCHEMES-SUPPORTED` | Все задокументированные схемы Authorization принимаются на своих эндпоинтах | P2 | draft | rest | Regression, Nightly |
+| `SEC-AUTHZ-DYNAMIC-VARIABLES` | Динамические переменные в правилах доступа действуют как эквивалентные статические значения | P2 | draft | rest, graphql | Regression, Nightly |
 | `SEC-AUTHZ-PATH-RULE-PRECEDENCE` | Правила доступа по путям применяются по наиболее точному совпадению, независимо от порядка объявления | P2 | draft | rest | Regression, Nightly |
 | `SEC-CLONE-FIELD-PERMISSIONS` | Копирование ресурса соблюдает полевые права чтения и создания | P2 | draft | rest, graphql | Regression, Nightly |
 | `SEC-DISABLED-FEATURE-ENFORCED` | Отключённая настройкой функция недоступна через все API и не попадает в токены | P2 | draft | generic | Regression, Nightly |
 | `SEC-OPAQUE-ID-INTEGRITY` | Непрозрачный идентификатор, выданный сервером, проверяется на подлинность | P2 | draft | generic | Regression, Nightly |
 | `SEC-ROLE-ADMIN-SELF-TARGET` | Административная операция над собственной учёткой обрабатывается по политике без 5xx | P2 | draft | rest | Regression, Nightly |
 | `AUTH-CONCURRENT-SESSIONS` | Лимит одновременных сессий и устройств соблюдается | P3 | approved | rest, graphql | Regression, Nightly |
+| `AUTH-EXTERNAL-IDP-MISSING-ATTRIBUTES` | Вход через внешний IdP без необязательных атрибутов профиля обрабатывается по требованиям | P3 | draft | generic | Regression |
 | `AUTH-OAUTH-PAR` | Pushed Authorization Request действует как прямой запрос авторизации и не ограничивает длительность входа | P3 | draft | rest | Regression, Nightly |
 | `AUTH-OAUTH-RESOURCE-INDICATOR` | Индикатор ресурса, не соответствующий аудитории клиента, даёт 400 invalid_target | P3 | draft | rest | Regression, Nightly |
 | `AUTH-SESSION-NOT-BEFORE-LOGIN` | Анонимный запрос не получает cookie сессии и не создаёт серверную сессию | P3 | draft | rest | Regression, Nightly |
@@ -336,6 +340,7 @@ Input validation and normalization
 | `VAL-TIGHTENED-RULES-STORED-DATA` | Сохранённые до ужесточения валидации значения обрабатываются одинаково на всех путях записи | P2 | draft | rest, grpc, graphql | Regression, Nightly |
 | `VAL-WHITESPACE-HANDLING` | Пробелы по краям и строки из пробелов обрабатываются согласованно | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `VAL-ALL-ERRORS-REPORTED` | Ошибки валидации нескольких полей возвращаются по контракту (все сразу или первая) | P3 | approved | rest, grpc, graphql | Regression, Nightly |
+| `VAL-DYNAMIC-VARIABLES-TYPE` | Правило валидации с динамической переменной сравнивает значения по типу поля | P3 | draft | rest, graphql | Regression |
 | `VAL-QUERY-ARRAY-FORMAT` | Массивы в query передаются в задокументированном формате | P3 | approved | rest | Regression, Nightly |
 | `VAL-UPLOADED-SCHEMA-FORMATS` | Загружаемая клиентом схема с документированными форматами принимается без ложных предупреждений | P3 | draft | rest, graphql | Regression |
 
@@ -391,6 +396,7 @@ Pagination, filtering, and sorting
 | `PAGE-SEARCH-SPECIAL-CHARS` | Поиск со спецсимволами и wildcard не ломается и не расширяет выборку | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `PAGE-TOTAL-COUNT` | Общее число элементов согласовано с суммой страниц | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `REST-FILTER-INVALID` | Невалидный фильтр | P2 | approved | rest | CI, Regression, Nightly |
+| `REST-FILTER-OPERATION-PARITY` | Один фильтр даёт согласованный результат в списке, агрегации и вложенной выборке | P2 | draft | rest, graphql | Regression, Nightly |
 | `REST-FILTER-OPERATOR-TYPE-MATRIX` | Каждый оператор фильтра работает для каждого допустимого типа поля и возвращает ровно подходящие записи | P2 | draft | rest, graphql | Regression, Nightly |
 | `REST-FILTER-RELATION-NO-DUPLICATES` | Фильтр по полю связанной коллекции возвращает каждую запись один раз | P2 | draft | rest, graphql | Regression, Nightly |
 | `REST-FILTER-SORT-COMPOSITION` | Filtering and sorting compose correctly | P2 | approved | rest, graphql | CI, Regression, Nightly |
@@ -565,8 +571,10 @@ File upload, download, and binary content
 | `FILE-MALFORMED-STRUCTURE` | Повреждённый файл при разборе метаданных даёт 4xx, а не падение процесса | P2 | draft | rest | Regression, Nightly |
 | `FILE-ABORTED-UPLOAD-CLEANUP` | Прерванная загрузка не оставляет данных в хранилище и не учитывается в квоте | P3 | draft | rest | Regression, Nightly |
 | `FILE-METADATA-STRIP` | Метаданные изображений с ПДн удаляются | P3 | approved | rest | Regression, Nightly |
+| `FILE-MULTIPART-METADATA-SAVED` | Метаданные из полей multipart сохраняются вместе с файлом | P3 | draft | rest | Regression |
 | `FILE-RANGE-REQUESTS` | Частичное скачивание через Range работает по контракту | P3 | approved | rest | Regression, Nightly |
 | `FILE-TRANSFORM-LIMITS` | Лимит трансформации файла пропускает допустимые комбинации и отклоняет превышение | P3 | draft | rest | Regression, Nightly |
+| `FILE-TRANSFORM-STORAGE-PARITY` | Трансформации файла работают на каждом поддерживаемом хранилище | P3 | draft | rest | Nightly |
 
 ## async
 
@@ -586,6 +594,7 @@ Webhooks, events, background jobs, and messaging
 | `ASYNC-WEBHOOK-RETRY` | Неуспешная доставка вебхука повторяется с backoff и ограничением | P2 | approved | rest, graphql | Regression, Nightly |
 | `ASYNC-DEAD-LETTER` | Необрабатываемые сообщения уходят в DLQ без блокировки очереди | P3 | approved | rest, grpc, graphql, websocket | Regression, Nightly |
 | `ASYNC-JOB-CANCEL` | Отмена фоновой задачи останавливает её и не оставляет частичных эффектов | P3 | approved | rest, grpc, graphql, websocket | Regression, Nightly |
+| `ASYNC-SCHEDULE-LONG-UPTIME` | Задача по расписанию срабатывает и после длительной непрерывной работы процесса | P3 | draft | generic | Nightly |
 
 ## graphql
 
@@ -620,6 +629,8 @@ WebSocket connection, message, and subscription behavior
 | `WS-MALFORMED-MESSAGE` | Некорректные сообщения не рвут соединение без ответа | P2 | approved | websocket | CI, Regression, Nightly |
 | `WS-MESSAGE-LIMITS` | Размер и частота сообщений ограничены | P2 | approved | websocket | CI, Regression, Nightly |
 | `WS-SLOW-CONSUMER-NO-SILENT-LOSS` | Медленный клиент подписки не теряет сообщения молча | P2 | draft | websocket, graphql | Nightly |
+| `WS-SUBSCRIPTION-EVENTS-DELIVERED` | Подписка получает события создания, изменения и удаления | P2 | draft | websocket, graphql | Regression, Nightly |
+| `WS-MULTIPLE-ENDPOINTS-INDEPENDENT` | Несколько WebSocket-эндпоинтов на разных путях работают независимо | P3 | draft | websocket | Regression |
 | `WS-RECONNECT-RESUME` | Переподключение восстанавливает подписки без потери и дублей сверх контракта | P3 | approved | websocket | Regression, Nightly |
 
 ## privacy

@@ -8,6 +8,10 @@
 # в proofs.retarget. Затем: cluster.py (пересобрать directus.md) и apply_proofs.py. Перекрёстное ревью другими LLM —
 # reviewcheck.py (mining/README.md, шаги 6–7, п. 7).
 #
+# Перекрёстное ревью (2026-10-16): ChatGPT и Qwen — directus.reviewcheck.answer-1.md, -2.md; правило — mining/README.md,
+# шаги 6–7, п. 7. Итог: №1, 4–8, 10 — accept у всех (№8 — ожидание по требованиям: вход или 4xx с причиной); №3 — accept
+# (ChatGPT, Claude; Qwen — reject как soak), профиль Nightly; №2 разбит на права и валидацию (Qwen; ChatGPT — отдельные
+# сценарии; Claude согласен); №9 сужен до трансформаций (ChatGPT; Qwen — reject; Claude согласен).
 # decision: accept | reject | pending
 batch: directus
 clusters:
@@ -17,18 +21,24 @@ clusters:
   file: checks/rest/pagination.yaml
   bugs: [directus/directus#25975, directus/directus#25892]
   idea: Один и тот же фильтр (в том числе по полиморфной связи и на нескольких уровнях вложенности) принимается и даёт согласованный результат во всех операциях — список, агрегация (count = числу записей списка), вложенная выборка (deep), экспорт
-- key: dynamic-variables-rule-parity
+- key: dynamic-variables-authz
   decision: accept
   check_id: SEC-AUTHZ-DYNAMIC-VARIABLES
   file: checks/security/access-control/SEC-AUTHZ-DYNAMIC-VARIABLES.yaml
-  bugs: [directus/directus#23695, directus/directus#24848]
-  idea: Каждая динамическая переменная в правилах доступа и валидации ($CURRENT_USER, его поля, $CURRENT_ROLES, $CURRENT_POLICIES) даёт тот же результат, что эквивалентное статическое значение, — в том числе для целочисленных полей и списков (_in); позитивная матрица переменных
+  bugs: [directus/directus#23695]
+  idea: Каждая динамическая переменная в правилах доступа ($CURRENT_USER, $CURRENT_ROLES, $CURRENT_POLICIES) разрешает и запрещает доступ так же, как эквивалентное статическое значение, в том числе в списках (_in) и через связи
+- key: dynamic-variables-validation
+  decision: accept
+  check_id: VAL-DYNAMIC-VARIABLES-TYPE
+  file: checks/rest/input-validation.yaml
+  bugs: [directus/directus#24848]
+  idea: Правило валидации с динамической переменной ($CURRENT_USER.company и т. п.) сравнивает значения по типу поля — целое поле совпадает с целым значением переменной; принятие и отклонение данных такие же, как со статическим значением
 - key: schedule-long-uptime
   decision: accept
   check_id: ASYNC-SCHEDULE-LONG-UPTIME
   file: checks/common/async-integration.yaml
   bugs: [directus/directus#25855]
-  idea: Задача по расписанию продолжает срабатывать после длительной непрерывной работы процесса (больше 24,8 суток — предел 32-битного таймера в миллисекундах); проверка — длительная работа или сдвиг времени на стенде
+  idea: Задача по расписанию продолжает срабатывать после длительной непрерывной работы процесса (в первоисточнике — около 25 суток, библиотека node-schedule; вероятная причина — предел 32-битного таймера в миллисекундах, 24,8 суток); проверка — длительная работа или управляемый сдвиг времени на стенде
 - key: ws-subscription-events
   decision: accept
   check_id: WS-SUBSCRIPTION-EVENTS-DELIVERED
@@ -58,13 +68,13 @@ clusters:
   check_id: AUTH-EXTERNAL-IDP-MISSING-ATTRIBUTES
   file: checks/security/authentication-session.yaml
   bugs: [directus/directus#24099]
-  idea: Вход через внешний IdP с профилем без необязательных атрибутов (email, имя) создаёт пользователя и пускает либо даёт понятную ошибку с причиной, а не 5xx; позитивная пара к AUTH-EXTERNAL-IDP-UNVERIFIED-EMAIL
-- key: storage-backend-parity
+  idea: Вход через внешний IdP с профилем без необязательных атрибутов (email, имя) обрабатывается по требованиям — допустимый вход успешен, недопустимый даёт 4xx с понятной причиной, без 5xx; пара к AUTH-EXTERNAL-IDP-UNVERIFIED-EMAIL
+- key: transform-storage-parity
   decision: accept
-  check_id: FILE-STORAGE-BACKEND-PARITY
+  check_id: FILE-TRANSFORM-STORAGE-PARITY
   file: checks/rest/files.yaml
   bugs: [directus/directus#23955]
-  idea: Операции с файлами (загрузка, отдача, трансформации и пресеты, Range, удаление) работают одинаково на каждом поддерживаемом хранилище (локальный диск, S3, GCS, Azure и т. п.); нужны стенды с несколькими драйверами хранилища
+  idea: Поддерживаемые трансформации и пресеты изображений (key, параметры) отдают файл на каждом поддерживаемом драйвере хранилища так же, как на локальном диске; нужны стенды с несколькими драйверами, отсутствие драйвера — неприменимость
 - key: ws-multiple-endpoints
   decision: accept
   check_id: WS-MULTIPLE-ENDPOINTS-INDEPENDENT

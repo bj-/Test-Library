@@ -25,6 +25,8 @@ checks:
     notes: 'Real-world bug: RWB-0114 (directus/directus#27986)'
   - action: Обновление со своим же уникальным значением и корректный код при конфликте
     notes: 'Real-world bug: RWB-0114 (directus/directus#26997)'
+  - action: Нарушить составное уникальное ограничение из двух полей и проверить 4xx с кодом нарушения уникальности
+    notes: 'Real-world bug: RWB-0114 (directus/directus#25784)'
   expected:
   - конфликт обработан документированно, второй уникальный ресурс не создаётся
   applicability:

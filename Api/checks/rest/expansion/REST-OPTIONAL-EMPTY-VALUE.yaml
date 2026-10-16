@@ -12,6 +12,7 @@ checks:
   - boundary
   - validation
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -19,6 +20,8 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Запустить операцию без необязательного списка ключей и проверить 2xx, а не 403
+    notes: 'Real-world bug: RWB-0265 (directus/directus#25385)'
   expected:
   - отсутствие, пустая и пробельная строка имеют определённую семантику
   applicability:
@@ -37,4 +40,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0265'

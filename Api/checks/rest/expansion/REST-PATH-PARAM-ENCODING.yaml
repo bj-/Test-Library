@@ -12,6 +12,7 @@ checks:
   - contract
   - validation
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -19,6 +20,9 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Запросить ресурс с первичным ключом, содержащим закодированный слэш (%2F), во всех маршрутах, принимающих ключ,
+      включая служебные
+    notes: 'Real-world bug: RWB-0266 (directus/directus#23986)'
   expected:
   - маршрутизация однозначна; недопустимые значения отклоняются по контракту
   applicability:
@@ -37,4 +41,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0266'
