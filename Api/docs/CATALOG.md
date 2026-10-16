@@ -2,27 +2,27 @@
 
 Файл генерируется `python tools/build_catalog.py .` — не редактируйте вручную.
 
-Всего проверок: **445** — approved: 327, draft: 102, needs_clarification: 16.
-Протоколы: generic: 68, graphql: 208, grpc: 143, rest: 369, websocket: 62.
+Всего проверок: **456** — approved: 327, draft: 113, needs_clarification: 16.
+Протоколы: generic: 76, graphql: 210, grpc: 145, rest: 372, websocket: 62.
 
 | Категория | Описание | Проверок |
 |---|---|---:|
 | [contract](#contract) | API contract and schema conformance | 27 |
-| [resources](#resources) | Resource lifecycle and state transitions | 27 |
-| [security](#security) | Authentication, authorization, and data isolation | 180 |
-| [validation](#validation) | Input validation and normalization | 38 |
-| [http-semantics](#http-semantics) | HTTP methods, headers, and status semantics | 16 |
+| [resources](#resources) | Resource lifecycle and state transitions | 28 |
+| [security](#security) | Authentication, authorization, and data isolation | 181 |
+| [validation](#validation) | Input validation and normalization | 40 |
+| [http-semantics](#http-semantics) | HTTP methods, headers, and status semantics | 17 |
 | [errors](#errors) | Error response shape and consistency | 4 |
 | [pagination](#pagination) | Pagination, filtering, and sorting | 17 |
 | [idempotency](#idempotency) | Idempotent behavior and retry safety | 1 |
 | [grpc-contract](#grpc-contract) | Protobuf and RPC contract conformance | 17 |
 | [grpc-errors](#grpc-errors) | gRPC status and error details | 16 |
-| [resilience](#resilience) | Timeouts, retries, dependency failures | 8 |
+| [resilience](#resilience) | Timeouts, retries, dependency failures | 10 |
 | [business-logic](#business-logic) | Domain rules, workflows, limits, and money | 12 |
 | [concurrency](#concurrency) | Parallel requests, races, and lost updates | 8 |
-| [observability](#observability) | Logs, audit trail, tracing, and health endpoints | 5 |
-| [performance](#performance) | Latency, throughput, load, and resource usage | 6 |
-| [compatibility](#compatibility) | Versioning, backward compatibility, and contract drift | 6 |
+| [observability](#observability) | Logs, audit trail, tracing, and health endpoints | 6 |
+| [performance](#performance) | Latency, throughput, load, and resource usage | 7 |
+| [compatibility](#compatibility) | Versioning, backward compatibility, and contract drift | 8 |
 | [files](#files) | File upload, download, and binary content | 14 |
 | [async](#async) | Webhooks, events, background jobs, and messaging | 12 |
 | [graphql](#graphql) | GraphQL-specific query, schema, and abuse controls | 13 |
@@ -80,6 +80,7 @@ Resource lifecycle and state transitions
 | `REST-DECIMAL-PRECISION` | Точность decimal | P1 | approved | rest | CI, Regression, Nightly, Release |
 | `REST-DUPLICATE-UNIQUE-KEY` | Дублирование уникального ключа | P1 | approved | rest | CI, Regression, Nightly, Release |
 | `REST-STATE-TRANSITIONS` | Переходы состояния ресурса | P1 | approved | rest | CI, Regression, Nightly, Release |
+| `RES-ALLOCATED-VALUE-RELEASE` | Выделенное из пула значение не выдаётся повторно, пока прежний владелец не удалён окончательно | P2 | draft | generic | Regression, Nightly |
 | `RES-BULK-LIMITS` | Массовые операции соблюдают лимиты и сообщают о каждом элементе | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `RES-CACHE-KEY-COMPLETENESS` | Серверный кэш различает ответы по всем значимым параметрам и по типу ресурса | P2 | draft | rest | Regression, Nightly |
 | `RES-CREATE-RESPONSE-MATCHES-READ` | Ответ на создание и изменение совпадает с последующим чтением | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
@@ -250,6 +251,7 @@ Authentication, authorization, and data isolation
 | `SEC-TOKEN-REFRESH-REPLAY` | Refresh-token replay is rejected or rotated | P1 | approved | rest, graphql, generic | CI, Regression, Nightly, Release |
 | `AUTH-CLIENT-CERT-IDENTITY` | Личность из сертификата клиента извлекается однозначно | P2 | draft | generic | Regression, Nightly |
 | `AUTH-GENERATED-SECRET-STRENGTH` | Сгенерированные сервером секреты имеют стойкость не ниже требуемой алгоритмом | P2 | draft | rest | Regression, Nightly |
+| `AUTH-IDENTITY-ATTRIBUTES-ALL-SCHEMES` | Атрибуты идентичности, которые даёт источник, сохраняются при любом способе аутентификации | P2 | draft | generic | Regression, Nightly |
 | `AUTH-JWT-TIME-CLAIMS` | Токены с nbf/iat в будущем и без exp обрабатываются по политике | P2 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly |
 | `AUTH-JWT-VALID-ACCEPTED` | Валидный токен принимается при всех поддерживаемых алгоритмах, наборах ключей и настройках claims | P2 | draft | generic | Regression, Nightly |
 | `AUTH-LOGOUT-CLEARS-COOKIE` | Выход снимает cookie сессии на клиенте | P2 | approved | rest | CI, Regression, Nightly |
@@ -326,9 +328,11 @@ Input validation and normalization
 | `VAL-QUERY-PARAM-POLLUTION` | Дублирующиеся query-параметры обрабатываются однозначно | P2 | approved | rest | CI, Regression, Nightly |
 | `VAL-REGEX-PATTERN` | Поле с pattern принимает только совпадающие значения | P2 | approved | rest, graphql | CI, Regression, Nightly |
 | `VAL-REQUIRED-HEADERS` | Обязательные и форматные заголовки валидируются | P2 | approved | rest | CI, Regression, Nightly |
+| `VAL-TIGHTENED-RULES-STORED-DATA` | Сохранённые до ужесточения валидации значения обрабатываются одинаково на всех путях записи | P2 | draft | rest, grpc, graphql | Regression, Nightly |
 | `VAL-WHITESPACE-HANDLING` | Пробелы по краям и строки из пробелов обрабатываются согласованно | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `VAL-ALL-ERRORS-REPORTED` | Ошибки валидации нескольких полей возвращаются по контракту (все сразу или первая) | P3 | approved | rest, grpc, graphql | Regression, Nightly |
 | `VAL-QUERY-ARRAY-FORMAT` | Массивы в query передаются в задокументированном формате | P3 | approved | rest | Regression, Nightly |
+| `VAL-UPLOADED-SCHEMA-FORMATS` | Загружаемая клиентом схема с документированными форматами принимается без ложных предупреждений | P3 | draft | rest, graphql | Regression |
 
 ## http-semantics
 
@@ -346,6 +350,7 @@ HTTP methods, headers, and status semantics
 | `HTTP-ACCEPT-LANGUAGE` | Язык сообщений определяется Accept-Language с fallback | P3 | approved | rest, graphql | Regression, Nightly |
 | `HTTP-BODY-ON-GET-DELETE` | Тело в GET/DELETE игнорируется или отклоняется по контракту | P3 | approved | rest | Regression, Nightly |
 | `HTTP-COMPRESSION` | Сжатие ответа согласуется через Accept-Encoding | P3 | approved | rest | Regression, Nightly |
+| `HTTP-HEADER-REPEATED-LINES-ACCEPTED` | Сотни повторяющихся строк одного заголовка в пределах лимита размера принимаются одинаково по HTTP/1.1 и HTTP/2 | P3 | draft | rest, grpc | Regression, Nightly |
 | `HTTP-HTTP2-RESOURCE-LIMITS` | Параметры HTTP/2 со стороны клиента не заставляют сервер буферизовать и работать без предела | P3 | draft | rest, grpc | Nightly |
 | `HTTP-OPTIONS-ALLOW` | OPTIONS возвращает согласованный список методов | P3 | approved | rest | Regression, Nightly |
 | `HTTP-TRAILING-SLASH-CASE` | Вариации пути (слэш в конце, регистр, двойной слэш) обрабатываются единообразно | P3 | approved | rest | Regression, Nightly |
@@ -453,10 +458,12 @@ Timeouts, retries, dependency failures
 | `REST-CONCURRENT-UPDATE` | Конкурентное обновление | P1 | approved | rest | CI, Regression, Nightly, Release |
 | `REST-ETAG-IF-MATCH` | Условное обновление If-Match | P1 | approved | rest | CI, Regression, Nightly, Release |
 | `RESIL-BROKER-DOWN` | Недоступность брокера сообщений не теряет события | P2 | approved | rest, grpc, graphql, websocket | Regression, Nightly |
+| `RESIL-DEPENDENCY-TLS-RECOVERY` | Проверка доступности внешнего бэкенда проверяет его сертификат и восстанавливается без перезапуска | P2 | draft | generic | Nightly |
 | `RESIL-GRACEFUL-SHUTDOWN` | Перезапуск экземпляра не обрывает выполняющиеся запросы | P2 | approved | rest, grpc, graphql, websocket | Regression, Nightly |
 | `RESIL-PARTIAL-DEGRADATION` | Отказ некритичной зависимости не ломает основной функционал | P2 | approved | rest, grpc, graphql, websocket | Regression, Nightly |
 | `RESIL-CIRCUIT-BREAKER` | Circuit breaker размыкается и восстанавливается по политике | P3 | approved | rest, grpc, graphql, websocket | Regression, Nightly |
 | `RESIL-ENCRYPTION-KEY-ROTATION` | Нерасшифровываемое после смены ключа значение не ломает чтение и сохранение остальных данных | P3 | draft | rest | Regression, Nightly |
+| `RESIL-TLS-CERT-RELOAD` | Сервер подхватывает заменённый TLS-сертификат без перезапуска | P3 | draft | generic | Nightly |
 
 ## business-logic
 
@@ -501,6 +508,7 @@ Logs, audit trail, tracing, and health endpoints
 | `OBS-NO-SECRETS-IN-LOGS` | Логи не содержат паролей, токенов и ПДн в открытом виде | P0 | approved | rest, grpc, graphql, websocket | Regression, Nightly |
 | `OBS-AUDIT-TRAIL` | Чувствительные действия фиксируются в журнале аудита | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
 | `OBS-HEALTH-ENDPOINTS` | Health-эндпоинты отражают состояние и не раскрывают детали | P2 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly |
+| `OBS-CONFIG-ENDPOINT-ACCURATE` | Служебный эндпоинт конфигурации показывает фактические значения | P3 | draft | generic | Nightly |
 | `OBS-TELEMETRY-FORMAT` | Экспортируемая телеметрия соответствует документированной структуре и соглашениям OpenTelemetry | P3 | draft | generic | Nightly |
 | `OBS-TRACE-PROPAGATION` | Контекст трассировки принимается и передаётся дальше | P3 | approved | rest, grpc, graphql, websocket | Regression, Nightly |
 
@@ -513,6 +521,7 @@ Latency, throughput, load, and resource usage
 | `PERF-DEEP-PAGINATION` | Глубокая пагинация и большие выборки не деградируют неприемлемо | P2 | approved | rest, grpc, graphql | Nightly |
 | `PERF-LATENCY-BASELINE` | Задержка ключевых операций в пределах SLO при обычной нагрузке | P2 | approved | rest, grpc, graphql, websocket | Nightly |
 | `PERF-LOAD-THROUGHPUT` | Сервис выдерживает целевую нагрузку | P2 | approved | rest, grpc, graphql, websocket | Nightly |
+| `PERF-NO-UNNEEDED-DEPENDENCY-CALLS` | Внешняя зависимость вызывается только когда её результат нужен | P3 | draft | generic | Nightly |
 | `PERF-PAYLOAD-SIZE` | Размер ответов разумен и не растёт неограниченно | P3 | approved | rest, grpc, graphql, websocket | Nightly |
 | `PERF-SOAK` | Длительная нагрузка не вызывает утечек и деградации | P3 | approved | rest, grpc, graphql, websocket | Nightly |
 | `PERF-SPIKE` | Резкий всплеск нагрузки обрабатывается деградацией, а не отказом | P3 | approved | rest, grpc, graphql, websocket | Nightly |
@@ -528,7 +537,9 @@ Versioning, backward compatibility, and contract drift
 | `COMPAT-IMPLEMENTATION-MATCHES-CONTRACT` | Реализация соответствует опубликованному контракту | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
 | `COMPAT-DEFAULT-VERSION` | Запрос без указания версии обслуживается задокументированной версией | P2 | approved | rest, graphql | CI, Regression, Nightly |
 | `COMPAT-ENUM-EXTENSION` | Добавление значения enum не ломает клиентов | P2 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly |
+| `COMPAT-UPGRADE-STORED-DATA-STABLE` | Обновление сервера не меняет сохранённые объекты и не запускает побочных действий | P2 | draft | generic | Release |
 | `COMPAT-DEPRECATION-SIGNALS` | Устаревающие операции помечены Deprecation и Sunset | P3 | approved | rest, graphql | Regression, Nightly |
+| `COMPAT-MIXED-VERSION-WRITE-STABILITY` | Экземпляры разных версий при поэтапном обновлении не перезаписывают общий объект по кругу | P3 | draft | generic | Release |
 
 ## files
 

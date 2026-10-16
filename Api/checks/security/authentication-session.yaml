@@ -1760,3 +1760,42 @@ checks:
   - RFC 7515, RFC 7517, RFC 8037 (EdDSA)
   - Позитивная пара к AUTH-JWT-* и SEC-TOKEN-SIGNATURE
   - 'Real-world bug: RWB-0206'
+- id: AUTH-IDENTITY-ATTRIBUTES-ALL-SCHEMES
+  status: draft
+  title: Атрибуты идентичности, которые даёт источник, сохраняются при любом способе аутентификации
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - authn
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Несколько способов аутентификации (токен, OIDC, сертификат клиента) и метод «кто я» или эквивалент.
+  steps:
+  - action: Аутентифицироваться каждым способом с учёткой, у которой источник содержит UID, группы и дополнительные
+      атрибуты; запросить «кто я».
+  expected:
+  - Каждый атрибут, который источник содержит и который система обязана извлекать (по документации), присутствует и верен.
+  - Одинакового набора у всех схем не требуется — различия должны быть задокументированы.
+  applicability:
+    when:
+    - Больше одной схемы аутентификации.
+    skip_when:
+    - Единственная схема.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - Смежные — AUTH-CLIENT-CERT-IDENTITY, AUTH-ACCOUNT-STATE-ALL-SCHEMES, SEC-AUTHN-SCHEMES-SUPPORTED
+  - 'Real-world bug: RWB-0226'

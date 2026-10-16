@@ -12,6 +12,7 @@ checks:
   - compatibility
   - contract
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -20,6 +21,9 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Записать подресурс status через версию API, отличную от версии хранения, и проверить, что managedFields и spec
+      объекта не изменились
+    notes: 'Real-world bug: RWB-0229 (kubernetes/kubernetes#133704)'
   expected:
   - поддерживаемые версии сохраняют документированную семантику
   applicability:
@@ -39,4 +43,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0229'

@@ -54,6 +54,23 @@ RWB-0003:
     product: Keycloak
     closed: '2026-10-06'
     summary: Принятые при сохранении пустые строки ломают последующую операцию с 500
+  - url: https://github.com/kubernetes/kubernetes/issues/136472
+    fix: https://github.com/kubernetes/kubernetes/pull/136621
+    product: Kubernetes
+    closed: '2026-02-06'
+    summary: Принятая политика с типом параметров без типизированной схемы роняет фоновую проверку типов в контроллер-менеджере
+  - url: https://github.com/kubernetes/kubernetes/issues/135145
+    fix: https://github.com/kubernetes/kubernetes/pull/135155
+    product: Kubernetes
+    closed: '2025-11-06'
+    summary: 'Политика допуска над пользовательским типом со свойством additionalProperties: true роняет контроллер-менеджер
+      при проверке типов'
+  - url: https://github.com/kubernetes/kubernetes/issues/133651
+    fix: https://github.com/kubernetes/kubernetes/pull/133721
+    product: Kubernetes
+    closed: '2025-10-14'
+    summary: Обновление status объекта, тип которого задан в устаревшей форме определения, даёт панику сервера после обновления
+      версии
 RWB-0004:
   pattern: Разрешённая операция работает для каждой роли с правом, а не только для администратора (позитивная матрица прав)
   checks:
@@ -375,6 +392,11 @@ RWB-0023:
     product: Directus
     closed: '2026-04-15'
     summary: Кэш ответов эндпоинта не учитывал query-параметры — возвращался ответ на другой запрос
+  - url: https://github.com/kubernetes/kubernetes/issues/132802
+    fix: https://github.com/kubernetes/kubernetes/pull/132803
+    product: Kubernetes
+    closed: '2025-07-11'
+    summary: Кэш токенов ключуется по имени учётной записи без uid и после её пересоздания выдаёт токен старой учётки
 RWB-0024:
   pattern: Незавершённые сообщения (slowloris) и непрочитанные ответы не накапливаются без ограничения; таймауты, лимит соединений,
     backpressure
@@ -807,6 +829,11 @@ RWB-0052:
     product: Strapi
     closed: '2026-07-21'
     summary: Фоновая задача перевода падала целиком с общим сообщением, когда одно значение превышало maxLength
+  - url: https://github.com/kubernetes/kubernetes/issues/140561
+    fix: https://github.com/kubernetes/kubernetes/pull/140586
+    product: Kubernetes
+    closed: '2026-07-16'
+    summary: Ожидающая задача миграции, тип ресурса которой удалили, роняет весь контроллер-менеджер
 RWB-0053:
   pattern: Вебхуки подписаны, подпись проверяется, повтор отклоняется
   checks:
@@ -1306,6 +1333,11 @@ RWB-0077:
     product: org.apache.cxf:cxf-core
     closed: '2026-06-12'
     summary: Число вложений в сообщении при разборе не ограничивалось
+  - url: https://github.com/kubernetes/kubernetes/issues/134580
+    fix: https://github.com/kubernetes/kubernetes/pull/134601
+    product: Kubernetes
+    closed: '2025-10-15'
+    summary: Ограничитель приоритетов считает дешёвыми наблюдения без resourceVersion, хотя они выгружают всю коллекцию
 RWB-0078:
   pattern: Подмена Host и X-Forwarded-Host не влияет на ссылки и маршрутизацию
   checks:
@@ -1869,6 +1901,11 @@ RWB-0092:
     product: Directus
     closed: '2025-11-24'
     summary: Для загрузки файла администратором тенанта в событии не передавался контекст пользователя
+  - url: https://github.com/kubernetes/kubernetes/issues/135684
+    fix: https://github.com/kubernetes/kubernetes/pull/135685
+    product: Kubernetes
+    closed: '2026-01-16'
+    summary: В событии аудита медленного запроса нет аннотаций с общей задержкой и её разбивкой
 RWB-0093:
   pattern: Health-эндпоинты отражают состояние и не раскрывают детали
   checks:
@@ -1883,6 +1920,11 @@ RWB-0093:
     product: Hasura
     closed: '2025-04-22'
     summary: Liveness-эндпоинт /healthz медленный, потому что зависит от проверки метаданных и схемы
+  - url: https://github.com/kubernetes/kubernetes/issues/129417
+    fix: https://github.com/kubernetes/kubernetes/pull/129438
+    product: Kubernetes
+    closed: '2025-06-19'
+    summary: Health-эндпоинт сообщает OK, когда отдельное хранилище части ресурсов недоступно
 RWB-0094:
   pattern: Поиск со спецсимволами и wildcard не ломается и не расширяет выборку
   checks:
@@ -1925,6 +1967,11 @@ RWB-0096:
     product: Keycloak
     closed: '2026-08-26'
     summary: Эндпоинт составных ролей пользователя перебирал все роли realm — не масштабировался
+  - url: https://github.com/kubernetes/kubernetes/issues/133600
+    fix: https://github.com/kubernetes/kubernetes/pull/133873
+    product: Kubernetes
+    closed: '2025-09-03'
+    summary: Регрессия задержки POST событий при большом масштабе кластера
 RWB-0097:
   pattern: Размер ответов разумен и не растёт неограниченно
   checks:
@@ -2026,6 +2073,12 @@ RWB-0102:
     product: Keycloak
     closed: '2026-08-25'
     summary: После удаления роли, на которую ссылается маппинг области, выдача токена падала с 500 для клиента
+  - url: https://github.com/kubernetes/kubernetes/issues/136890
+    fix: https://github.com/kubernetes/kubernetes/pull/137008
+    product: Kubernetes
+    closed: '2026-02-20'
+    summary: Автоматически созданный зависимый объект получает неверный apiVersion владельца, и сборщик мусора не удаляет
+      его после удаления владельца
 RWB-0103:
   pattern: Неизменяемые поля нельзя изменить после создания
   checks:
@@ -2059,6 +2112,11 @@ RWB-0105:
     product: Directus
     closed: '2026-09-08'
     summary: При загрузке файла клиентские значения серверных полей записывались привилегированно
+  - url: https://github.com/kubernetes/kubernetes/issues/133388
+    fix: https://github.com/kubernetes/kubernetes/pull/138908
+    product: Kubernetes
+    closed: '2026-05-08'
+    summary: Создание объекта через серверное применение сохраняет переданный клиентом deletionTimestamp, и объект застревает
 RWB-0106:
   pattern: Метки времени создания и изменения ведут себя корректно
   checks:
@@ -2109,6 +2167,11 @@ RWB-0107:
     closed: '2017-12-21'
     summary: Отказ соединения с нижестоящим сервисом нельзя было перехватить — недоступность зависимости ломала обработку
       вместо контролируемой ошибки.
+  - url: https://github.com/kubernetes/kubernetes/issues/130690
+    fix: https://github.com/kubernetes/kubernetes/pull/132165
+    product: Kubernetes
+    closed: '2025-06-12'
+    summary: Сетевые ошибки при вызове вебхука допуска возвращаются клиенту как 400
 RWB-0108:
   pattern: Перезапуск экземпляра не обрывает выполняющиеся запросы
   checks:
@@ -2124,6 +2187,16 @@ RWB-0108:
     product: NestJS
     closed: '2024-11-25'
     summary: Закрытие WebSocket-адаптера закрывало HTTP-сервер раньше времени и блокировало остановку при долгих соединениях
+  - url: https://github.com/kubernetes/kubernetes/issues/140242
+    fix: https://github.com/kubernetes/kubernetes/pull/140241
+    product: Kubernetes
+    closed: '2026-07-17'
+    summary: Экземпляр API-сервера не завершается по SIGTERM, если фоновая регистрация экземпляра постоянно отклоняется валидацией
+  - url: https://github.com/kubernetes/kubernetes/issues/127335
+    fix: https://github.com/kubernetes/kubernetes/pull/139237
+    product: Kubernetes
+    closed: '2026-06-10'
+    summary: Сервер продолжает слать запросы вебхуку на экземпляр, удалённый из эндпоинтов, по старым TCP-соединениям
 RWB-0109:
   pattern: Отказ некритичной зависимости не ломает основной функционал
   checks:
@@ -2408,6 +2481,22 @@ RWB-0123:
     product: Directus
     closed: '2026-06-27'
     summary: Большое число в decimal-поле с правилом валидации давало необработанную ошибку вместо ошибки валидации
+  - url: https://github.com/kubernetes/kubernetes/issues/138525
+    fix: https://github.com/kubernetes/kubernetes/pull/138574
+    product: Kubernetes
+    closed: '2026-07-15'
+    summary: 'Обновление статуса отклоняется: UID больше INT32_MAX считается недопустимым, хотя uid_t беззнаковый 32-битный'
+  - url: https://github.com/kubernetes/kubernetes/issues/136091
+    fix: https://github.com/kubernetes/kubernetes/pull/136582
+    product: Kubernetes
+    closed: '2026-01-28'
+    summary: Форматы int32, int64, float, double в схеме пользовательского ресурса не проверяются, значения вне диапазона
+      принимаются
+  - url: https://github.com/kubernetes/kubernetes/issues/135487
+    fix: https://github.com/kubernetes/kubernetes/pull/141938
+    product: Kubernetes
+    closed: '2026-09-09'
+    summary: Количество, равное максимальному int64, из строки не разбирается, в том числе в правилах валидации
 RWB-0124:
   pattern: Object-level authorization
   checks:
@@ -2568,6 +2657,18 @@ RWB-0131:
     closed: '2020-11-12'
     summary: Глобальная валидация не применяется к телу в контроллере, созданном через generic-фабрику — невалидные данные
       принимаются.
+  - url: https://github.com/kubernetes/kubernetes/issues/130896
+    fix: https://github.com/kubernetes/kubernetes/pull/131354
+    product: Kubernetes
+    closed: '2025-06-16'
+    summary: Поле, помеченное в контракте обязательным, можно не передавать — сервер подставляет пустое значение, а тот же
+      тип в CRD его требует
+  - url: https://github.com/kubernetes/kubernetes/issues/127403
+    fix: https://github.com/kubernetes/kubernetes/pull/127608
+    product: Kubernetes
+    closed: '2024-09-25'
+    summary: Создание ресурса без обязательного вложенного объекта возвращает вводящую в заблуждение ошибку о несовпадении
+      полей вместо сообщения о пропуске.
 RWB-0132:
   pattern: Защитные HTTP-заголовки
   checks:
@@ -2712,6 +2813,11 @@ RWB-0136:
     product: NestJS
     closed: '2019-06-06'
     summary: Обработчик перенаправления под альтернативным HTTP-адаптером отдавал пустой 200 вместо 3xx — видно по ответу.
+  - url: https://github.com/kubernetes/kubernetes/issues/132358
+    fix: https://github.com/kubernetes/kubernetes/pull/132374
+    product: Kubernetes
+    closed: '2025-06-25'
+    summary: Список с resourceVersion из будущего и limit даёт 500 с сообщением хранилища вместо документированного 504
 RWB-0137:
   pattern: Границы длины строки
   checks:
@@ -2734,6 +2840,11 @@ RWB-0138:
     product: mariadb
     closed: '2026-10-08'
     summary: Объект с числовым length вместо массива в GeoJSON записывает неинициализированную память в БД
+  - url: https://github.com/kubernetes/kubernetes/issues/132359
+    fix: https://github.com/kubernetes/kubernetes/pull/133358
+    product: Kubernetes
+    closed: '2025-08-28'
+    summary: Параметры удаления в теле DELETE с неверным типом поля дают 500 вместо 400
 RWB-0139:
   pattern: Политика неизвестных полей
   checks:
@@ -3386,6 +3497,11 @@ RWB-0166:
     product: Keycloak
     closed: '2026-07-16'
     summary: При динамической регистрации поле scope заменяло, а не дополняло базовые scope realm
+  - url: https://github.com/kubernetes/kubernetes/issues/128865
+    fix: https://github.com/kubernetes/kubernetes/pull/141997
+    product: Kubernetes
+    closed: '2026-09-11'
+    summary: Опущенный делитель получает значение 0 вместо документированного 1
 RWB-0167:
   pattern: Взаимозависимые поля валидируются совместно
   checks:
@@ -3397,6 +3513,16 @@ RWB-0167:
     product: Strapi
     closed: '2026-08-21'
     summary: Взаимоисключающие операции в одном запросе приняты, одна молча отброшена
+  - url: https://github.com/kubernetes/kubernetes/issues/131336
+    fix: https://github.com/kubernetes/kubernetes/pull/138834
+    product: Kubernetes
+    closed: '2026-07-22'
+    summary: Запрет повышения привилегий не мешает добавить опасные возможности, кроме CAP_SYS_ADMIN
+  - url: https://github.com/kubernetes/kubernetes/issues/130441
+    fix: https://github.com/kubernetes/kubernetes/pull/130450
+    product: Kubernetes
+    closed: '2025-03-01'
+    summary: Правило проверки вхождения подсети не работает для адресов с префиксом /32, законные данные отклоняются
 RWB-0168:
   pattern: Неожиданный тип корня JSON отклоняется
   checks:
@@ -3509,6 +3635,11 @@ RWB-0175:
     product: ip-address
     closed: '2026-09-29'
     summary: Валидатор IPv6 строит диагностику пропорционально входу — одна длинная строка съедает сотни МБ и роняет процесс.
+  - url: https://github.com/kubernetes/kubernetes/issues/134320
+    fix: https://github.com/kubernetes/kubernetes/pull/134526
+    product: Kubernetes
+    closed: '2025-10-10'
+    summary: Расписание cron вида «TZ=0» вызывает панику сервера и разрыв потока вместо ошибки валидации
 RWB-0176:
   pattern: Пробелы по краям и строки из пробелов обрабатываются согласованно
   checks:
@@ -4131,3 +4262,174 @@ RWB-0216:
     closed: '2026-07-31'
     summary: Новая версия переименовала сгенерированные скалярные типы, существующие клиентские операции и пользовательские
       типы перестали проходить валидацию
+RWB-0217:
+  pattern: Законный запрос с сотнями повторяющихся строк одного заголовка (группы при имперсонации, от аутентифицирующего
+    прокси) в пределах лимита размера обслуживается одинаково по HTTP/1.1 и HTTP/2; лимит числа строк, если есть, задокументирован,
+    а отказ попадает в аудит или лог; позитивная пара к HTTP-HEADER-SIZE-LIMIT
+  checks:
+  - HTTP-HEADER-REPEATED-LINES-ACCEPTED
+  batch: kubernetes
+  bugs:
+  - url: https://github.com/kubernetes/kubernetes/issues/142606
+    fix: https://github.com/kubernetes/kubernetes/pull/142607
+    product: Kubernetes
+    closed: '2026-10-07'
+    summary: Законный запрос с сотнями повторяющихся строк заголовка-идентичности отклоняется 431 до обработчиков и без записи
+      аудита
+RWB-0218:
+  pattern: Проверка доступности внешнего бэкенда проверяет его сертификат (с заданным CA, без пропуска проверки TLS) и сама
+    восстанавливается, когда на адрес вернулся настоящий бэкенд, — без перезапуска сервиса
+  checks:
+  - RESIL-DEPENDENCY-TLS-RECOVERY
+  batch: kubernetes
+  bugs:
+  - url: https://github.com/kubernetes/kubernetes/issues/135883
+    fix: https://github.com/kubernetes/kubernetes/pull/137157
+    product: Kubernetes
+    closed: '2026-02-25'
+    summary: Проверка доступности зарегистрированного бэкенда не проверяет сертификат при заданном caBundle и залипает на
+      кэшированном соединении к чужому серверу
+RWB-0219:
+  pattern: Сервер подхватывает заменённые файлы TLS-сертификата и ключа (внешняя ротация) без перезапуска; после истечения
+    старого сертификата соединения успешны; нужен доступ к файлам сертификата на стенде
+  checks:
+  - RESIL-TLS-CERT-RELOAD
+  batch: kubernetes
+  bugs:
+  - url: https://github.com/kubernetes/kubernetes/issues/133001
+    fix: https://github.com/kubernetes/kubernetes/pull/133654
+    product: Kubernetes
+    closed: '2025-12-18'
+    summary: Сервер продолжает отдавать старый TLS-сертификат после замены файла и после его истечения
+RWB-0220:
+  pattern: Обновление сервера не меняет сохранённые объекты без действий пользователя — иная сериализация пустых полей не
+    меняет ревизии и не запускает производные действия (раскатки); нужна возможность обновить стенд
+  checks:
+  - COMPAT-UPGRADE-STORED-DATA-STABLE
+  batch: kubernetes
+  bugs:
+  - url: https://github.com/kubernetes/kubernetes/issues/134773
+    fix: https://github.com/kubernetes/kubernetes/pull/135017
+    product: Kubernetes
+    closed: '2025-11-10'
+    summary: После обновления версии сервера изменилась сериализация шаблона, и контроллер перезапустил все существующие экземпляры
+RWB-0221:
+  pattern: При поэтапном обновлении экземпляры старой и новой версии не перезаписывают общий служебный объект по кругу и не
+    стирают поля, неизвестные старой версии; нужны две версии одновременно
+  checks:
+  - COMPAT-MIXED-VERSION-WRITE-STABILITY
+  batch: kubernetes
+  bugs:
+  - url: https://github.com/kubernetes/kubernetes/issues/128986
+    fix: https://github.com/kubernetes/kubernetes/pull/129081
+    product: Kubernetes
+    closed: '2024-12-04'
+    summary: В смешанном по версиям кластере экземпляры разных версий по кругу перезаписывают общий объект
+RWB-0222:
+  pattern: API, принимающий от клиента схемы данных (пользовательские типы, JSON Schema, OpenAPI), принимает все документированные
+    форматы (int32, int64, float, double и т. п.) без ложных предупреждений в заголовке Warning и теле ответа
+  checks:
+  - VAL-UPLOADED-SCHEMA-FORMATS
+  batch: kubernetes
+  bugs:
+  - url: https://github.com/kubernetes/kubernetes/issues/133880
+    fix: https://github.com/kubernetes/kubernetes/pull/133896
+    product: Kubernetes
+    closed: '2025-09-04'
+    summary: Создание схемы с документированными числовыми форматами int32, int64, float, double даёт предупреждение «unrecognized
+      format»
+RWB-0223:
+  pattern: Служебный эндпоинт текущей конфигурации (флаги запуска, flagz, configz, env) отражает фактически переданные значения;
+    доступ к нему — по HARD-DEBUG-ENDPOINTS
+  checks:
+  - OBS-CONFIG-ENDPOINT-ACCURATE
+  batch: kubernetes
+  bugs:
+  - url: https://github.com/kubernetes/kubernetes/issues/129994
+    fix: https://github.com/kubernetes/kubernetes/pull/129996
+    product: Kubernetes
+    closed: '2025-02-16'
+    summary: Служебный эндпоинт флагов показывает пустые значения вместо фактических параметров запуска
+RWB-0224:
+  pattern: Внешняя зависимость (вебхук преобразования, валидации, обогащения) вызывается только тогда, когда её результат
+    нужен; лишних вызовов по счётчику на заглушке нет
+  checks:
+  - PERF-NO-UNNEEDED-DEPENDENCY-CALLS
+  batch: kubernetes
+  bugs:
+  - url: https://github.com/kubernetes/kubernetes/issues/129979
+    fix: https://github.com/kubernetes/kubernetes/pull/130704
+    product: Kubernetes
+    closed: '2025-09-11'
+    summary: Вебхук преобразования вызывается для неиспользуемых версий при каждом создании и изменении объекта
+RWB-0225:
+  pattern: После ужесточения правил валидации сохранённые ранее значения, которые им не соответствуют, обрабатываются одинаково
+    на всех путях записи (основной эндпоинт, подресурс status, PATCH/PUT) — по документированному правилу (не перепроверять
+    неизменённое или требовать исправления), без расхождения между путями
+  checks:
+  - VAL-TIGHTENED-RULES-STORED-DATA
+  batch: kubernetes
+  bugs:
+  - url: https://github.com/kubernetes/kubernetes/issues/129503
+    fix: https://github.com/kubernetes/kubernetes/pull/129506
+    product: Kubernetes
+    closed: '2025-01-13'
+    summary: Послабление валидации для уже сохранённых значений (ratcheting) не действует при записи через подресурс status
+RWB-0226:
+  pattern: Идентичность содержит одинаковый набор атрибутов (UID, группы, extra) при любом способе аутентификации, если источник
+    их содержит (UID из сертификата X.509, claims OIDC); сравнение через «кто я»; пара к AUTH-ACCOUNT-STATE-ALL-SCHEMES
+  checks:
+  - AUTH-IDENTITY-ATTRIBUTES-ALL-SCHEMES
+  batch: kubernetes
+  bugs:
+  - url: https://github.com/kubernetes/kubernetes/issues/127860
+    fix: https://github.com/kubernetes/kubernetes/pull/127897
+    product: Kubernetes
+    closed: '2024-12-12'
+    summary: Пользователь, вошедший по клиентскому сертификату, не получает UID, хотя другие способы аутентификации его дают
+RWB-0227:
+  pattern: Значение, выделенное объекту из пула (адрес, номер, уникальное имя), не выдаётся повторно, пока прежний владелец
+    не удалён окончательно (отложенное удаление, финализаторы, мягкое удаление); дублей нет
+  checks:
+  - RES-ALLOCATED-VALUE-RELEASE
+  batch: kubernetes
+  bugs:
+  - url: https://github.com/kubernetes/kubernetes/issues/127792
+    fix: https://github.com/kubernetes/kubernetes/pull/128305
+    product: Kubernetes
+    closed: '2024-12-11'
+    summary: Диапазон адресов узла, находящегося в удалении, выдаётся новому узлу, пока старый ещё существует
+RWB-0228:
+  pattern: Чтение после записи соответствует модели согласованности
+  checks:
+  - RES-READ-AFTER-WRITE
+  batch: kubernetes
+  bugs:
+  - url: https://github.com/kubernetes/kubernetes/issues/135352
+    fix: https://github.com/kubernetes/kubernetes/pull/135359
+    product: Kubernetes
+    closed: '2025-11-25'
+    summary: Создание объекта сразу после создания его пространства имён изредка отклоняется ложным «namespace not found»
+      политикой допуска
+RWB-0229:
+  pattern: Совместимость версий API
+  checks:
+  - REST-API-VERSION-COMPATIBILITY
+  batch: kubernetes
+  bugs:
+  - url: https://github.com/kubernetes/kubernetes/issues/133704
+    fix: https://github.com/kubernetes/kubernetes/pull/134216
+    product: Kubernetes
+    closed: '2025-11-05'
+    summary: Запись подресурса status через версию API, отличную от версии хранения, стирает managedFields
+RWB-0230:
+  pattern: Точность decimal
+  checks:
+  - REST-DECIMAL-PRECISION
+  batch: kubernetes
+  bugs:
+  - url: https://github.com/kubernetes/kubernetes/issues/140160
+    fix: https://github.com/kubernetes/kubernetes/pull/140161
+    product: Kubernetes
+    closed: '2026-07-19'
+    summary: Проверка кратности шагу диапазона округляет дробные количества до целых

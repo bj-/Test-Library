@@ -6,7 +6,7 @@
 
 ## Сводка
 
-- Новых паттернов: 13 → идей: 12 (принять: 12, отклонить: 0, не решено: 0).
+- Новых паттернов: 13 → идей: 13 (принять: 11, отклонить: 2, не решено: 0).
 - Пруфы к существующим: 28 багов → 21 записей; новых шагов-вариантов: 26.
 
 ## Новые идеи
@@ -16,17 +16,18 @@
 | # | Решение | Запись / файл | Идея | Подтверждающие баги |
 |---|---|---|---|---|
 | 1 | accept | `HTTP-HEADER-REPEATED-LINES-ACCEPTED` (RWB-0217)<br>`checks/rest/http-protocol.yaml` | Законный запрос с сотнями повторяющихся строк одного заголовка (группы при имперсонации, от аутентифицирующего прокси) в пределах лимита размера обслуживается одинаково по HTTP/1.1 и HTTP/2; лимит числа строк, если есть, задокументирован, а отказ попадает в аудит или лог; позитивная пара к HTTP-HEADER-SIZE-LIMIT | [kubernetes/kubernetes#142606](https://github.com/kubernetes/kubernetes/issues/142606) |
-| 2 | accept | `SEC-AUTHZ-FALLBACK-PATH` (RWB-0218)<br>`checks/security/access-control/SEC-AUTHZ-FALLBACK-PATH.yaml` | Если право выводится двумя путями (по цепочке связанных объектов или явным правом в авторизаторе), ошибка основного пути (связанный объект не найден) не отменяет запасной — решение по явному праву, без права — 403 с причиной; ни fail-open, ни ложного отказа | [kubernetes/kubernetes#140159](https://github.com/kubernetes/kubernetes/issues/140159) |
-| 3 | accept | `RESIL-DEPENDENCY-TLS-RECOVERY` (RWB-0219)<br>`checks/common/resilience.yaml` | Проверка доступности внешнего бэкенда проверяет его сертификат (с заданным CA, без пропуска проверки TLS) и сама восстанавливается, когда на адрес вернулся настоящий бэкенд, — без перезапуска сервиса | [kubernetes/kubernetes#135883](https://github.com/kubernetes/kubernetes/issues/135883) |
-| 4 | accept | `RESIL-TLS-CERT-RELOAD` (RWB-0220)<br>`checks/common/resilience.yaml` | Сервер подхватывает заменённые файлы TLS-сертификата и ключа (внешняя ротация) без перезапуска; после истечения старого сертификата соединения успешны; нужен доступ к файлам сертификата на стенде | [kubernetes/kubernetes#133001](https://github.com/kubernetes/kubernetes/issues/133001) |
-| 5 | accept | `COMPAT-UPGRADE-STORED-DATA-STABLE` (RWB-0221)<br>`checks/common/compatibility.yaml` | Обновление сервера, в том числе поэтапное (старая и новая версии работают одновременно), не меняет сохранённые объекты без действий пользователя — ревизии не растут, производные действия не запускаются, общий служебный объект не перезаписывается версиями по кругу; нужна возможность развернуть две версии | [kubernetes/kubernetes#134773](https://github.com/kubernetes/kubernetes/issues/134773), [kubernetes/kubernetes#128986](https://github.com/kubernetes/kubernetes/issues/128986) |
-| 6 | accept | `VAL-UPLOADED-SCHEMA-FORMATS` (RWB-0222)<br>`checks/rest/input-validation.yaml` | API, принимающий от клиента схемы данных (пользовательские типы, JSON Schema, OpenAPI), принимает все документированные форматы (int32, int64, float, double и т. п.) без ложных предупреждений в заголовке Warning и теле ответа | [kubernetes/kubernetes#133880](https://github.com/kubernetes/kubernetes/issues/133880) |
-| 7 | accept | `OBS-CONFIG-ENDPOINT-ACCURATE` (RWB-0223)<br>`checks/common/observability.yaml` | Служебный эндпоинт текущей конфигурации (флаги запуска, flagz, configz, env) отражает фактически переданные значения; доступ к нему — по HARD-DEBUG-ENDPOINTS | [kubernetes/kubernetes#129994](https://github.com/kubernetes/kubernetes/issues/129994) |
-| 8 | accept | `PERF-NO-UNNEEDED-DEPENDENCY-CALLS` (RWB-0224)<br>`checks/common/performance.yaml` | Внешняя зависимость (вебхук преобразования, валидации, обогащения) вызывается только тогда, когда её результат нужен; лишних вызовов по счётчику на заглушке нет | [kubernetes/kubernetes#129979](https://github.com/kubernetes/kubernetes/issues/129979) |
-| 9 | accept | `COMPAT-LEGACY-FORM-PARITY` (RWB-0225)<br>`checks/common/compatibility.yaml` | Ресурс, заданный в устаревшей форме и переведённый на новую реализацию (migration), обрабатывается теми же правилами — права, выдача токенов, ограничения, — что и ресурс в новой форме | [kubernetes/kubernetes#129935](https://github.com/kubernetes/kubernetes/issues/129935) |
-| 10 | accept | `VAL-TIGHTENED-RULES-STORED-DATA` (RWB-0226)<br>`checks/rest/input-validation.yaml` | После ужесточения правил валидации сохранённые ранее значения, которые им не соответствуют, обрабатываются одинаково на всех путях записи (основной эндпоинт, подресурс status, PATCH/PUT) — по документированному правилу (не перепроверять неизменённое или требовать исправления), без расхождения между путями | [kubernetes/kubernetes#129503](https://github.com/kubernetes/kubernetes/issues/129503) |
-| 11 | accept | `AUTH-IDENTITY-ATTRIBUTES-ALL-SCHEMES` (RWB-0227)<br>`checks/security/authentication-session.yaml` | Идентичность содержит одинаковый набор атрибутов (UID, группы, extra) при любом способе аутентификации, если источник их содержит (UID из сертификата X.509, claims OIDC); сравнение через «кто я»; пара к AUTH-ACCOUNT-STATE-ALL-SCHEMES | [kubernetes/kubernetes#127860](https://github.com/kubernetes/kubernetes/issues/127860) |
-| 12 | accept | `RES-ALLOCATED-VALUE-RELEASE` (RWB-0228)<br>`checks/common/resource-lifecycle.yaml` | Значение, выделенное объекту из пула (адрес, номер, уникальное имя), не выдаётся повторно, пока прежний владелец не удалён окончательно (отложенное удаление, финализаторы, мягкое удаление); дублей нет | [kubernetes/kubernetes#127792](https://github.com/kubernetes/kubernetes/issues/127792) |
+| 2 | reject | отклонено: Первоисточник не подтверждает ожидание — автор считает случай недостижимым в рабочем кластере и убирает обход («I'll just take the authorizer out of those cases»); перекрёстное ревью — все три модели reject | Если право выводится двумя путями (по цепочке связанных объектов или явным правом в авторизаторе), ошибка основного пути (связанный объект не найден) не отменяет запасной — решение по явному праву, без права — 403 с причиной; ни fail-open, ни ложного отказа | [kubernetes/kubernetes#140159](https://github.com/kubernetes/kubernetes/issues/140159) |
+| 3 | accept | `RESIL-DEPENDENCY-TLS-RECOVERY` (RWB-0218)<br>`checks/common/resilience.yaml` | Проверка доступности внешнего бэкенда проверяет его сертификат (с заданным CA, без пропуска проверки TLS) и сама восстанавливается, когда на адрес вернулся настоящий бэкенд, — без перезапуска сервиса | [kubernetes/kubernetes#135883](https://github.com/kubernetes/kubernetes/issues/135883) |
+| 4 | accept | `RESIL-TLS-CERT-RELOAD` (RWB-0219)<br>`checks/common/resilience.yaml` | Сервер подхватывает заменённые файлы TLS-сертификата и ключа (внешняя ротация) без перезапуска; после истечения старого сертификата соединения успешны; нужен доступ к файлам сертификата на стенде | [kubernetes/kubernetes#133001](https://github.com/kubernetes/kubernetes/issues/133001) |
+| 5 | accept | `COMPAT-UPGRADE-STORED-DATA-STABLE` (RWB-0220)<br>`checks/common/compatibility.yaml` | Обновление сервера не меняет сохранённые объекты без действий пользователя — иная сериализация пустых полей не меняет ревизии и не запускает производные действия (раскатки); нужна возможность обновить стенд | [kubernetes/kubernetes#134773](https://github.com/kubernetes/kubernetes/issues/134773) |
+| 6 | accept | `COMPAT-MIXED-VERSION-WRITE-STABILITY` (RWB-0221)<br>`checks/common/compatibility.yaml` | При поэтапном обновлении экземпляры старой и новой версии не перезаписывают общий служебный объект по кругу и не стирают поля, неизвестные старой версии; нужны две версии одновременно | [kubernetes/kubernetes#128986](https://github.com/kubernetes/kubernetes/issues/128986) |
+| 7 | accept | `VAL-UPLOADED-SCHEMA-FORMATS` (RWB-0222)<br>`checks/rest/input-validation.yaml` | API, принимающий от клиента схемы данных (пользовательские типы, JSON Schema, OpenAPI), принимает все документированные форматы (int32, int64, float, double и т. п.) без ложных предупреждений в заголовке Warning и теле ответа | [kubernetes/kubernetes#133880](https://github.com/kubernetes/kubernetes/issues/133880) |
+| 8 | accept | `OBS-CONFIG-ENDPOINT-ACCURATE` (RWB-0223)<br>`checks/common/observability.yaml` | Служебный эндпоинт текущей конфигурации (флаги запуска, flagz, configz, env) отражает фактически переданные значения; доступ к нему — по HARD-DEBUG-ENDPOINTS | [kubernetes/kubernetes#129994](https://github.com/kubernetes/kubernetes/issues/129994) |
+| 9 | accept | `PERF-NO-UNNEEDED-DEPENDENCY-CALLS` (RWB-0224)<br>`checks/common/performance.yaml` | Внешняя зависимость (вебхук преобразования, валидации, обогащения) вызывается только тогда, когда её результат нужен; лишних вызовов по счётчику на заглушке нет | [kubernetes/kubernetes#129979](https://github.com/kubernetes/kubernetes/issues/129979) |
+| 10 | reject | отклонено: Сбой миграционного слоя одного продукта (in-tree Azure File → CSI, NodeRestriction); общее правило для любого API из бага не следует; перекрёстное ревью — модели 1–2 reject, Claude после переоценки согласен | Ресурс, заданный в устаревшей форме и переведённый на новую реализацию (migration), обрабатывается теми же правилами — права, выдача токенов, ограничения, — что и ресурс в новой форме | [kubernetes/kubernetes#129935](https://github.com/kubernetes/kubernetes/issues/129935) |
+| 11 | accept | `VAL-TIGHTENED-RULES-STORED-DATA` (RWB-0225)<br>`checks/rest/input-validation.yaml` | После ужесточения правил валидации сохранённые ранее значения, которые им не соответствуют, обрабатываются одинаково на всех путях записи (основной эндпоинт, подресурс status, PATCH/PUT) — по документированному правилу (не перепроверять неизменённое или требовать исправления), без расхождения между путями | [kubernetes/kubernetes#129503](https://github.com/kubernetes/kubernetes/issues/129503) |
+| 12 | accept | `AUTH-IDENTITY-ATTRIBUTES-ALL-SCHEMES` (RWB-0226)<br>`checks/security/authentication-session.yaml` | Идентичность содержит одинаковый набор атрибутов (UID, группы, extra) при любом способе аутентификации, если источник их содержит (UID из сертификата X.509, claims OIDC); сравнение через «кто я»; пара к AUTH-ACCOUNT-STATE-ALL-SCHEMES | [kubernetes/kubernetes#127860](https://github.com/kubernetes/kubernetes/issues/127860) |
+| 13 | accept | `RES-ALLOCATED-VALUE-RELEASE` (RWB-0227)<br>`checks/common/resource-lifecycle.yaml` | Значение, выделенное объекту из пула (адрес, номер, уникальное имя), не выдаётся повторно, пока прежний владелец не удалён окончательно (отложенное удаление, финализаторы, мягкое удаление); дублей нет | [kubernetes/kubernetes#127792](https://github.com/kubernetes/kubernetes/issues/127792) |
 
 ## Пруфы к существующим
 
@@ -76,7 +77,7 @@
 |---|---|---|
 | [kubernetes/kubernetes#136890](https://github.com/kubernetes/kubernetes/issues/136890) | extends | Удалить владельца, у которого сервер автоматически создал зависимые объекты, и проверить, что ссылка на владельца в них разрешается и зависимые удаляются |
 
-### RES-READ-AFTER-WRITE — Чтение после записи соответствует модели согласованности (RWB-0229, багов: 1)
+### RES-READ-AFTER-WRITE — Чтение после записи соответствует модели согласованности (RWB-0228, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
@@ -101,13 +102,13 @@
 | [kubernetes/kubernetes#140242](https://github.com/kubernetes/kubernetes/issues/140242) | extends | Отправить SIGTERM экземпляру, у которого фоновая регистрация постоянно отклоняется, и проверить, что он завершается в пределах срока остановки |
 | [kubernetes/kubernetes#127335](https://github.com/kubernetes/kubernetes/issues/127335) | extends | Вывести экземпляр вызываемого вебхука из эндпоинтов сервиса и проверить, что сервер в пределах срока прекращает слать ему запросы по старым соединениям |
 
-### REST-API-VERSION-COMPATIBILITY — Совместимость версий API (RWB-0230, багов: 1)
+### REST-API-VERSION-COMPATIBILITY — Совместимость версий API (RWB-0229, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|
 | [kubernetes/kubernetes#133704](https://github.com/kubernetes/kubernetes/issues/133704) | extends | Записать подресурс status через версию API, отличную от версии хранения, и проверить, что managedFields и spec объекта не изменились |
 
-### REST-DECIMAL-PRECISION — Точность decimal (RWB-0231, багов: 1)
+### REST-DECIMAL-PRECISION — Точность decimal (RWB-0230, багов: 1)
 
 | Баг | Тип | Новый шаг (вариант) / заметка сопоставления |
 |---|---|---|

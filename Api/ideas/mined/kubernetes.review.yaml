@@ -7,6 +7,9 @@
 # (ID бага), вариант пруфа без нового шага — в proofs.no_variant. Затем: cluster.py (пересобрать kubernetes.md) и
 # apply_proofs.py.
 #
+# Перекрёстное ревью (2026-10-16): ответы трёх LLM — kubernetes.reviewcheck.answer-1…3.md; правило — mining/README.md,
+# шаги 6–7, п. 7. Итог: №2 и №9 → reject, №5 разбит на два, №7 accept по решению bj; уточнены формулировки
+# №1 (аудит — ссылкой на OBS-AUDIT-TRAIL), №4 (skip_when без заявленной ротации), №11 (не требовать одинакового набора).
 # decision: accept | reject | pending
 batch: kubernetes
 clusters:
@@ -17,11 +20,10 @@ clusters:
   bugs: [kubernetes/kubernetes#142606]
   idea: Законный запрос с сотнями повторяющихся строк одного заголовка (группы при имперсонации, от аутентифицирующего прокси) в пределах лимита размера обслуживается одинаково по HTTP/1.1 и HTTP/2; лимит числа строк, если есть, задокументирован, а отказ попадает в аудит или лог; позитивная пара к HTTP-HEADER-SIZE-LIMIT
 - key: authz-fallback-path
-  decision: accept
-  check_id: SEC-AUTHZ-FALLBACK-PATH
-  file: checks/security/access-control/SEC-AUTHZ-FALLBACK-PATH.yaml
+  decision: reject
   bugs: [kubernetes/kubernetes#140159]
   idea: Если право выводится двумя путями (по цепочке связанных объектов или явным правом в авторизаторе), ошибка основного пути (связанный объект не найден) не отменяет запасной — решение по явному праву, без права — 403 с причиной; ни fail-open, ни ложного отказа
+  reason: Первоисточник не подтверждает ожидание — автор считает случай недостижимым в рабочем кластере и убирает обход («I'll just take the authorizer out of those cases»); перекрёстное ревью — все три модели reject
 - key: dependency-tls-verify-recovery
   decision: accept
   check_id: RESIL-DEPENDENCY-TLS-RECOVERY
@@ -34,18 +36,28 @@ clusters:
   file: checks/common/resilience.yaml
   bugs: [kubernetes/kubernetes#133001]
   idea: Сервер подхватывает заменённые файлы TLS-сертификата и ключа (внешняя ротация) без перезапуска; после истечения старого сертификата соединения успешны; нужен доступ к файлам сертификата на стенде
+# Ревью (2026-10-16): разбито на два кластера по перекрёстному ревью (модели 1–2) — разные механизмы и предусловия;
+# цикл перезаписи в #128986 подтверждён фиксом PR 129081 («hotloop during kube-apiserver upgrade»).
 - key: upgrade-stored-data-stable
   decision: accept
   check_id: COMPAT-UPGRADE-STORED-DATA-STABLE
   file: checks/common/compatibility.yaml
-  bugs: [kubernetes/kubernetes#134773, kubernetes/kubernetes#128986]
-  idea: Обновление сервера, в том числе поэтапное (старая и новая версии работают одновременно), не меняет сохранённые объекты без действий пользователя — ревизии не растут, производные действия не запускаются, общий служебный объект не перезаписывается версиями по кругу; нужна возможность развернуть две версии
+  bugs: [kubernetes/kubernetes#134773]
+  idea: Обновление сервера не меняет сохранённые объекты без действий пользователя — иная сериализация пустых полей не меняет ревизии и не запускает производные действия (раскатки); нужна возможность обновить стенд
+- key: mixed-version-write-stability
+  decision: accept
+  check_id: COMPAT-MIXED-VERSION-WRITE-STABILITY
+  file: checks/common/compatibility.yaml
+  bugs: [kubernetes/kubernetes#128986]
+  idea: При поэтапном обновлении экземпляры старой и новой версии не перезаписывают общий служебный объект по кругу и не стирают поля, неизвестные старой версии; нужны две версии одновременно
 - key: uploaded-schema-formats
   decision: accept
   check_id: VAL-UPLOADED-SCHEMA-FORMATS
   file: checks/rest/input-validation.yaml
   bugs: [kubernetes/kubernetes#133880]
   idea: API, принимающий от клиента схемы данных (пользовательские типы, JSON Schema, OpenAPI), принимает все документированные форматы (int32, int64, float, double и т. п.) без ложных предупреждений в заголовке Warning и теле ответа
+# Ревью (2026-10-16): модели 1–2 reject (эндпоинт «не для машинного разбора»), модель 3 и Claude accept; решение bj — accept,
+# P3: проверяются значения, а не формат.
 - key: config-endpoint-accurate
   decision: accept
   check_id: OBS-CONFIG-ENDPOINT-ACCURATE
@@ -59,11 +71,10 @@ clusters:
   bugs: [kubernetes/kubernetes#129979]
   idea: Внешняя зависимость (вебхук преобразования, валидации, обогащения) вызывается только тогда, когда её результат нужен; лишних вызовов по счётчику на заглушке нет
 - key: legacy-form-parity
-  decision: accept
-  check_id: COMPAT-LEGACY-FORM-PARITY
-  file: checks/common/compatibility.yaml
+  decision: reject
   bugs: [kubernetes/kubernetes#129935]
   idea: Ресурс, заданный в устаревшей форме и переведённый на новую реализацию (migration), обрабатывается теми же правилами — права, выдача токенов, ограничения, — что и ресурс в новой форме
+  reason: Сбой миграционного слоя одного продукта (in-tree Azure File → CSI, NodeRestriction); общее правило для любого API из бага не следует; перекрёстное ревью — модели 1–2 reject, Claude после переоценки согласен
 - key: validation-tightening-stored-data
   decision: accept
   check_id: VAL-TIGHTENED-RULES-STORED-DATA

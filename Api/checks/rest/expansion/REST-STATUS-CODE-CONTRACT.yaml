@@ -24,6 +24,9 @@ checks:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
   - action: Эндпоинты-перенаправления — проверять код 3xx и Location, без автоматического следования редиректам
     notes: 'Real-world bug: RWB-0136 (nestjs/nest#2360)'
+  - action: Запросить список с resourceVersion больше текущего вместе с limit и проверить документированный ответ 504, а не
+      500 с сообщением хранилища
+    notes: 'Real-world bug: RWB-0136 (kubernetes/kubernetes#132358)'
   expected:
   - статус и тело ответа соответствуют документированному response
   applicability:

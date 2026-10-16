@@ -12,6 +12,7 @@ checks:
   - boundary
   - contract
   - rest
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -20,6 +21,9 @@ checks:
   - Подготовить тестовые данные и credentials согласно сценарию.
   steps:
   - action: Выполнить запрос по операции, удовлетворяющей условиям применимости.
+  - action: Отправить дробные min, max и шаг диапазона (0.5, 2.5) и проверить, что кратность шагу вычисляется без округления
+      до целого
+    notes: 'Real-world bug: RWB-0230 (kubernetes/kubernetes#140160)'
   expected:
   - округление и точность соответствуют правилам; нет неожиданных потерь
   applicability:
@@ -39,4 +43,5 @@ checks:
   risk:
     impact: medium
     likelihood: medium
-  references: []
+  references:
+  - 'Real-world bug: RWB-0230'

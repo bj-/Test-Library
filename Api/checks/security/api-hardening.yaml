@@ -524,6 +524,9 @@ checks:
     notes: 'Real-world bug: RWB-0077 (GHSA-74xj-wh4w-vqxc)'
   - action: Отправить multipart-сообщение с тысячами частей-вложений
     notes: 'Real-world bug: RWB-0077 (GHSA-ghvc-7hp8-2g2v)'
+  - action: Открыть много подписок на изменения без resourceVersion на большую коллекцию и проверить, что ограничитель учитывает
+      их начальную выгрузку как дорогую операцию
+    notes: 'Real-world bug: RWB-0077 (kubernetes/kubernetes#134580)'
   expected:
   - Действуют лимиты на размер, время и параллельность; сервис доступен другим клиентам.
   applicability:

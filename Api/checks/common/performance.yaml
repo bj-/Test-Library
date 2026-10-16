@@ -219,3 +219,40 @@ checks:
     likelihood: medium
   references:
   - 'Real-world bug: RWB-0097'
+- id: PERF-NO-UNNEEDED-DEPENDENCY-CALLS
+  status: draft
+  title: Внешняя зависимость вызывается только когда её результат нужен
+  category: performance
+  protocols:
+  - generic
+  kind: performance
+  priority: P3
+  tags:
+  - performance
+  - webhooks
+  - real-world-bug
+  - nightly
+  preconditions:
+  - Сервис вызывает внешние обработчики (вебхуки преобразования, валидации, обогащения).
+  - Нужна управляемая заглушка обработчика со счётчиком вызовов.
+  steps:
+  - action: Выполнить операции, которым обработчик не нужен (без преобразования, в версии хранения), и посчитать вызовы.
+  - action: Выполнить операцию, которой он нужен, и проверить, что вызов есть и результат применён.
+  expected:
+  - Без необходимости вызовов нет; при необходимости — ровно нужные.
+  applicability:
+    when:
+    - Есть внешние обработчики и заглушка.
+    skip_when:
+    - Нет внешних обработчиков.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - Смежная — BIZ-SIDE-EFFECTS-ONCE
+  - 'Real-world bug: RWB-0224'

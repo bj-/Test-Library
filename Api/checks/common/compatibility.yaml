@@ -256,3 +256,74 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+- id: COMPAT-UPGRADE-STORED-DATA-STABLE
+  status: draft
+  title: Обновление сервера не меняет сохранённые объекты и не запускает побочных действий
+  category: compatibility
+  protocols:
+  - generic
+  kind: compatibility
+  priority: P2
+  tags:
+  - compatibility
+  - data-integrity
+  - real-world-bug
+  - release
+  preconditions:
+  - Можно обновить стенд с предыдущей версии на новую, сохранив данные.
+  steps:
+  - action: Создать объекты на старой версии, запомнить их ревизии, производные объекты и события.
+  - action: Обновить сервер и без действий пользователя сравнить ревизии, производные объекты и события.
+  expected:
+  - Ревизии не меняются, производные действия (раскатки, перерасчёты, уведомления) не запускаются.
+  applicability:
+    when:
+    - Есть обновление версии с сохранением данных.
+    skip_when:
+    - Нет возможности обновить стенд.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Release
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - Здравый смысл — обновление без изменения данных пользователем не меняет данные
+  - 'Real-world bug: RWB-0220'
+- id: COMPAT-MIXED-VERSION-WRITE-STABILITY
+  status: draft
+  title: Экземпляры разных версий при поэтапном обновлении не перезаписывают общий объект по кругу
+  category: compatibility
+  protocols:
+  - generic
+  kind: compatibility
+  priority: P3
+  tags:
+  - compatibility
+  - concurrency
+  - real-world-bug
+  - release
+  preconditions:
+  - Нужны две версии сервиса одновременно (поэтапное обновление) с общим хранилищем или общим служебным объектом.
+  steps:
+  - action: Запустить экземпляры старой и новой версии и наблюдать ревизию и содержимое общего объекта, нагрузку на хранилище.
+  expected:
+  - Объект стабилизируется; новые поля не стираются старой версией и не дописываются по кругу.
+  applicability:
+    when:
+    - Поддерживается поэтапное обновление.
+    skip_when:
+    - Один экземпляр или обновление с остановкой.
+  automation:
+    level: partial
+    deterministic: false
+  profiles:
+  - Release
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - Смежная — CONC-LOST-UPDATE
+  - 'Real-world bug: RWB-0221'

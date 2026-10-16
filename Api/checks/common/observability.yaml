@@ -67,6 +67,9 @@ checks:
     notes: 'Real-world bug: RWB-0092 (keycloak/keycloak#52257)'
   - action: Добавить матрицу ролей (включая администратора тенанта) и путей загрузки при проверке инициатора в событиях
     notes: 'Real-world bug: RWB-0092 (directus/directus#26242)'
+  - action: Выполнить запрос дольше порога медленного запроса и проверить, что его событие аудита содержит аннотации общей
+      задержки и задержки по компонентам
+    notes: 'Real-world bug: RWB-0092 (kubernetes/kubernetes#135684)'
   expected:
   - Запись содержит кто, что, когда, откуда, результат; журнал недоступен для изменения пользователем.
   applicability:
@@ -152,6 +155,9 @@ checks:
   - action: Замерить время ответа liveness-эндпоинта под нагрузкой и во время перестроения конфигурации; ответ не должен зависеть
       от долгих проверок
     notes: 'Real-world bug: RWB-0093 (hasura/graphql-engine#10721)'
+  - action: Сделать недоступным дополнительное хранилище части ресурсов и проверить, что health- и ready-эндпоинты сообщают
+      о неисправности
+    notes: 'Real-world bug: RWB-0093 (kubernetes/kubernetes#129417)'
   expected:
   - Readiness отражает зависимости; публичный ответ не содержит версий, хостов и секретов.
   applicability:
@@ -210,3 +216,38 @@ checks:
   references:
   - OpenTelemetry Semantic Conventions, OTLP specification
   - 'Real-world bug: RWB-0208'
+- id: OBS-CONFIG-ENDPOINT-ACCURATE
+  status: draft
+  title: Служебный эндпоинт конфигурации показывает фактические значения
+  category: observability
+  protocols:
+  - generic
+  kind: contract
+  priority: P3
+  tags:
+  - contract
+  - observability
+  - real-world-bug
+  - nightly
+  preconditions:
+  - Сервис отдаёт текущую конфигурацию (flagz, configz, env, actuator) и можно запустить его с заданными параметрами.
+  steps:
+  - action: Запустить сервис с известными значениями параметров и сравнить значения в ответе эндпоинта с переданными.
+  expected:
+  - Каждое значение совпадает с фактически применённым; сравниваются значения, а не формат вывода.
+  applicability:
+    when:
+    - Есть такой эндпоинт и управление параметрами запуска.
+    skip_when:
+    - Нет.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Nightly
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - Доступ к эндпоинту — HARD-DEBUG-ENDPOINTS
+  - 'Real-world bug: RWB-0223'

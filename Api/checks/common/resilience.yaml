@@ -33,6 +33,9 @@ checks:
     notes: 'Real-world bug: RWB-0107 (nestjs/nest#10681)'
   - action: 'Добавить фазу восстановления: после возврата зависимости сервис переподключается без своего перезапуска'
     notes: 'Real-world bug: RWB-0107 (nestjs/nest#9363)'
+  - action: Сделать недоступным вызываемый сервером вебхук (таймаут, обрыв, отказ соединения) и проверить, что ответ — 503
+      или 504, а не 400
+    notes: 'Real-world bug: RWB-0107 (kubernetes/kubernetes#130690)'
   expected:
   - Ответ 503 или задокументированная ошибка, без зависания и утечек; после восстановления работа продолжается.
   applicability:
@@ -117,6 +120,12 @@ checks:
     notes: 'Real-world bug: RWB-0108 (directus/directus#27961)'
   - action: Долгие соединения разных типов не блокируют остановку
     notes: 'Real-world bug: RWB-0108 (nestjs/nest#13910)'
+  - action: Отправить SIGTERM экземпляру, у которого фоновая регистрация постоянно отклоняется, и проверить, что он завершается
+      в пределах срока остановки
+    notes: 'Real-world bug: RWB-0108 (kubernetes/kubernetes#140242)'
+  - action: Вывести экземпляр вызываемого вебхука из эндпоинтов сервиса и проверить, что сервер в пределах срока прекращает
+      слать ему запросы по старым соединениям
+    notes: 'Real-world bug: RWB-0108 (kubernetes/kubernetes#127335)'
   expected:
   - Нет ошибок сверх порога; длительные запросы завершаются.
   applicability:
@@ -254,3 +263,80 @@ checks:
   references:
   - Практика ротации ключей
   - 'Real-world bug: RWB-0021'
+- id: RESIL-DEPENDENCY-TLS-RECOVERY
+  status: draft
+  title: Проверка доступности внешнего бэкенда проверяет его сертификат и восстанавливается без перезапуска
+  category: resilience
+  protocols:
+  - generic
+  kind: reliability
+  priority: P2
+  tags:
+  - reliability
+  - resilience
+  - transport-security
+  - real-world-bug
+  - nightly
+  preconditions:
+  - Сервис обращается к внешнему бэкенду по TLS с заданным CA и следит за его доступностью.
+  - Нужна возможность на время подменить бэкенд на том же адресе (тестовый сервер с чужим сертификатом).
+  steps:
+  - action: Подменить бэкенд сервером с сертификатом другого CA; наблюдать статус доступности и запросы через сервис.
+  - action: Вернуть настоящий бэкенд и наблюдать статус без перезапуска сервиса.
+  expected:
+  - Соединение с сервером с чужим сертификатом отклоняется, запросы к нему не проксируются.
+  - После возврата настоящего бэкенда статус в разумный срок становится «доступен» без перезапуска.
+  applicability:
+    when:
+    - Есть внешние бэкенды по TLS и возможность подмены из предусловий.
+    skip_when:
+    - Нет внешних TLS-зависимостей.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - RFC 9110 §4.3.4 (проверка сертификата сервера)
+  - Смежные — HARD-TLS-ONLY, RESIL-DEPENDENCY-DOWN
+  - 'Real-world bug: RWB-0218'
+- id: RESIL-TLS-CERT-RELOAD
+  status: draft
+  title: Сервер подхватывает заменённый TLS-сертификат без перезапуска
+  category: resilience
+  protocols:
+  - generic
+  kind: reliability
+  priority: P3
+  tags:
+  - reliability
+  - transport-security
+  - real-world-bug
+  - nightly
+  preconditions:
+  - Сертификат и ключ сервера заданы файлами и заменяются внешней ротацией; ротация без перезапуска заявлена.
+  - Нужен доступ к файлам сертификата на стенде.
+  steps:
+  - action: Заменить файлы сертификата и ключа действующей новой парой; подключаться к серверу и проверять серийный номер
+      и срок отдаваемого сертификата.
+  expected:
+  - В заявленный срок новые соединения получают новый сертификат; после истечения старого соединения успешны.
+  applicability:
+    when:
+    - Ротация сертификата без перезапуска заявлена и есть доступ к файлам.
+    skip_when:
+    - Ротация без перезапуска не заявлена или нет доступа к файлам стенда.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - Смежные — HARD-TLS-ONLY, RESIL-ENCRYPTION-KEY-ROTATION
+  - 'Real-world bug: RWB-0219'

@@ -24,6 +24,9 @@ checks:
   - action: 'Отправить значения неверного формата: без домена, лишние символы, неверная длина uuid, несуществующая дата 2023-02-30.'
   - action: Проверка формата на экстремально длинном значении — время, память и отсутствие 5xx
     notes: 'Real-world bug: RWB-0175 (GHSA-h3mg-xc3c-68pw)'
+  - action: Отправить в поле расписания cron значения «TZ=0», «TZ=», «CRON_TZ=UTC» и «TZ=Invalid/Timezone» и проверить 4xx
+      валидации, а не 5xx или разрыв соединения
+    notes: 'Real-world bug: RWB-0175 (kubernetes/kubernetes#134320)'
   expected:
   - Корректные значения принимаются.
   - Некорректные отклоняются задокументированной ошибкой валидации с указанием поля.
@@ -632,6 +635,12 @@ checks:
   - action: 'Отправить комбинации: A без B, B без A, оба, ни одного, взаимоисключающие поля одновременно.'
   - action: Добавить вариант взаимоисключающих полей с проверкой, что часть операции не отброшена молча
     notes: 'Real-world bug: RWB-0167 (strapi/strapi#27421)'
+  - action: Отправить конфигурацию с запретом повышения привилегий и добавленными опасными возможностями (CAP_SYS_MODULE,
+      CAP_SYS_PTRACE) и проверить, что сочетание отклоняется по политике
+    notes: 'Real-world bug: RWB-0167 (kubernetes/kubernetes#131336)'
+  - action: Отправить в связанные поля подсеть и вложенные в неё адреса с префиксом /32 и проверить, что правило вхождения
+      их принимает, а адреса вне подсети отклоняет
+    notes: 'Real-world bug: RWB-0167 (kubernetes/kubernetes#130441)'
   expected:
   - Недопустимые комбинации отклоняются с понятной ошибкой.
   - Допустимые комбинации принимаются.
@@ -998,6 +1007,15 @@ checks:
   steps:
   - action: Создать объект с пустой строкой, null и граничными значениями в необязательных полях.
   - action: Выполнить все операции, которые используют объект — чтение, список, поиск, вычисление, экспорт, применение политики.
+  - action: Создать политику, ссылающуюся на тип параметров со схемой без type, и проверить, что фоновая проверка типов не
+      падает и сервис продолжает работать
+    notes: 'Real-world bug: RWB-0003 (kubernetes/kubernetes#136472)'
+  - action: 'Создать политику, правила отбора которой указывают на тип со свойством type: object и additionalProperties: true,
+      и проверить, что фоновая проверка типов не падает'
+    notes: 'Real-world bug: RWB-0003 (kubernetes/kubernetes#135145)'
+  - action: Создать определение типа в устаревшей форме без схем по версиям и проверить, что PUT подресурса status его объектов
+      через каждую версию не даёт 5xx
+    notes: 'Real-world bug: RWB-0003 (kubernetes/kubernetes#133651)'
   expected:
   - Запись либо отклоняется 400, либо значение нормализуется к отсутствующему.
   - Ни одна зависимая операция не возвращает 5xx из-за ранее принятых данных.
@@ -1020,3 +1038,85 @@ checks:
   - OWASP ASVS V5 — валидация на входе
   - а не при использовании
   - 'Real-world bug: RWB-0003'
+- id: VAL-UPLOADED-SCHEMA-FORMATS
+  status: draft
+  title: Загружаемая клиентом схема с документированными форматами принимается без ложных предупреждений
+  category: validation
+  protocols:
+  - rest
+  - graphql
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - validation
+  - real-world-bug
+  - regression
+  preconditions:
+  - API принимает от клиента схемы данных (пользовательские типы, JSON Schema, OpenAPI).
+  steps:
+  - action: Загрузить схему с каждым документированным форматом диалекта (int32, int64, float, double, date-time и т. п.);
+      проверить код, тело и заголовок Warning.
+  expected:
+  - Схема принимается без предупреждений о неизвестном формате; поддерживаемые форматы совпадают с документацией.
+  applicability:
+    when:
+    - Есть загрузка схем.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - OpenAPI 3.x Data Types (format), JSON Schema Validation §7
+  - 'Real-world bug: RWB-0222'
+- id: VAL-TIGHTENED-RULES-STORED-DATA
+  status: draft
+  title: Сохранённые до ужесточения валидации значения обрабатываются одинаково на всех путях записи
+  category: validation
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: boundary
+  priority: P2
+  tags:
+  - boundary
+  - validation
+  - compatibility
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Правила валидации можно ужесточить после сохранения данных (смена схемы, версия, настройка).
+  - Есть несколько путей записи объекта (основной эндпоинт, подресурс status, PATCH, PUT).
+  steps:
+  - action: Сохранить объект, ужесточить правило так, чтобы сохранённое значение ему не соответствовало.
+  - action: Изменить другое поле через каждый путь записи, не трогая старое значение; затем изменить само старое значение.
+  expected:
+  - Неизменённое старое значение обрабатывается по документированному правилу (не перепроверяется или требует исправления)
+    одинаково на всех путях записи.
+  - Изменённое значение проверяется по новым правилам.
+  applicability:
+    when:
+    - Правила валидации меняются при живых данных.
+    skip_when:
+    - Правила неизменны.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Источники расходятся — находка; ожидание — по документированной политике
+  - Смежная — VAL-DEFERRED-FAILURE
+  - 'Real-world bug: RWB-0225'

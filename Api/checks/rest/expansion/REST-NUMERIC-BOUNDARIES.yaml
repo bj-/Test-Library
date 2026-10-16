@@ -25,6 +25,15 @@ checks:
     notes: 'Real-world bug: RWB-0123 (keycloak/keycloak#52491)'
   - action: Добавить числа больше 2^53 и с высокой точностью в полях с правилами валидации
     notes: 'Real-world bug: RWB-0123 (directus/directus#26448)'
+  - action: Отправить в поле с беззнаковым 32-битным диапазоном значения 2147483648 и 4294967295 и проверить, что они принимаются,
+      а 4294967296 отклоняется
+    notes: 'Real-world bug: RWB-0123 (kubernetes/kubernetes#138525)'
+  - action: 'Отправить в поле со схемой type: integer, format: int32 значение 2147483648, а в поле type: number, format: float
+      — 3.5e+38 и проверить отказ'
+    notes: 'Real-world bug: RWB-0123 (kubernetes/kubernetes#136091)'
+  - action: Отправить в поле-количество строку 9223372036854775807 и проверить, что значение сохраняется, читается и используется
+      в правилах валидации без искажения
+    notes: 'Real-world bug: RWB-0123 (kubernetes/kubernetes#135487)'
   expected:
   - inclusive/exclusive границы соблюдаются
   applicability:

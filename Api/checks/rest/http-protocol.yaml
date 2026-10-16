@@ -534,3 +534,44 @@ checks:
   references:
   - RFC 9113 п. 5.2, 6.5.2
   - 'Real-world bug: RWB-0189'
+- id: HTTP-HEADER-REPEATED-LINES-ACCEPTED
+  status: draft
+  title: Сотни повторяющихся строк одного заголовка в пределах лимита размера принимаются одинаково по HTTP/1.1 и HTTP/2
+  category: http-semantics
+  protocols:
+  - rest
+  - grpc
+  kind: positive
+  priority: P3
+  tags:
+  - positive
+  - compatibility
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Заголовок может передаваться повторяющимися строками (группы при имперсонации, от аутентифицирующего прокси, списки).
+  steps:
+  - action: Отправить запрос со 100, 500 и 1000 строками одного заголовка (общий размер в пределах документированного
+      лимита) по HTTP/1.1 и по HTTP/2.
+  expected:
+  - Запрос в пределах лимита размера обслуживается одинаково по обеим версиям HTTP.
+  - Если действует лимит числа строк, он задокументирован и одинаков для версий протокола; отказ — 431 с понятной причиной.
+  applicability:
+    when:
+    - Есть заголовки со списком значений.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: low
+  references:
+  - RFC 9110 §5.3 (повторяющиеся строки поля равноценны списку)
+  - Позитивная пара к HTTP-HEADER-SIZE-LIMIT; паритет версий — HTTP-VERSION-PARITY; запись отказа в аудит — OBS-AUDIT-TRAIL
+  - 'Real-world bug: RWB-0217'
