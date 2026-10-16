@@ -34,6 +34,19 @@ checks:
   - action: Анонимно запросить по ID объект, созданный другим анонимным пользователем, — пустой владелец не должен совпадать
       с пустым текущим пользователем
     notes: 'Real-world bug: RWB-0150 (GHSA-3ghg-3787-w2xr)'
+  - action: Подставить чужой последовательный ID заказа в публичный эндпоинт без сессии и проверить, что ни заголовок Location
+      редиректа, ни тело не содержат токен доступа к чужому заказу
+    notes: 'Real-world bug: RWB-0150 (GHSA-x83g-979r-f5fh)'
+  - action: Запросить список объектов модуля от пользователя без прав администратора и проверить, что в нём нет объектов и
+      подписанных ссылок других пользователей
+    notes: 'Real-world bug: RWB-0150 (GHSA-q6wp-fr43-gm9v)'
+  - action: Передать ID другого пользователя в унаследованные действия эндпоинта «мой профиль» (просмотр, редактирование)
+    notes: 'Real-world bug: RWB-0150 (GHSA-mpmw-f6h6-3g26)'
+  - action: Запросить список с фильтром по чужому владельцу (user=<id>, users[]=<id>) пользователем, которому чтение отдельных
+      записей этого владельца запрещено
+    notes: 'Real-world bug: RWB-0150 (GHSA-4m8q-55qv-9pwp)'
+  - action: Повторить чтение и изменение чужого ресурса ролью «только свои» через каждую версию API
+    notes: 'Real-world bug: RWB-0150 (GHSA-2jrw-c95w-h43g)'
   expected:
   - Deny or conceal the resource according to policy; response contains no owner data and no side effect occurs.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

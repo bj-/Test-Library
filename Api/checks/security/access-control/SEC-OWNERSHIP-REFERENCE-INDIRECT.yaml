@@ -67,6 +67,18 @@ checks:
     notes: 'Real-world bug: RWB-0151 (GHSA-c9f5-j9c3-mhrg)'
   - action: Повторить ссылку на ресурс другого пространства имён для каждого типа ссылок конфигурации и проверить единый отказ
     notes: 'Real-world bug: RWB-0151 (GHSA-62fc-8686-hfmq)'
+  - action: Создать публичную ссылку (предпросмотр, шаринг) на объект без права его просмотра и открыть её без аутентификации
+    notes: 'Real-world bug: RWB-0151 (GHSA-65cv-w493-7vhq)'
+  - action: Запросить карточку и печатную форму связанного объекта с правом только на него и проверить, что вложенные данные
+      модулей без права чтения не возвращаются
+    notes: 'Real-world bug: RWB-0151 (GHSA-fc33-6w3q-538h)'
+  - action: Передать в одном запросе изменения ID своего родителя и ID дочернего объекта из чужого родителя
+    notes: 'Real-world bug: RWB-0151 (GHSA-rm67-g9ch-vxff)'
+  - action: Отправить запросы добавления в избранное и удаления из избранного для записи другого пользователя по её ID и проверить,
+      что его данные не изменились
+    notes: 'Real-world bug: RWB-0151 (GHSA-j5mc-p8qg-39j7)'
+  - action: Запросить подтверждение удаления дочернего объекта своего ресурса с ID дочернего объекта другого пользователя
+    notes: 'Real-world bug: RWB-0151 (GHSA-mr9h-45p9-fg8h)'
   expected:
   - Authorization is enforced for both parent and referenced child resources; no cross-owner association is created.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

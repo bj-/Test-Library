@@ -32,6 +32,8 @@ checks:
   - action: Сделать публичный ресурс приватным через API и проверить, что подписки и списки пользователей без доступа его
       больше не возвращают
     notes: 'Real-world bug: RWB-0298 (GHSA-q423-49rw-g9mh)'
+  - action: После отзыва доступа к проекту повторить и скопировать свою старую запись этого проекта
+    notes: 'Real-world bug: RWB-0298 (GHSA-c6w6-57jj-62vh)'
   expected:
   - Access reflects role revocation within the documented propagation/cache window.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

@@ -61,6 +61,7 @@ checks:
   tags:
   - boundary
   - validation
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -69,6 +70,8 @@ checks:
   steps:
   - action: 'Построить значения на границе regex: минимальное совпадение, лишний символ в начале и конце, многострочное значение
       с \n.'
+  - action: Отправить значение с допустимым началом и недопустимым хвостом (пробел, SQL) в поле с шаблоном
+    notes: 'Real-world bug: RWB-0310 (GHSA-2mhj-fhvg-v428)'
   expected:
   - Сопоставление выполняется по всей строке, частичное совпадение не принимается.
   - Перевод строки не обходит якоря ^ и $.
@@ -87,6 +90,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0310'
 - id: VAL-ARRAY-ITEMS-BOUNDARIES
   status: approved
   title: 'Границы массивов: minItems, maxItems, uniqueItems'

@@ -30,6 +30,14 @@ checks:
   - action: Администратором низшего уровня вызвать сброс фактора защиты (passkey, 2FA) у пользователя того же и более высокого
       уровня и проверить отказ
     notes: 'Real-world bug: RWB-0247 (GHSA-p845-629j-rcj6)'
+  - action: Изменить через API учётку суперпользователя и пароль другого пользователя ролью с правом правки пользователей
+      без права смены паролей
+    notes: 'Real-world bug: RWB-0247 (GHSA-h4hf-v6w5-897x)'
+  - action: Установить через API значение поля, разрешённое только старшей роли (невыпущенная версия), ролью с обычным правом
+      изменения
+    notes: 'Real-world bug: RWB-0247 (GHSA-3v2j-6fw9-f57c)'
+  - action: Изменить через API статус объекта, требующий старшей роли, ролью с правом обычного изменения
+    notes: 'Real-world bug: RWB-0247 (GHSA-m7ph-9558-mrx3)'
   expected:
   - Request is denied and privileged state remains unchanged.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

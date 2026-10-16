@@ -169,6 +169,12 @@ checks:
   - action: Запросить ролью читателя эндпоинты, разрешающие пути ресурсов, и проверить, что в ответе нет абсолютных путей
       файловой системы и имени пользователя ОС
     notes: 'Real-world bug: RWB-0076 (GHSA-jv8v-xq2h-657v)'
+  - action: Открыть без аутентификации страницу по ссылке-хэшу и проверить, что встроенные данные связанного объекта ограничены
+      нужными полями
+    notes: 'Real-world bug: RWB-0076 (GHSA-xgr6-pqjv-3pf8)'
+  - action: Проверить, что поиск связанных объектов не возвращает секретные хэши-ссылки чужих объектов, и попытаться использовать
+      их для изменения
+    notes: 'Real-world bug: RWB-0076 (GHSA-4vmm-5qvc-w5p7)'
   expected:
   - 'Нет недокументированных полей: внутренних id, флагов, хешей паролей, служебных метаданных.'
   applicability:
@@ -355,6 +361,12 @@ checks:
     notes: 'Real-world bug: RWB-0078 (GHSA-fm8p-53ww-hf6w)'
   - action: Отправить запрос к локальному служебному эндпоинту с посторонним Host и Origin и проверить отказ
     notes: 'Real-world bug: RWB-0078 (GHSA-5gm3-9crp-6g3v)'
+  - action: Подменить Host при старте OIDC- и SAML-входа и при выходе; проверить redirect_uri, адреса ACS/SLO и редирект после
+      выхода
+    notes: 'Real-world bug: RWB-0078 (GHSA-3735-5339-xfwx)'
+  - action: Отправить запрос с X-Forwarded-Host на контролируемый внешний хост и проверить, что сервер не обращается к этому
+      хосту
+    notes: 'Real-world bug: RWB-0078 (GHSA-4chg-4752-w88r)'
   expected:
   - Ссылки строятся из доверенной конфигурации, а не из заголовков клиента.
   applicability:
@@ -617,6 +629,11 @@ checks:
   - action: Отправить в потоке кадр неизвестного типа с большой заявленной длиной и проверить, что сервер отбрасывает его
       тело без накопления в памяти
     notes: 'Real-world bug: RWB-0077 (GHSA-g35j-m5xg-vh3q)'
+  - action: Отправить MIME-письмо с глубокой вложенностью multipart, тысячами соседних частей и мегабайтами строк заголовков;
+      замерить время и память
+    notes: 'Real-world bug: RWB-0077 (GHSA-f6v3-2qmr-vfjx)'
+  - action: Отправить подписанное XML-сообщение (SAML) с XPath-преобразованиями и большим числом элементов Transform
+    notes: 'Real-world bug: RWB-0077 (GHSA-5cjr-mxj5-wmrx)'
   expected:
   - Действуют лимиты на размер, время и параллельность; сервис доступен другим клиентам.
   applicability:
@@ -1289,3 +1306,44 @@ checks:
   - OWASP API8:2023
   - Смежные — SECURITY-AUTH-REQUIRED, SEC-IDENTITY-PROOF-OF-POSSESSION
   - 'Real-world bug: RWB-0290'
+- id: HARD-OUTBOUND-CREDENTIALS-SCOPE
+  status: draft
+  title: Учётные данные своего сайта не уходят в исходящие запросы к другим хостам
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Сервер делает исходящие запросы с учётными данными для своего сайта или интеграции (обход ссылок, проверка битых ссылок,
+    загрузка по URL).
+  - Нужен внешний тестовый приёмник, записывающий заголовки.
+  steps:
+  - action: Разместить ссылку или редирект на внешний приёмник и запустить обход или загрузку; проверить заголовки и параметры
+      пришедшего запроса.
+  expected:
+  - Во внешний запрос не попадают Authorization, Cookie, Basic/Bearer и другие учётные данные исходного origin.
+  applicability:
+    when:
+    - Есть исходящие запросы с учётными данными.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - RFC 9110 §15.4 (редиректы и учётные данные)
+  - Смежная — REST-SSRF-URL-FETCH
+  - 'Real-world bug: RWB-0304'

@@ -26,6 +26,8 @@ checks:
     notes: 'Matrix axis: Tenant isolation; scenario: Tenant ID injection. Use isolated synthetic identities and data.'
   - action: Целевой контейнер в производных операциях (replay, clone, move), а не только в create
     notes: 'Real-world bug: RWB-0156 (GHSA-qxpp-qjg8-x4jv)'
+  - action: Создать объект с полем владельца другого пользователя и при ответе с ошибкой проверить, что запись не сохранилась
+    notes: 'Real-world bug: RWB-0156 (GHSA-w8xc-8g92-v77h)'
   expected:
   - Server derives tenant context from trusted identity/policy or rejects the mismatch; resource is not created under another
     tenant.

@@ -2,14 +2,14 @@
 
 Файл генерируется `python tools/build_catalog.py .` — не редактируйте вручную.
 
-Всего проверок: **493** — approved: 327, draft: 150, needs_clarification: 16.
-Протоколы: generic: 94, graphql: 217, grpc: 146, rest: 389, websocket: 65.
+Всего проверок: **497** — approved: 327, draft: 154, needs_clarification: 16.
+Протоколы: generic: 98, graphql: 217, grpc: 146, rest: 389, websocket: 65.
 
 | Категория | Описание | Проверок |
 |---|---|---:|
 | [contract](#contract) | API contract and schema conformance | 27 |
 | [resources](#resources) | Resource lifecycle and state transitions | 30 |
-| [security](#security) | Authentication, authorization, and data isolation | 198 |
+| [security](#security) | Authentication, authorization, and data isolation | 202 |
 | [validation](#validation) | Input validation and normalization | 41 |
 | [http-semantics](#http-semantics) | HTTP methods, headers, and status semantics | 22 |
 | [errors](#errors) | Error response shape and consistency | 4 |
@@ -157,6 +157,7 @@ Authentication, authorization, and data isolation
 | `AUTH-BRUTE-FORCE-PROTECTION` | Перебор паролей ограничивается | P1 | approved | rest, graphql | Regression, Nightly |
 | `AUTH-CLIENT-ASSERTION-BINDING` | Client assertion принимается только с ключом клиента, указанного в ней | P1 | draft | generic | Regression, Nightly |
 | `AUTH-COOKIE-ATTRIBUTES` | Сессионные cookie имеют Secure, HttpOnly, SameSite и узкие Domain/Path | P1 | approved | rest, graphql | CI, Regression, Nightly, Release |
+| `AUTH-EXTERNAL-ID-EXACT-MATCH` | Внешний идентификатор субъекта сравнивается побайтно в паре издатель и subject | P1 | draft | generic | Regression, Nightly |
 | `AUTH-JWT-HEADER-INJECTION` | Параметры kid, jku, x5u в заголовке JWT не позволяют подставить ключ | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
 | `AUTH-OAUTH-REDIRECT-STATE` | OAuth/OIDC flow проверяет redirect_uri, state и PKCE | P1 | approved | rest, graphql | CI, Regression, Nightly, Release |
 | `AUTH-OTP-BINDING` | Одноразовый код привязан к получателю и операции | P1 | approved | rest, graphql | CI, Regression, Nightly, Release |
@@ -175,6 +176,7 @@ Authentication, authorization, and data isolation
 | `HARD-EXPENSIVE-OPERATION-LIMITS` | Дорогие операции ограничены по ресурсам | P1 | approved | rest, grpc, graphql, websocket | Regression, Nightly |
 | `HARD-HOST-HEADER` | Подмена Host и X-Forwarded-Host не влияет на ссылки и маршрутизацию | P1 | approved | rest, graphql | CI, Regression, Nightly, Release |
 | `HARD-METHOD-OVERRIDE` | Заголовки переопределения метода не обходят авторизацию | P1 | approved | rest | CI, Regression, Nightly, Release |
+| `HARD-OUTBOUND-CREDENTIALS-SCOPE` | Учётные данные своего сайта не уходят в исходящие запросы к другим хостам | P1 | draft | generic | Regression, Nightly |
 | `HARD-SETUP-ENDPOINTS-PROTECTED` | Эндпоинты первоначальной настройки не позволяют захватить экземпляр | P1 | draft | generic | Regression, Nightly |
 | `HARD-SHADOW-API-VERSIONS` | Старые версии API и недокументированные маршруты не обходят защиту | P1 | approved | rest, graphql | CI, Regression, Nightly, Release |
 | `HARD-TLS-ONLY` | API доступен только по TLS с актуальными настройками | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
@@ -185,10 +187,12 @@ Authentication, authorization, and data isolation
 | `INJ-LLM-GENERATED-ACTIONS` | Код и вызовы инструментов, сгенерированные LLM по вводу пользователя, не выполняют опасных действий | P1 | draft | rest | Regression, Nightly |
 | `INJ-PROTOTYPE-POLLUTION` | Специальные ключи __proto__ и constructor не меняют поведение сервера | P1 | approved | rest, graphql | CI, Regression, Nightly, Release |
 | `INJ-RESERVED-PATH-WRITE` | Запись файлов через API не попадает в служебные каталоги | P1 | draft | generic | Regression, Nightly |
+| `INJ-SCHEMA-IDENTIFIER-CODEGEN` | Идентификаторы пользовательской схемы не внедряют код и SQL при генерации кода и DDL | P1 | draft | generic | Regression, Nightly |
 | `INJ-STORED-XSS` | Сохранённые данные с HTML/JS не создают XSS у потребителей API | P1 | approved | rest, graphql | CI, Regression, Nightly, Release |
 | `INJ-TEMPLATE-SSTI` | Инъекция в серверные шаблоны не исполняется | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
 | `INJ-UNSAFE-DESERIALIZATION` | Небезопасная десериализация пользовательских данных невозможна | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
 | `INJ-USER-CODE-EXECUTION` | Пользовательский код, исполняемый сервером, не получает доступа к ОС, файлам и сети | P1 | draft | generic | Regression, Nightly |
+| `INJ-USER-DATA-CALLABLE` | Данные пользователя не позволяют вызвать серверную функцию вне allowlist | P1 | draft | generic | Regression, Nightly |
 | `REAL-BFF-ADMIN-API-AUDITCONTROLLER-GETENTRIES-OPERATION-ACCESS-PO` | Confirm operation-specific authentication and authorization policy | P1 | needs_clarification | rest | CI, Regression, Release |
 | `REAL-BFF-ADMIN-API-AUTHCONTROLLER-CHANGEPASSWORD-MISSING-OR-INVAL` | Cookie-authenticated endpoint rejects missing/invalid session | P1 | draft | rest | Smoke, CI, Regression, Release |
 | `REAL-BFF-ADMIN-API-AUTHCONTROLLER-CHANGEPASSWORD-ROLE-MODEL-UNRES` | Confirm minimum privilege policy for sensitive operation | P1 | needs_clarification | rest | CI, Regression, Release |

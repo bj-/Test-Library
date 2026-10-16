@@ -26,6 +26,8 @@ checks:
     notes: 'Matrix axis: Roles/Scopes; scenario: Alternate route escalation. Use isolated synthetic identities and data.'
   - action: Вызвать через эндпоинт действий одного ресурса действие другого ресурса, указав его имя в параметре
     notes: 'Real-world bug: RWB-0249 (GHSA-qc5p-3mg5-9fh8)'
+  - action: Вызвать защищённый маршрут по имени через параметр общего диспетчера (routeName) от роли без доступа к его пути
+    notes: 'Real-world bug: RWB-0249 (GHSA-g2fm-8hr4-j82h)'
   expected:
   - Every route/method/version enforces equivalent authorization policy.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

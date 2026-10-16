@@ -386,6 +386,11 @@ RWB-0012:
     product: Directus
     closed: '2026-08-18'
     summary: Лимит размера трансформации изображения считался неверно при указании format, допустимый запрос отклонялся
+  - url: https://github.com/advisories/GHSA-4x9g-vw65-vvf9
+    fix: https://github.com/getgrav/grav/commit/d9f9f0369a07ae5c96cde700c7949e1237b29cf6
+    product: getgrav/grav
+    closed: '2026-08-14'
+    summary: Параметр изменения размера изображения в URL не ограничен, один запрос съедает гигабайты памяти
 RWB-0013:
   pattern: Запросы по HTTP/2 и с предложением Upgrade h2c обслуживаются так же, как по HTTP/1.1; соединение не сбрасывается,
     процесс не падает
@@ -823,6 +828,16 @@ RWB-0031:
     product: org.docx4j:docx4j-core
     closed: '2026-08-17'
     summary: Циклическая цепочка наследования стилей в загруженном docx вызывает StackOverflowError при обработке
+  - url: https://github.com/advisories/GHSA-v383-3rw5-q8rf
+    fix: https://github.com/darylldoyle/svg-sanitizer/commit/23877db7e76f1e1df5c3e65ab30239219c3d2867
+    product: enshrined/svg-sanitize
+    closed: '2026-10-08'
+    summary: 'SVG с DTD-объявлением #FIXED атрибута ронял PHP-процесс при санитизации'
+  - url: https://github.com/advisories/GHSA-xh5m-36r6-47m3
+    fix: https://github.com/PHPOffice/PhpSpreadsheet/commit/85f2556b0bf5269061bf45932ecda8a128d81750
+    product: phpoffice/phpspreadsheet
+    closed: '2026-07-23'
+    summary: Цикл в цепочке секторов XLS/OLE исчерпывает память при определении типа загруженного файла
 RWB-0032:
   pattern: Ошибка обработчика в схеме запрос-ответ через брокер возвращается вызывающему в документированном формате, а не
     таймаутом
@@ -992,6 +1007,11 @@ RWB-0041:
     closed: '2026-08-14'
     summary: OAuth-вход связывается с существующей учёткой с неподтверждённым email и подтверждает её — пароль атакующего
       сохраняется
+  - url: https://github.com/advisories/GHSA-93qh-5269-9wcf
+    fix: https://github.com/statamic/cms/pull/14887
+    product: statamic/cms
+    closed: '2026-08-06'
+    summary: Вход через OAuth связывал учётку по email без проверки, что провайдер подтвердил email — захват учётки
 RWB-0042:
   pattern: Заявленная клиентом идентичность (кошелёк, DID, account id) без доказательства владения не даёт прав и льгот
   checks:
@@ -1020,6 +1040,15 @@ RWB-0042:
     product: github.com/zitadel/zitadel
     closed: '2026-07-29'
     summary: API самообслуживания возвращает пользователю код подтверждения его нового email и телефона
+  - url: https://github.com/advisories/GHSA-c2xg-qjqw-2v98
+    fix: https://github.com/mantisbt/mantisbt/commit/e3571c319b1721b41b0dc4b5b5203cbdcbe0c2ee
+    product: mantisbt/mantisbt
+    closed: '2026-07-15'
+    summary: SOAP API принимает любой валидный cookie_string вместе с произвольным именем пользователя
+  - url: https://github.com/advisories/GHSA-h9qx-v5xp-ph8p
+    product: egroupware/egroupware
+    closed: '2026-07-07'
+    summary: Права на загрузку вычисляются по списку участников и роли, переданным в теле запроса
 RWB-0043:
   pattern: Действия во внешней системе от имени пользователя — только с его правами; нет отката на сервисные учётные данные,
     прокси к стороннему API пропускает только нужные операции
@@ -1359,6 +1388,27 @@ RWB-0060:
     product: github.com/pocket-id/pocket-id/backend
     closed: '2026-07-28'
     summary: Повторная аутентификация принимает любой свежий токен, включая полученный по одноразовой ссылке, вместо passkey
+  - url: https://github.com/advisories/GHSA-7m6h-rg42-m449
+    fix: https://github.com/filamentphp/filament/pull/20522
+    product: filament/filament
+    closed: '2026-10-05'
+    summary: Изменение настроек MFA (подключение, отключение, перевыпуск кодов восстановления) выполняется в сессии без повторного
+      ввода пароля
+  - url: https://github.com/advisories/GHSA-7mgc-c7pq-3rr3
+    fix: https://github.com/getgrav/grav-plugin-login/commit/5d1b722298cb947d8f434025d121b99152a2c630
+    product: getgrav/grav
+    closed: '2026-09-02'
+    summary: В ожидании TOTP после ввода пароля задача перегенерации секрета 2FA выполнялась и возвращала новый секрет — второй
+      фактор обходился
+  - url: https://github.com/advisories/GHSA-9fw9-8c49-qch8
+    fix: https://github.com/Laravel-Backpack/CRUD/pull/5990
+    product: backpack/crud
+    closed: '2026-08-20'
+    summary: Смена email для входа в своём профиле выполняется без текущего пароля
+  - url: https://github.com/advisories/GHSA-v8hx-4vx8-wc96
+    product: kimai/kimai
+    closed: '2026-07-14'
+    summary: Cookie сессии, выданная после пароля до TOTP, принимается всеми эндпоинтами API
 RWB-0061:
   pattern: OAuth/OIDC flow проверяет redirect_uri, state и PKCE
   checks:
@@ -1467,6 +1517,16 @@ RWB-0066:
     product: org.keycloak:keycloak-services
     closed: '2026-08-18'
     summary: Поток сброса пароля позволяет задать новый пароль без перехода по ссылке из письма
+  - url: https://github.com/advisories/GHSA-8gpw-xvpf-hvx5
+    fix: https://github.com/thorsten/phpMyFAQ/commit/410208b90f1d01534812ac5203d3e8d9c7bd591f
+    product: phpmyfaq/phpmyfaq, thorsten/phpmyfaq
+    closed: '2026-09-24'
+    summary: Эндпоинт проверки 2FA выполнял полный вход по TOTP и выбранному user-id без предшествующей проверки пароля и
+      без блокировки
+  - url: https://github.com/advisories/GHSA-c67f-gmxw-mj93
+    product: facturascripts/facturascripts
+    closed: '2026-07-13'
+    summary: Шаг проверки TOTP выдаёт сессию по логину и коду без предшествующего ввода пароля и без ограничения попыток
 RWB-0067:
   pattern: Реализация соответствует опубликованному контракту
   checks:
@@ -1616,6 +1676,32 @@ RWB-0069:
     closed: '2026-07-24'
     summary: Маленькое изображение с огромными заявленными размерами при декодировании (аватар, миниатюра) исчерпывает память
       и роняет процесс
+  - url: https://github.com/advisories/GHSA-m9xh-6747-9r6f
+    fix: https://github.com/darylldoyle/svg-sanitizer/commit/2dff6628314de8519155b7feb218bbe132785757
+    product: enshrined/svg-sanitize
+    closed: '2026-10-08'
+    summary: Атрибут xlink:HrEf в смешанном регистре обходил проверку вложенности <use>, а затем нормализовался — SVG-бомба
+      проходила санитайзер
+  - url: https://github.com/advisories/GHSA-2mrg-gjxq-2gvr
+    fix: https://github.com/PHPOffice/PhpSpreadsheet/commit/85f2556b0bf5269061bf45932ecda8a128d81750
+    product: phpoffice/phpspreadsheet
+    closed: '2026-07-23'
+    summary: gzip-содержимое загруженного Gnumeric распаковывается без лимита ещё на этапе определения типа
+  - url: https://github.com/advisories/GHSA-f5gf-2cj8-52g2
+    fix: https://github.com/dompdf/dompdf/commit/7c65e7bbeccf146b2409740405af73949ad129d0
+    product: dompdf/dompdf
+    closed: '2026-07-22'
+    summary: Огромное несжимаемое изображение в рендеримом HTML проходит проверку размеров и исчерпывает CPU и память
+  - url: https://github.com/advisories/GHSA-8hg6-c449-896m
+    fix: https://github.com/dompdf/dompdf/commit/7c65e7bbeccf146b2409740405af73949ad129d0
+    product: dompdf/dompdf
+    closed: '2026-07-22'
+    summary: BMP с заявленными в заголовке огромными размерами вызывает выделение полного холста
+  - url: https://github.com/advisories/GHSA-xg43-5579-qw6v
+    fix: https://github.com/adawolfa/isdoc/commit/02a10123a3d5fd92950b8e4952959317c0a18952
+    product: adawolfa/isdoc
+    closed: '2026-07-15'
+    summary: ZIP-записи ISDOCX и вложения PDF читаются без лимита распакованного размера
 RWB-0070:
   pattern: Скачивание файлов проверяет права и срок действия ссылок
   checks:
@@ -1673,6 +1759,17 @@ RWB-0070:
     product: github.com/patrickhener/goshs, github.com/patrickhener/goshs/v2, goshs.de/goshs, goshs.de/goshs/v2
     closed: '2026-07-28'
     summary: Маршрут массового скачивания ?bulk отдаёт защищённые ACL файлы архивом без проверки
+  - url: https://github.com/advisories/GHSA-3hgv-jr5j-cg9x
+    fix: https://github.com/grokability/snipe-it/commit/f15d78621b003be30ac114ba68626683894935ef
+    product: snipe/snipe-it
+    closed: '2026-08-19'
+    summary: API раскрывает имя файла EULA другого пользователя, а маршрут профиля отдаёт файл без проверки, хотя основной
+      отвечает 403
+  - url: https://github.com/advisories/GHSA-x76w-8c62-48mg
+    fix: https://github.com/craftcms/cms/commit/d30df3112220db1ffd6726a3ed11857014c7fb27
+    product: craftcms/cms
+    closed: '2026-07-06'
+    summary: Эндпоинт превью отдаёт подписанную ссылку на приватный файл без проверки права просмотра
 RWB-0071:
   pattern: Пустой файл и некорректный multipart обрабатываются корректно
   checks:
@@ -1819,6 +1916,16 @@ RWB-0076:
     closed: '2026-09-03'
     summary: Эндпоинт разрешения пути вложения возвращает читателю абсолютный путь файловой системы с именем пользователя
       ОС
+  - url: https://github.com/advisories/GHSA-xgr6-pqjv-3pf8
+    fix: https://github.com/alextselegidis/easyappointments/commit/40bb0b31b531540bc9006efce4220eb0a437ed2b
+    product: alextselegidis/easyappointments
+    closed: '2026-07-29'
+    summary: Страница переноса записи по хэшу встраивает полную запись клиента без аутентификации
+  - url: https://github.com/advisories/GHSA-4vmm-5qvc-w5p7
+    fix: https://github.com/alextselegidis/easyappointments/commit/ebbe41130dafa58b0716426c56c8cfd4c22dbceb
+    product: alextselegidis/easyappointments
+    closed: '2026-07-29'
+    summary: Поиск клиентов возвращает хэши записей других исполнителей, по которым записи можно менять и удалять
 RWB-0077:
   pattern: Дорогие операции ограничены по ресурсам
   checks:
@@ -2020,6 +2127,21 @@ RWB-0077:
     product: github.com/quic-go/webtransport-go
     closed: '2026-07-24'
     summary: Сервер буферизует в памяти целиком тело кадра неизвестного типа с большой заявленной длиной — DoS запросами пира
+  - url: https://github.com/advisories/GHSA-3q6v-r5mr-hxv8
+    fix: https://github.com/thephpleague/commonmark/commit/5f63680a5e29dd57f9c6be9743b0e90493d3c2d0
+    product: league/commonmark
+    closed: '2026-09-30'
+    summary: Детектор таблиц GFM пересканировал весь абзац на каждой строке — квадратичное время на большом Markdown
+  - url: https://github.com/advisories/GHSA-f6v3-2qmr-vfjx
+    fix: https://github.com/zbateson/mail-mime-parser/commit/1691e695821f70461f9554e9bb71be2859404a24
+    product: zbateson/mail-mime-parser
+    closed: '2026-09-24'
+    summary: Разбор недоверенного MIME-письма имел квадратичную сложность по вложенности и числу частей и неограниченный буфер
+      заголовков
+  - url: https://github.com/advisories/GHSA-5cjr-mxj5-wmrx
+    product: simplesamlphp/saml2, simplesamlphp/saml2-legacy
+    closed: '2026-07-02'
+    summary: XPath-преобразования в подписи SAML-сообщения не ограничены — отказ в обслуживании
 RWB-0078:
   pattern: Подмена Host и X-Forwarded-Host не влияет на ссылки и маршрутизацию
   checks:
@@ -2041,6 +2163,14 @@ RWB-0078:
     product: github.com/nezhahq/nezha
     closed: '2026-09-15'
     summary: Host запроса снова попадает в redirect_uri OAuth при пустой настройке
+  - url: https://github.com/advisories/GHSA-3735-5339-xfwx
+    product: poweradmin/poweradmin
+    closed: '2026-07-28'
+    summary: redirect_uri OIDC, адреса SAML ACS/SLO и редирект после выхода строятся из заголовка Host
+  - url: https://github.com/advisories/GHSA-4chg-4752-w88r
+    product: nukeviet/nukeviet
+    closed: '2026-07-13'
+    summary: Хост из X-Forwarded-Host без проверки подставляется в URL исходящего запроса сервера — SSRF без аутентификации
 RWB-0079:
   pattern: Старые версии API и недокументированные маршруты не обходят защиту
   checks:
@@ -2165,6 +2295,10 @@ RWB-0082:
     closed: '2023-07-11'
     summary: Фильтр Ransack по умолчанию разрешал условия по любым атрибутам и связям, раскрывая непубличные данные (таблица
       пользователей)
+  - url: https://github.com/advisories/GHSA-pcw8-m77r-2528
+    product: mtdowling/jmespath.php
+    closed: '2026-08-18'
+    summary: Имя функции JMESPath-выражения попадает в сгенерированный PHP-код без экранирования
 RWB-0083:
   pattern: Пользовательские данные не позволяют подделывать записи журналов
   checks:
@@ -2297,6 +2431,27 @@ RWB-0085:
     product: github.com/OliveTin/OliveTin
     closed: '2026-07-30'
     summary: 'Аргумент пользовательского типа regex: не попадает в список небезопасных для shell — подстановка команды исполняется'
+  - url: https://github.com/advisories/GHSA-mrc5-3mm3-45c5
+    product: backpack/crud
+    closed: '2026-08-20'
+    summary: Значение заголовка Host без экранирования попадает в команду оболочки, выполняемую выборочно на запросах
+  - url: https://github.com/advisories/GHSA-jf24-8g2h-2wg7
+    product: librenms/librenms
+    closed: '2026-08-18'
+    summary: Путь к утилите из настроек передаётся в shell_exec при открытии страницы /about
+  - url: https://github.com/advisories/GHSA-g3hq-hphg-8fhh
+    fix: https://github.com/pheditor/pheditor/commit/f40f5070d5a171b65359bc87568734d31de498e1
+    product: pheditor/pheditor
+    closed: '2026-07-24'
+    summary: Список разрешённых команд проверяется по префиксу без проверки аргументов — RCE через опции find/git/php
+  - url: https://github.com/advisories/GHSA-wg4w-wr5q-6vjc
+    product: pheditor/pheditor
+    closed: '2026-07-16'
+    summary: 'Неполный список запрещённых символов: |, обратная кавычка и перевод строки дают RCE'
+  - url: https://github.com/advisories/GHSA-9643-6xjp-vx57
+    product: pheditor/pheditor
+    closed: '2026-07-16'
+    summary: Подстановка $() не блокируется, проверка префикса команды обходится
 RWB-0086:
   pattern: Обход каталогов через параметры файлов и путей невозможен
   checks:
@@ -2350,6 +2505,11 @@ RWB-0086:
     product: github.com/OpenListTeam/OpenList/v4
     closed: '2026-07-24'
     summary: Проверка базового пути при создании общей ссылки — строковый префикс без разделителя, /base2 проходит для /base
+  - url: https://github.com/advisories/GHSA-2223-f22x-24cq
+    fix: https://github.com/wintercms/storm/commit/fd673f4f32140c97c68b1ed705764b819747fbdf
+    product: winter/wn-system-module
+    closed: '2026-08-20'
+    summary: Директива =include в JS-ресурсе темы включает произвольный файл сервера, результат отдаётся без аутентификации
 RWB-0087:
   pattern: Специальные ключи __proto__ и constructor не меняют поведение сервера
   checks:
@@ -2659,6 +2819,28 @@ RWB-0088:
     product: rack
     closed: '2022-05-27'
     summary: Специально построенный multipart POST долго разбирается
+  - url: https://github.com/advisories/GHSA-37f3-6p89-6qr9
+    fix: https://github.com/getgrav/grav/commit/907116268ad4f48be7472c57f64981918578599a
+    product: getgrav/grav
+    closed: '2026-09-02'
+    summary: Фильтр regex_replace в песочнице шаблонов принимал шаблон редактора — катастрофический backtracking
+  - url: https://github.com/advisories/GHSA-j8pm-gj4c-rq4x
+    fix: https://github.com/thephpleague/commonmark/commit/0768217751fbfaeb8d76762f6944e9af7114295e
+    product: league/commonmark
+    closed: '2026-09-01'
+    summary: Разбор Markdown сверхлинеен на огороженном коде (backtracking regex), метках ссылок и разделителях выделения
+      — однострочный ввод на десятки секунд
+  - url: https://github.com/advisories/GHSA-x7rj-f32v-7jjg
+    fix: https://github.com/phalcon/cphalcon/commit/14ba22d389d5ca620bb9d5207205f836ef1224f2
+    product: phalcon/cphalcon
+    closed: '2026-08-28'
+    summary: Регулярное выражение маршрута по умолчанию с вложенным квантификатором даёт катастрофический бэктрекинг на пути
+      из множества слэшей
+  - url: https://github.com/advisories/GHSA-px5m-h76g-p7p8
+    fix: https://github.com/YesWiki/yeswiki/commit/dd2bd8fb099de0d21504bda8a810693b3fcb8e52
+    product: yeswiki/yeswiki
+    closed: '2026-07-09'
+    summary: 'Формула проверяется рекурсивным regex перед eval: глубокая вложенность переполняет стек PCRE и роняет процесс'
 RWB-0089:
   pattern: SQL-инъекция во входных параметрах не исполняется
   checks:
@@ -2775,6 +2957,87 @@ RWB-0089:
     product: github.com/fleetdm/fleet
     closed: '2026-08-20'
     summary: Значение, сообщённое агентом хоста и сохранённое как есть, подставляется в SQL эндпоинта условного доступа
+  - url: https://github.com/advisories/GHSA-vjqc-q4mp-2rvf
+    fix: https://github.com/cakephp/cakephp/pull/19520
+    product: cakephp/cakephp, cakephp/database
+    closed: '2026-09-17'
+    summary: Параметры типа приведения и единицы даты в построителе SQL-функций подставлялись в запрос без проверки — SQL-инъекция
+      при пользовательском значении
+  - url: https://github.com/advisories/GHSA-79cw-hfcc-7mw9
+    fix: https://github.com/pimcore/studio-backend-bundle/pull/1883
+    product: pimcore/studio-backend-bundle
+    closed: '2026-08-28'
+    summary: Ключ колонки в фильтре по дате вставлялся в SQL с ручным обрамлением обратными кавычками — слепая SQL-инъекция
+  - url: https://github.com/advisories/GHSA-rw77-vq4g-x3hp
+    fix: https://github.com/thorsten/phpMyFAQ/commit/d56ef5d75c3c007de095bc4c13b470c7ac783f0f
+    product: phpmyfaq/phpmyfaq, thorsten/phpmyfaq
+    closed: '2026-09-24'
+    summary: Добавление стоп-слова вставляло значение в INSERT без экранирования, в отличие от изменения — SQL-инъекция
+  - url: https://github.com/advisories/GHSA-jg26-q8hg-3pq4
+    fix: https://github.com/sulu/sulu/commit/d19c01487af8c3de2fb3aa145856707a6367392c
+    product: sulu/sulu
+    closed: '2026-09-23'
+    summary: ID категорий из публичного параметра вставлялись в JCR-SQL2 без проверки числа — слепая инъекция без аутентификации
+  - url: https://github.com/advisories/GHSA-23rh-xw42-fq82
+    product: pimcore/pimcore
+    closed: '2026-09-10'
+    summary: Поля конфигурации отчёта (sql, from, where, groupby) вставлялись в SQL, защита — обходимый чёрный список ключевых
+      слов; limit/offset без приведения к числу
+  - url: https://github.com/advisories/GHSA-fxf7-vhh8-7vpq
+    fix: https://github.com/cakephp/cakephp/commit/138f2f61486532c29ee4d106da2a9848c1ff1ab3
+    product: cakephp/cakephp, cakephp/database
+    closed: '2026-09-08'
+    summary: Путь JSON в построителе функции jsonValue для PostgreSQL вставлялся в SQL без экранирования
+  - url: https://github.com/advisories/GHSA-w27m-rmmf-g5w4
+    fix: https://github.com/froxlor/froxlor/commit/a1eaca5a1601c8a30e00814a4fc73ad0c185f89e
+    product: froxlor/froxlor
+    closed: '2026-08-18'
+    summary: Массив в параметре ipaddress сохраняется как JSON и позже вставляется в SQL без экранирования
+  - url: https://github.com/advisories/GHSA-m7jc-g4rc-jmvh
+    fix: https://github.com/wintercms/winter/commit/50713de95adf5298536d93f4d999652525d36d43
+    product: winter/wn-backend-module
+    closed: '2026-08-12'
+    summary: Границы числового диапазона фильтра попадают в SQL-условие без экранирования
+  - url: https://github.com/advisories/GHSA-c9w5-rwh3-7pm9
+    fix: https://github.com/codeigniter4/CodeIgniter4/commit/f5e463b9a3e986389ce285963e51a7f1fab6559f
+    product: codeigniter4/framework
+    closed: '2026-08-07'
+    summary: Значения условия where при массовом удалении подставляются в SQL без экранирования
+  - url: https://github.com/advisories/GHSA-mw6p-33vw-46cc
+    fix: https://github.com/mantisbt/mantisbt/commit/6ad20bea2e01f33c6e4170775ae4d9dbe2c75325
+    product: mantisbt/mantisbt
+    closed: '2026-07-15'
+    summary: Значение настройки history_order вставляется в ORDER BY без проверки
+  - url: https://github.com/advisories/GHSA-5qmh-x653-g8qj
+    product: facturascripts/facturascripts
+    closed: '2026-07-14'
+    summary: Имя поля в filter[...] со скобками не экранируется и попадает в WHERE
+  - url: https://github.com/advisories/GHSA-4pf7-cc4r-g63h
+    fix: https://github.com/YesWiki/yeswiki/commit/90ca54fb518e1c43a1ead6e4f5bf9f0389789841
+    product: yeswiki/yeswiki
+    closed: '2026-07-09'
+    summary: Path-параметры DELETE реакции конкатенируются в SQL LIKE без экранирования
+  - url: https://github.com/advisories/GHSA-8f2v-2qhj-gfwg
+    fix: https://github.com/YesWiki/yeswiki/commit/23d3cc124613b9428ab963b31807c08879a9c631
+    product: yeswiki/yeswiki
+    closed: '2026-07-09'
+    summary: Сохранённый с экранированием тег страницы позже без экранирования подставляется в SQL при удалении — второпорядковая
+      инъекция
+  - url: https://github.com/advisories/GHSA-qg78-vmvc-fhjw
+    fix: https://github.com/YesWiki/yeswiki/commit/f3b0dd093a7ace47dc29a515faeb02635baceae2
+    product: yeswiki/yeswiki
+    closed: '2026-07-09'
+    summary: Значение фильтра по числовому полю экранируется, но вставляется в SQL без кавычек — булева инъекция без аутентификации
+  - url: https://github.com/advisories/GHSA-89v6-j5x6-cmj3
+    fix: https://github.com/YesWiki/yeswiki/commit/5da27474c3ee62270c8a6b9d7055d494cdbd38e5
+    product: yeswiki/yeswiki
+    closed: '2026-07-09'
+    summary: Аргумент period проверяется по whitelist только из URL; из аргумента действия в контенте страницы идёт в SQL
+      без экранирования
+  - url: https://github.com/advisories/GHSA-fcmw-wx57-9p75
+    product: mautic/core
+    closed: '2026-07-02'
+    summary: Вложенные параметры фильтра контактов очищаются нерекурсивно — SQL-инъекция
 RWB-0090:
   pattern: Параметры с URL и хостами не дают доступа к внутренней сети
   checks:
@@ -2930,6 +3193,17 @@ RWB-0090:
     product: code.gitea.io/gitea, gitea.dev
     closed: '2026-07-21'
     summary: URL вложений и патчей из мигрируемого источника скачиваются сервером в обход SSRF-защиты, включая file://
+  - url: https://github.com/advisories/GHSA-v3f3-cmj4-cvj9
+    fix: https://github.com/verbb/formie/commit/6735fe4ae8f6a2a76930716ad7876b236f7c530d
+    product: verbb/formie
+    closed: '2026-09-23'
+    summary: Действие настроек интеграции без проверки прав применяло настройки из запроса, включая apiUrl — сервер отправлял
+      сохранённые ключи на хост атакующего
+  - url: https://github.com/advisories/GHSA-vw42-752g-5mrp
+    fix: http://github.com/YesWiki/yeswiki/commit/87e627f33e79879827a3669fee2aa1244612c487
+    product: yeswiki/yeswiki
+    closed: '2026-07-09'
+    summary: Публичный inbox загружает ключ по URL из keyId заголовка Signature до проверки подписи и URL — SSRF
 RWB-0091:
   pattern: Инъекция в серверные шаблоны не исполняется
   checks:
@@ -2988,6 +3262,55 @@ RWB-0091:
     closed: '2026-07-31'
     summary: Плейсхолдер {{config.*}} в значении пользовательской переменной разрешается против полной конфигурации демона
       — утечка токена узла
+  - url: https://github.com/advisories/GHSA-g8wr-r2v2-vqc6
+    fix: https://github.com/silverstripe/silverstripe-userforms/pull/1441
+    product: silverstripe/userforms
+    closed: '2026-08-27'
+    summary: Тема письма формы рендерилась как шаблон, конструкция перевода исполняла PHP — RCE
+  - url: https://github.com/advisories/GHSA-hrwp-4hh9-c8r8
+    fix: https://github.com/phalcon/cphalcon/pull/17217
+    product: phalcon/cphalcon
+    closed: '2026-08-21'
+    summary: Компилятор шаблонов вставлял аргументы фильтра join в PHP без экранирования — RCE при пользовательском шаблоне
+  - url: https://github.com/advisories/GHSA-p597-crqc-m349
+    product: getgrav/grav
+    closed: '2026-09-17'
+    summary: Песочница шаблонов контента передавала массивы конфигурации system/site/theme без фильтра — чтение паролей из
+      конфигурации
+  - url: https://github.com/advisories/GHSA-xv9m-fm3w-8w5x
+    product: october/system
+    closed: '2026-09-14'
+    summary: В режиме Safe Mode песочница Twig открывала хранилище сессии и сырые SQL-методы построителя — чтение БД и подделка
+      сессии другого пользователя
+  - url: https://github.com/advisories/GHSA-mc5q-6hpj-rp7j
+    fix: https://github.com/getgrav/grav/commit/7efe70574e4cf01a251318478c13673029e93eb6
+    product: getgrav/grav
+    closed: '2026-09-02'
+    summary: В песочнице шаблонов разрешённый offsetGet контейнера возвращал полную конфигурацию, а фильтры сериализации выводили
+      все секреты
+  - url: https://github.com/advisories/GHSA-jppw-r5j3-xf7x
+    product: statamic/cms
+    closed: '2026-08-05'
+    summary: Шаблон в поле с динамическим рендерингом выводит коды восстановления 2FA текущего пользователя
+  - url: https://github.com/advisories/GHSA-8737-2x9g-xjj7
+    product: egroupware/egroupware
+    closed: '2026-07-07'
+    summary: Атрибут виджета загруженного шаблона выполняется через eval с экранированием только двойных кавычек — обратные
+      кавычки исполняют команды
+  - url: https://github.com/advisories/GHSA-f74w-488g-8x5r
+    fix: https://github.com/craftcms/cms/pull/18680
+    product: craftcms/cms
+    closed: '2026-07-06'
+    summary: URL перенаправления из Referer компилируется как шаблон Twig без песочницы
+  - url: https://github.com/advisories/GHSA-287w-mxq6-x2cp
+    fix: https://github.com/craftcms/cms/pull/18559
+    product: craftcms/cms
+    closed: '2026-07-06'
+    summary: Разрешённая в песочнице функция dataUrl читает .env в шаблоне системного письма
+  - url: https://github.com/advisories/GHSA-h8vq-8gpg-mhcg
+    product: twig/twig
+    closed: '2026-06-30'
+    summary: Фильтр column читает свойства в обход allowlist песочницы
 RWB-0092:
   pattern: Чувствительные действия фиксируются в журнале аудита
   checks:
@@ -3078,6 +3401,11 @@ RWB-0094:
     product: org.springframework.data:spring-data-relational
     closed: '2026-06-10'
     summary: Подстановочные символы в строке поиска по образцу не экранировались — вывод данных перебором
+  - url: https://github.com/advisories/GHSA-6pvm-2vjj-rx4w
+    fix: https://github.com/thorsten/phpMyFAQ/commit/bd4b08b012234ccfcff07bfe6518062475b29e0a
+    product: thorsten/phpmyfaq
+    closed: '2026-08-12'
+    summary: Символы % и _ не экранируются в LIKE поиска пользователей — перечисление всех
 RWB-0095:
   pattern: Общее число элементов согласовано с суммой страниц
   checks:
@@ -3198,6 +3526,20 @@ RWB-0099:
     product: code.vikunja.io/api
     closed: '2026-10-09'
     summary: Создание связи через CalDAV не выполняет проверку прав, которую делает REST
+  - url: https://github.com/advisories/GHSA-6p96-cfg5-4vhp
+    fix: https://github.com/koel/koel/pull/2545
+    product: phanan/koel
+    closed: '2026-07-15'
+    summary: Совместимые маршруты Subsonic создавали радиостанцию без проверок URL основного API — SSRF с чтением ответа
+  - url: https://github.com/advisories/GHSA-w79m-f3jx-779v
+    fix: https://github.com/koel/koel/pull/2545
+    product: phanan/koel
+    closed: '2026-07-15'
+    summary: Совместимый маршрут создания подкаста не применял SafeUrl основного API — слепой SSRF при разборе ленты
+  - url: https://github.com/advisories/GHSA-rw46-qg69-vg6h
+    product: kimai/kimai
+    closed: '2026-07-14'
+    summary: Веб-маршруты шаблонов экспорта требуют более слабое право, чем API
 RWB-0100:
   pattern: Массовые операции соблюдают лимиты и сообщают о каждом элементе
   checks:
@@ -3304,6 +3646,45 @@ RWB-0104:
     product: github.com/cilium/cilium, github.com/cilium/ciliumCilium
     closed: '2026-09-24'
     summary: Маршрут в одном пространстве имён направляет трафик в сервис другого без разрешающего объекта
+  - url: https://github.com/advisories/GHSA-rc52-c4hv-w89p
+    fix: https://github.com/Sylius/MolliePlugin/pull/351
+    product: sylius/mollie-plugin
+    closed: '2026-07-31'
+    summary: Вебхук оплаты принимал ID платежа и ID заказа независимо и не проверял их связь — чужой оплаченный платёж закрывал
+      любой заказ
+  - url: https://github.com/advisories/GHSA-575r-357h-fhch
+    fix: https://github.com/grokability/snipe-it/commit/905d498ecdb0ee5591231c97bf48435e92044368
+    product: snipe/snipe-it
+    closed: '2026-08-28'
+    summary: Обновление записи обслуживания через API принимает asset_id актива чужой компании без повторной проверки доступа
+      к новой ссылке
+  - url: https://github.com/advisories/GHSA-8w8c-8mx9-52cw
+    fix: https://github.com/grokability/snipe-it/commit/9a8cbd6e00613a726b639a97a1da71b3c54f9489
+    product: snipe/snipe-it
+    closed: '2026-08-28'
+    summary: API создания локации обнаруживает родителя из другой компании, но не прерывает запрос и сохраняет запись; веб
+      отклоняет
+  - url: https://github.com/advisories/GHSA-42vx-43vc-x6pr
+    product: backpack/crud
+    closed: '2026-08-20'
+    summary: Поле связи один-ко-многим при сохранении переназначает записи по присланным ID без проверки принадлежности
+  - url: https://github.com/advisories/GHSA-3q6q-26vg-v97x
+    product: kimai/kimai
+    closed: '2026-07-14'
+    summary: Маршрут создания с предустановленным родителем не проверяет доступ к родителю
+  - url: https://github.com/advisories/GHSA-vrr2-g9gh-c3jc
+    product: kimai/kimai
+    closed: '2026-07-13'
+    summary: Проверка доступа к проекту в форме обходится через ветку OR — запись переназначается на любой проект
+  - url: https://github.com/advisories/GHSA-6955-hrm5-c4qp
+    product: sylius/sylius
+    closed: '2026-07-09'
+    summary: Эндпоинт аккаунта принимает способ оплаты, не разрешённый в канале заказа, хотя эндпоинт оформления отклоняет
+      его 422
+  - url: https://github.com/advisories/GHSA-q4rm-m6xh-5pv7
+    product: froxlor/froxlor
+    closed: '2026-07-02'
+    summary: Создание БД принимает номер сервера вне разрешённого клиенту списка
 RWB-0105:
   pattern: Клиент не может задать серверные поля (id, createdAt, status, version)
   checks:
@@ -3320,6 +3701,11 @@ RWB-0105:
     product: Kubernetes
     closed: '2026-05-08'
     summary: Создание объекта через серверное применение сохраняет переданный клиентом deletionTimestamp, и объект застревает
+  - url: https://github.com/advisories/GHSA-5wx7-xq8j-v4qm
+    fix: https://github.com/grokability/snipe-it/pull/19072
+    product: snipe/snipe-it
+    closed: '2026-08-28'
+    summary: Через API импорта можно задать created_by файла импорта — подмена автора
 RWB-0106:
   pattern: Метки времени создания и изменения ведут себя корректно
   checks:
@@ -3702,6 +4088,21 @@ RWB-0121:
     product: github.com/argoproj/argo-workflows, github.com/argoproj/argo-workflows/v3, github.com/argoproj/argo-workflows/v4
     closed: '2026-08-13'
     summary: Список разрешённых полей проверяет только верхний уровень — вложенный PodSpecPatch в разрешённом ArtifactGC проходит
+  - url: https://github.com/advisories/GHSA-p8x7-9vfw-p7vc
+    fix: https://github.com/craftcms/cms/commit/cbdf45fbd3ab548b147d7de375f6f6f580b7c294
+    product: craftcms/cms
+    closed: '2026-08-06'
+    summary: Поле newPassword массово присваивается в общем сохранении элемента в обход отдельной смены пароля
+  - url: https://github.com/advisories/GHSA-x5m4-g2cq-52pq
+    fix: https://github.com/craftcms/cms/commit/8f6587c25050bbb6e080d59c71f6bb8932fc8600
+    product: craftcms/cms
+    closed: '2026-07-02'
+    summary: id во вложенном newAttributes массового дублирования перезаписывает чужой элемент
+  - url: https://github.com/advisories/GHSA-qq2c-2q8j-jh27
+    fix: https://github.com/craftcms/cms/commit/9cc493be8b414d7116c7f2bc2a6d0926e73f1248
+    product: craftcms/cms
+    closed: '2026-07-02'
+    summary: Сохранение записи меняет авторов из запроса после проверки прав, без проверки права менять авторство
 RWB-0122:
   pattern: Null и отсутствующее поле
   checks:
@@ -3858,6 +4259,16 @@ RWB-0125:
     product: actionpack
     closed: '2023-01-18'
     summary: Специально построенный URL обходил защиту redirect_to от открытого редиректа
+  - url: https://github.com/advisories/GHSA-hw3m-8j5x-94ff
+    product: mediawiki/semantic-media-wiki
+    closed: '2026-09-18'
+    summary: Резолвер URI делал 303 на полный URL заголовка без проверки хоста — интервики-префикс вёл на чужой хост, допускались
+      user:pass@
+  - url: https://github.com/advisories/GHSA-wg2f-x2c2-c4rp
+    fix: https://github.com/grokability/snipe-it/commit/f4cac9635868c020174361ad7a80b2545a4e7623
+    product: snipe/snipe-it
+    closed: '2026-08-28'
+    summary: Адрес возврата после редактирования берётся из заголовка Referer и ведёт на внешний сайт
 RWB-0126:
   pattern: Границы размера страницы
   checks:
@@ -4050,6 +4461,11 @@ RWB-0133:
     product: github.com/QuantumNous/new-api
     closed: '2026-08-17'
     summary: Список пользователей отдаёт access_token, включая root — повышение привилегий администратора
+  - url: https://github.com/advisories/GHSA-7788-ghfq-c6mh
+    fix: https://github.com/froxlor/froxlor/commit/52a43fb826bb9a058faf9c39feeef7ac4444ceba
+    product: froxlor/froxlor
+    closed: '2026-08-18'
+    summary: Ответы API get и listing содержат хэши паролей и TOTP-секреты
 RWB-0134:
   pattern: Сортировка по неизвестному полю
   checks:
@@ -4074,6 +4490,12 @@ RWB-0134:
     product: github.com/fleetdm/fleet/v4
     closed: '2026-08-20'
     summary: Ключ сортировки подставляется в ORDER BY без списка разрешённых столбцов — сортировка по скрытым столбцам
+  - url: https://github.com/advisories/GHSA-4f5f-j737-pm58
+    fix: https://github.com/redaxo/core/pull/6580
+    product: redaxo/source
+    closed: '2026-09-24'
+    summary: Параметр sort принимает любую колонку таблицы без проверки по списку сортируемых, что даёт оракул по скрытому
+      полю password
 RWB-0135:
   pattern: Контроль server-side URL fetch
   checks:
@@ -4181,6 +4603,65 @@ RWB-0135:
     product: github.com/lf-edge/ekuiper/v2
     closed: '2026-09-09'
     summary: Адрес внешнего сервиса не проверяется на внутренние адреса
+  - url: https://github.com/advisories/GHSA-cq55-c7wv-pxmq
+    fix: https://github.com/smarty-php/smarty/pull/1194
+    product: smarty/smarty
+    closed: '2026-09-01'
+    summary: Загрузка удалённого ресурса из шаблона проверяла по allowlist только исходный URL и следовала редиректам на внутренние
+      адреса
+  - url: https://github.com/advisories/GHSA-rjg7-r26h-cfp2
+    fix: https://github.com/koel/koel/pull/2549
+    product: phanan/koel
+    closed: '2026-07-15'
+    summary: Проверка исходящего URL не распознавала NAT64 и 6to4-обёртки внутренних IPv4 — SSRF с полным чтением ответа
+  - url: https://github.com/advisories/GHSA-jr4p-4xjh-fwvw
+    fix: https://github.com/koel/koel/pull/2549
+    product: phanan/koel
+    closed: '2026-07-15'
+    summary: Правило валидации, запрашивающее URL, выполнялось и после отказа правила SafeUrl — слепой SSRF и оракул доступности
+      по разным сообщениям об ошибке
+  - url: https://github.com/advisories/GHSA-6qvr-wjmv-v8mm
+    fix: https://github.com/koel/koel/pull/2546
+    product: phanan/koel
+    closed: '2026-07-15'
+    summary: Проверка адреса при редиректе была только в одном пути загрузки, остальные обходились 302 и DNS rebinding
+  - url: https://github.com/advisories/GHSA-87mg-5grr-rhwh
+    fix: https://github.com/contao/contao/commit/27f6201809553bee767dcef15535bb8f0f4eac5f
+    product: contao/contao, contao/core-bundle
+    closed: '2026-09-24'
+    summary: URL RSS-ленты из настроек модуля загружался без проверки схемы и внутренних адресов — SSRF
+  - url: https://github.com/advisories/GHSA-8x3q-jpjh-qh5c
+    fix: https://github.com/Studio-42/elFinder/commit/191372c1bbebbd36fb55af79a84b9984861390ff
+    product: studio-42/elfinder
+    closed: '2026-08-31'
+    summary: Загрузка по URL проверяла первый резолв, а соединение резолвило имя повторно — DNS rebinding в обход защиты SSRF
+  - url: https://github.com/advisories/GHSA-pm5p-7w5h-jm5q
+    fix: https://github.com/alextselegidis/easyappointments/commit/2da2baed18ec32ad7916e507815709c8f010d510
+    product: alextselegidis/easyappointments
+    closed: '2026-07-29'
+    summary: Проверка подключения CalDAV запрашивает URL пользователя без проверки хоста, возвращая часть ответа
+  - url: https://github.com/advisories/GHSA-6hq5-7373-42rg
+    fix: https://github.com/PHPOffice/PhpSpreadsheet/commit/7ef7b25e8548a6ded79dac74e2e2c7acdac38d8d
+    product: phpoffice/phpspreadsheet
+    closed: '2026-07-23'
+    summary: Белый список доменов проверяет только исходный URL, редиректы следуются без повторной проверки
+  - url: https://github.com/advisories/GHSA-j8qw-6jw8-r297
+    fix: https://github.com/dompdf/dompdf/commit/6a58996865db05d8fede748507e50ac4b8c5bfd0
+    product: dompdf/dompdf
+    closed: '2026-07-22'
+    summary: Ссылки file:// в SVG при рендеринге PDF позволяют различить существующие и отсутствующие файлы
+  - url: https://github.com/advisories/GHSA-8q6q-m837-fv64
+    product: phanan/koel
+    closed: '2026-07-15'
+    summary: URL ленты подкаста загружается сервером до проверки безопасности адреса
+  - url: https://github.com/advisories/GHSA-pj8j-p4g4-4vw8
+    product: kimai/kimai
+    closed: '2026-07-10'
+    summary: Markdown-изображение в тексте счёта загружается рендерером PDF с сервера по любому URL
+  - url: https://github.com/advisories/GHSA-jmv8-8j9j-rcpc
+    product: mautic/core
+    closed: '2026-07-02'
+    summary: Компонент принимает пользовательский URL без проверки и выполняет запрос с сервера
 RWB-0136:
   pattern: Статус ответа соответствует контракту
   checks:
@@ -4397,6 +4878,17 @@ RWB-0145:
     product: undici
     closed: '2026-09-29'
     summary: Общий HTTP-кэш сохранял ответы с Set-Cookie и отдавал чужую cookie другим пользователям.
+  - url: https://github.com/advisories/GHSA-5974-gfqc-wrcm
+    fix: https://github.com/contao/contao/commit/9d6f582a4cc6a758ce11d1043fc9c0ba62c5f4c9
+    product: contao/core-bundle
+    closed: '2026-10-09'
+    summary: Решение voter о доступе к таблице кэшировалось в запросе без ключа таблицы — после разрешённой таблицы открывались
+      запрещённые
+  - url: https://github.com/advisories/GHSA-pjhx-3c3w-9v23
+    product: api-platform/core, api-platform/hal, api-platform/json-api
+    closed: '2026-07-10'
+    summary: Кэш структуры нормализатора JSON:API и HAL не учитывает пользователя — поля, скрытые правами, видны следующему
+      пользователю
 RWB-0146:
   pattern: User without required permission cannot invoke operation
   checks:
@@ -4536,6 +5028,98 @@ RWB-0146:
     product: decidim, decidim-templates
     closed: '2023-10-05'
     summary: Любой вошедший пользователь мог создавать, менять и удалять шаблоны в админке
+  - url: https://github.com/advisories/GHSA-5mmc-8pc9-wggg
+    fix: https://github.com/wp-graphql/wp-graphql/pull/4270
+    product: wp-graphql/wp-graphql
+    closed: '2026-09-23'
+    summary: 'Мутация updatePost проверяла только общее право edit_posts: автор без права публикации публиковал черновики
+      и правил опубликованные записи'
+  - url: https://github.com/advisories/GHSA-67mx-6wf2-92xp
+    fix: https://github.com/getkirby/kirby/pull/8296
+    product: getkirby/cms
+    closed: '2026-08-31'
+    summary: Части chunked-загрузки сохранялись во временный каталог до проверки права на загрузку — пользователь без прав
+      заполнял диск
+  - url: https://github.com/advisories/GHSA-vmwx-m75v-qvch
+    fix: https://github.com/code16/sharp/pull/729
+    product: code16/sharp
+    closed: '2026-07-08'
+    summary: Эндпоинты быстрого создания не проверяли право create — пользователь без права получал форму и создавал записи
+  - url: https://github.com/advisories/GHSA-9rg8-2wvr-fgjh
+    fix: https://github.com/verbb/formie/commit/9f4e23c36b907ed7677563231eaba373fdb8b84b
+    product: verbb/formie
+    closed: '2026-09-23'
+    summary: Действие получения содержимого для повторной отправки уведомления не проверяло права — чтение писем с ПДн по
+      перебору ID
+  - url: https://github.com/advisories/GHSA-jr78-w6w5-m8f8
+    product: mediawiki/semantic-media-wiki
+    closed: '2026-09-18'
+    summary: API-модуль задач обслуживания не проверял права, которые требует веб-интерфейс; публичный CSRF-токен анонима
+      проходил проверку
+  - url: https://github.com/advisories/GHSA-2cg9-97gq-9mqp
+    product: shopper/framework
+    closed: '2026-09-11'
+    summary: Действия удаления товаров из коллекции не проверяли права, ID коллекции в состоянии компонента менялся клиентом
+  - url: https://github.com/advisories/GHSA-99h5-jhh7-v3r3
+    product: shopper/framework
+    closed: '2026-09-11'
+    summary: Метод store подформы медиа не проверял право edit_products — неполный фикс прошлой уязвимости
+  - url: https://github.com/advisories/GHSA-g3f9-g5vj-p62f
+    product: shopper/framework
+    closed: '2026-09-11'
+    summary: Действие изменения остатков не проверяло права, ID варианта в состоянии компонента менялся клиентом
+  - url: https://github.com/advisories/GHSA-f7h9-qv4x-9x57
+    product: shopper/framework
+    closed: '2026-09-11'
+    summary: Действия удаления и изменения в компонентах настроек не проверяли права, ID брался из аргументов клиента
+  - url: https://github.com/advisories/GHSA-f97c-ph8j-8vff
+    fix: https://github.com/pimcore/studio-backend-bundle/pull/1886
+    product: pimcore/studio-backend-bundle
+    closed: '2026-08-28'
+    summary: Эндпоинт создания определения класса проверял право objects вместо classes — редактор создавал таблицы и классы
+  - url: https://github.com/advisories/GHSA-8frh-vhgh-64cf
+    fix: https://github.com/grokability/snipe-it/commit/80c8aa41dc813b0815db00bb44eb0fff9f89a227
+    product: snipe/snipe-it
+    closed: '2026-08-28'
+    summary: Устаревший эндпоинт возврата лицензии проверяет право на выдачу вместо права на возврат
+  - url: https://github.com/advisories/GHSA-fm29-4mq3-phg6
+    fix: https://github.com/wintercms/winter/commit/84c81f153f2dc3e2c7b03ab14a4a3ca8456d0e4f
+    product: winter/wn-backend-module
+    closed: '2026-08-20'
+    summary: AJAX-обработчики импорта и экспорта работают без гранулярной проверки прав, которая стоит только на странице
+  - url: https://github.com/advisories/GHSA-j5jq-cr68-v2xx
+    product: winter/wn-backend-module
+    closed: '2026-08-12'
+    summary: Поле _handler в POST не проверяется по шаблону имени обработчика, вызываются любые методы контроллера
+  - url: https://github.com/advisories/GHSA-xxpx-f366-4xpq
+    fix: https://github.com/craftcms/cms/commit/eb63721b8476ef53f21d7de53d156eef531cb57d
+    product: craftcms/cms
+    closed: '2026-08-06'
+    summary: Право на изменение структуры выдаётся в сессию при просмотре списка, и изменяющий эндпоинт доверяет ему
+  - url: https://github.com/advisories/GHSA-rvmm-v933-jgxq
+    fix: https://github.com/craftcms/cms/commit/9ee53efc1314e6aba32771c66a13e072a246f4ce
+    product: craftcms/cms
+    closed: '2026-08-06'
+    summary: Эндпоинт графика регистраций пользователей не требует права просмотра пользователей
+  - url: https://github.com/advisories/GHSA-cvpc-hccg-wmw4
+    product: verbb/formie
+    closed: '2026-07-17'
+    summary: Маршруты настроек плагина не проверяют право доступа к настройкам
+  - url: https://github.com/advisories/GHSA-3w32-23wj-rxg3
+    fix: https://github.com/craftcms/cms/commit/2c2579c7f1030872423f268d0c8b48377101961d
+    product: craftcms/cms
+    closed: '2026-07-02'
+    summary: Перемещение папки с force=true удаляет конфликтующую папку назначения без права удаления
+  - url: https://github.com/advisories/GHSA-qh45-9g5p-m2v4
+    fix: https://github.com/craftcms/cms/commit/2c2579c7f1030872423f268d0c8b48377101961d
+    product: craftcms/cms
+    closed: '2026-07-02'
+    summary: Замена файла другим файлом удаляет исходный без права его удаления
+  - url: https://github.com/advisories/GHSA-43cq-c2gq-pfpw
+    fix: https://github.com/craftcms/cms/commit/0a6b916f6367b0162b2eaf2366add67b45fa98ea
+    product: craftcms/cms
+    closed: '2026-07-02'
+    summary: Перемещение записи в раздел проверяет только право чтения раздела назначения
 RWB-0147:
   pattern: Authorization is enforced for every method
   checks:
@@ -4662,6 +5246,11 @@ RWB-0147:
     product: go.etcd.io/etcd/v3
     closed: '2026-07-24'
     summary: Watch с открытым диапазоном от разрешённого ключа отдаёт события всех ключей после него
+  - url: https://github.com/advisories/GHSA-r9r3-g9fp-3q4q
+    fix: https://github.com/grokability/snipe-it/commit/69c50aa2aee25f837626556b4f4f3d05ec7ace96
+    product: snipe/snipe-it
+    closed: '2026-08-19'
+    summary: Просмотр записи обслуживания не проверяет права, в отличие от остальных действий контроллера
 RWB-0148:
   pattern: Bulk endpoint enforces ownership per item
   checks:
@@ -4684,6 +5273,11 @@ RWB-0148:
     product: io.openremote:openremote-manager
     closed: '2026-06-19'
     summary: Массовое удаление тревог не проверяло принадлежность каждой записи арендатору вызывающего
+  - url: https://github.com/advisories/GHSA-6x7x-gcmf-7r8x
+    fix: https://github.com/YesWiki/yeswiki/commit/ed5b548a705c8091ba0282aaaba73ddda976abef
+    product: yeswiki/yeswiki
+    closed: '2026-07-09'
+    summary: Действие очистки спама удаляет любые страницы из массива suppr[] без проверки прав
 RWB-0149:
   pattern: User cannot delete another owner’s resource
   checks:
@@ -4718,6 +5312,15 @@ RWB-0149:
     product: code.vikunja.io/api
     closed: '2026-08-28'
     summary: Каскадное удаление представления не ограничено проектом из пути
+  - url: https://github.com/advisories/GHSA-8xjm-wqrp-2f25
+    product: backpack/crud
+    closed: '2026-08-20'
+    summary: Параметр очистки файлов clear_<attr>[] удаляет любые файлы на диске, не связанные с записью
+  - url: https://github.com/advisories/GHSA-7h62-6v23-v8fm
+    fix: https://github.com/craftcms/cms/commit/b4e08977f0c9bdf002a77f9f6d1346cd55ac0598
+    product: craftcms/cms
+    closed: '2026-07-02'
+    summary: Удаление папки каскадно удаляет файлы других пользователей без права deletePeerAssets
 RWB-0150:
   pattern: User cannot read another owner’s resource
   checks:
@@ -4767,6 +5370,35 @@ RWB-0150:
     closed: '2026-01-08'
     summary: 'Правило «адрес принадлежит текущему пользователю» совпадало для гостя: у несохранённого пользователя id пустой,
       как у гостевых адресов'
+  - url: https://github.com/advisories/GHSA-x83g-979r-f5fh
+    fix: https://github.com/Sylius/MolliePlugin/pull/351
+    product: sylius/mollie-plugin
+    closed: '2026-07-31'
+    summary: Публичные эндпоинты искали заказ по последовательному orderId без проверки владельца и отдавали токен заказа
+      в Location, по нему — ПДн; несуществующий id давал 500
+  - url: https://github.com/advisories/GHSA-q6wp-fr43-gm9v
+    fix: https://github.com/contao/contao/commit/6b483d380a4b2dc61432c4c697e411508f93bf91
+    product: contao/core-bundle
+    closed: '2026-10-09'
+    summary: Voter владения ссылками предпросмотра не регистрировался — пользователь без прав администратора видел все ссылки
+      с подписанными URL
+  - url: https://github.com/advisories/GHSA-mpmw-f6h6-3g26
+    fix: https://github.com/wintercms/winter/commit/cdbc8f5a23db27f72ccec658a8e5769e6d9f6dcb
+    product: winter/wn-backend-module
+    closed: '2026-08-20'
+    summary: Унаследованные действия «Мой профиль» принимают ID другого пользователя и раскрывают его профиль
+  - url: https://github.com/advisories/GHSA-4m8q-55qv-9pwp
+    product: kimai/kimai
+    closed: '2026-07-13'
+    summary: Список записей с фильтром user=<id> отдаёт записи пользователя, к которым чтение по ID запрещено проверкой тимлида
+  - url: https://github.com/advisories/GHSA-mr9r-h354-966r
+    product: sylius/sylius
+    closed: '2026-07-09'
+    summary: Платёжный запрос читается и изменяется по hash из URL без проверки владельца заказа
+  - url: https://github.com/advisories/GHSA-2jrw-c95w-h43g
+    product: mautic/core
+    closed: '2026-07-02'
+    summary: Роли «только свои» (viewown, editown) не применяются в API v2
 RWB-0151:
   pattern: Indirect resource references preserve authorization
   checks:
@@ -4881,6 +5513,53 @@ RWB-0151:
     product: github.com/traefik/traefik, github.com/traefik/traefik/v2, github.com/traefik/traefik/v3
     closed: '2026-08-06'
     summary: Запрет межпространственных ссылок не применяется к ссылкам на сервис шлюза — маршрут тенанта ведёт на чужой backend
+  - url: https://github.com/advisories/GHSA-qh8c-7588-qfrv
+    fix: https://github.com/statamic/cms/pull/14906
+    product: statamic/cms
+    closed: '2026-08-06'
+    summary: Эндпоинт навигации отдавал содержимое и поля записей, которые пользователю запрещено просматривать, включая неопубликованные
+  - url: https://github.com/advisories/GHSA-65cv-w493-7vhq
+    fix: https://github.com/sulu/sulu/commit/44d8844c3514a70b769ab791b9530df806240fab
+    product: sulu/sulu
+    closed: '2026-09-02'
+    summary: Создание публичной ссылки предпросмотра не проверяло право VIEW на целевой контент
+  - url: https://github.com/advisories/GHSA-h6cx-gjxx-v25c
+    fix: https://github.com/sulu/sulu/commit/2b959de75d61b98433e42db462c246ed9e4ce793
+    product: sulu/sulu
+    closed: '2026-09-02'
+    summary: Перемещение медиа проверяло права по коллекции из запроса, а не по фактической — вынос файла из закрытой коллекции
+  - url: https://github.com/advisories/GHSA-crv3-j83j-f3r6
+    fix: https://github.com/grokability/snipe-it/commit/0d870d540d27107634f3134e0e7f106b3faa6992
+    product: snipe/snipe-it
+    closed: '2026-08-28'
+    summary: Добавление лицензии в набор проверяет только право на набор, но не доступ к самой лицензии
+  - url: https://github.com/advisories/GHSA-fc33-6w3q-538h
+    fix: https://github.com/grokability/snipe-it/commit/374f426f0c6bb7a4f129f7b85051cc1da753a0f5
+    product: snipe/snipe-it
+    closed: '2026-08-28'
+    summary: Карточка и печатная форма пользователя отдают данные лицензий, аксессуаров и расходников без прав на эти модули
+  - url: https://github.com/advisories/GHSA-rm67-g9ch-vxff
+    fix: https://github.com/poweradmin/poweradmin/commit/12651facf49a6d9ebeb38f01e65f4aa5bfbc4da0
+    product: poweradmin/poweradmin
+    closed: '2026-07-24'
+    summary: Права проверяются по ID зоны из запроса, а изменяется запись по ID из запроса без проверки её принадлежности
+      зоне
+  - url: https://github.com/advisories/GHSA-2xgg-2x8h-8xw4
+    product: kimai/kimai
+    closed: '2026-07-14'
+    summary: Права проверяются по ID родителя, а изменяется ставка по ID из URL без проверки принадлежности родителю
+  - url: https://github.com/advisories/GHSA-xv4r-4885-gwpg
+    product: kimai/kimai
+    closed: '2026-07-14'
+    summary: Добавление участника и активности в команду не проверяет доступ к добавляемому объекту
+  - url: https://github.com/advisories/GHSA-j5mc-p8qg-39j7
+    product: kimai/kimai
+    closed: '2026-07-02'
+    summary: Добавление в избранное по чужому ID записи меняет избранное владельца записи
+  - url: https://github.com/advisories/GHSA-mr9h-45p9-fg8h
+    product: froxlor/froxlor
+    closed: '2026-07-02'
+    summary: Подтверждение удаления алиаса загружает алиас по глобальному ID без привязки к клиенту и выводит чужое значение
 RWB-0152:
   pattern: User cannot modify another owner’s resource
   checks:
@@ -4906,6 +5585,27 @@ RWB-0152:
     product: code.vikunja.io/api
     closed: '2026-08-28'
     summary: task_id из тела перемещения не проверяется на права
+  - url: https://github.com/advisories/GHSA-584p-f93j-wpgc
+    fix: https://github.com/verbb/formie/commit/323c2fe647a76fbccadf749728ee4ad9420efee1
+    product: verbb/formie
+    closed: '2026-09-23'
+    summary: Анонимное действие submit доверяло submissionId клиента без привязки к сессии и токена — перезапись чужих незавершённых
+      отправок
+  - url: https://github.com/advisories/GHSA-53jc-27pc-x8r8
+    fix: https://github.com/grokability/snipe-it/commit/3c1b18919afbba12d419a9795929493b0391c91a
+    product: snipe/snipe-it
+    closed: '2026-08-28'
+    summary: Параметр пути cancel_by_admin и ID пользователя позволяют любому пользователю отменить чужие запросы
+  - url: https://github.com/advisories/GHSA-3277-h8g9-qj5f
+    fix: https://github.com/wintercms/winter/commit/9cb0ae5f9d837db141ab111c6a7de8eed9603d25
+    product: winter/wn-backend-module
+    closed: '2026-08-20'
+    summary: Обработчики виджета загрузки принимают произвольный file_id и меняют метаданные чужих вложений
+  - url: https://github.com/advisories/GHSA-8hm4-r66f-29wr
+    fix: https://github.com/alextselegidis/easyappointments/commit/4b2d245d2cd2058dc76e05f6eb65b26699268471
+    product: alextselegidis/easyappointments
+    closed: '2026-07-29'
+    summary: ID провайдера из URL сохраняется в сессии, и OAuth-callback привязывает токен Google к чужому провайдеру
 RWB-0153:
   pattern: User cannot grant self a higher role
   checks:
@@ -4937,6 +5637,15 @@ RWB-0153:
     product: gardener/gardener, github.com/gardener/gardener
     closed: '2026-09-22'
     summary: Проверка права управления участниками учитывает только субъекты вида User
+  - url: https://github.com/advisories/GHSA-xhfv-7758-r9hx
+    product: getgrav/grav
+    closed: '2026-09-17'
+    summary: Поле прав группы не имело защиты admin.super — оператор пользователей давал группе права суперадмина
+  - url: https://github.com/advisories/GHSA-j328-xmgp-j4q3
+    product: shopper/framework
+    closed: '2026-09-11'
+    summary: Изменяющие действия управления правами и командой проверяли только право просмотра пользователей — самоповышение
+      до администратора
 RWB-0154:
   pattern: Client cannot add scopes by request parameter
   checks:
@@ -5021,6 +5730,11 @@ RWB-0156:
     product: '@payloadcms/plugin-multi-tenant'
     closed: '2026-10-07'
     summary: Пользователь одного арендатора мог создать запись в другом арендаторе
+  - url: https://github.com/advisories/GHSA-w8xc-8g92-v77h
+    fix: https://github.com/alextselegidis/easyappointments/commit/725eafa647308846ce887657db12771a829e42ef
+    product: alextselegidis/easyappointments
+    closed: '2026-07-29'
+    summary: Создание и изменение записи принимают ID чужого исполнителя; при создании запись сохраняется до ошибки 5xx
 RWB-0157:
   pattern: Tenant A cannot read tenant B data
   checks:
@@ -5066,6 +5780,11 @@ RWB-0157:
     product: github.com/hatchet-dev/hatchet
     closed: '2026-09-22'
     summary: Журнал событий задачи читается без проверки арендатора
+  - url: https://github.com/advisories/GHSA-c6w2-j4wq-mvwg
+    fix: https://github.com/grokability/snipe-it/commit/fbe05a8df4742729a9b0756c016d45f48246cc7b
+    product: snipe/snipe-it
+    closed: '2026-08-19'
+    summary: Пользователь компании читает, меняет и удаляет пользователей без компании через API и массовые маршруты
 RWB-0158:
   pattern: Tenant filter cannot be bypassed in list/search
   checks:
@@ -5116,6 +5835,15 @@ RWB-0159:
     product: github.com/hatchet-dev/hatchet
     closed: '2026-08-28'
     summary: gRPC-методы диспетчера принимают worker_id другого тенанта из тела без проверки принадлежности
+  - url: https://github.com/advisories/GHSA-35cr-9hqq-p2mg
+    fix: https://github.com/grokability/snipe-it/commit/802067f3987a4b65bfc2efe60e22e07c24e01e6a
+    product: snipe/snipe-it
+    closed: '2026-08-28'
+    summary: Удаление ожидающего подтверждения по глобальному ID через эндпоинт отчёта без проверки компании связанного объекта
+  - url: https://github.com/advisories/GHSA-vgmv-8xjc-6rch
+    product: backpack/crud
+    closed: '2026-08-20'
+    summary: Ограничения выборки (арендатор, владелец) применяются к чтению, но не к изменению, удалению и переупорядочиванию
 RWB-0160:
   pattern: Token for another audience is rejected
   checks:
@@ -5803,6 +6531,50 @@ RWB-0190:
     product: github.com/semaphoreui/semaphore
     closed: '2026-09-03'
     summary: Смена пароля по cookie без CSRF-токена и без текущего пароля, тело JSON принимается из формы text/plain
+  - url: https://github.com/advisories/GHSA-9ff2-p842-45wq
+    fix: https://github.com/contao/contao/commit/34dd27ee6739f10568d3d95d8784862255c925b4
+    product: contao/core-bundle
+    closed: '2026-10-09'
+    summary: Изменяющие действия бэкенда через параметр key= выполнялись GET-запросом без CSRF-токена
+  - url: https://github.com/advisories/GHSA-m8r3-22v6-g877
+    fix: https://github.com/redaxo/core/pull/6579
+    product: redaxo/source
+    closed: '2026-09-23'
+    summary: API-функция обновления пакета не требовала CSRF-токен — админа можно заставить обновить аддон загрузкой картинки
+  - url: https://github.com/advisories/GHSA-9hjf-w35w-6vx2
+    fix: https://github.com/Studio-42/elFinder/commit/31284facd033e081b2b69c08873b39c8a413b762
+    product: studio-42/elfinder
+    closed: '2026-09-02'
+    summary: Команда netmount не входила в список команд с проверкой CSRF — принудительное монтирование FTP и исходящее соединение
+      сервера
+  - url: https://github.com/advisories/GHSA-68jx-f42c-7599
+    fix: https://github.com/TYPO3/typo3/commit/4a75e862c589c85d795d7c65dcdc835f8f413efc
+    product: typo3/cms-backend, typo3/cms-core
+    closed: '2026-09-01'
+    summary: Проверка Referer сравнивала с каталогом входного скрипта, ставшим корнем сайта — бэкенд принимал запросы со страниц
+      фронтенда того же домена
+  - url: https://github.com/advisories/GHSA-p2ch-c2c3-4xm5
+    fix: https://github.com/wintercms/winter/commit/353b23804dee2acf49fca996c72637040446824f
+    product: winter/wn-backend-module
+    closed: '2026-08-20'
+    summary: Изменяющие AJAX-обработчики доступны как действия страницы обычным GET без CSRF-токена
+  - url: https://github.com/advisories/GHSA-xpr4-8vp6-c87j
+    fix: https://github.com/froxlor/froxlor/commit/5f540fe361e7e13e8c5a32805b793a25e9e26a0e
+    product: froxlor/froxlor
+    closed: '2026-08-18'
+    summary: Отдельная точка входа AJAX не проверяет CSRF-токен, хотя основное приложение проверяет
+  - url: https://github.com/advisories/GHSA-r8vr-m544-qh4h
+    product: kimai/kimai
+    closed: '2026-07-14'
+    summary: Изменяющие операции stop и restart доступны через GET с cookie-сессией — CSRF
+  - url: https://github.com/advisories/GHSA-pgcc-vfmc-7cw5
+    product: kimai/kimai
+    closed: '2026-07-13'
+    summary: GET-маршруты создают команду, назначают тимлида и привязывают объект — изменение по ссылке с чужой страницы
+  - url: https://github.com/advisories/GHSA-hm42-q32m-vj4f
+    product: admidio/admidio
+    closed: '2026-07-09'
+    summary: Установка, удаление и обновление плагинов выполняются GET-запросами без CSRF-токена
 RWB-0191:
   pattern: Идентификатор сессии меняется после входа
   checks:
@@ -5849,6 +6621,11 @@ RWB-0193:
     product: org.springframework.ws:spring-ws-security
     closed: '2026-06-11'
     summary: Ошибки SOAP-аутентификации раскрывали состояние учётки (заблокирована, отключена)
+  - url: https://github.com/advisories/GHSA-225x-3jhx-wh4q
+    fix: https://github.com/statamic/cms/pull/14905
+    product: statamic/cms
+    closed: '2026-08-06'
+    summary: Эндпоинт мастера создания пользователя сообщал о существовании email без проверки права просмотра пользователей
 RWB-0194:
   pattern: Авторизация применяется на уровне полей и вложенных резолверов
   checks:
@@ -5964,6 +6741,22 @@ RWB-0198:
     product: io.jenkins.plugins:pipeline-groovy-lib
     closed: '2026-06-24'
     summary: Генератор сниппетов создаёт объекты любых разрешённых аннотацией типов из запроса, доступен через GET
+  - url: https://github.com/advisories/GHSA-265m-7826-wjqm
+    fix: https://github.com/craftcms/cms/commit/353b5d676c88a854c9f6409ad83b837ca0c0e8da
+    product: craftcms/cms
+    closed: '2026-08-06'
+    summary: Служебные ключи конфигурации объекта, спрятанные во вложенной JSON-строке, обходят очистку и создают поведение
+      — RCE
+  - url: https://github.com/advisories/GHSA-9369-69wj-7m2f
+    fix: https://github.com/YesWiki/yeswiki/commit/8f70a8d6b8befa0e644d03c785701dbbc55b8fd0
+    product: yeswiki/yeswiki
+    closed: '2026-07-09'
+    summary: Параметр импорта записей десериализуется через unserialize без ограничения классов
+  - url: https://github.com/advisories/GHSA-86vw-x4ww-x467
+    product: craftcms/cms
+    closed: '2026-07-09'
+    summary: 'Конфигурация объекта из POST без очистки: ключи ''on <событие>'' регистрируют обработчики и выполняют функции
+      PHP'
 RWB-0199:
   pattern: Внешние сущности XML не обрабатываются
   checks:
@@ -6416,6 +7209,12 @@ RWB-0231:
     product: publify_core
     closed: '2022-05-17'
     summary: Содержимое защищённых паролем статей доступно без пароля
+  - url: https://github.com/advisories/GHSA-x2rp-9qf7-2fmq
+    fix: https://github.com/contao/contao/commit/572686a113bca60f92cf2d0496cf3a74d0b6b457
+    product: contao/core-bundle
+    closed: '2026-10-09'
+    summary: После отключения индексации защищённых страниц поиск отдавал анонимам их заголовки, URL и фрагменты, проиндексированные
+      ранее
 RWB-0232:
   pattern: Имена файлов внутри загруженного пользователем содержимого (git-репозиторий, архив, пакет) с переводом строки,
     кавычками и выражениями кода (#{...}, ${...}, $(...)) при перечислении и обработке остаются текстом и не исполняются;
@@ -6582,6 +7381,16 @@ RWB-0244:
     product: decidim-core
     closed: '2026-07-13'
     summary: HTML-блок страницы, сохранённый администратором, выводится публично без санитизации
+  - url: https://github.com/advisories/GHSA-97jj-33gv-5xf9
+    fix: https://github.com/thephpleague/commonmark/commit/411afcc2a7402756d96c89af8882c724d12d47ca
+    product: league/commonmark
+    closed: '2026-09-30'
+    summary: Фильтр запрещённого HTML в Markdown пропускал <script в конце строки, атрибуты добавлял следующий блок — сохранённый
+      XSS
+  - url: https://github.com/advisories/GHSA-7gww-x7fh-jf9j
+    product: librenms/librenms
+    closed: '2026-08-18'
+    summary: Поля ответа внешней интеграции выводятся в страницу без экранирования — хранимый XSS
 RWB-0245:
   pattern: Контекст трассировки принимается и передаётся дальше
   checks:
@@ -6645,6 +7454,27 @@ RWB-0247:
     product: github.com/QuantumNous/new-api
     closed: '2026-08-17'
     summary: Сброс passkey администратором не проверяет уровень роли цели — можно снять фактор у root
+  - url: https://github.com/advisories/GHSA-9p7c-v5x3-rfx8
+    fix: https://github.com/craftcms/cms/commit/9bd05c91e6a7e6da5e949ec41a31c220c059aa04
+    product: craftcms/cms
+    closed: '2026-08-06'
+    summary: Переупорядочивание глобальных наборов не требует прав администратора, в отличие от соседних действий
+  - url: https://github.com/advisories/GHSA-h4hf-v6w5-897x
+    fix: https://github.com/poweradmin/poweradmin/commit/36e9081a5c83cb962dc6275b7adcd6cb463f1028
+    product: poweradmin/poweradmin
+    closed: '2026-07-24'
+    summary: API изменения пользователя не проверяет запрет на правку суперпользователя и отдельное право на смену чужого
+      пароля
+  - url: https://github.com/advisories/GHSA-3v2j-6fw9-f57c
+    fix: https://github.com/mantisbt/mantisbt/commit/17072d4c322c85f7135ebec3417a6d90b525d12f
+    product: mantisbt/mantisbt
+    closed: '2026-07-15'
+    summary: Через REST и SOAP роль ниже порога может назначить задаче невыпущенную версию продукта
+  - url: https://github.com/advisories/GHSA-m7ph-9558-mrx3
+    fix: https://github.com/mantisbt/mantisbt/commit/2d3a5537605487a1ec5178aba9fe9b5623b6a4e0
+    product: mantisbt/mantisbt
+    closed: '2026-07-15'
+    summary: Через REST и SOAP роль с правом изменения меняет статус задачи, требующий более высокого порога
 RWB-0248:
   pattern: Mass assignment cannot elevate privileges
   checks:
@@ -6666,6 +7496,12 @@ RWB-0249:
     product: avo
     closed: '2026-04-24'
     summary: Действие ищется по имени класса среди всех действий, без привязки к ресурсу из URL
+  - url: https://github.com/advisories/GHSA-g2fm-8hr4-j82h
+    fix: https://github.com/EasyCorp/EasyAdminBundle/commit/03be45c6b7213c4c984a1d0542b7ec60359329f8
+    product: easycorp/easyadmin-bundle
+    closed: '2026-09-02'
+    summary: Диспетчер действий подменял контроллер по параметру routeName после проверки access_control по исходному URL
+      — обход путевых правил
 RWB-0250:
   pattern: Альтернативные записи чисел обрабатываются по контракту
   checks:
@@ -7057,6 +7893,10 @@ RWB-0281:
     product: Kong
     closed: '2025-02-06'
     summary: Шлюз перестал передавать в запрос к upstream заголовки остатка лимита — видно через echo-upstream.
+  - url: https://github.com/advisories/GHSA-xvc3-826v-xf47
+    product: pterodactyl/panel
+    closed: '2026-07-28'
+    summary: Ограничитель частоты входа и 2FA использует один общий ключ для всех клиентов — глобальная блокировка
 RWB-0282:
   pattern: Значения из запроса (метод, путь, заголовки, коды) не создают неограниченно новых серий метрик — кардинальность
     меток ограничена (например, неизвестные значения сводятся в other, пути — в шаблон маршрута); размер /metrics и память
@@ -7251,6 +8091,11 @@ RWB-0297:
     product: github.com/cloudreve/Cloudreve/v3, github.com/cloudreve/Cloudreve/v4
     closed: '2026-07-24'
     summary: Поиск пользователей не фильтрует по статусу и раскрывает email неактивных и заблокированных учёток
+  - url: https://github.com/advisories/GHSA-mf8r-wm2w-f8c5
+    fix: https://github.com/thorsten/phpMyFAQ/commit/4c7e3f841ba6cb25564c6802509a669b0e328321
+    product: phpmyfaq/phpmyfaq, thorsten/phpmyfaq
+    closed: '2026-08-25'
+    summary: Неактивные FAQ скрыты в списке, но отдаются через эндпоинты по ID и по тегу
 RWB-0298:
   pattern: Role revocation takes effect within policy window
   checks:
@@ -7270,6 +8115,10 @@ RWB-0298:
     product: code.gitea.io/gitea
     closed: '2026-07-21'
     summary: Перевод репозитория в приватный через API не снимает подписки, и бывшие подписчики видят его в своём списке
+  - url: https://github.com/advisories/GHSA-c6w6-57jj-62vh
+    product: kimai/kimai
+    closed: '2026-07-14'
+    summary: Перезапуск и копирование старой записи создают новую запись в проекте, доступ к которому отозван
 RWB-0299:
   pattern: Untrusted tenant header cannot override identity context
   checks:
@@ -7312,3 +8161,136 @@ RWB-0301:
     product: code.vikunja.io/api
     closed: '2026-10-09'
     summary: WebSocket принимает JWT отозванной сессии и продолжает присылать события
+RWB-0302:
+  pattern: Идентификаторы из пользовательского определения схемы (имена полей, таблиц, индексов), по которым сервер генерирует
+    исходный код или DDL, не внедряют код и SQL — символы, закрывающие объявление (;, кавычки, скобки, комментарии), отклоняются
+    4xx или экранируются по правилам целевого языка; пара к RES-DB-OBJECT-NAMES (законные имена со спецсимволами работают)
+  checks:
+  - INJ-SCHEMA-IDENTIFIER-CODEGEN
+  batch: ghsa-composer
+  bugs:
+  - url: https://github.com/advisories/GHSA-9x44-4gxf-8c25
+    fix: https://github.com/pimcore/pimcore/pull/19183
+    product: pimcore/pimcore
+    closed: '2026-08-28'
+    summary: Имя поля в импортируемом определении класса без allowlist попадало в сгенерированный PHP-код и в ALTER TABLE
+      — RCE и SQL-инъекция
+RWB-0303:
+  pattern: Данные пользователя (поле формы, настройки, фронтматтер страницы), которые называют серверную функцию — источник
+    данных, обработчик, callback, — не позволяют вызвать функцию вне allowlist в любой форме записи (строка, Класс::метод,
+    массив класс-метод, вложенный callable) и с любыми аргументами; denylist опасных функций недостаточен
+  checks:
+  - INJ-USER-DATA-CALLABLE
+  batch: ghsa-composer
+  bugs:
+  - url: https://github.com/advisories/GHSA-r94f-hx44-8jqf
+    product: getgrav/grav
+    closed: '2026-09-17'
+    summary: Проверка безопасного callable в поле настроек пропускала имя в виде пары [класс, метод] — вызов распаковки ZIP
+      в публичный каталог и RCE
+  - url: https://github.com/advisories/GHSA-f8wv-xp27-6gq7
+    product: getgrav/grav
+    closed: '2026-09-17'
+    summary: Ветка простых функций в проверке callable полей использовала denylist без error_log — запись в произвольный файл
+  - url: https://github.com/advisories/GHSA-7pgq-cr25-xvc8
+    product: getgrav/grav
+    closed: '2026-09-17'
+    summary: 'Проверка callable пропускала строки с :: — редактор страниц вызывал любой статический метод и читал файлы сервера'
+  - url: https://github.com/advisories/GHSA-fj2p-qj2f-74v5
+    fix: https://github.com/getgrav/grav/commit/acffa34cbb0787fee87c609e0d6289e904fee33c
+    product: getgrav/grav
+    closed: '2026-09-02'
+    summary: dynamicData передавал строку Класс::метод в call_user_func_array без allowlist — автор страниц выполнял команды
+      ОС при открытии страницы
+RWB-0304:
+  pattern: Учётные данные, настроенные сервером для своего сайта или интеграции (Authorization, Cookie, ключи), не уходят
+    в исходящие запросы к другим хостам — при обходе ссылок, проверке битых ссылок, следовании редиректам, загрузке по URL
+  checks:
+  - HARD-OUTBOUND-CREDENTIALS-SCOPE
+  batch: ghsa-composer
+  bugs:
+  - url: https://github.com/advisories/GHSA-3mr9-p497-58f6
+    fix: https://github.com/contao/contao/commit/5bc6e3f900c439313df57aa561d0865792aafa05
+    product: contao/contao, contao/core-bundle
+    closed: '2026-08-06'
+    summary: Краулер отправляет настроенные Basic/Bearer-учётные данные на внешние хосты из-за неверных имён опций очистки
+RWB-0305:
+  pattern: Внешний идентификатор субъекта (OIDC sub; SAML NameID и ID провайдера — если их семантика требует точного совпадения)
+    сравнивается побайтно в паре «издатель + subject» — без нормализации регистра, диакритики и Unicode collation БД; subject,
+    отличающийся от чужого только регистром или акцентом, даёт новую учётку или отказ, но не вход в чужую; пара к AUTH-LOGIN-IDENTIFIER-NORMALIZATION
+    (там нормализация нужна)
+  checks:
+  - AUTH-EXTERNAL-ID-EXACT-MATCH
+  batch: ghsa-composer
+  bugs:
+  - url: https://github.com/advisories/GHSA-cmwh-g2h8-c222
+    fix: https://github.com/poweradmin/poweradmin/commit/cbb78f401a9cc77c976939e93b558f39cb738965
+    product: poweradmin/poweradmin
+    closed: '2026-07-24'
+    summary: Идентификатор sub OIDC сравнивается в БД без учёта регистра и диакритики — вход в чужую учётку
+RWB-0306:
+  pattern: Частота отправки кодов ограничена (SMS bombing)
+  checks:
+  - AUTH-OTP-SEND-LIMIT
+  batch: ghsa-composer
+  bugs:
+  - url: https://github.com/advisories/GHSA-mfxh-vp55-7gc6
+    fix: https://github.com/contao/contao/commit/2ea6117f9049db7221679251cfc41e67d941a74b
+    product: contao/core-bundle
+    closed: '2026-10-09'
+    summary: Любой POST на страницу регистрации повторно отправлял письмо активации без капчи и лимита — рассылка писем и
+      оракул ожидающей регистрации
+RWB-0307:
+  pattern: Токен сброса пароля одноразовый, ограничен по времени и привязан к пользователю
+  checks:
+  - AUTH-PASSWORD-RESET-TOKEN
+  batch: ghsa-composer
+  bugs:
+  - url: https://github.com/advisories/GHSA-h854-c3m3-mh5v
+    fix: https://github.com/pimcore/studio-backend-bundle/pull/1882
+    product: pimcore/studio-backend-bundle
+    closed: '2026-08-28'
+    summary: Публичный запрос сброса пароля принимал URL ссылки от клиента и отправлял токен на чужой домен; вход по токену
+      отключал 2FA
+  - url: https://github.com/advisories/GHSA-m492-gv72-xvxj
+    product: kimai/kimai
+    closed: '2026-07-01'
+    summary: Ссылка сброса пароля действует после смены пароля и после выдачи новой
+RWB-0308:
+  pattern: Учётные данные не передаются и не принимаются в URL
+  checks:
+  - AUTH-TOKEN-IN-URL
+  batch: ghsa-composer
+  bugs:
+  - url: https://github.com/advisories/GHSA-ffq7-hh2j-r24p
+    fix: https://github.com/auth0/symfony/commit/172d1d3e0b9d1e93610d786118389a811179bc8a
+    product: auth0/symfony
+    closed: '2026-07-14'
+    summary: Bearer-токены принимаются из query-параметра URL
+RWB-0309:
+  pattern: Bulk admin actions require privilege for every target
+  checks:
+  - SEC-ROLE-BULK-ADMIN
+  batch: ghsa-composer
+  bugs:
+  - url: https://github.com/advisories/GHSA-243p-f3cv-c5wh
+    product: shopper/framework
+    closed: '2026-09-11'
+    summary: Массовые действия таблиц не проверяли права, тогда как одиночные проверяли — массовое удаление и смена видимости
+      с правом просмотра
+  - url: https://github.com/advisories/GHSA-vgx7-c78r-69w9
+    fix: https://github.com/grokability/snipe-it/commit/374f426f0c6bb7a4f129f7b85051cc1da753a0f5
+    product: snipe/snipe-it
+    closed: '2026-08-28'
+    summary: Эндпоинт массового сохранения удаляет пользователей с правом изменения, без права удаления
+RWB-0310:
+  pattern: Поле с pattern принимает только совпадающие значения
+  checks:
+  - VAL-REGEX-PATTERN
+  batch: ghsa-composer
+  bugs:
+  - url: https://github.com/advisories/GHSA-2mhj-fhvg-v428
+    fix: https://github.com/pimcore/pimcore/commit/33a0e1887e1e31b4283b016ac5440c35ea5697b4
+    product: pimcore/pimcore
+    closed: '2026-08-13'
+    summary: Шаблон проверки ID класса без якоря конца пропускает SQL в хвосте, позже исполняемый

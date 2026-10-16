@@ -39,6 +39,8 @@ checks:
   - action: Зарегистрировать в стриме ID задачи другого арендатора и проверить, что после отказа проверки владения результаты
       этой задачи в стрим не приходят
     notes: 'Real-world bug: RWB-0157 (GHSA-9q4h-f4x5-ffq8)'
+  - action: Запросить, изменить и удалить объекты без арендатора (company_id = null) пользователем, привязанным к арендатору
+    notes: 'Real-world bug: RWB-0157 (GHSA-c6w2-j4wq-mvwg)'
   expected:
   - Tenant B data is not disclosed; response and side effects match the documented denial/concealment policy.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

@@ -27,6 +27,12 @@ checks:
   - action: Удалить через путь своего проекта объект с ID чужого проекта и проверить 404 и сохранность связанных данных чужого
       проекта
     notes: 'Real-world bug: RWB-0149 (GHSA-gg93-x632-9ccv)'
+  - action: Передать при изменении своей записи в параметре очистки файлов путь к файлу другой записи и проверить, что файл
+      не удалён
+    notes: 'Real-world bug: RWB-0149 (GHSA-8xjm-wqrp-2f25)'
+  - action: Удалить контейнер (папку) с объектами других пользователей пользователем без права удалять чужие; чужие объекты
+      не удаляются каскадом
+    notes: 'Real-world bug: RWB-0149 (GHSA-7h62-6v23-v8fm)'
   expected:
   - Deny the operation; resource A remains available to its owner.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

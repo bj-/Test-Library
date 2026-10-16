@@ -239,6 +239,7 @@ checks:
   - negative
   - authn
   - hardening
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -264,6 +265,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0308'
 - id: AUTH-LOGOUT-INVALIDATES
   status: approved
   title: После выхода токен и сессия недействительны
@@ -429,6 +432,9 @@ checks:
   - action: Сравнить ответы и время для существующего и несуществующего логина/email/телефона.
   - action: Выполнить вход для заблокированной, отключённой и несуществующей учёток и сравнить ответы
     notes: 'Real-world bug: RWB-0193 (GHSA-5x25-c2rf-f2jx)'
+  - action: Вызвать служебный эндпоинт проверки существования email (мастер создания пользователя) от роли без права просмотра
+      пользователей с существующим и несуществующим email
+    notes: 'Real-world bug: RWB-0193 (GHSA-225x-3jhx-wh4q)'
   expected:
   - Тела, статусы и время ответа неразличимы в пределах допуска.
   applicability:
@@ -588,6 +594,7 @@ checks:
   - negative
   - otp
   - rate-limiting
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -596,6 +603,9 @@ checks:
   - Есть отправка SMS или email кода.
   steps:
   - action: Отправить много запросов кода на один номер, на разные номера с одного клиента.
+  - action: Многократно отправить POST на форму регистрации для адреса с неподтверждённой регистрацией без капчи и признака
+      отправки формы; проверить лимит писем активации и одинаковость ответа с адресом без регистрации
+    notes: 'Real-world bug: RWB-0306 (GHSA-mfxh-vp55-7gc6)'
   expected:
   - Срабатывает ограничение по номеру и по клиенту; ответ задокументирован.
   applicability:
@@ -614,6 +624,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0306'
 - id: AUTH-OTP-BINDING
   status: approved
   title: Одноразовый код привязан к получателю и операции
@@ -714,6 +726,7 @@ checks:
   - negative
   - authn
   - token-lifecycle
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -723,6 +736,9 @@ checks:
   - Есть сброс пароля.
   steps:
   - action: Использовать токен дважды, после истечения, для другого пользователя; запросить два токена и использовать первый.
+  - action: Отправить запрос сброса пароля с параметром URL ссылки на чужой домен и проверить, что письмо ведёт только на
+      настроенный домен, а вход по токену требует второй фактор
+    notes: 'Real-world bug: RWB-0307 (GHSA-h854-c3m3-mh5v)'
   expected:
   - Все варианты отклоняются.
   - Токен не возвращается в ответе API и не попадает в Referer.
@@ -743,6 +759,8 @@ checks:
   risk:
     impact: critical
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0307'
 - id: AUTH-SESSION-FIXATION
   status: approved
   title: Идентификатор сессии меняется после входа
@@ -863,6 +881,17 @@ checks:
     notes: 'Real-world bug: RWB-0190 (GHSA-8639-qx56-r428)'
   - action: Отправить JSON-тело изменяющего запроса из HTML-формы с enctype=text/plain и проверить, что сервер его не принимает
     notes: 'Real-world bug: RWB-0190 (GHSA-8cj9-r88m-8945)'
+  - action: Выполнить изменяющее действие GET-запросом (действие выбрано параметром запроса) без CSRF-токена
+    notes: 'Real-world bug: RWB-0190 (GHSA-9ff2-p842-45wq)'
+  - action: Вызвать бэкенд-маршрут с сессией администратора и Referer страницы фронтенда того же домена
+    notes: 'Real-world bug: RWB-0190 (GHSA-68jx-f42c-7599)'
+  - action: Вызвать изменяющий обработчик GET-запросом по URL без CSRF-токена и проверить, что изменение не выполнено
+    notes: 'Real-world bug: RWB-0190 (GHSA-p2ch-c2c3-4xm5)'
+  - action: Отправить изменяющий запрос без CSRF-токена на каждую отдельную точку входа (AJAX-эндпоинт)
+    notes: 'Real-world bug: RWB-0190 (GHSA-xpr4-8vp6-c87j)'
+  - action: Выполнить с cookie сессии кросс-сайтовую GET-навигацию на маршрут, изменяющий данные или права, и проверить, что
+      состояние не изменилось
+    notes: 'Real-world bug: RWB-0190 (GHSA-pgcc-vfmc-7cw5)'
   expected:
   - Запросы отклоняются; состояние не меняется.
   applicability:
@@ -1052,6 +1081,13 @@ checks:
   - action: Пройти повторную аутентификацию свежим токеном, полученным более слабым способом входа (одноразовая ссылка), и
       проверить, что требование фактора не считается выполненным
     notes: 'Real-world bug: RWB-0060 (GHSA-hp74-gm6m-2qm5)'
+  - action: Подключить и отключить второй фактор, перевыпустить коды восстановления в существующей сессии без текущего пароля,
+      передав только код фактора или код восстановления
+    notes: 'Real-world bug: RWB-0060 (GHSA-7m6h-rg42-m449)'
+  - action: Изменить email для входа в профиле без текущего пароля
+    notes: 'Real-world bug: RWB-0060 (GHSA-9fw9-8c49-qch8)'
+  - action: Использовать cookie сессии, выданную после пароля до ввода второго фактора, для запросов к API
+    notes: 'Real-world bug: RWB-0060 (GHSA-v8hx-4vx8-wc96)'
   expected:
   - Операция отклоняется без второго фактора; подтверждение привязано к операции.
   applicability:
@@ -2005,3 +2041,45 @@ checks:
   - RFC 7617 §2, §2.1 (charset)
   - Позитивная пара к SEC-AUTHN-MALFORMED
   - 'Real-world bug: RWB-0276'
+- id: AUTH-EXTERNAL-ID-EXACT-MATCH
+  status: draft
+  title: Внешний идентификатор субъекта сравнивается побайтно в паре издатель и subject
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Вход через внешний IdP; учётка привязана к паре издатель и subject (OIDC sub; SAML NameID — если его семантика требует
+    точного совпадения).
+  - Нужен тестовый IdP с двумя субъектами.
+  steps:
+  - action: Войти через IdP субъектом, sub которого отличается от sub существующей учётки только регистром, диакритикой или
+      Unicode-нормализацией (victim-login и victím-login).
+  expected:
+  - Создаётся новая учётка или отказ; вход в чужую учётку невозможен.
+  applicability:
+    when:
+    - Есть вход через внешний IdP.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - OpenID Connect Core §2 (sub уникален в пределах издателя), §5.7
+  - Пара к AUTH-LOGIN-IDENTIFIER-NORMALIZATION
+  - 'Real-world bug: RWB-0305'

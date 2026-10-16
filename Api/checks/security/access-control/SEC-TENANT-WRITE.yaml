@@ -29,6 +29,10 @@ checks:
   - action: Вызвать gRPC-методы служебного сервиса (метки, отписка воркера) с ID объекта другого тенанта в теле и проверить
       PERMISSION_DENIED или NOT_FOUND
     notes: 'Real-world bug: RWB-0159 (GHSA-8x7x-83cf-c3pg)'
+  - action: Удалить через эндпоинт действия в отчёте запись другого арендатора по её глобальному ID
+    notes: 'Real-world bug: RWB-0159 (GHSA-35cr-9hqq-p2mg)'
+  - action: Выполнить переупорядочивание (reorder) с ID записей другого арендатора
+    notes: 'Real-world bug: RWB-0159 (GHSA-vgmv-8xjc-6rch)'
   expected:
   - Request is denied and tenant B persisted data is unchanged.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

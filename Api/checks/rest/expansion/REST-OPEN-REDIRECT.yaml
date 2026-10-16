@@ -42,6 +42,12 @@ checks:
     notes: 'Real-world bug: RWB-0125 (GHSA-7pwc-wh6m-44q3)'
   - action: Отправить не-GET запрос с истёкшей сессией и чужим Referer и проверить Location
     notes: 'Real-world bug: RWB-0125 (GHSA-jp94-3292-c3xv)'
+  - action: Передать в сегмент пути резолвера префикс, который сервер разворачивает во внешний URL (интервики, алиас), и цель
+      с user:pass@host; проверить Location
+    notes: 'Real-world bug: RWB-0125 (GHSA-hw3m-8j5x-94ff)'
+  - action: Открыть форму с внешним заголовком Referer и отправить её с возвратом «назад»; проверить, что Location не ведёт
+      на внешний адрес
+    notes: 'Real-world bug: RWB-0125 (GHSA-wg2f-x2c2-c4rp)'
   expected:
   - разрешены только адреса по allowlist/политике
   applicability:

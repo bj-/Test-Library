@@ -54,6 +54,12 @@ checks:
   - action: Передать защищённое поле вложенным в разрешённый объект верхнего уровня и проверить, что оно отклоняется или не
       применяется
     notes: 'Real-world bug: RWB-0121 (GHSA-48p8-g2fx-3wwm)'
+  - action: Передать новый пароль в общем эндпоинте сохранения пользователя, минуя отдельную операцию смены пароля
+    notes: 'Real-world bug: RWB-0121 (GHSA-p8x7-9vfw-p7vc)'
+  - action: Передать id во вложенном объекте атрибутов (newAttributes) операции дублирования или массового изменения
+    notes: 'Real-world bug: RWB-0121 (GHSA-x5m4-g2cq-52pq)'
+  - action: Сохранить свой ресурс с полем авторов (authors, author) на другого пользователя без права менять авторство
+    notes: 'Real-world bug: RWB-0121 (GHSA-qq2c-2q8j-jh27)'
   expected:
   - role/owner/status/balance нельзя менять через неразрешённые поля payload
   applicability:

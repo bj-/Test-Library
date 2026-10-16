@@ -13,6 +13,7 @@ checks:
   - negative
   - security
   - authz
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -22,6 +23,8 @@ checks:
   steps:
   - action: Submit a bulk role, status, or permission update as a caller lacking admin rights or including unauthorized targets.
     notes: 'Matrix axis: Roles/Scopes; scenario: Bulk admin action. Use isolated synthetic identities and data.'
+  - action: Выполнить удаление через эндпоинт массового сохранения пользователем с правом изменения, но без права удаления
+    notes: 'Real-world bug: RWB-0309 (GHSA-vgx7-c78r-69w9)'
   expected:
   - No unauthorized target is modified; partial versus atomic failure matches documented policy.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
@@ -44,3 +47,4 @@ checks:
     likelihood: medium
   references:
   - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model
+  - 'Real-world bug: RWB-0309'

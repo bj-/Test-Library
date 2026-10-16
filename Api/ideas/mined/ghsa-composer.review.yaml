@@ -9,6 +9,10 @@
 # в proofs.retarget. Затем: cluster.py (пересобрать ghsa-composer.md) и apply_proofs.py. Перекрёстное ревью другими
 # LLM — reviewcheck.py (mining/README.md, шаги 6–7, п. 7).
 #
+# Перекрёстное ревью (2026-10-16): ChatGPT и Qwen — ghsa-composer.reviewcheck.answer-1.md, -2.md; правило — mining/README.md,
+# шаги 6–7, п. 7. Итог: №1–4 — accept у обеих; №1 — одной записью (Qwen, Claude; ChatGPT — разбить на код и DDL);
+# №4 — сужен до пары «издатель + subject», SAML NameID — если семантика допускает (ChatGPT; Claude согласен);
+# №5 — обе модели: покрыто SEC-ALT-REPRESENTATION-ACCESS — вариант к ней (retarget), как предложено.
 # decision: accept | reject | pending
 batch: ghsa-composer
 clusters:
@@ -35,7 +39,7 @@ clusters:
   check_id: AUTH-EXTERNAL-ID-EXACT-MATCH
   file: checks/security/authentication-session.yaml
   bugs: [GHSA-cmwh-g2h8-c222]
-  idea: Внешний идентификатор субъекта (OIDC sub, SAML NameID, ID в провайдере) сравнивается побайтно — без нормализации регистра, диакритики и Unicode; sub, отличающийся от sub жертвы только регистром или акцентом, даёт новую учётку или отказ, но не вход в чужую; пара к AUTH-LOGIN-IDENTIFIER-NORMALIZATION (там нормализация нужна)
+  idea: Внешний идентификатор субъекта (OIDC sub; SAML NameID и ID провайдера — если их семантика требует точного совпадения) сравнивается побайтно в паре «издатель + subject» — без нормализации регистра, диакритики и Unicode collation БД; subject, отличающийся от чужого только регистром или акцентом, даёт новую учётку или отказ, но не вход в чужую; пара к AUTH-LOGIN-IDENTIFIER-NORMALIZATION (там нормализация нужна)
 proofs:
   exclude: []
   no_variant: []

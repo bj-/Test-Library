@@ -30,6 +30,15 @@ checks:
     notes: 'Real-world bug: RWB-0152 (GHSA-c273-c6vg-4pv5)'
   - action: Передать в теле операции над своим контейнером ID чужого объекта и проверить отказ и отсутствие его данных в ответе
     notes: 'Real-world bug: RWB-0152 (GHSA-5pg6-m483-7vrg)'
+  - action: Из другой анонимной сессии продолжить чужую незавершённую отправку формы, подставив её ID в каждую операцию продолжения
+      (сохранение и финальная отправка)
+    notes: 'Real-world bug: RWB-0152 (GHSA-584p-f93j-wpgc)'
+  - action: Передать в параметре пути флаг административного действия и ID другого пользователя от имени обычного пользователя
+    notes: 'Real-world bug: RWB-0152 (GHSA-53jc-27pc-x8r8)'
+  - action: Передать в обработчике вложений ID чужого файла и изменить его заголовок, описание и порядок сортировки
+    notes: 'Real-world bug: RWB-0152 (GHSA-3277-h8g9-qj5f)'
+  - action: Начать привязку внешней учётной записи (OAuth) с ID чужого объекта в URL и завершить callback
+    notes: 'Real-world bug: RWB-0152 (GHSA-8hm4-r66f-29wr)'
   expected:
   - Deny the operation; persisted state of resource A remains unchanged.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
