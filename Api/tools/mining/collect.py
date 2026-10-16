@@ -20,9 +20,9 @@ from library import load_yaml, setup_console  # noqa: E402
 from github_api import GitHub, StopCollection  # noqa: E402
 
 ISSUES_QUERY = """
-query($owner:String!,$name:String!,$labels:[String!],$after:String){
+query($owner:String!,$name:String!,$labels:[String!],$type:String,$after:String){
   repository(owner:$owner,name:$name){
-    issues(first:50,after:$after,states:CLOSED,labels:$labels,orderBy:{field:CREATED_AT,direction:DESC}){
+    issues(first:50,after:$after,states:CLOSED,labels:$labels,filterBy:{type:$type},orderBy:{field:CREATED_AT,direction:DESC}){
       pageInfo{hasNextPage endCursor}
       nodes{
         number title url body createdAt closedAt stateReason
@@ -97,16 +97,23 @@ def collect_github(gh: GitHub, src: dict, defaults: dict, out: Path, state: dict
     exc_patterns = [p for p in (defaults.get("exclude_labels"), src.get("exclude_labels")) if p]
     exc = [rx(p) for p in exc_patterns]
     req = rx(src.get("require_labels"))
-    query_labels = [lb for lb in all_labels if inc.search(lb) and not any(e.search(lb) for e in exc)]
+    # issue_type — репозиторий размечает баги типом issue (GitHub Issue Types), а не меткой: запрос по типу
+    issue_type = src.get("issue_type")
+    if issue_type:
+        query_labels = None
+        print(f"  тип issue: {issue_type}")
+    else:
+        query_labels = [lb for lb in all_labels if inc.search(lb) and not any(e.search(lb) for e in exc)]
+        if not query_labels:
+            raise RuntimeError(f"{src['id']}: ни одна метка не подошла под include_labels; метки: {all_labels}")
+        print(f"  метки запроса: {query_labels}")
     state["query_labels"] = query_labels
-    if not query_labels:
-        raise RuntimeError(f"{src['id']}: ни одна метка не подошла под include_labels; метки: {all_labels}")
-    print(f"  метки запроса: {query_labels}")
 
     kept, after, scanned = state.get("kept", 0), state.get("cursor"), state.get("scanned", 0)
     with out.open("a", encoding="utf-8") as f:
         while kept < src["max_items"]:
-            d = gh.graphql(ISSUES_QUERY, {"owner": owner, "name": name, "labels": query_labels, "after": after})
+            d = gh.graphql(ISSUES_QUERY, {"owner": owner, "name": name, "labels": query_labels,
+                                             "type": issue_type, "after": after})
             page = d["repository"]["issues"]
             for n in page["nodes"]:
                 scanned += 1

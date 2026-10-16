@@ -3,7 +3,8 @@
 # Метки не перечисляются точно: сборщик читает метки репозитория и отбирает их по шаблонам.
 # include_labels — какие метки означают баг (запрос к API идёт по ним, логика ИЛИ);
 # require_labels — дополнительно нужна хотя бы одна такая метка (сужение, например по area);
-# exclude_labels — к шаблонам из defaults добавляются шаблоны источника.
+# exclude_labels — к шаблонам из defaults добавляются шаблоны источника;
+# issue_type — баги размечены типом issue (GitHub Issue Types): запрос по типу вместо include_labels.
 # exclude_title — предфильтр до LLM по заголовку (внутренности фреймворка, сборка); калибровка на пилоте:
 #   у nest и express отсекает 28 багов вне области, API-баги не теряются (build/mining/pilot/REPORT.md).
 # max_items — сколько issue сохранить в raw после отбора по меткам (до фильтра). У источников пилота при
@@ -132,6 +133,7 @@ sources:
   - id: postgrest
     type: github
     repo: PostgREST/postgrest
+    issue_type: Bug  # с 2025 баги размечены типом issue, метки bug нет
     max_items: 150
   - id: hasura
     type: github
