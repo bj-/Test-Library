@@ -1026,7 +1026,7 @@ references:
 
 ## Индекс библиотеки
 
-Все записи (550): ID | категория | заголовок.
+Остальные записи (530): ID | категория | заголовок. Записи этого пакета в индекс не входят.
 
 ```text
 ASYNC-DEAD-LETTER | async | Необрабатываемые сообщения уходят в DLQ без блокировки очереди
@@ -1147,26 +1147,6 @@ CONTRACT-PUBLISHED-SCHEMA-VALID | contract | Опубликованные сер
 CONTRACT-REQUIRED-FIELDS | contract | Successful response contains required contract fields
 CONTRACT-RESPONSE-LINKS-RESOLVE | contract | URL в ответах открываются
 CONTRACT-UNKNOWN-FIELD-POLICY | contract | Unknown fields follow the documented contract policy
-DB-ACCESS-SCOPE-IN-QUERY | db | Граница доступа задаётся в самом запросе к БД
-DB-API-DATA-MATCH | db | После операции API в БД изменены ровно ожидаемые строки с ожидаемыми значениями
-DB-CATALOG-INTROSPECTION | db | Чтение каталога схемы корректно и укладывается во время на больших схемах
-DB-COLLATION-COMPARISON | db | Сравнение строк в БД соответствует назначению колонки
-DB-CONNECTION-HANDLING | db | Соединения с БД управляются предсказуемо
-DB-DEFAULT-PRECEDENCE | db | Значения по умолчанию применяются по правилам СУБД при любом способе вставки
-DB-DYNAMIC-SQL-PARAMETERIZED | db | Значения и идентификаторы из ввода и из БД попадают в SQL параметрами или по allowlist
-DB-GENERATED-SQL-SHAPE | db | Генерируемый SQL не выполняет лишней работы
-DB-IDENTIFIER-QUOTING | db | Имена объектов БД экранируются во всех служебных и генерируемых запросах
-DB-IMPORT-CONSISTENCY | db | Импорт не оставляет частичного состояния вне документированной политики
-DB-KEYS-AND-CONSTRAINTS | db | Ключи и ограничения защищают целостность независимо от приложения
-DB-METADATA-CACHE-FRESH | db | Кэш метаданных схемы в сервисе актуален после изменений БД
-DB-MIGRATIONS-SAFE | db | Миграции схемы применяются предсказуемо и не портят данные
-DB-QUERY-INDEX-USAGE | db | Запросы приложения используют подходящие индексы на реалистичном объёме
-DB-ROLES-AND-PRIVILEGES | db | Роли БД приложения имеют минимальные права, переключение ролей безопасно
-DB-SCHEMA-MATCHES-SPEC | db | Схема БД совпадает со спецификацией и контрактом API
-DB-SENSITIVE-DATA-PROTECTED | db | Чувствительные данные хранятся защищённо
-DB-STORED-ROUTINES | db | Хранимые процедуры и функции установлены и работают по спецификации
-DB-TRIGGERS | db | Триггеры срабатывают ровно на нужные события и изолированы
-DB-TYPED-COMPARISONS | db | Значения сравниваются и приводятся в типе колонки
 ERR-INTERNAL-ERROR-SHAPE | errors | Внутренняя ошибка сервера возвращается в общей модели без утечек
 ERR-STABLE-ERROR-CODES | errors | Машиночитаемые коды ошибок стабильны и задокументированы
 ERR-STATUS-MATCHES-EFFECT | errors | Код ответа соответствует фактическому результату операции

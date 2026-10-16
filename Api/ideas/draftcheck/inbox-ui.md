@@ -1424,7 +1424,7 @@ references:
 
 ## Индекс библиотеки
 
-Все записи (550): ID | категория | заголовок.
+Остальные записи (520): ID | категория | заголовок. Записи этого пакета в индекс не входят.
 
 ```text
 ASYNC-DEAD-LETTER | async | Необрабатываемые сообщения уходят в DLQ без блокировки очереди
@@ -1909,36 +1909,6 @@ SEC-TOKEN-SIGNATURE | security | Token with invalid signature is rejected
 SEC-VERTICAL-ESCALATION | security | Lower role cannot invoke higher-role route via alternate method
 SECURITY-AUTH-REQUIRED | security | Protected operation rejects unauthenticated requests
 SECURITY-AUTHZ-CROSS-USER | security | User cannot access another user's resource
-UI-ACTIONS-WORK-ONCE | ui | Каждое действие выполняется ровно один раз и меняет ровно своё
-UI-AUTH-FLOWS | ui | Интерфейсные потоки входа и восстановления нельзя обойти и перенаправить наружу
-UI-CHANGE-HISTORY | ui | История изменений показывает каждое изменение с автором
-UI-CLIENT-CODE-NO-SECRETS | ui | Клиентский код и страницы не раскрывают секретов и лишних данных
-UI-CLIENT-REQUEST-HYGIENE | ui | Клиент не шлёт лишних, дублирующих и бесконечных запросов
-UI-CONFIRM-DESTRUCTIVE | ui | Удаление и изменение подтверждаются, отмена ничего не меняет
-UI-DISABLED-AND-READONLY | ui | Недоступные и доступные только для чтения элементы видны и не выполняют действий
-UI-DOCUMENTS-OPEN | ui | Загруженные документы открываются и скачиваются в каждом поддерживаемом формате
-UI-DROPDOWN-VALUES | ui | Выпадающие списки показывают полные, разрешённые и упорядоченные значения
-UI-ERROR-DISPLAY | ui | Ошибки сервера и сбои показываются понятно, без падения клиента
-UI-FORM-REQUIRED-AND-HINTS | ui | Обязательные поля помечены и проверяются, подсказки объясняют формат
-UI-FORM-STATE | ui | Форма сохраняет и сбрасывает состояние ожидаемо
-UI-INPUT-VALUES | ui | Поля ввода принимают, показывают и сохраняют значения по своему типу
-UI-KEYBOARD-ACCESS | ui | Интерфейс полностью управляется с клавиатуры в логическом порядке
-UI-LEGAL-PAGES | ui | Условия использования и FAQ доступны там, где нужны
-UI-LIST-SORT-FILTER | ui | Сортировка и фильтры списков работают и сбрасываются ожидаемо
-UI-NAVIGATION | ui | Навигация последовательна: путь на главную, заголовки, рабочие пункты меню
-UI-NETWORK-RESILIENCE | ui | Клиент работает при потере сети и без доступа в интернет
-UI-NO-BROKEN-RESOURCES | ui | Ссылки, картинки и ресурсы страниц загружаются
-UI-PLATFORM-COMPATIBILITY | ui | Интерфейс одинаково работает в поддерживаемых браузерах, ОС и режимах
-UI-PLATFORM-SECURITY | ui | Настольный и мобильный клиенты не открывают недоверенный код и экраны входа другим приложениям
-UI-RELATED-RECORDS | ui | Связанные записи редактируются в карточке так же, как отдельно
-UI-RESPONSIVE-LAYOUT | ui | Интерфейс работает на всех поддерживаемых размерах экрана
-UI-RICH-EDITOR | ui | Редактор содержимого сохраняет форматирование и вставки без искажений
-UI-SAFE-RENDERING | ui | Данные отображаются экранированными и не роняют интерфейс
-UI-SECRET-FIELDS | ui | Поля паролей и секретов не раскрывают и не теряют значение
-UI-SESSION-EXPIRY | ui | Истечение и потеря сессии обрабатываются в интерфейсе понятно
-UI-TEXTS-CORRECT | ui | Тексты интерфейса без ошибок и по назначению экрана
-UI-USABILITY | ui | Частые сценарии короткие, ожидание и задержки понятны пользователю
-UI-VISUAL-CONSISTENCY | ui | Вид элементов единообразен и ничего не налезает
 VAL-ALL-ERRORS-REPORTED | validation | Ошибки валидации нескольких полей возвращаются по контракту (все сразу или первая)
 VAL-ARRAY-ITEMS-BOUNDARIES | validation | Границы массивов: minItems, maxItems, uniqueItems
 VAL-BODY-ENCODING | validation | Тело в неверной кодировке или с BOM обрабатывается предсказуемо

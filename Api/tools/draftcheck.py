@@ -94,9 +94,12 @@ def build(name: str, checks: list[dict]) -> str:
         src = refs_of(c)
         if src:
             out += ["Исходные идеи (inbox):", ""] + [f"- №{i}: {ideas.get(i, '—')}" for i in src] + [""]
+    own = {c["id"] for c in checks}
     index = sorted((c["id"], c.get("category", ""), c.get("title", "")) for _, c in iter_checks(Path("."), [])
-                   if not c["id"].startswith("REAL-"))
-    out += ["## Индекс библиотеки", "", f"Все записи ({len(index)}): ID | категория | заголовок.", "", "```text"]
+                   if not c["id"].startswith("REAL-") and c["id"] not in own)
+    out += ["## Индекс библиотеки", "",
+            f"Остальные записи ({len(index)}): ID | категория | заголовок. Записи этого пакета в индекс не входят.", "",
+            "```text"]
     out += [" | ".join(row) for row in index] + ["```"]
     return "\n".join(out) + "\n"
 
