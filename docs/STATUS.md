@@ -21,7 +21,8 @@ _Последнее обновление: 2026-10-16_
 - [x] Выгрузка багов, kubernetes: шаги 6–7 выполнены (2026-10-16) — перекрёстное ревью тремя LLM + bj: 11 записей draft (RWB-0217…0227), 2 reject (№2, №9); пруфы к 19 записям (32 RWB, +39 багов)
 - [x] Выгрузка багов, ghsa-rubygems: шаги 6–7 выполнены (2026-10-16) — сверка с ChatGPT и Qwen по правилу bj: 7 записей draft (RWB-0231…0237), №6 → шаг-вариант SEC-INTERNAL-CONTROL-PARAMS (`proofs.retarget` — новое в `cluster.py`); пруфы: 49 записей, 62 RWB, +165 багов
 - [x] Выгрузка багов, directus: шаги 6–7 выполнены (2026-10-16) — сверка с ChatGPT и Qwen: 11 записей draft (RWB-0251…0261; №2 разбит на права и валидацию, №9 сужен до трансформаций); пруфы: 34 записи, 47 RWB, +73 бага
-- [ ] Выгрузка багов, шаги 6–7 дальше: kong (11 new), ghsa-go (11), ghsa-composer (8), supabase-auth (6), apollo-server (4), strapi (2), ghsa-nuget (1); postgrest (13) — после дообработки
+- [ ] Выгрузка багов, kong: **ждёт ответов других LLM** (`Api/ideas/mined/kong.reviewcheck.md`, `.blind.md`) — `kong.md`: 11 new → 11 идей (9 accept, 2 reject); inbox №228
+- [ ] Выгрузка багов, шаги 6–7 дальше: ghsa-go (11), ghsa-composer (8), supabase-auth (6), apollo-server (4), strapi (2), ghsa-nuget (1); postgrest (13) — после дообработки
 - [ ] Выгрузка багов, масштабирование: сессии сбора по `Api/mining/sessions.md` (20 источников, ≈ 35–40 пачек), внутренняя сессия — синхронизация, сводка, шаги 6–7
 - [ ] Выгрузка багов: вычитать 50 draft-записей пилота (→ `approved` или `needs_clarification`) и шаги-варианты с префиксом «Добавить …»
 - [ ] Баг-трекеры, пилот: `collect_github.py` + `filter.py` → трассировка и метка `real-world-bug` → калибровка лимита (≤ 5 % недельного в день) → партии
@@ -92,3 +93,4 @@ _Последнее обновление: 2026-10-16_
 | 2026-10-16 | Claude / bj | ghsa-rubygems, шаг 7: ответы ChatGPT и Qwen (`ghsa-rubygems.reviewcheck.answer-1.md`, `-2.md`), решения по правилу сверки без bj — №3 одной записью, №5 и №7 accept (№7 — только HTML-ответы), №6 перенесён в SEC-INTERNAL-CONTROL-PARAMS, №4 — ссылка RFC 8252 §8.6; `cluster.py` — `proofs.retarget` (new → вариант существующей записи); 7 записей draft, `apply_proofs.py` — 49 записей, 62 RWB, +165 багов; `validate_library.py` 0 ошибок |
 | 2026-10-16 | Claude | directus, шаг 6: inbox №189–227 (39 идей UI/DB), 12 new → 10 идей на ревью (`directus.review.yaml`); пакеты перекрёстного ревью `reviewcheck.py` |
 | 2026-10-16 | Claude / bj | directus, шаг 7: ответы ChatGPT и Qwen (`directus.reviewcheck.answer-1.md`, `-2.md`), решения по правилу сверки без bj — №3 accept (Qwen против), №2 разбит, №9 сужен; 11 записей draft, `apply_proofs.py` — 34 записи, 47 RWB, +73 бага; `validate_library.py` 0 ошибок |
+| 2026-10-16 | Claude | kong, шаг 6: inbox №228 (DB), 11 new → 11 идей на ревью (`kong.review.yaml`, 9 accept, 2 reject); пакеты перекрёстного ревью `reviewcheck.py` |

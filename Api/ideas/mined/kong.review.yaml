@@ -1,0 +1,81 @@
+# Ревью кандидатов партии kong (шаги 6–7, docs/BUG_MINING_PLAN.md, Api/mining/sessions.md — внутренняя сессия, п. 3).
+#
+# Шаг 6 (Claude, 2026-10-16): 11 new-паттернов — 11 идей (clusters); для каждой — предложение: accept (новая
+# запись draft с предложенным ID в указанном файле) или reject (с причиной). Пруфы к существующим (extends/covered)
+# берутся из batches/*.out.jsonl автоматически. Идея DB (поле ideas) — inbox №228; ideas.md у источника нет.
+# Шаг 7 (человек): поменять decision / check_id / file кластера; неверные совпадения пруфов — в proofs.exclude
+# (ID бага), вариант пруфа без нового шага — в proofs.no_variant, new-паттерн как вариант существующей записи —
+# в proofs.retarget. Затем: cluster.py (пересобрать kong.md) и apply_proofs.py. Перекрёстное ревью другими LLM —
+# reviewcheck.py (mining/README.md, шаги 6–7, п. 7).
+#
+# decision: accept | reject | pending
+batch: kong
+clusters:
+- key: www-authenticate-syntax
+  decision: accept
+  check_id: HTTP-WWW-AUTHENTICATE-SYNTAX
+  file: checks/rest/http-protocol.yaml
+  bugs: [Kong/kong#14429]
+  idea: Заголовок WWW-Authenticate в ответе 401 разбирается строгим парсером — схема и параметры вызова через запятую с кавычками (Bearer realm="…", error="invalid_token", error_description="…"), по RFC 9110 §11.6.1 и RFC 6750 §3
+- key: outbound-request-headers
+  decision: accept
+  check_id: ASYNC-OUTBOUND-REQUEST-HEADERS
+  file: checks/common/async-integration.yaml
+  bugs: [Kong/kong#13067]
+  idea: Исходящий HTTP-запрос сервера на настроенный пользователем адрес (вебхук, приёмник журналов, интеграция) содержит корректные заголовки — Host с нестандартным портом (имя:порт), Content-Type и Content-Length по телу
+- key: response-mode-header-parity
+  decision: accept
+  check_id: HTTP-RESPONSE-MODE-HEADER-PARITY
+  file: checks/rest/http-protocol.yaml
+  bugs: [Kong/kong#10031]
+  idea: Настроенные заголовки ответа (служебные, CORS, безопасности, трассировки) присутствуют во всех режимах обработки ответа — потоковом и буферизованном, сжатом и несжатом, из кэша и без
+- key: config-scope-precedence
+  decision: accept
+  check_id: BIZ-CONFIG-SCOPE-PRECEDENCE
+  file: checks/common/business-logic.yaml
+  bugs: [Kong/kong#9812]
+  idea: Настройка более узкого уровня (маршрут, сервис, проект, арендатор, пользователь) имеет приоритет над глобальной; на объектах без своей настройки действует глобальная; удаление узкой настройки возвращает глобальную
+- key: pagination-next-link
+  decision: accept
+  check_id: PAGE-NEXT-LINK-VALID
+  file: checks/rest/pagination-extra.yaml
+  bugs: [Kong/kong#8243]
+  idea: Ссылка next (в теле или заголовке Link) ведёт на тот же путь коллекции, что и исходный запрос, сохраняет фильтры и работает — в том числе для коллекции, доступной по нескольким путям
+- key: wildcard-domain-match
+  decision: accept
+  check_id: HARD-WILDCARD-DOMAIN-MATCH
+  file: checks/security/api-hardening.yaml
+  bugs: [Kong/kong#7834]
+  idea: Шаблон домена с wildcard (*.example.com) в маршрутизации, списках разрешённых origin и redirect совпадает только с поддоменами указанного домена — не с abc.gw-example.com, example.com.evil.com и подобными
+- key: request-log-all-attempts
+  decision: accept
+  check_id: OBS-REQUEST-LOG-ALL-ATTEMPTS
+  file: checks/common/observability.yaml
+  bugs: [Kong/kong#6820]
+  idea: Журнал запроса с повторами к зависимости содержит данные о каждой попытке, включая последнюю неуспешную (код, состояние, время); нужен доступ к журналу запросов
+- key: protocol-specific-route-condition
+  decision: reject
+  bugs: [Kong/kong#6425]
+  idea: Условие маршрута, неприменимое к протоколу (SNI для HTTP), не блокирует совпадение маршрута по этому протоколу
+  reason: Внутренняя логика маршрутизатора шлюза (сочетание условий SNI и протоколов в одном маршруте); тестом API другого продукта не воспроизводится — для шлюзов и прокси общая часть уже в HTTP-VERSION-PARITY и правилах маршрутизации
+- key: response-framing-headers
+  decision: accept
+  check_id: HTTP-RESPONSE-FRAMING-HEADERS
+  file: checks/rest/http-protocol.yaml
+  bugs: [Kong/kong#8083]
+  idea: Ответ сервера не содержит одновременно Content-Length и Transfer-Encoding (RFC 9112 §6.1), в том числе когда заголовки ответа задаёт приложение или upstream; пара к HTTP-REQUEST-SMUGGLING
+- key: basic-credentials-special-chars
+  decision: accept
+  check_id: AUTH-BASIC-CREDENTIALS-SPECIAL-CHARS
+  file: checks/security/authentication-session.yaml
+  bugs: [Kong/kong#7968]
+  idea: Basic-аутентификация принимает пароль с двоеточием, пробелами и не-ASCII (UTF-8) — логин отделяется по первому двоеточию (RFC 7617 §2); позитивная пара к SEC-AUTHN-MALFORMED
+- key: active-healthcheck-frequency
+  decision: reject
+  bugs: [Kong/kong#6788]
+  idea: Активные проверки здоровья целей выполняются с настроенной частотой
+  reason: Внутренняя механика балансировщика шлюза (дублирование проверок по числу процессов-обработчиков); для API продукта это не наблюдаемое поведение, кроме нагрузки на upstream
+proofs:
+  exclude: []
+  no_variant: []
+  retarget: []
