@@ -84,7 +84,8 @@ Claude работает с одним источником. План, списо
    там, где замечание у обеих моделей (`proofs.exclude`, `proofs.no_variant`), до `apply_proofs.py`. Образец — ghsa-maven.
 7. **Перекрёстное ревью новых идей** (по решению человека — сверить его ревью с другой LLM): `python tools/mining/reviewcheck.py
    --batch <batch>` — пакет `ideas/mined/<batch>.reviewcheck.md` (предложения Claude, первоисточники, индекс библиотеки);
-   `--blind` — без решений Claude (`<batch>.reviewcheck.blind.md`). Ответ модели — `<batch>.reviewcheck.answer-N.md`;
+   `--blind` — без решений Claude (`<batch>.reviewcheck.blind.md`); `--batch a,b,c` — один пакет на несколько небольших
+   партий (`a+b+c.reviewcheck.md`). Ответ модели — `<batch>.reviewcheck.answer-N.md`;
    правило (bj, 2026-10-16): где модели сходятся с Claude или Claude после переоценки согласен с ними — решение
    принимается, в review-файле — комментарий с итогом сверки; где Claude не согласен — решает человек.
 

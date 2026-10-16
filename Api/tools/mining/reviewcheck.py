@@ -4,6 +4,7 @@
 Usage (from Api/):
   reviewcheck.py --batch kubernetes            the task with Claude's proposals (the same input the human reviews)
   reviewcheck.py --batch kubernetes --blind    without Claude's decisions, IDs and files — an independent review
+  reviewcheck.py --batch strapi,ghsa-nuget     one pack for several small batches (ideas numbered through)
 
 Writes ideas/mined/<batch>.reviewcheck.md: the task, the library principles, every cluster of `new` patterns with
 the source text of its bugs, and the index of all library records (to spot duplicates). The model does the same
@@ -65,18 +66,16 @@ def principles() -> str:
     return m.group(1).strip() if m else ""
 
 
-def build(batch: str, blind: bool) -> tuple[str, int]:
+def ideas_of(batch: str, blind: bool, n: int, label: bool) -> tuple[list[str], int]:
+    """Sections for the clusters and retargets of one batch, numbered from n + 1."""
     review = load_yaml(MINED / f"{batch}.review.yaml")
     sources = load_sources(batch)
     results = {r["id"]: r for r in load_results(batch)}
-    mode = ("без решений Claude — независимое ревью" if blind
-            else f"с предложениями модели {MODEL} — то же, что видит человек на ревью")
-    out = ["# Перекрёстное ревью новых идей выгрузки багов", "",
-           f"Партия `{batch}`, идей: {len(review['clusters'])}; вариант пакета — {mode}.",
-           "Этот файл целиком отдаётся другой LLM. Ответ модели вставить в чат внутренней сессии.", "",
-           TASK, "Принципы библиотеки (из README):", "", principles(), "", ANSWER]
-    for n, c in enumerate(review["clusters"], 1):
-        out += [f"## Идея {n}. {c['idea']}", ""]
+    tag = f" (`{batch}`)" if label else ""
+    out = []
+    for c in review["clusters"]:
+        n += 1
+        out += [f"## Идея {n}{tag}. {c['idea']}", ""]
         if not blind:
             target = (f"`{c['check_id']}` в `{c['file']}`" if c["decision"] == "accept"
                       else f"причина: {c.get('reason') or '—'}")
@@ -93,17 +92,31 @@ def build(batch: str, blind: bool) -> tuple[str, int]:
                     f"- **Источник ожидания:** {p.get('expected_source') or '—'}",
                     f"- **Почему не подошла ближайшая запись:** {r['match'].get('note') or '—'}", "",
                     "Первоисточник:", "", "````text", body, "````", ""]
-    n = len(review["clusters"])
     for t in (review.get("proofs") or {}).get("retarget") or []:
         n += 1
         src, r = sources[t["bug"]], results[t["bug"]]
         body = re.sub(r"\n{3,}", "\n\n", (src.get("body") or "").strip())[:BODY_LIMIT]
-        out += [f"## Идея {n}. {r['pattern']['title']}", ""]
+        out += [f"## Идея {n}{tag}. {r['pattern']['title']}", ""]
         if not blind:
             out += [f"- **Предложение Claude:** не новая запись, а шаг-вариант к `{t['check_id']}`: {t['variant']}", ""]
         out += [f"### {t['bug']} — {src['title']}", "", f"Ссылка: {src['url']}", "",
                 f"- **Действие:** {r['pattern']['action']}", f"- **Ожидание:** {r['pattern']['expected']}", "",
                 "Первоисточник:", "", "````text", body, "````", ""]
+    return out, n
+
+
+def build(batches: list[str], blind: bool) -> tuple[str, int]:
+    mode = ("без решений Claude — независимое ревью" if blind
+            else f"с предложениями модели {MODEL} — то же, что видит человек на ревью")
+    body, n = [], 0
+    for batch in batches:
+        part, n = ideas_of(batch, blind, n, len(batches) > 1)
+        body += part
+    names = ", ".join(f"`{b}`" for b in batches)
+    out = ["# Перекрёстное ревью новых идей выгрузки багов", "",
+           f"{'Партии' if len(batches) > 1 else 'Партия'} {names}, идей: {n}; вариант пакета — {mode}.",
+           "Этот файл целиком отдаётся другой LLM. Ответ модели вставить в чат внутренней сессии.", "",
+           TASK, "Принципы библиотеки (из README):", "", principles(), "", ANSWER] + body
     index = sorted((c["id"], c.get("category", ""), c.get("title", "")) for _, c in iter_checks(Path("."), []))
     out += ["## Индекс библиотеки", "", f"Все записи ({len(index)}): ID | категория | заголовок.", "", "```text"]
     out += [" | ".join(row) for row in index]
@@ -114,12 +127,13 @@ def build(batch: str, blind: bool) -> tuple[str, int]:
 def main() -> int:
     setup_console()
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--batch", required=True)
+    ap.add_argument("--batch", required=True, help="партия или несколько через запятую — один пакет на все")
     ap.add_argument("--blind", action="store_true", help="не показывать решения, ID и файлы Claude")
     ap.add_argument("--out", help="файл пакета; по умолчанию ideas/mined/<batch>.reviewcheck[.blind].md")
     args = ap.parse_args()
-    text, n = build(args.batch, args.blind)
-    name = f"{args.batch}.reviewcheck{'.blind' if args.blind else ''}.md"
+    batches = [b.strip() for b in args.batch.split(",") if b.strip()]
+    text, n = build(batches, args.blind)
+    name = f"{'+'.join(batches)}.reviewcheck{'.blind' if args.blind else ''}.md"
     path = Path(args.out) if args.out else MINED / name
     path.write_text(text, encoding="utf-8")
     print(f"{path}: идей {n}, символов {len(text)}")

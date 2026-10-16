@@ -1,0 +1,28 @@
+# Ревью кандидатов партии strapi (шаги 6–7, docs/BUG_MINING_PLAN.md, Api/mining/sessions.md — внутренняя сессия, п. 3).
+#
+# Шаг 6 (Claude, 2026-10-16): 2 new-паттерна — 2 идеи (clusters). Разбирается вместе с supabase-auth, apollo-server, strapi и ghsa-nuget —
+# один пакет перекрёстного ревью (reviewcheck.py --batch supabase-auth,apollo-server,strapi,ghsa-nuget).
+# Пруфы к существующим берутся из batches/*.out.jsonl автоматически. Идеи UI/DB — inbox №263–289.
+# Шаг 7 (человек): поменять decision / check_id / file кластера; неверные совпадения пруфов — в proofs.exclude
+# (ID бага), вариант пруфа без нового шага — в proofs.no_variant, new-паттерн как вариант существующей записи —
+# в proofs.retarget. Затем: cluster.py и apply_proofs.py. Правило сверки — mining/README.md, шаги 6–7, п. 7.
+#
+# decision: accept | reject | pending
+batch: strapi
+clusters:
+- key: relation-connect-disconnect-conflict
+  decision: accept
+  check_id: RES-RELATION-CONNECT-DISCONNECT-CONFLICT
+  file: checks/common/resource-lifecycle.yaml
+  bugs: [strapi/strapi#25710]
+  idea: Изменение упорядоченных связей, где в одном запросе connect ставит позицию относительно связи из disconnect (before/after удаляемой), выполняется с корректным порядком оставшихся связей или отклоняется 4xx с понятной ошибкой — без 5xx
+- key: bulk-single-validation-parity
+  decision: accept
+  check_id: RES-BULK-SINGLE-VALIDATION-PARITY
+  file: checks/common/resource-lifecycle.yaml
+  bugs: [strapi/strapi#24576]
+  idea: Массовая операция (публикация, изменение, удаление) применяет те же правила валидации, что одиночная, — запись, которую принимает одиночная операция, принимает и массовая, и наоборот, в том числе с вложенными компонентами
+proofs:
+  exclude: []
+  no_variant: []
+  retarget: []

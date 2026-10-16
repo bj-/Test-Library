@@ -1,0 +1,38 @@
+# Ревью кандидатов партии apollo-server (шаги 6–7, docs/BUG_MINING_PLAN.md, Api/mining/sessions.md — внутренняя сессия, п. 3).
+#
+# Шаг 6 (Claude, 2026-10-16): 4 new-паттерна — 3 идеи (clusters) и 1 перенос в вариант существующей записи (proofs.retarget). Разбирается вместе с supabase-auth, apollo-server, strapi и ghsa-nuget —
+# один пакет перекрёстного ревью (reviewcheck.py --batch supabase-auth,apollo-server,strapi,ghsa-nuget).
+# Пруфы к существующим берутся из batches/*.out.jsonl автоматически. Идеи UI/DB — inbox №259–262.
+# Шаг 7 (человек): поменять decision / check_id / file кластера; неверные совпадения пруфов — в proofs.exclude
+# (ID бага), вариант пруфа без нового шага — в proofs.no_variant, new-паттерн как вариант существующей записи —
+# в proofs.retarget. Затем: cluster.py и apply_proofs.py. Правило сверки — mining/README.md, шаги 6–7, п. 7.
+#
+# decision: accept | reject | pending
+batch: apollo-server
+clusters:
+- key: graphql-error-extensions-shape
+  decision: accept
+  check_id: GQL-ERROR-EXTENSIONS-SHAPE
+  file: checks/graphql/graphql.yaml
+  bugs: [apollographql/apollo-server#3835]
+  idea: Поля extensions ошибки GraphQL (code и пользовательские) присутствуют по документированной структуре ровно в одном месте — без копий во вложенных объектах (exception, originalError)
+- key: cold-start-repeated-requests
+  decision: accept
+  check_id: RESIL-COLD-START-REQUESTS
+  file: checks/common/resilience.yaml
+  bugs: [apollographql/apollo-server#3416]
+  idea: Сразу после старта экземпляра (асинхронная загрузка схемы, прогрев) серия одинаковых корректных запросов обслуживается одинаково — либо все успешны, либо до готовности 503 с Retry-After и readiness «не готов»; механизм в баге не описан
+- key: cacheable-response-cache-control
+  decision: accept
+  check_id: HTTP-CACHEABLE-RESPONSE-CACHE-CONTROL
+  file: checks/rest/http-protocol.yaml
+  bugs: [apollographql/apollo-server#2918]
+  idea: Ответ, для которого включено кэширование (подсказки max-age у всех полей, политика кэша маршрута), содержит Cache-Control по итоговой политике — max-age как минимум из подсказок, public или private; пара к REST-SENSITIVE-CACHE-CONTROL
+proofs:
+  exclude: []
+  no_variant: []
+  retarget:
+  - bug: apollographql/apollo-server#3141
+    check_id: GQL-GATEWAY-ROUTING
+    variant: В объединённой схеме выбрать поле общего типа-значения, объявленного в нескольких подграфах, у сущностей разных подграфов — данные возвращаются без ошибок
+    note: 'Перенесено на ревью из new: запрос к общему типу в федерации — GQL-GATEWAY-ROUTING (добавлена в hasura после триажа)'

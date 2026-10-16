@@ -1,0 +1,46 @@
+# Ревью кандидатов партии supabase-auth (шаги 6–7, docs/BUG_MINING_PLAN.md, Api/mining/sessions.md — внутренняя сессия, п. 3).
+#
+# Шаг 6 (Claude, 2026-10-16): 6 new-паттернов — 3 идеи (clusters) и 3 переноса в варианты существующих записей (proofs.retarget). Разбирается вместе с supabase-auth, apollo-server, strapi и ghsa-nuget —
+# один пакет перекрёстного ревью (reviewcheck.py --batch supabase-auth,apollo-server,strapi,ghsa-nuget).
+# Пруфы к существующим берутся из batches/*.out.jsonl автоматически. Идеи UI/DB — inbox №256–258.
+# Шаг 7 (человек): поменять decision / check_id / file кластера; неверные совпадения пруфов — в proofs.exclude
+# (ID бага), вариант пруфа без нового шага — в proofs.no_variant, new-паттерн как вариант существующей записи —
+# в proofs.retarget. Затем: cluster.py и apply_proofs.py. Правило сверки — mining/README.md, шаги 6–7, п. 7.
+#
+# decision: accept | reject | pending
+batch: supabase-auth
+clusters:
+- key: oauth-outbound-scope
+  decision: accept
+  check_id: AUTH-OAUTH-OUTBOUND-SCOPE
+  file: checks/security/authentication-session.yaml
+  bugs: [supabase/auth#1827]
+  idea: Запрос авторизации, который сервис отправляет внешнему OAuth/OIDC-провайдеру, содержит в scope запрошенные клиентом значения и не добавляет устаревших или конфликтующих scope по умолчанию
+- key: imported-password-hash
+  decision: accept
+  check_id: AUTH-IMPORTED-PASSWORD-HASH
+  file: checks/security/authentication-session.yaml
+  bugs: [supabase/auth#1750]
+  idea: Пользователь, импортированный с готовым хешем пароля поддерживаемого алгоритма (bcrypt, scrypt, argon2, PBKDF2 из другой системы), входит по исходному паролю; неверный пароль отклоняется; формат хеша определяется по префиксу или параметрам
+- key: contact-change-to-previous
+  decision: accept
+  check_id: AUTH-CONTACT-CHANGE-PREVIOUS-VALUE
+  file: checks/security/authentication-session.yaml
+  bugs: [supabase/auth#1629]
+  idea: Смена телефона или email на ранее использованный этим же пользователем (A → B → A) проходит обычным подтверждением кодом — код отправляется, принимается, значение обновляется
+proofs:
+  exclude: []
+  no_variant: []
+  retarget:
+  - bug: supabase/auth#2534
+    check_id: AUTH-JWT-VALID-ACCEPTED
+    variant: Подключить внешнего OIDC-провайдера с ключами JWKS на зарегистрированном алгоритме (ES256K, kty=EC, crv=secp256k1) и пройти вход до callback — ID-токен принимается, а неподдерживаемый ключ даёт контролируемую ошибку, не 500
+    note: 'Перенесено на ревью из new: законный токен на допустимом алгоритме — AUTH-JWT-VALID-ACCEPTED (добавлена в hasura после триажа)'
+  - bug: supabase/auth#1533
+    check_id: AUTH-JWT-VALID-ACCEPTED
+    variant: Пройти вход через каждого встроенного OIDC-провайдера с актуальным значением iss его ID-токена — законный токен принимается
+    note: 'Перенесено на ревью из new: законный токен с актуальным issuer — позитивная пара к SEC-TOKEN-ISSUER'
+  - bug: supabase/auth#1550
+    check_id: AUTH-LOGOUT-INVALIDATES
+    variant: Удалить пользователя администратором и выполнить выход с его ещё не истёкшим токеном — выход завершается успешно или не мешает клиенту завершить сеанс, сессии пользователя недействительны
+    note: 'Перенесено на ревью из new: выход для удалённого пользователя — та же запись о выходе'

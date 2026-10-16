@@ -1,0 +1,22 @@
+# Ревью кандидатов партии ghsa-nuget (шаги 6–7, docs/BUG_MINING_PLAN.md, Api/mining/sessions.md — внутренняя сессия, п. 3).
+#
+# Шаг 6 (Claude, 2026-10-16): 1 new-паттерн — 1 идея (cluster). Разбирается вместе с supabase-auth, apollo-server, strapi и ghsa-nuget —
+# один пакет перекрёстного ревью (reviewcheck.py --batch supabase-auth,apollo-server,strapi,ghsa-nuget).
+# Пруфы к существующим берутся из batches/*.out.jsonl автоматически. Идеи UI/DB — inbox №290–294.
+# Шаг 7 (человек): поменять decision / check_id / file кластера; неверные совпадения пруфов — в proofs.exclude
+# (ID бага), вариант пруфа без нового шага — в proofs.no_variant, new-паттерн как вариант существующей записи —
+# в proofs.retarget. Затем: cluster.py и apply_proofs.py. Правило сверки — mining/README.md, шаги 6–7, п. 7.
+#
+# decision: accept | reject | pending
+batch: ghsa-nuget
+clusters:
+- key: saml-assertion-replay
+  decision: accept
+  check_id: AUTH-SAML-ASSERTION-REPLAY
+  file: checks/security/authentication-session.yaml
+  bugs: [GHSA-9jr3-rj99-8jq3]
+  idea: Повторно предъявленное SAML-утверждение (или другой одноразовый токен входа — WS-Federation, OIDC ID-токен с nonce) в пределах срока действия отклоняется при включённой защите от повторов, в том числе на другом экземпляре сервиса
+proofs:
+  exclude: []
+  no_variant: []
+  retarget: []
