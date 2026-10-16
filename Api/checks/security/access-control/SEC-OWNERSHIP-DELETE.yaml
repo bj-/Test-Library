@@ -24,6 +24,9 @@ checks:
   steps:
   - action: As user B, attempt to delete user A’s resource.
     notes: 'Matrix axis: Resource ownership; scenario: Cross-owner delete. Use isolated synthetic identities and data.'
+  - action: Удалить через путь своего проекта объект с ID чужого проекта и проверить 404 и сохранность связанных данных чужого
+      проекта
+    notes: 'Real-world bug: RWB-0149 (GHSA-gg93-x632-9ccv)'
   expected:
   - Deny the operation; resource A remains available to its owner.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

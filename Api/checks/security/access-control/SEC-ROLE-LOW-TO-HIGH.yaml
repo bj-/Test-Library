@@ -24,6 +24,12 @@ checks:
   steps:
   - action: Authenticate as a low-privilege role and invoke an administrator-only operation.
     notes: 'Matrix axis: Roles/Scopes; scenario: Vertical privilege escalation. Use isolated synthetic identities and data.'
+  - action: Вызвать операции управления смежного API (другой сервис подписи, каталог) учёткой только с правом чтения объектов
+      и проверить отказ
+    notes: 'Real-world bug: RWB-0247 (GHSA-hgpf-8634-g44c)'
+  - action: Администратором низшего уровня вызвать сброс фактора защиты (passkey, 2FA) у пользователя того же и более высокого
+      уровня и проверить отказ
+    notes: 'Real-world bug: RWB-0247 (GHSA-p845-629j-rcj6)'
   expected:
   - Request is denied and privileged state remains unchanged.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

@@ -56,6 +56,7 @@ checks:
   - security
   - negative
   - session
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -64,6 +65,9 @@ checks:
   - Cookie-аутентификация.
   steps:
   - action: Подключиться с чужим Origin, используя cookie жертвы.
+  - action: Отправить upgrade на путь WebSocket с процентно-закодированными символами (/%61pi/events) и чужим Origin и проверить
+      отказ
+    notes: 'Real-world bug: RWB-0300 (GHSA-8r62-w5wh-fc5m)'
   expected:
   - Соединение отклоняется.
   applicability:
@@ -82,6 +86,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0300'
 - id: WS-SUBSCRIPTION-AUTHZ
   status: approved
   title: Подписки и сообщения авторизуются по каждому каналу
@@ -108,6 +114,12 @@ checks:
   - action: Перебор всех типов действий протокола (включая пакетные PATCH_MULTI и аналоги) — действие без явного правила должно
       запрещаться
     notes: 'Real-world bug: RWB-0179 (GHSA-89vx-jh4q-vg3w)'
+  - action: Подписаться на поток событий пользователем с ограничивающим фильтром и проверить фильтрацию каждого типа сообщений
+      потока
+    notes: 'Real-world bug: RWB-0179 (GHSA-xcw9-qmmf-vqxj)'
+  - action: Держать открытым WebSocket-соединение ролью читателя, изменить недоступный ему объект от другого пользователя
+      и проверить, что событие с его содержимым не приходит
+    notes: 'Real-world bug: RWB-0179 (GHSA-mw8r-mw84-88v2)'
   expected:
   - Подписка и отправка отклоняются.
   applicability:
@@ -140,6 +152,7 @@ checks:
   tags:
   - security
   - token-lifecycle
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -148,6 +161,8 @@ checks:
   - Долгие соединения.
   steps:
   - action: Держать соединение дольше срока жизни токена; отозвать токен.
+  - action: Отозвать сессию и открыть новое WebSocket-соединение с токеном этой сессии — проверить отказ при аутентификации
+    notes: 'Real-world bug: RWB-0301 (GHSA-4hv6-xc92-j86g)'
   expected:
   - Соединение закрывается или требует обновления токена.
   applicability:
@@ -166,6 +181,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0301'
 - id: WS-MESSAGE-LIMITS
   status: approved
   title: Размер и частота сообщений ограничены
@@ -192,6 +209,9 @@ checks:
     notes: 'Real-world bug: RWB-0205 (GHSA-33ph-fccm-39pj)'
   - action: Отправить кадр с бесконечным полем длины (байты ≥0x80) и проверить закрытие соединения
     notes: 'Real-world bug: RWB-0205 (GHSA-ghhp-3qvg-889p)'
+  - action: Открыть много WebSocket-соединений с одного IP и подписаться на неограниченный список объектов, проверить лимиты
+      соединений и размера подписки
+    notes: 'Real-world bug: RWB-0205 (GHSA-4fwh-wrm6-97xm)'
   expected:
   - Соединение закрывается с кодом 1009/1008 или сообщения отклоняются.
   applicability:

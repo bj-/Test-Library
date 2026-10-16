@@ -13,6 +13,7 @@ checks:
   - negative
   - security
   - authz
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -22,6 +23,15 @@ checks:
   steps:
   - action: Authenticate with a privileged role, revoke that role, then retry privileged operations with existing sessions/tokens.
     notes: 'Matrix axis: Roles/Scopes; scenario: Role revoked. Use isolated synthetic identities and data.'
+  - action: Удалить участника из проекта всеми способами (из проекта, из команды, удаление команды) и проверить, что его вебхуки
+      и ссылки-доступа больше не отдают данные
+    notes: 'Real-world bug: RWB-0298 (GHSA-hjx8-qv73-f7cm)'
+  - action: Отозвать согласие клиента, отключить пользователя и исключить его из разрешённой группы, затем обновить токен
+      по refresh-токену и проверить отказ в каждом случае
+    notes: 'Real-world bug: RWB-0298 (GHSA-w6p7-2fxx-4f44)'
+  - action: Сделать публичный ресурс приватным через API и проверить, что подписки и списки пользователей без доступа его
+      больше не возвращают
+    notes: 'Real-world bug: RWB-0298 (GHSA-q423-49rw-g9mh)'
   expected:
   - Access reflects role revocation within the documented propagation/cache window.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
@@ -44,3 +54,4 @@ checks:
     likelihood: medium
   references:
   - OWASP API Security Top 10 (relevant access-control/authentication risk); adapt to the project threat model
+  - 'Real-world bug: RWB-0298'

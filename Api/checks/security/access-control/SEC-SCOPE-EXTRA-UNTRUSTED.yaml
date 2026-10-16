@@ -30,6 +30,8 @@ checks:
     notes: 'Real-world bug: RWB-0154 (keycloak/keycloak#49952)'
   - action: Согласованность проверки scope между grant type (позитивная и негативная сторона)
     notes: 'Real-world bug: RWB-0154 (keycloak/keycloak#49388)'
+  - action: Обменять токен через token exchange на токен другого приложения с более широкими scope и проверить отказ
+    notes: 'Real-world bug: RWB-0154 (GHSA-vrh8-c9cm-wh8v)'
   expected:
   - Only trusted issuer/server-side authorization grants determine effective scopes.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

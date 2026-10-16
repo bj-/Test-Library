@@ -52,6 +52,12 @@ checks:
   - action: Передать в параметр URL адрес на разрешённом хосте с произвольным путём и проверить, что без авторизации вызывающего
       сервер не отправляет туда служебный токен
     notes: 'Real-world bug: RWB-0135 (GHSA-xm3x-9cfw-jhx4)'
+  - action: Передать домен с чередующимся резолвом во внешний и внутренний адрес (DNS rebinding) и проверить, что запрос во
+      внутреннюю сеть не выполняется
+    notes: 'Real-world bug: RWB-0135 (GHSA-x8gv-g2g3-65fj)'
+  - action: Передать URL, хост которого резолвится в IPv6-обёртку внутреннего IPv4 (NAT64, IPv4-compatible, 6to4), и проверить
+      отказ
+    notes: 'Real-world bug: RWB-0135 (GHSA-jvh5-97xg-v99f)'
   expected:
   - запрещённые схемы и internal/private targets блокируются
   applicability:

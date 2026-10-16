@@ -2,14 +2,14 @@
 
 Файл генерируется `python tools/build_catalog.py .` — не редактируйте вручную.
 
-Всего проверок: **484** — approved: 327, draft: 141, needs_clarification: 16.
-Протоколы: generic: 85, graphql: 217, grpc: 146, rest: 389, websocket: 65.
+Всего проверок: **493** — approved: 327, draft: 150, needs_clarification: 16.
+Протоколы: generic: 94, graphql: 217, grpc: 146, rest: 389, websocket: 65.
 
 | Категория | Описание | Проверок |
 |---|---|---:|
 | [contract](#contract) | API contract and schema conformance | 27 |
 | [resources](#resources) | Resource lifecycle and state transitions | 30 |
-| [security](#security) | Authentication, authorization, and data isolation | 190 |
+| [security](#security) | Authentication, authorization, and data isolation | 198 |
 | [validation](#validation) | Input validation and normalization | 41 |
 | [http-semantics](#http-semantics) | HTTP methods, headers, and status semantics | 22 |
 | [errors](#errors) | Error response shape and consistency | 4 |
@@ -20,7 +20,7 @@
 | [resilience](#resilience) | Timeouts, retries, dependency failures | 10 |
 | [business-logic](#business-logic) | Domain rules, workflows, limits, and money | 13 |
 | [concurrency](#concurrency) | Parallel requests, races, and lost updates | 8 |
-| [observability](#observability) | Logs, audit trail, tracing, and health endpoints | 7 |
+| [observability](#observability) | Logs, audit trail, tracing, and health endpoints | 8 |
 | [performance](#performance) | Latency, throughput, load, and resource usage | 7 |
 | [compatibility](#compatibility) | Versioning, backward compatibility, and contract drift | 8 |
 | [files](#files) | File upload, download, and binary content | 16 |
@@ -169,11 +169,13 @@ Authentication, authorization, and data isolation
 | `AUTH-TOKEN-RESERVED-CLAIMS` | Пользовательские поля не переопределяют зарезервированные claims токена | P1 | draft | generic | Regression, Nightly |
 | `AUTH-TOKEN-TYPE-CONFUSION` | Refresh, ID или сервисный токен не принимается как access-токен | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
 | `AUTH-USER-ENUMERATION` | Ответы входа, регистрации и восстановления не раскрывают существование аккаунта | P1 | approved | rest, graphql | Regression, Nightly |
+| `HARD-BACKUP-RESTORE-PROTECTED` | Восстановление из резервной копии не обходит защиту записи | P1 | draft | generic | Regression, Nightly |
 | `HARD-DEBUG-ENDPOINTS` | Отладочные и служебные эндпоинты недоступны извне | P1 | approved | rest, graphql | CI, Regression, Nightly, Release |
 | `HARD-EXCESSIVE-DATA-EXPOSURE` | Ответы не содержат внутренних полей сверх контракта | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
 | `HARD-EXPENSIVE-OPERATION-LIMITS` | Дорогие операции ограничены по ресурсам | P1 | approved | rest, grpc, graphql, websocket | Regression, Nightly |
 | `HARD-HOST-HEADER` | Подмена Host и X-Forwarded-Host не влияет на ссылки и маршрутизацию | P1 | approved | rest, graphql | CI, Regression, Nightly, Release |
 | `HARD-METHOD-OVERRIDE` | Заголовки переопределения метода не обходят авторизацию | P1 | approved | rest | CI, Regression, Nightly, Release |
+| `HARD-SETUP-ENDPOINTS-PROTECTED` | Эндпоинты первоначальной настройки не позволяют захватить экземпляр | P1 | draft | generic | Regression, Nightly |
 | `HARD-SHADOW-API-VERSIONS` | Старые версии API и недокументированные маршруты не обходят защиту | P1 | approved | rest, graphql | CI, Regression, Nightly, Release |
 | `HARD-TLS-ONLY` | API доступен только по TLS с актуальными настройками | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
 | `HARD-WILDCARD-DOMAIN-MATCH` | Шаблон домена с wildcard совпадает только с поддоменами указанного домена | P1 | draft | generic | Regression, Nightly |
@@ -182,6 +184,7 @@ Authentication, authorization, and data isolation
 | `INJ-HEADER-CRLF` | CRLF в значениях не позволяет внедрять заголовки ответа | P1 | approved | rest | CI, Regression, Nightly, Release |
 | `INJ-LLM-GENERATED-ACTIONS` | Код и вызовы инструментов, сгенерированные LLM по вводу пользователя, не выполняют опасных действий | P1 | draft | rest | Regression, Nightly |
 | `INJ-PROTOTYPE-POLLUTION` | Специальные ключи __proto__ и constructor не меняют поведение сервера | P1 | approved | rest, graphql | CI, Regression, Nightly, Release |
+| `INJ-RESERVED-PATH-WRITE` | Запись файлов через API не попадает в служебные каталоги | P1 | draft | generic | Regression, Nightly |
 | `INJ-STORED-XSS` | Сохранённые данные с HTML/JS не создают XSS у потребителей API | P1 | approved | rest, graphql | CI, Regression, Nightly, Release |
 | `INJ-TEMPLATE-SSTI` | Инъекция в серверные шаблоны не исполняется | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
 | `INJ-UNSAFE-DESERIALIZATION` | Небезопасная десериализация пользовательских данных невозможна | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
@@ -241,6 +244,7 @@ Authentication, authorization, and data isolation
 | `SEC-AUTHN-MALFORMED` | Malformed credential is rejected | P1 | approved | rest, graphql, generic | CI, Regression, Nightly, Release |
 | `SEC-AUTHZ-ASYNC-JOB` | Authorization is rechecked for asynchronous job access | P1 | approved | rest, graphql, generic | CI, Regression, Nightly, Release |
 | `SEC-AUTHZ-ERROR-LEAK` | Authorization failures do not disclose protected data | P1 | approved | rest, graphql, generic | CI, Regression, Nightly, Release |
+| `SEC-AUTHZ-EXPLICIT-OVER-INHERITED` | Явное пониженное право на дочерний объект имеет приоритет над унаследованным | P1 | draft | generic | Regression, Nightly |
 | `SEC-AUTHZ-METHOD-MATRIX` | Authorization is enforced for every method | P1 | approved | rest, graphql, generic | CI, Regression, Nightly, Release |
 | `SEC-AUTHZ-RECREATED-IDENTITY` | Права и согласия не переходят к пересозданному пользователю с тем же логином | P1 | draft | rest | Regression, Nightly |
 | `SEC-AUTHZ-REVOKE-ROLE` | Role revocation takes effect within policy window | P1 | approved | rest, graphql, generic | CI, Regression, Nightly, Release |
@@ -251,6 +255,7 @@ Authentication, authorization, and data isolation
 | `SEC-IDENTITY-PROOF-OF-POSSESSION` | Заявленная клиентом идентичность без доказательства владения не даёт прав и льгот | P1 | draft | rest, generic | Regression, Nightly |
 | `SEC-INTERNAL-CONTROL-PARAMS` | Заголовки и параметры подключения клиента не задают внутренние управляющие параметры операции | P1 | draft | rest, websocket | Regression, Nightly |
 | `SEC-OWNERSHIP-REFERENCE-INDIRECT` | Indirect resource references preserve authorization | P1 | approved | rest, graphql, generic | CI, Regression, Nightly, Release |
+| `SEC-POLICY-TEMPLATE-USER-DATA` | Данные пользователя, подставляемые в шаблон политики доступа, не работают как wildcard | P1 | draft | generic | Regression, Nightly |
 | `SEC-READONLY-MODE-ENFORCED` | Режим только для чтения запрещает изменения любым запросом, а не по первому ключевому слову | P1 | draft | rest, graphql, generic | Regression, Nightly |
 | `SEC-ROLE-BULK-ADMIN` | Bulk admin actions require privilege for every target | P1 | approved | rest, graphql, generic | CI, Regression, Nightly, Release |
 | `SEC-TOKEN-AUDIENCE` | Token for another audience is rejected | P1 | approved | rest, graphql, generic | CI, Regression, Nightly, Release |
@@ -272,8 +277,10 @@ Authentication, authorization, and data isolation
 | `HARD-BUSINESS-FLOW-AUTOMATION` | Чувствительные бизнес-потоки защищены от автоматизированного злоупотребления | P2 | approved | rest, grpc, graphql, websocket | Regression, Nightly |
 | `HARD-CACHE-POISONING` | Неключевые заголовки не отравляют общий кэш | P2 | approved | rest, graphql | Regression, Nightly |
 | `HARD-CLIENT-IP-TRUSTED-PROXIES` | IP клиента определяется по цепочке доверенных прокси одинаково на всех маршрутах | P2 | draft | rest | Regression, Nightly |
+| `HARD-DENYLIST-EVERY-ENTRY` | Каждый элемент списка запрещённых значений отклоняется | P2 | draft | generic | Regression, Nightly |
 | `HARD-ID-PREDICTABILITY` | Предсказуемые идентификаторы не позволяют собрать данные перебором | P2 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly |
 | `HARD-IP-ALLOWLIST` | Ограничение доступа по адресам и подсетям работает на границах для IPv4 и IPv6 | P2 | draft | generic | Regression, Nightly |
+| `HARD-ROUTE-SHARED-BACKEND-ISOLATION` | Маршруты шлюза к одному бэкенду применяют каждый свои фильтры | P2 | draft | generic | Regression |
 | `HARD-SENSITIVE-DATA-IN-URL` | Персональные данные и секреты не передаются в URL | P2 | approved | rest | CI, Regression, Nightly |
 | `HARD-SLOW-CLIENT-LIMITS` | Медленные и неполные запросы и непрочитанные ответы не накапливаются без ограничения | P2 | draft | generic | Regression, Nightly |
 | `HARD-UNSAFE-API-CONSUMPTION` | Ответы сторонних API валидируются перед использованием | P2 | approved | rest, grpc, graphql, websocket | Regression, Nightly |
@@ -285,6 +292,7 @@ Authentication, authorization, and data isolation
 | `REST-SECURITY-HEADERS` | Защитные HTTP-заголовки | P2 | approved | rest | CI, Regression, Nightly |
 | `SEC-AUTHN-SCHEMES-SUPPORTED` | Все задокументированные схемы Authorization принимаются на своих эндпоинтах | P2 | draft | rest | Regression, Nightly |
 | `SEC-AUTHZ-DYNAMIC-VARIABLES` | Динамические переменные в правилах доступа действуют как эквивалентные статические значения | P2 | draft | rest, graphql | Regression, Nightly |
+| `SEC-AUTHZ-LIST-CHECK-CONSISTENCY` | Перечисление субъектов и объектов с доступом согласовано с точечной проверкой | P2 | draft | generic | Regression, Nightly |
 | `SEC-AUTHZ-PATH-RULE-PRECEDENCE` | Правила доступа по путям применяются по наиболее точному совпадению, независимо от порядка объявления | P2 | draft | rest | Regression, Nightly |
 | `SEC-CLONE-FIELD-PERMISSIONS` | Копирование ресурса соблюдает полевые права чтения и создания | P2 | draft | rest, graphql | Regression, Nightly |
 | `SEC-DISABLED-FEATURE-ENFORCED` | Отключённая настройкой функция недоступна через все API и не попадает в токены | P2 | draft | generic | Regression, Nightly |
@@ -528,6 +536,7 @@ Logs, audit trail, tracing, and health endpoints
 | `OBS-NO-SECRETS-IN-LOGS` | Логи не содержат паролей, токенов и ПДн в открытом виде | P0 | approved | rest, grpc, graphql, websocket | Regression, Nightly |
 | `OBS-AUDIT-TRAIL` | Чувствительные действия фиксируются в журнале аудита | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
 | `OBS-HEALTH-ENDPOINTS` | Health-эндпоинты отражают состояние и не раскрывают детали | P2 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly |
+| `OBS-METRICS-LABEL-CARDINALITY` | Значения из запроса не создают неограниченно новых серий метрик | P2 | draft | generic | Nightly |
 | `OBS-CONFIG-ENDPOINT-ACCURATE` | Служебный эндпоинт конфигурации показывает фактические значения | P3 | draft | generic | Nightly |
 | `OBS-REQUEST-LOG-ALL-ATTEMPTS` | Журнал запроса с повторами содержит каждую попытку, включая последнюю | P3 | draft | generic | Nightly |
 | `OBS-TELEMETRY-FORMAT` | Экспортируемая телеметрия соответствует документированной структуре и соглашениям OpenTelemetry | P3 | draft | generic | Nightly |

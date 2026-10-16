@@ -10,6 +10,11 @@
 # в proofs.retarget. Затем: cluster.py (пересобрать ghsa-go.md) и apply_proofs.py. Перекрёстное ревью другими LLM —
 # reviewcheck.py (mining/README.md, шаги 6–7, п. 7).
 #
+# Перекрёстное ревью (2026-10-16): ChatGPT и Qwen (ответ оборван на №8) — ghsa-go.reviewcheck.answer-1.md, -2.md; правило —
+# mining/README.md, шаги 6–7, п. 7. Итог: №1–6 — accept у обеих (№1: «other» — пример, а не требование); №9, 10 — accept
+# (ChatGPT, Claude); №7 — одной записью (Qwen, Claude; ChatGPT — разбить на 2–3); №8 — обе модели: покрыто
+# INJ-USER-CODE-EXECUTION → вариант к ней (retarget); №11 — расхождение: ChatGPT за новую запись (ссылается на
+# несуществующую GRPC-HTTP2-RESOURCE-LIMITS), Claude — вариант к HTTP-HTTP2-RESOURCE-LIMITS → решение bj: вариант к HTTP-HTTP2-RESOURCE-LIMITS (retarget).
 # decision: accept | reject | pending
 batch: ghsa-go
 clusters:
@@ -18,7 +23,7 @@ clusters:
   check_id: OBS-METRICS-LABEL-CARDINALITY
   file: checks/common/observability.yaml
   bugs: [GHSA-6r69-c6wg-7g8m]
-  idea: Значения из запроса (метод, путь, заголовки, коды) не создают неограниченно новых серий метрик — неизвестные значения сводятся в одну серию (other), шаблоны пути — в маршрут; размер /metrics и память не растут
+  idea: Значения из запроса (метод, путь, заголовки, коды) не создают неограниченно новых серий метрик — кардинальность меток ограничена (например, неизвестные значения сводятся в other, пути — в шаблон маршрута); размер /metrics и память не растут
 - key: policy-template-user-data
   decision: accept
   check_id: SEC-POLICY-TEMPLATE-USER-DATA
@@ -55,12 +60,6 @@ clusters:
   file: checks/security/api-hardening.yaml
   bugs: [GHSA-p393-cf76-4jmr]
   idea: Восстановление из резервной копии через API не обходит защиту записи — доступно только администратору, подлинность копии проверяется ключом сервера (а не ключом из запроса), защищённые настройки (команды, секреты, роли) подделанной копией не перезаписываются
-- key: user-script-sandbox
-  decision: accept
-  check_id: INJ-USER-SCRIPT-SANDBOX
-  file: checks/security/injection.yaml
-  bugs: [GHSA-fgmf-7rf8-m6vf]
-  idea: Пользовательские скрипты, которые сервер штатно исполняет (потоки, правила, хуки, формулы), изолированы — загрузка модулей и чтение файлов хоста, сеть и переменные окружения недоступны, содержимое файлов не попадает в результат
 - key: authz-list-check-consistency
   decision: accept
   check_id: SEC-AUTHZ-LIST-CHECK-CONSISTENCY
@@ -80,4 +79,8 @@ proofs:
   - bug: GHSA-vp52-pcj8-j9qc
     check_id: HTTP-HTTP2-RESOURCE-LIMITS
     variant: Открыть несколько стримов HTTP/2 и отправлять тело кадрами DATA по 1 байту в пределах окон управления потоком; наблюдать память сервера и доступность
-    note: 'Перенесено на ревью из new: накладные расходы фрагментации HTTP/2 — запись добавлена в ghsa-maven после триажа ghsa-go'
+    note: 'Перенесено на ревью из new: накладные расходы фрагментации HTTP/2 (решение bj 2026-10-16 по расхождению с ChatGPT)'
+  - bug: GHSA-fgmf-7rf8-m6vf
+    check_id: INJ-USER-CODE-EXECUTION
+    variant: Сохранить пользовательский скрипт, загружающий модуль из файловой системы хоста (require или import по абсолютному пути), запустить сценарий, где он вызывается, и проверить, что загрузка запрещена и содержимое файла не попадает в результат
+    note: 'Перенесено на ревью из new: тот же механизм, что INJ-USER-CODE-EXECUTION (перекрёстное ревью, обе модели)'

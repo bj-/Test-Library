@@ -31,6 +31,10 @@ checks:
     notes: 'Real-world bug: RWB-0142 (keycloak/keycloak#49969)'
   - action: Отправить в сброс пароля строку, не являющуюся JWT, и в проверку хеша строку, не являющуюся хешем, без аутентификации
     notes: 'Real-world bug: RWB-0142 (directus/directus#23941)'
+  - action: Подписать запрос для произвольного ключа доступа пустым секретом и проверить отказ
+    notes: 'Real-world bug: RWB-0142 (GHSA-xwwr-4h3p-r22c)'
+  - action: Подставить в токен сессии верный ID сессии с произвольной секретной частью и проверить отказ
+    notes: 'Real-world bug: RWB-0142 (GHSA-c3jm-gv5r-9wcp)'
   expected:
   - Reject according to authentication policy; do not fall back to anonymous or weaker authentication.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

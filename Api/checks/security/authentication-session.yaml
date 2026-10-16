@@ -145,6 +145,7 @@ checks:
   - boundary
   - authn
   - token-lifecycle
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -169,6 +170,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0291'
 - id: AUTH-TOKEN-TYPE-CONFUSION
   status: approved
   title: Refresh, ID или сервисный токен не принимается как access-токен
@@ -197,6 +200,11 @@ checks:
   - action: Предъявить как токен идентификатор записи другого типа из того же хранилища (регистрация, сессия), содержимое
       которой задал клиент, и проверить 401
     notes: 'Real-world bug: RWB-0192 (GHSA-cj8f-2fhf-826r)'
+  - action: Вызвать эндпоинты пользователей токеном гостевой ссылки во всех версиях API и проверить отказ
+    notes: 'Real-world bug: RWB-0192 (GHSA-vfxw-3x8p-2vjr)'
+  - action: Токеном ссылки-доступа, чей ID совпадает с ID пользователя, вызвать операции над ресурсами этого пользователя
+      (API-токены, команды, боты) и проверить отказ
+    notes: 'Real-world bug: RWB-0192 (GHSA-32r8-5843-4qw2)'
   expected:
   - Все варианты отклоняются.
   applicability:
@@ -536,6 +544,7 @@ checks:
   - negative
   - authn
   - otp
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -563,6 +572,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0292'
 - id: AUTH-OTP-SEND-LIMIT
   status: approved
   title: Частота отправки кодов ограничена (SMS bombing)
@@ -850,6 +861,8 @@ checks:
     notes: 'Real-world bug: RWB-0190 (GHSA-f3qm-vfc3-jg6v)'
   - action: Выполнить изменяющую операцию методом GET без CSRF-токена (переход по ссылке) и проверить, что состояние не изменилось
     notes: 'Real-world bug: RWB-0190 (GHSA-8639-qx56-r428)'
+  - action: Отправить JSON-тело изменяющего запроса из HTML-формы с enctype=text/plain и проверить, что сервер его не принимает
+    notes: 'Real-world bug: RWB-0190 (GHSA-8cj9-r88m-8945)'
   expected:
   - Запросы отклоняются; состояние не меняется.
   applicability:
@@ -902,6 +915,9 @@ checks:
     notes: 'Real-world bug: RWB-0055 (GHSA-238x-w2j9-gwwr)'
   - action: Создание/отзыв ключа для чужой учётной записи (владение ключом)
     notes: 'Real-world bug: RWB-0055 (GHSA-2q76-m6w6-qgc6)'
+  - action: Прочитать одиночную запись секрета доступа пользователем с минимальными правами и проверить, что секрет не возвращается,
+      как в списке
+    notes: 'Real-world bug: RWB-0055 (GHSA-qfwc-vx6f-3g6g)'
   expected:
   - Права ключа соблюдаются, отозванный ключ отклоняется, секрет виден только при создании.
   applicability:
@@ -1028,6 +1044,14 @@ checks:
       операции.
   - action: Добавить сохранение требования MFA после refresh и при наследовании ролей
     notes: 'Real-world bug: RWB-0060 (directus/directus#28152)'
+  - action: Войти паролем в учётку, у которой второй фактор — только passkey, и проверить, что сервер требует второй фактор
+    notes: 'Real-world bug: RWB-0060 (GHSA-45gv-9wjv-xh7p)'
+  - action: Вызвать без свежего второго фактора каждую операцию из всех модулей с чувствительными действиями, а не только
+      из исправленных, и проверить отказ
+    notes: 'Real-world bug: RWB-0060 (GHSA-h246-wpgf-vmq5)'
+  - action: Пройти повторную аутентификацию свежим токеном, полученным более слабым способом входа (одноразовая ссылка), и
+      проверить, что требование фактора не считается выполненным
+    notes: 'Real-world bug: RWB-0060 (GHSA-hp74-gm6m-2qm5)'
   expected:
   - Операция отклоняется без второго фактора; подтверждение привязано к операции.
   applicability:
@@ -1077,6 +1101,8 @@ checks:
     notes: 'Real-world bug: RWB-0061 (keycloak/keycloak#49456)'
   - action: Отправить запрос авторизации с невалидным request_uri и незарегистрированным redirect_uri
     notes: 'Real-world bug: RWB-0061 (GHSA-4r8w-73jc-3m7q)'
+  - action: После завершённого OAuth-входа отправить callback с пустым state и проверить отказ
+    notes: 'Real-world bug: RWB-0061 (GHSA-phg3-3g28-wq9v)'
   expected:
   - redirect_uri сравнивается точно; без state и PKCE обмен отклоняется; code одноразовый.
   applicability:
@@ -1264,6 +1290,12 @@ checks:
   steps:
   - action: Сделать несколько анонимных запросов к разным маршрутам (в том числе публичным и несуществующим).
   - action: Проверить Set-Cookie и число серверных сессий.
+  - action: Отправить серию неаутентифицированных запросов инициализации сессии с разными ID и проверить, что серверное состояние
+      не накапливается
+    notes: 'Real-world bug: RWB-0011 (GHSA-4595-rvpx-4q34)'
+  - action: Отправить множество анонимных запросов начала OAuth-входа и проверить, что серверное состояние ограничено по числу
+      и сроку жизни
+    notes: 'Real-world bug: RWB-0011 (GHSA-xpxj-f2fm-rqch)'
   expected:
   - До входа нет Set-Cookie сессии и серверной сессии.
   applicability:
@@ -1552,6 +1584,9 @@ checks:
       признака).
   - action: Войти через провайдера; проверить, под какой учёткой выдана сессия; повторить для каждого пути получения email
       (профиль, ID-токен, сырой ответ).
+  - action: Создать локальную учётку с email X без подтверждения, войти через IdP с подтверждённым email X и проверить, что
+      пароль локальной учётки не даёт доступа
+    notes: 'Real-world bug: RWB-0041 (GHSA-29rf-f4vv-pvq6)'
   expected:
   - Без подтверждённого email вход отклоняется или создаётся отдельная учётка; связывание — только после подтверждения владельцем.
   applicability:

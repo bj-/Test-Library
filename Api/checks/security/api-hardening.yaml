@@ -66,6 +66,15 @@ checks:
   - action: Служебный сервер доступен по сети (0.0.0.0) и с wildcard CORS — проверить доступность не с loopback и ответ на
       preflight с чужим Origin
     notes: 'Real-world bug: RWB-0075 (GHSA-jmg2-rcxh-w8q3)'
+  - action: Подключиться без аутентификации к служебному WebSocket журналов, отправить изменяющее сообщение и проверить отказ
+      и неизменность настроек
+    notes: 'Real-world bug: RWB-0075 (GHSA-9v8p-frvj-2pcm)'
+  - action: Обратиться к внутреннему прокси управления без клиентского сертификата и токена, в том числе изменяющими методами,
+      и проверить отказ
+    notes: 'Real-world bug: RWB-0075 (GHSA-rh53-xvx2-j327)'
+  - action: Обратиться без учётных данных к управляющим API на внешнем порту, через который подключаются агенты, и проверить
+      отказ
+    notes: 'Real-world bug: RWB-0075 (GHSA-qh9r-j7rp-4x2m)'
   expected:
   - Служебные эндпоинты закрыты или требуют аутентификации в соответствии с политикой окружения.
   applicability:
@@ -154,6 +163,12 @@ checks:
   - action: Запросить ресурс в альтернативных форматах через расширение пути (.xml, .json) и сравнить набор полей с основным
       ответом
     notes: 'Real-world bug: RWB-0076 (GHSA-f25h-3mj6-4jpg)'
+  - action: Запросить конфигурацию ролью читателя и проверить, что в ней нет состояния сеанса администратора (открытые документы,
+      поисковые запросы, пути)
+    notes: 'Real-world bug: RWB-0076 (GHSA-hgfg-j9pg-43xw)'
+  - action: Запросить ролью читателя эндпоинты, разрешающие пути ресурсов, и проверить, что в ответе нет абсолютных путей
+      файловой системы и имени пользователя ОС
+    notes: 'Real-world bug: RWB-0076 (GHSA-jv8v-xq2h-657v)'
   expected:
   - 'Нет недокументированных полей: внутренних id, флагов, хешей паролей, служебных метаданных.'
   applicability:
@@ -190,6 +205,7 @@ checks:
   - security
   - negative
   - enumeration
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -198,6 +214,9 @@ checks:
   steps:
   - action: Перебрать соседние id от имени пользователя без прав.
   - action: Сравнить ответы для существующих и несуществующих id.
+  - action: Перебрать последовательные ID на эндпоинтах, доступных без сессии, и проверить, что без случайного токена в URL
+      данные не отдаются
+    notes: 'Real-world bug: RWB-0295 (GHSA-q9c5-pp7m-fm2g)'
   expected:
   - Ответы для чужих и несуществующих id неразличимы по политике.
   - Нельзя оценить объём бизнеса по id.
@@ -216,6 +235,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0295'
 - id: HARD-SHADOW-API-VERSIONS
   status: approved
   title: Старые версии API и недокументированные маршруты не обходят защиту
@@ -276,6 +297,7 @@ checks:
   - security
   - negative
   - authz
+  - real-world-bug
   - ci
   - regression
   - nightly
@@ -284,6 +306,9 @@ checks:
   - За шлюзом или фреймворком, поддерживающим override.
   steps:
   - action: 'Отправить POST с X-HTTP-Method-Override: DELETE, X-Method-Override, _method=PUT.'
+  - action: Отправить запрос к закрытому пути с заголовком X-Original-URI или X-Forwarded-Uri, совпадающим с разрешающим правилом,
+      и проверить, что политика применяется к фактическому пути
+    notes: 'Real-world bug: RWB-0296 (GHSA-6wcg-mqvh-fcvg)'
   expected:
   - Override игнорируется или проверяется так же, как исходный метод.
   applicability:
@@ -302,6 +327,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0296'
 - id: HARD-HOST-HEADER
   status: approved
   title: Подмена Host и X-Forwarded-Host не влияет на ссылки и маршрутизацию
@@ -326,6 +353,8 @@ checks:
   - action: Отправить запрос с поддельными Host, X-Forwarded-Host, X-Forwarded-Proto, Forwarded.
   - action: Сервис без аутентификации — Host проверяется по allowlist; совпадения Origin с Host недостаточно
     notes: 'Real-world bug: RWB-0078 (GHSA-fm8p-53ww-hf6w)'
+  - action: Отправить запрос к локальному служебному эндпоинту с посторонним Host и Origin и проверить отказ
+    notes: 'Real-world bug: RWB-0078 (GHSA-5gm3-9crp-6g3v)'
   expected:
   - Ссылки строятся из доверенной конфигурации, а не из заголовков клиента.
   applicability:
@@ -453,6 +482,12 @@ checks:
     notes: 'Real-world bug: RWB-0080 (GHSA-c475-qrg2-pj4r)'
   - action: Компрессионная бомба в ответе внешнего сервиса
     notes: 'Real-world bug: RWB-0080 (GHSA-3xpg-4rpp-hhhm)'
+  - action: Указать в импорте или миграции внешний сервер, отдающий много вложений допустимого размера, и проверить суммарный
+      лимит задачи
+    notes: 'Real-world bug: RWB-0080 (GHSA-wq92-8x3r-fm38)'
+  - action: Указать во внешнем репозитории файл конфигурации в виде символьной ссылки на /dev/zero или файл вне репозитория
+      и проверить отказ без неограниченного чтения
+    notes: 'Real-world bug: RWB-0080 (GHSA-fmgp-q6jx-gg3x)'
   expected:
   - Сервис отклоняет или санитизирует данные, не следует редиректам слепо, ограничивает размер.
   applicability:
@@ -564,6 +599,24 @@ checks:
   - action: Отправить форму с большим числом параметров, имена которых дают коллизии хэша, и проверить время ответа и лимит
       числа параметров
     notes: 'Real-world bug: RWB-0077 (GHSA-v6j3-7jrw-hq2p)'
+  - action: Загрузить xlsx с номером строки далеко за пределом формата после обычной строки и проверить быстрый отказ
+    notes: 'Real-world bug: RWB-0077 (GHSA-jw42-f3rr-4cc3)'
+  - action: Загрузить зашифрованный OOXML-файл с завышенным spinCount и проверить быстрый отказ
+    notes: 'Real-world bug: RWB-0077 (GHSA-jrfj-fhj2-jjvm)'
+  - action: Отправить multipart-запрос с десятками тысяч минимальных файловых частей и проверить отказ по числу частей и что
+      следующие запросы обслуживаются
+    notes: 'Real-world bug: RWB-0077 (GHSA-rp9v-7xv3-r6g3)'
+  - action: Запросить загрузку внешнего объекта с глубоко вложенным и ветвящимся графом ссылок с повторами и проверить отказ
+      по лимиту глубины и ширины
+    notes: 'Real-world bug: RWB-0077 (GHSA-pg57-6jwg-q645)'
+  - action: Отправить длинный заголовок Accept-Language из некорректных тегов с разными разделителями и проверить обычное
+      время ответа
+    notes: 'Real-world bug: RWB-0077 (GHSA-jr34-h97m-9hpx)'
+  - action: Отправить через каждый транспорт сервиса сообщение с некорректными счётчиками секций и проверить ранний отказ
+    notes: 'Real-world bug: RWB-0077 (GHSA-mrg3-qvqr-jw29)'
+  - action: Отправить в потоке кадр неизвестного типа с большой заявленной длиной и проверить, что сервер отбрасывает его
+      тело без накопления в памяти
+    notes: 'Real-world bug: RWB-0077 (GHSA-g35j-m5xg-vh3q)'
   expected:
   - Действуют лимиты на размер, время и параллельность; сервис доступен другим клиентам.
   applicability:
@@ -653,6 +706,23 @@ checks:
     notes: 'Real-world bug: RWB-0006 (GHSA-jrv5-8w28-4265)'
   - action: Отправить cookie сессии в незащищённом формате (без шифрования и подписи) и проверить, что она отклоняется
     notes: 'Real-world bug: RWB-0006 (GHSA-33qg-7wpp-89cq)'
+  - action: Настроить политику доступа с неподдерживаемым условием, в том числе под NOT и в составном правиле, и проверить,
+      что запросы, которые она должна запрещать, отклоняются
+    notes: 'Real-world bug: RWB-0006 (GHSA-hrxh-6v49-42gf)'
+  - action: Пользователем без доступных проектов выполнить операцию, строящую выборку по его проектам, с пустым фильтром и
+      проверить, что чужие объекты не возвращаются и не изменяются
+    notes: 'Real-world bug: RWB-0006 (GHSA-fprf-r6rv-xg99)'
+  - action: Отправить запрос с числом параметров сверх лимита фильтра и вредоносным значением среди них и проверить отказ,
+      а не пропуск без проверки
+    notes: 'Real-world bug: RWB-0006 (GHSA-6r3q-mjv7-xr8m)'
+  - action: Отправить тело больше лимита проверки без Content-Length (chunked, HTTP/2) и проверить отказ политики, зависящей
+      от тела
+    notes: 'Real-world bug: RWB-0006 (GHSA-5gpm-rgj3-9q76)'
+  - action: Ролью читателя запросить объект, не упомянутый в правилах доступа, и проверить отказ
+    notes: 'Real-world bug: RWB-0006 (GHSA-v684-q882-jgmq)'
+  - action: Передать в поле ссылки на родителя нулевое значение (отвязка к корню) пользователем без нужных прав и проверить,
+      что проверка прав не пропускается
+    notes: 'Real-world bug: RWB-0006 (GHSA-44v6-7fxq-vgf4)'
   expected:
   - Запрос отклоняется (400/401/403); проверка не пропускается.
   - Значение не копируется в выдаваемые токены и ответы.
@@ -720,6 +790,11 @@ checks:
     notes: 'Real-world bug: RWB-0024 (GHSA-x4gw-5cx5-pgmh)'
   - action: Отправить при включённом PROXY protocol поток байтов без CRLF и проверить закрытие соединения
     notes: 'Real-world bug: RWB-0024 (GHSA-qpgp-93vx-g8v8)'
+  - action: Медленно передавать тело запроса по HTTP/3 и проверить, что таймаут чтения срабатывает так же, как для HTTP/1.1
+    notes: 'Real-world bug: RWB-0024 (GHSA-7ghq-v6jf-g56c)'
+  - action: Открыть множество TCP-соединений к TLS-порту без отправки ClientHello и проверить, что они закрываются по тайм-ауту
+      рукопожатия
+    notes: 'Real-world bug: RWB-0024 (GHSA-6vch-q96h-7gc3)'
   expected:
   - Неполные сообщения и простаивающие соединения закрываются по таймауту; число соединений и буферы ограничены.
   - Обычные клиенты обслуживаются.
@@ -764,6 +839,11 @@ checks:
   - action: Отправить запрос, начинающийся как чтение, но с побочным эффектом — функции с записью, составные запросы после
       комментария, изменение последовательностей.
   - action: Для GraphQL — mutation после незначащих символов (запятые, BOM, комментарии) или в документе с несколькими операциями.
+  - action: Вызвать ролью читателя служебную операцию пересчёта (индексов, ссылок) и проверить отказ и отсутствие записей
+      в хранилище
+    notes: 'Real-world bug: RWB-0028 (GHSA-wgwx-479j-23vq)'
+  - action: При запрете удаления выполнить MOVE файла и MOVE с перезаписью существующего и проверить 403 и сохранность файлов
+    notes: 'Real-world bug: RWB-0028 (GHSA-hq33-8jgp-8qq3)'
   expected:
   - Любое изменение отклоняется; данные не меняются.
   - Тип операции определяется по AST или хранилищем (read-only транзакция), а не разбором текста.
@@ -1024,7 +1104,8 @@ checks:
   preconditions:
   - Есть шаблоны доменов с wildcard — маршрутизация по Host, списки разрешённых origin (CORS), redirect, вебхуков.
   steps:
-  - action: Для шаблона *.example.com проверить a.example.com, a.b.example.com, example.com, abc.gw-example.com, example.com.evil.com, evil-example.com.
+  - action: Для шаблона *.example.com проверить a.example.com, a.b.example.com, example.com, abc.gw-example.com, example.com.evil.com,
+      evil-example.com.
   expected:
   - Совпадают только поддомены example.com (и сам домен — если так задокументировано); остальные не обрабатываются правилом.
   applicability:
@@ -1045,3 +1126,166 @@ checks:
   - RFC 6125 §6.4.3
   - Смежные — REST-CORS-POLICY, REST-OPEN-REDIRECT
   - 'Real-world bug: RWB-0272'
+- id: HARD-DENYLIST-EVERY-ENTRY
+  status: draft
+  title: Каждый элемент списка запрещённых значений отклоняется
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - negative
+  - hardening
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Есть настраиваемый или встроенный список запрещённых значений (ключи меток и аннотаций, имена полей, домены, команды).
+  steps:
+  - action: Перебором установить каждое значение списка; повторить в другом регистре, при другом порядке и составе списка.
+  - action: Установить разрешённое значение, отсутствующее в списке.
+  expected:
+  - Каждое запрещённое значение отклоняется (403/422), состояние не меняется; разрешённое принимается.
+  applicability:
+    when:
+    - Есть список запрещённых значений.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - Смежная — VAL-CASE-SENSITIVITY
+  - 'Real-world bug: RWB-0284'
+- id: HARD-ROUTE-SHARED-BACKEND-ISOLATION
+  status: draft
+  title: Маршруты шлюза к одному бэкенду применяют каждый свои фильтры
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - tenant-isolation
+  - real-world-bug
+  - regression
+  preconditions:
+  - Шлюз или прокси с маршрутами разных арендаторов или пространств имён к одному бэкенду (Service:port); маршруты добавляют
+    свои заголовки (идентичность арендатора).
+  - Нужно наблюдение за запросами на бэкенде.
+  steps:
+  - action: Создать два маршрута к одному бэкенду с разными фильтрами заголовков и отправить запросы по каждому; сравнить
+      заголовки на бэкенде.
+  expected:
+  - Каждый маршрут передаёт свои заголовки; контекст одного маршрута не попадает в запросы другого.
+  applicability:
+    when:
+    - Сервис — шлюз или прокси с такими маршрутами.
+    skip_when:
+    - Не шлюз и не прокси.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - Смежные — SEC-TENANT-HEADER-SPOOF, CONC-REQUEST-CONTEXT-ISOLATION
+  - 'Real-world bug: RWB-0286'
+- id: HARD-BACKUP-RESTORE-PROTECTED
+  status: draft
+  title: Восстановление из резервной копии не обходит защиту записи
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authz
+  - privilege-escalation
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Есть восстановление из резервной копии или импорт конфигурации через API.
+  steps:
+  - action: Вызвать восстановление пользователем без прав администратора.
+  - action: Администратором загрузить подделанную копию, зашифрованную ключом из запроса, а не ключом сервера.
+  - action: Загрузить копию с изменёнными защищёнными настройками (команды, секреты, роли) и вызвать операцию, которая их
+      использует.
+  expected:
+  - Восстановление доступно только администратору; подделанная копия отклоняется; защищённые настройки не перезаписываются.
+  applicability:
+    when:
+    - Есть восстановление из копии.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - OWASP API5:2023
+  - Смежные — RES-ARCHIVE-RESTORE, REST-MASS-ASSIGNMENT
+  - 'Real-world bug: RWB-0288'
+- id: HARD-SETUP-ENDPOINTS-PROTECTED
+  status: draft
+  title: Эндпоинты первоначальной настройки не позволяют захватить экземпляр
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authn
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Неинициализированный экземпляр открывает эндпоинты настройки (создание первого администратора, восстановление базы) —
+    на время или до настройки.
+  steps:
+  - action: Без учётных данных и секрета настройки вызвать создание администратора и восстановление подготовленной базы; повторить
+      после перезапуска.
+  - action: После настройки повторить те же вызовы.
+  expected:
+  - Отказ без секрета настройки или локального доступа; база не заменяется; после настройки эндпоинты закрыты; перезапуск
+    не открывает окно заново.
+  applicability:
+    when:
+    - Есть первоначальная настройка через API.
+    skip_when:
+    - Экземпляр настраивается только конфигурацией.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - OWASP API8:2023
+  - Смежные — SECURITY-AUTH-REQUIRED, SEC-IDENTITY-PROOF-OF-POSSESSION
+  - 'Real-world bug: RWB-0290'

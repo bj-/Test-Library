@@ -33,6 +33,16 @@ checks:
   - action: Проверка без учётных данных через каждый путь развёртывания (прокси, балансировщик) — исключения для loopback/внутренних
       адресов не должны срабатывать на внешний трафик
     notes: 'Real-world bug: RWB-0143 (GHSA-x5c9-v98j-722r)'
+  - action: Вызвать защищённые маршруты без учётных данных на установке с настройками по умолчанию (пустой секрет подписи)
+      и проверить 401
+    notes: 'Real-world bug: RWB-0143 (GHSA-rqcc-94gv-wjm9)'
+  - action: При включённой аутентификации запросить без учётных данных маршруты каждого верхнеуровневого префикса и проверить
+      401
+    notes: 'Real-world bug: RWB-0143 (GHSA-pr6h-vr44-xq8j)'
+  - action: Запустить сервер через API управления с опцией аутентификации и проверить, что анонимный вход отклоняется
+    notes: 'Real-world bug: RWB-0143 (GHSA-p569-5gjg-9cmj)'
+  - action: Отправить без учётных данных запрос к каждой операции, у которой в спецификации задан security, и проверить 401
+    notes: 'Real-world bug: RWB-0143 (GHSA-r277-6w6q-xmqw)'
   expected:
   - Reject according to documented auth policy; no protected data or internal details are returned.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

@@ -31,6 +31,14 @@ checks:
   - action: Повторить доступ к чужой базе через все вспомогательные эндпоинты (пакетная запись, временные ряды, интеграции
       мониторинга), а не только через основной
     notes: 'Real-world bug: RWB-0157 (GHSA-x8mg-6r4p-87pf)'
+  - action: Запросить объект чужого арендатора по ID через путь своего родительского ресурса и проверить 404
+    notes: 'Real-world bug: RWB-0157 (GHSA-p5vg-v7mj-f6q4)'
+  - action: Запросить токеном, ограниченным префиксом пути арендатора, соседние пути с тем же началом (/tenant1234, /tenant1-old)
+      и проверить отказ
+    notes: 'Real-world bug: RWB-0157 (GHSA-gv5w-hfx8-8cwq)'
+  - action: Зарегистрировать в стриме ID задачи другого арендатора и проверить, что после отказа проверки владения результаты
+      этой задачи в стрим не приходят
+    notes: 'Real-world bug: RWB-0157 (GHSA-9q4h-f4x5-ffq8)'
   expected:
   - Tenant B data is not disclosed; response and side effects match the documented denial/concealment policy.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

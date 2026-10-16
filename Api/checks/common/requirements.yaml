@@ -218,6 +218,8 @@ checks:
     notes: 'Real-world bug: RWB-0099 (directus/directus#27844)'
   - action: Разные пути создания одного объекта (админ-API, регистрация, метаданные) — одинаковые политики
     notes: 'Real-world bug: RWB-0099 (keycloak/keycloak#49457)'
+  - action: Выполнить операцию через альтернативный протокол (CalDAV, WebDAV) и сравнить проверку прав с REST
+    notes: 'Real-world bug: RWB-0099 (GHSA-g38j-7v97-x298)'
   expected:
   - Правило одинаково везде, где ТЗ не требует различий; расхождение - находка.
   applicability:

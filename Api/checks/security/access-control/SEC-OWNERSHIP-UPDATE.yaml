@@ -28,6 +28,8 @@ checks:
     notes: 'Real-world bug: RWB-0152 (GHSA-f7hx-52q9-hcrf)'
   - action: Подменить идентификатор ресурса в параметре тела формы (article[id]) на ID чужого ресурса при изменении и удалении
     notes: 'Real-world bug: RWB-0152 (GHSA-c273-c6vg-4pv5)'
+  - action: Передать в теле операции над своим контейнером ID чужого объекта и проверить отказ и отсутствие его данных в ответе
+    notes: 'Real-world bug: RWB-0152 (GHSA-5pg6-m483-7vrg)'
   expected:
   - Deny the operation; persisted state of resource A remains unchanged.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

@@ -1,0 +1,38 @@
+checks:
+- id: SEC-AUTHZ-LIST-CHECK-CONSISTENCY
+  status: draft
+  title: Перечисление субъектов и объектов с доступом согласовано с точечной проверкой
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - authz
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Есть API перечисления (кто имеет отношение к объекту, какие объекты доступны субъекту) и точечной проверки доступа.
+  steps:
+  - action: Задать модель прав с пересечением, исключением (but not) и wildcard; получить список и проверить точечно каждый элемент списка и каждого исключённого.
+  expected:
+  - Список совпадает с точечными проверками; исключённый субъект в список не попадает.
+  applicability:
+    when:
+    - Есть перечисление и точечная проверка прав.
+    skip_when:
+    - Нет перечисления.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - Смежные — SEC-TENANT-SEARCH, SEC-AUTHZ-FUNCTION
+  - 'Real-world bug: RWB-0289'

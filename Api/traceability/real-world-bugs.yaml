@@ -231,6 +231,35 @@ RWB-0006:
     product: rack-session
     closed: '2026-04-08'
     summary: Неудачная расшифровка cookie сессии приводила к разбору запасным декодером без подписи
+  - url: https://github.com/advisories/GHSA-hrxh-6v49-42gf
+    fix: https://github.com/grpc/grpc-go/pull/9236
+    product: google.golang.org/grpc
+    closed: '2026-07-21'
+    summary: Политика RBAC с неподдерживаемыми условиями молча их игнорирует и пропускает запросы
+  - url: https://github.com/advisories/GHSA-fprf-r6rv-xg99
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: Пустой список доступных проектов снимает ограничение выборки, затрагиваются задачи всех арендаторов
+  - url: https://github.com/advisories/GHSA-6r3q-mjv7-xr8m
+    fix: https://github.com/corazawaf/coraza/commit/146c2f79f39ad16f13787e7d67ad400f8d8cb9a3
+    product: github.com/corazawaf/coraza/v3
+    closed: '2026-10-06'
+    summary: Параметры сверх лимита молча не проверяются WAF, что позволяет обойти правила
+  - url: https://github.com/advisories/GHSA-5gpm-rgj3-9q76
+    fix: https://github.com/zalando/skipper/commit/2cfceabaa6ff0af65b312dcb9bcbe84691b9d507
+    product: github.com/zalando/skipper
+    closed: '2026-09-17'
+    summary: Флаг обрезанного тела не выставляется без Content-Length, политика пропускает
+  - url: https://github.com/advisories/GHSA-v684-q882-jgmq
+    fix: https://github.com/siyuan-note/siyuan/commit/a25c2dd06aae13d1de70cc61cbf98169689c9d86
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-08'
+    summary: Шлюз доступа считает доступным всё, что не перечислено в списке запретов
+  - url: https://github.com/advisories/GHSA-44v6-7fxq-vgf4
+    product: code.vikunja.io/api
+    closed: '2026-08-28'
+    summary: Проверка прав на смену родителя выполняется только при parent_project_id > 0 — значение 0 отвязывает проект без
+      прав администратора
 RWB-0007:
   pattern: Параллельные запросы разных пользователей получают только свой контекст и свой ответ (в том числе через общий канал
     к нижележащему сервису)
@@ -266,6 +295,16 @@ RWB-0007:
     product: Kong
     closed: '2021-05-04'
     summary: На одном keep-alive соединении настройки первого маршрута применяются к запросу на другой маршрут.
+  - url: https://github.com/advisories/GHSA-qqjf-53cj-pwvv
+    fix: https://github.com/traefik/traefik/pull/13812
+    product: github.com/traefik/traefik/v2, github.com/traefik/traefik/v3
+    closed: '2026-09-10'
+    summary: По HTTP/3 соединение к бэкенду с NTLM-аутентификацией делится между клиентами
+  - url: https://github.com/advisories/GHSA-6765-c87h-8mrf
+    fix: https://github.com/traefik/traefik/pull/13572
+    product: github.com/traefik/traefik/v3
+    closed: '2026-08-06'
+    summary: Коллизия ключа дедупликации параллельных проверок Basic-пароля
 RWB-0008:
   pattern: Параллельные независимые запросы одной операции выполняются без 5xx (общая кэшированная конфигурация)
   checks:
@@ -326,6 +365,15 @@ RWB-0011:
     product: express-session
     closed: '2015-12-15'
     summary: Анонимный запрос получал cookie сессии
+  - url: https://github.com/advisories/GHSA-4595-rvpx-4q34
+    product: github.com/jm33-m0/emp3r0r/core
+    closed: '2026-09-15'
+    summary: Сервер создаёт состояние сессии и принимает данные до аутентификации
+  - url: https://github.com/advisories/GHSA-xpxj-f2fm-rqch
+    fix: https://github.com/OliveTin/OliveTin/commit/ec114e95d297b806c3ca0c37bc139b3c9c517b3f
+    product: github.com/OliveTin/OliveTin
+    closed: '2026-07-30'
+    summary: Каждый анонимный запрос /oauth/login добавляет state в карту, которая не очищается
 RWB-0012:
   pattern: Лимит трансформации файла на лету (размер, формат) не отклоняет допустимые комбинации и отклоняет превышение, в
     том числе на промежуточном шаге
@@ -353,6 +401,11 @@ RWB-0013:
     product: Express
     closed: '2024-05-22'
     summary: 'На запрос с Connection: Upgrade, HTTP2-Settings сервер отвечал не по стандарту — HTTP/2-клиенты падали'
+  - url: https://github.com/advisories/GHSA-w4v4-9rw7-5326
+    fix: https://github.com/traefik/traefik/pull/13797
+    product: github.com/traefik/traefik/v2, github.com/traefik/traefik/v3
+    closed: '2026-09-10'
+    summary: 'Upgrade: h2c передаётся бэкенду и даёт туннель в обход middleware'
 RWB-0014:
   pattern: Прямой выбор, inline- и именованные фрагменты, алиасы, вложенные аргументы в запросе по id и в списке дают одинаковые
     данные
@@ -588,6 +641,16 @@ RWB-0024:
     product: puma
     closed: '2026-06-08'
     summary: Буфер разбора строки PROXY protocol v1 растёт без ограничения, пока не придёт CRLF
+  - url: https://github.com/advisories/GHSA-7ghq-v6jf-g56c
+    fix: https://github.com/traefik/traefik/pull/13717
+    product: github.com/traefik/traefik/v2, github.com/traefik/traefik/v3
+    closed: '2026-09-10'
+    summary: Таймаут чтения не применяется к HTTP/3, медленное тело держит запрос
+  - url: https://github.com/advisories/GHSA-6vch-q96h-7gc3
+    fix: https://github.com/etcd-io/etcd/pull/22130
+    product: go.etcd.io/etcd/v3
+    closed: '2026-07-24'
+    summary: TLS-слушатель создаёт горутину рукопожатия без тайм-аута на каждое соединение без ClientHello
 RWB-0025:
   pattern: Права и согласия не переходят к пересозданному пользователю с тем же логином; привязка к неизменяемому id
   checks:
@@ -655,6 +718,16 @@ RWB-0028:
     product: '@zereight/mcp-gitlab'
     closed: '2026-09-15'
     summary: Проверка read-only для GraphQL обходилась запятой перед mutation; запрос не проверял allowlist проектов
+  - url: https://github.com/advisories/GHSA-wgwx-479j-23vq
+    fix: https://github.com/siyuan-note/siyuan/commit/7d273c271ce193b9d3ee5751b596b8093ba84ada
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-03'
+    summary: Эндпоинт обновления обратных ссылок доступен читателю и выполняет запись даже в режиме только для чтения
+  - url: https://github.com/advisories/GHSA-hq33-8jgp-8qq3
+    fix: https://github.com/goshs-labs/goshs/commit/0444ac6b1a8176ddae70d940adf7a26b2e5a6c29
+    product: github.com/patrickhener/goshs, github.com/patrickhener/goshs/v2, goshs.de/goshs, goshs.de/goshs/v2
+    closed: '2026-07-28'
+    summary: Запрет удаления блокирует DELETE, но не WebDAV MOVE, который удаляет источник и перезаписывает цель
 RWB-0029:
   pattern: Данные и снапшоты, выгруженные API, принимаются им же обратно без изменений (round-trip)
   checks:
@@ -903,6 +976,22 @@ RWB-0041:
     product: omniauth-microsoft_graph
     closed: '2024-01-03'
     summary: Вход через Microsoft Graph доверял неподтверждённому атрибуту email (nOAuth)
+  - url: https://github.com/advisories/GHSA-xv7q-fvmc-jx96
+    fix: https://github.com/go-vikunja/vikunja/commit/7854f2729ab72000210b61c25929678fd6901630
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: Вход через OIDC связывается с локальной учёткой по email без email_verified
+  - url: https://github.com/advisories/GHSA-992q-9gwp-7r79
+    fix: https://github.com/zitadel/zitadel/commit/c97012f0c5dc2fe960ae6e940cbea23229f0557f
+    product: github.com/zitadel/zitadel
+    closed: '2026-09-11'
+    summary: Автосвязывание по email не проверяет подтверждение email у внешнего IdP
+  - url: https://github.com/advisories/GHSA-29rf-f4vv-pvq6
+    fix: https://github.com/authorizerdev/authorizer/commit/66fe488fd2a4e7acf1e517334344d5e8f3ddd296
+    product: github.com/authorizerdev/authorizer
+    closed: '2026-08-14'
+    summary: OAuth-вход связывается с существующей учёткой с неподтверждённым email и подтверждает её — пароль атакующего
+      сохраняется
 RWB-0042:
   pattern: Заявленная клиентом идентичность (кошелёк, DID, account id) без доказательства владения не даёт прав и льгот
   checks:
@@ -914,6 +1003,23 @@ RWB-0042:
     product: '@insumermodel/mppx-condition-gate, @insumermodel/mppx-token-gate'
     closed: '2026-10-07'
     summary: Бесплатный доступ выдаётся по адресу кошелька, который клиент просто указал, без доказательства владения.
+  - url: https://github.com/advisories/GHSA-w3rp-4cm2-4wgc
+    fix: https://github.com/ixofoundation/ixo-blockchain/pull/534
+    product: github.com/ixofoundation/ixo-blockchain, github.com/ixofoundation/ixo-blockchain/v3, github.com/ixofoundation/ixo-blockchain/v4,
+      github.com/ixofoundation/ixo-blockchain/v5, github.com/ixofoundation/ixo-blockchain/v6, github.com/ixofoundation/ixo-blockchain/v7,
+      github.com/ixofoundation/ixo-blockchain/v8
+    closed: '2026-09-24'
+    summary: Списание со счёта, привязанного к DID без подтверждения владельца
+  - url: https://github.com/advisories/GHSA-cp3j-m783-3ph5
+    fix: https://github.com/identrail/identrail/commit/835e40517509d6ef5405c27fbf14f579bedff0e7
+    product: github.com/identrail/identrail
+    closed: '2026-09-09'
+    summary: ID установки внешней интеграции от клиента привязывается без проверки владения
+  - url: https://github.com/advisories/GHSA-jq8w-8q2f-ffm9
+    fix: https://github.com/zitadel/zitadel/commit/90f310212d3a5075084a603bf61fed549c92956d
+    product: github.com/zitadel/zitadel
+    closed: '2026-07-29'
+    summary: API самообслуживания возвращает пользователю код подтверждения его нового email и телефона
 RWB-0043:
   pattern: Действия во внешней системе от имени пользователя — только с его правами; нет отката на сервисные учётные данные,
     прокси к стороннему API пропускает только нужные операции
@@ -934,6 +1040,21 @@ RWB-0043:
     closed: '2026-10-06'
     summary: Через прокси к платёжному API аутентифицированный пользователь выполнял произвольные операции Stripe с ключом
       сервера.
+  - url: https://github.com/advisories/GHSA-79gf-7frw-68m9
+    fix: https://github.com/kyverno/kyverno/pull/16238
+    product: github.com/kyverno/kyverno
+    closed: '2026-08-26'
+    summary: Политика пространства имён генерирует ресурсы в любом пространстве привилегиями контроллера
+  - url: https://github.com/advisories/GHSA-6f2p-296r-cc28
+    product: github.com/openshift-pipelines/pipelines-as-code
+    closed: '2026-08-20'
+    summary: Токен интеграции не сужен до репозитория-источника — ссылка на задачу из приватного репозитория разрешается чужими
+      правами
+  - url: https://github.com/advisories/GHSA-jr6p-8pjj-mfx6
+    product: github.com/projectcapsule/capsule
+    closed: '2026-07-31'
+    summary: Запрет объектов уровня кластера проверяется только на одном пути описания ресурсов, через RawItems и Generators
+      контроллер создаёт их правами администратора
 RWB-0044:
   pattern: Обмен и обновление токена сохраняют привязку к отправителю (DPoP, mTLS) или требуют доказательство владения ключом
   checks:
@@ -994,6 +1115,11 @@ RWB-0047:
     product: payload
     closed: '2026-10-06'
     summary: Операция дублирования копирует скрытые и запрещённые полевыми правами значения исходного документа.
+  - url: https://github.com/advisories/GHSA-f27p-pw2p-9pr4
+    fix: https://github.com/go-vikunja/vikunja/pull/3239
+    product: code.vikunja.io/api
+    closed: '2026-08-28'
+    summary: Копирование проекта не требует права записи в целевой родительский проект
 RWB-0048:
   pattern: Прерванная загрузка не оставляет данных в хранилище и не учитывается в квоте
   checks:
@@ -1073,6 +1199,16 @@ RWB-0053:
     product: NestJS
     closed: '2025-01-31'
     summary: После обновления фреймворка переразобранное тело давало другую HMAC-подпись — проверка подписи вендора ломалась
+  - url: https://github.com/advisories/GHSA-c5f6-2rm9-2w8g
+    fix: https://github.com/openchoreo/openchoreo/pull/4239
+    product: github.com/openchoreo/openchoreo
+    closed: '2026-09-02'
+    summary: Провайдер для проверки подписи вебхука выбирается по заголовку клиента
+  - url: https://github.com/advisories/GHSA-fjwv-jf2v-j499
+    fix: https://github.com/hatchet-dev/hatchet/commit/2d211bce16e5022afaf95780de82dc30e0bcba98
+    product: hatchet-dev/hatchet
+    closed: '2026-09-22'
+    summary: Сервер использует URL из поля, не входящего в подпись входящего сообщения
 RWB-0054:
   pattern: URL вебхука не может указывать на внутренние адреса
   checks:
@@ -1103,6 +1239,11 @@ RWB-0054:
     product: decidim-core
     closed: '2026-07-13'
     summary: Endpoint push-подписки сохраняется без проверки и используется как адрес исходящего запроса
+  - url: https://github.com/advisories/GHSA-p2w3-6x73-2f6x
+    fix: https://github.com/amir20/dozzle/pull/4887
+    product: github.com/amir20/dozzle
+    closed: '2026-09-08'
+    summary: Защита от SSRF вебхуков не распознаёт IPv6-адреса перехода
 RWB-0055:
   pattern: API-ключи ограничены по правам, отзываются и не раскрываются
   checks:
@@ -1124,6 +1265,11 @@ RWB-0055:
     product: '@payloadcms/plugin-mcp'
     closed: '2026-10-06'
     summary: Пользователь управлял API-ключами чужой учётной записи — захват аккаунта.
+  - url: https://github.com/advisories/GHSA-qfwc-vx6f-3g6g
+    fix: https://github.com/go-vikunja/vikunja/pull/3688
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: Одиночное чтение гостевой ссылки отдаёт секрет пользователю с правом чтения
 RWB-0056:
   pattern: Перебор паролей ограничивается
   checks:
@@ -1198,6 +1344,21 @@ RWB-0060:
     product: Directus
     closed: '2026-10-02'
     summary: Требование MFA вычисляется по-разному при входе, обновлении токена и чтении политик
+  - url: https://github.com/advisories/GHSA-45gv-9wjv-xh7p
+    fix: https://github.com/0xJacky/nginx-ui/commit/95cd21b70814e5d9a48a359aa238aeea1ac97429
+    product: github.com/0xJacky/Nginx-UI
+    closed: '2026-10-09'
+    summary: Вход по паролю не требует второго фактора, если он — только passkey
+  - url: https://github.com/advisories/GHSA-h246-wpgf-vmq5
+    fix: https://github.com/0xJacky/nginx-ui/commit/a3999bd78a3b97ab22e6b5e9fd478ac57598a954
+    product: github.com/0xJacky/Nginx-UI
+    closed: '2026-10-09'
+    summary: Требование свежего второго фактора не применено к параллельному роутеру с теми же чувствительными операциями
+  - url: https://github.com/advisories/GHSA-hp74-gm6m-2qm5
+    fix: https://github.com/pocket-id/pocket-id/commit/978ac87deffec58beaccd15aead975e91b94c8a5
+    product: github.com/pocket-id/pocket-id/backend
+    closed: '2026-07-28'
+    summary: Повторная аутентификация принимает любой свежий токен, включая полученный по одноразовой ссылке, вместо passkey
 RWB-0061:
   pattern: OAuth/OIDC flow проверяет redirect_uri, state и PKCE
   checks:
@@ -1227,6 +1388,11 @@ RWB-0061:
     product: org.springframework.security:spring-security-oauth2-authorization-server
     closed: '2026-06-10'
     summary: Невалидный request_uri с произвольным redirect_uri приводил к open redirect
+  - url: https://github.com/advisories/GHSA-phg3-3g28-wq9v
+    fix: https://github.com/hatchet-dev/hatchet/commit/f90464189ad642251e09412d0f99fde353036428
+    product: hatchet
+    closed: '2026-09-21'
+    summary: После OAuth-входа state очищается в пустую строку и пустой state принимается
 RWB-0062:
   pattern: Политика паролей применяется на сервере
   checks:
@@ -1383,6 +1549,11 @@ RWB-0068:
     product: pghero
     closed: '2023-01-05'
     summary: Сообщение об ошибке EXPLAIN содержит результаты запроса
+  - url: https://github.com/advisories/GHSA-gwfq-86j8-7qhv
+    fix: https://github.com/rclone/rclone/commit/ff43a1e3ae17627c80e523a0ca7445f96516d199
+    product: github.com/rclone/rclone
+    closed: '2026-08-05'
+    summary: Перехваченная паника задания возвращает в JSON-ответе API полный стек Go
 RWB-0069:
   pattern: Архивные и графические бомбы не исчерпывают ресурсы
   checks:
@@ -1424,6 +1595,27 @@ RWB-0069:
     product: ruby-saml
     closed: '2025-03-12'
     summary: Лимит размера SAML-сообщения проверялся до распаковки, сжатое сообщение обходило его
+  - url: https://github.com/advisories/GHSA-w7jp-mf2v-8342
+    fix: https://github.com/go-vikunja/vikunja/pull/3688
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: Импорт zip без лимита распакованного размера и числа файлов
+  - url: https://github.com/advisories/GHSA-4vh2-39rq-rq8j
+    fix: https://github.com/go-vikunja/vikunja/pull/3688
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: Лимит пикселей есть только на одном пути загрузки изображений
+  - url: https://github.com/advisories/GHSA-75mr-qw9x-3r39
+    fix: https://github.com/axllent/mailpit/commit/6bcb6337838b542d53c348e38c7977f569b6db35
+    product: github.com/axllent/mailpit
+    closed: '2026-09-02'
+    summary: Эндпоинт миниатюры декодирует изображение огромного разрешения целиком до масштабирования
+  - url: https://github.com/advisories/GHSA-g9j2-8w95-3vwv
+    fix: https://github.com/cloudreve/cloudreve/commit/3607f79bb44c35d0be4fa8b6e24c0502b51415a9
+    product: github.com/cloudreve/Cloudreve/v3, github.com/cloudreve/Cloudreve/v4
+    closed: '2026-07-24'
+    summary: Маленькое изображение с огромными заявленными размерами при декодировании (аватар, миниатюра) исчерпывает память
+      и роняет процесс
 RWB-0070:
   pattern: Скачивание файлов проверяет права и срок действия ссылок
   checks:
@@ -1456,6 +1648,31 @@ RWB-0070:
     product: Directus
     closed: '2026-01-12'
     summary: Имя файла раскрывается в Content-Disposition, хотя чтение поля имени запрещено правами
+  - url: https://github.com/advisories/GHSA-3cm4-ccvw-6xr6
+    fix: https://github.com/siyuan-note/siyuan/commit/035bf9a8c311c6f8468f2f1054b4d5e1711787e2
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-10-05'
+    summary: Защищённые файлы доступны через эндпоинты истории и сравнения снимков
+  - url: https://github.com/advisories/GHSA-fgmr-7w36-9qfq
+    fix: https://github.com/siyuan-note/siyuan/commit/34be6c0bb0739d5b8e99ecc0cbfb474abb16230d
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-04'
+    summary: Статические маршруты отдают данные, закрытые в файловом API
+  - url: https://github.com/advisories/GHSA-v7ph-r5r6-4jcj
+    fix: https://github.com/siyuan-note/siyuan/commit/509b35055940856ec1c89cb4888723c4660b776a
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-03'
+    summary: Эндпоинт аннотаций PDF не проверяет доступ публикации, тогда как маршрут самого файла проверяет
+  - url: https://github.com/advisories/GHSA-vx2m-jpxr-xv7w
+    product: github.com/cloudreve/Cloudreve/v4
+    closed: '2026-08-24'
+    summary: Кэшированная подсказка контекста пропускает повторную проверку общей ссылки — после отзыва ещё генерируются подписанные
+      URL
+  - url: https://github.com/advisories/GHSA-rmxw-pq4x-3fvh
+    fix: https://github.com/goshs-labs/goshs/commit/7cf911a26ace737e1a55b7dc073e307a25f7fd1d
+    product: github.com/patrickhener/goshs, github.com/patrickhener/goshs/v2, goshs.de/goshs, goshs.de/goshs/v2
+    closed: '2026-07-28'
+    summary: Маршрут массового скачивания ?bulk отдаёт защищённые ACL файлы архивом без проверки
 RWB-0071:
   pattern: Пустой файл и некорректный multipart обрабатываются корректно
   checks:
@@ -1541,6 +1758,26 @@ RWB-0075:
     product: io.kestra:kestra
     closed: '2026-09-17'
     summary: Служебные эндпоинты на отдельном порту доступны без аутентификации при включённой защите основного API
+  - url: https://github.com/advisories/GHSA-9v8p-frvj-2pcm
+    fix: https://github.com/klever-io/klever-go/pull/74
+    product: github.com/klever-io/klever-go
+    closed: '2026-09-23'
+    summary: Неаутентифицированный WebSocket /log меняет глобальную конфигурацию журналирования
+  - url: https://github.com/advisories/GHSA-rh53-xvx2-j327
+    fix: https://github.com/openchoreo/openchoreo/pull/4256
+    product: github.com/openchoreo/openchoreo
+    closed: '2026-09-04'
+    summary: Внутренний прокси управления не аутентифицирует вызывающего и не только для чтения
+  - url: https://github.com/advisories/GHSA-mhc4-g3wh-cw7m
+    fix: https://github.com/vitessio/vitess/pull/20467
+    product: vitess.io/vitess
+    closed: '2026-08-18'
+    summary: /debug/vrlog отдаёт живые SQL-данные репликации без проверки ACL
+  - url: https://github.com/advisories/GHSA-qh9r-j7rp-4x2m
+    fix: https://github.com/openchoreo/openchoreo/pull/4122
+    product: github.com/openchoreo/openchoreo
+    closed: '2026-09-02'
+    summary: Управляющие API шлюза кластера на внешнем слушателе для агентов не аутентифицируют вызывающего
 RWB-0076:
   pattern: Ответы не содержат внутренних полей сверх контракта
   checks:
@@ -1572,6 +1809,16 @@ RWB-0076:
     product: fat_free_crm
     closed: '2022-05-17'
     summary: JSON-представление пользователя отдаёт все поля
+  - url: https://github.com/advisories/GHSA-hgfg-j9pg-43xw
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-10-01'
+    summary: Конфигурация для читателя содержит рабочее состояние администратора
+  - url: https://github.com/advisories/GHSA-jv8v-xq2h-657v
+    fix: https://github.com/siyuan-note/siyuan/commit/eee3410aa131b76f1bd72e933d484cf1ece77e88
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-03'
+    summary: Эндпоинт разрешения пути вложения возвращает читателю абсолютный путь файловой системы с именем пользователя
+      ОС
 RWB-0077:
   pattern: Дорогие операции ограничены по ресурсам
   checks:
@@ -1733,6 +1980,46 @@ RWB-0077:
     product: org.jruby:jruby-parent, rack
     closed: '2022-05-17'
     summary: Коллизии хэша в именах параметров формы вызывают DoS
+  - url: https://github.com/advisories/GHSA-jw42-f3rr-4cc3
+    fix: https://github.com/qax-os/excelize/pull/2438
+    product: github.com/xuri/excelize/v2
+    closed: '2026-10-08'
+    summary: Разбор загруженного xlsx с огромным номером строки зацикливается
+  - url: https://github.com/advisories/GHSA-jrfj-fhj2-jjvm
+    fix: https://github.com/qax-os/excelize/pull/2389
+    product: github.com/xuri/excelize/v2
+    closed: '2026-10-07'
+    summary: spinCount из файла не ограничен, открытие xlsx нагружает CPU
+  - url: https://github.com/advisories/GHSA-q5j5-6p94-4gwc
+    fix: https://github.com/qax-os/excelize/pull/2331
+    product: github.com/xuri/excelize, github.com/xuri/excelize/v2
+    closed: '2026-09-10'
+    summary: Потоковое чтение xlsx не ограничивает номер строки, выделение памяти по нему
+  - url: https://github.com/advisories/GHSA-rp9v-7xv3-r6g3
+    fix: https://github.com/corazawaf/coraza/commit/1bc39036e99c88e7de60cf8e6bb55ee4c311223c
+    product: github.com/corazawaf/coraza/v3
+    closed: '2026-10-08'
+    summary: Каждая файловая часть multipart держит открытый дескриптор до конца запроса
+  - url: https://github.com/advisories/GHSA-pg57-6jwg-q645
+    fix: https://github.com/containerd/containerd/commit/4f5f32636d47f051751065cf824a10da70c619fe
+    product: github.com/containerd/containerd, github.com/containerd/containerd/v2
+    closed: '2026-09-25'
+    summary: Загрузка образа обходит граф дескрипторов без ограничения глубины, ширины и дедупликации
+  - url: https://github.com/advisories/GHSA-jr34-h97m-9hpx
+    fix: https://github.com/lucasdillmann/nginx-ignition/pull/125
+    product: github.com/lucasdillmann/nginx-ignition
+    closed: '2026-09-21'
+    summary: Разбор длинного Accept-Language квадратичен, лимит обходится другим разделителем
+  - url: https://github.com/advisories/GHSA-mrg3-qvqr-jw29
+    fix: https://github.com/coredns/coredns/commit/530b0a5ff2ad68cc0421f10dd93568945cc671c9
+    product: github.com/coredns/coredns
+    closed: '2026-09-17'
+    summary: Альтернативные транспорты разбирают сообщение до проверки счётчиков секций
+  - url: https://github.com/advisories/GHSA-g35j-m5xg-vh3q
+    fix: https://github.com/quic-go/webtransport-go/pull/290
+    product: github.com/quic-go/webtransport-go
+    closed: '2026-07-24'
+    summary: Сервер буферизует в памяти целиком тело кадра неизвестного типа с большой заявленной длиной — DoS запросами пира
 RWB-0078:
   pattern: Подмена Host и X-Forwarded-Host не влияет на ссылки и маршрутизацию
   checks:
@@ -1744,6 +2031,16 @@ RWB-0078:
     product: '@bytebase/dbhub'
     closed: '2026-09-24'
     summary: 'Проверка Origin == Host не защищает от DNS rebinding: неаутентифицированный локальный HTTP-сервер выполнял SQL'
+  - url: https://github.com/advisories/GHSA-5gm3-9crp-6g3v
+    fix: https://github.com/F1bonacc1/process-compose/commit/6ffa74f462cd2fa4f8dc1ee63c70b793b298c858
+    product: github.com/f1bonacc1/process-compose
+    closed: '2026-09-18'
+    summary: Локальный служебный эндпоинт не проверяет Host и Origin
+  - url: https://github.com/advisories/GHSA-rf68-8gjr-36q7
+    fix: https://github.com/nezhahq/nezha/commit/38824dbc11a63964c5b9296ae4c68e62b34fa04b
+    product: github.com/nezhahq/nezha
+    closed: '2026-09-15'
+    summary: Host запроса снова попадает в redirect_uri OAuth при пустой настройке
 RWB-0079:
   pattern: Старые версии API и недокументированные маршруты не обходят защиту
   checks:
@@ -1781,6 +2078,16 @@ RWB-0080:
     product: undici
     closed: '2026-09-29'
     summary: Распаковка ответа внешнего сервера не ограничена по размеру — сжатая бомба от upstream исчерпывает память.
+  - url: https://github.com/advisories/GHSA-wq92-8x3r-fm38
+    fix: https://github.com/go-vikunja/vikunja/pull/3688
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: Миграция со стороннего сервера без суммарного лимита объёма
+  - url: https://github.com/advisories/GHSA-fmgp-q6jx-gg3x
+    fix: https://github.com/kubevela/kubevela/pull/7191
+    product: github.com/oam-dev/kubevela
+    closed: '2026-08-28'
+    summary: Загрузчик читает файл внешнего репозитория по символьной ссылке на /dev/zero
 RWB-0081:
   pattern: Сжатие ответа согласуется через Accept-Encoding
   checks:
@@ -1950,6 +2257,46 @@ RWB-0085:
     product: karteek-docsplit
     closed: '2022-05-17'
     summary: Инъекция команд через имя PDF-файла при OCR
+  - url: https://github.com/advisories/GHSA-5jpj-293f-rhvj
+    fix: https://github.com/kubeedge/kubeedge/pull/7028
+    product: github.com/kubeedge/kubeedge
+    closed: '2026-09-22'
+    summary: Поля spec.version и spec.image подставляются в shell-команду
+  - url: https://github.com/advisories/GHSA-m3c6-2p7h-cfr3
+    fix: https://github.com/kubeedge/kubeedge/pull/7028
+    product: github.com/kubeedge/kubeedge
+    closed: '2026-09-22'
+    summary: Поля updateFields задания конфигурации подставляются в shell-команду
+  - url: https://github.com/advisories/GHSA-2mw5-23gm-pccq
+    fix: https://github.com/openchoreo/openchoreo/pull/4193
+    product: github.com/openchoreo/openchoreo
+    closed: '2026-09-02'
+    summary: Параметры workflow подставляются в текст скрипта sh -c
+  - url: https://github.com/advisories/GHSA-f5pj-2738-996m
+    fix: https://github.com/sonirico/mcp-shell/pull/16
+    product: github.com/sonirico/mcp-shell
+    closed: '2026-08-25'
+    summary: Защита выключена по умолчанию, в allowlist есть интерпретатор shell
+  - url: https://github.com/advisories/GHSA-3x77-wg38-92r3
+    fix: https://github.com/sonirico/mcp-shell/pull/16
+    product: github.com/sonirico/mcp-shell
+    closed: '2026-08-25'
+    summary: /bin/bash в allowlist по умолчанию позволяет bash -c с любой командой
+  - url: https://github.com/advisories/GHSA-74hp-mggr-hv58
+    fix: https://github.com/sonirico/mcp-shell/pull/16
+    product: github.com/sonirico/mcp-shell
+    closed: '2026-08-25'
+    summary: git -c alias.x=!cmd обходит фильтр метасимволов
+  - url: https://github.com/advisories/GHSA-j6cw-g6p4-7hch
+    fix: https://github.com/argoproj/argo-cd/commit/1e3ddd0b7250aa23f489956b5fab8c13d0493a9f
+    product: github.com/argoproj/argo-cd/v2, github.com/argoproj/argo-cd/v3
+    closed: '2026-10-09'
+    summary: Хост URL прокси подставляется в команду оболочки
+  - url: https://github.com/advisories/GHSA-xc5w-4v5w-7x65
+    fix: https://github.com/OliveTin/OliveTin/commit/995ff79736f2bccc364448a3ece84087b550b232
+    product: github.com/OliveTin/OliveTin
+    closed: '2026-07-30'
+    summary: 'Аргумент пользовательского типа regex: не попадает в список небезопасных для shell — подстановка команды исполняется'
 RWB-0086:
   pattern: Обход каталогов через параметры файлов и путей невозможен
   checks:
@@ -1985,6 +2332,24 @@ RWB-0086:
     product: camaleon_cms
     closed: '2024-09-18'
     summary: Параметр file скачивания приватного файла допускал ../ и отдавал любой файл сервера
+  - url: https://github.com/advisories/GHSA-hf8h-97gm-4x2p
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-10-01'
+    summary: Путь из запроса без валидации проверяется на существование — оракул по файловой системе
+  - url: https://github.com/advisories/GHSA-w5fv-7x5q-g8qp
+    product: github.com/cloudreve/Cloudreve/v3, github.com/cloudreve/Cloudreve/v4
+    closed: '2026-08-26'
+    summary: WebDAV соединяет путь запроса с корнем учётки без проверки — %2e%2e выводит за корень
+  - url: https://github.com/advisories/GHSA-fqj9-69pf-6pjg
+    fix: https://github.com/rclone/rclone/commit/015fd0eba1cb138eef081517795fed47a2873f2d
+    product: github.com/rclone/rclone
+    closed: '2026-08-05'
+    summary: Авторизация по первому сегменту пути, бэкенд берёт неканонизированный путь — «..» даёт доступ к чужим репозиториям
+  - url: https://github.com/advisories/GHSA-86cx-wwf4-phq4
+    fix: https://github.com/OpenListTeam/OpenList/commit/59bd3431408578f420895457554700cc9a52375a
+    product: github.com/OpenListTeam/OpenList/v4
+    closed: '2026-07-24'
+    summary: Проверка базового пути при создании общей ссылки — строковый префикс без разделителя, /base2 проходит для /base
 RWB-0087:
   pattern: Специальные ключи __proto__ и constructor не меняют поведение сервера
   checks:
@@ -2382,6 +2747,34 @@ RWB-0089:
     product: fat_free_crm
     closed: '2022-05-17'
     summary: SQL-инъекции в ленте и активности
+  - url: https://github.com/advisories/GHSA-f46q-3v67-fmm4
+    fix: https://github.com/sipcapture/homer/pull/837
+    product: github.com/sipcapture/homer-app
+    closed: '2026-10-07'
+    summary: Поле rawquery передаётся в СУБД без валидации
+  - url: https://github.com/advisories/GHSA-33jq-p8c2-q3q4
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-10-01'
+    summary: Ключевое слово поиска конкатенируется в SQL
+  - url: https://github.com/advisories/GHSA-r8cr-4f9w-7r75
+    product: github.com/gravitl/netmaker
+    closed: '2026-09-15'
+    summary: Path-параметр конкатенируется в SQL
+  - url: https://github.com/advisories/GHSA-q2vg-7qgx-x5fc
+    fix: https://github.com/siyuan-note/siyuan/commit/1a5b3431d5ab3036b19c1cc79486fedd6906fb57
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-03'
+    summary: Запрос поиска обратных ссылок экранирует только двойную кавычку — инъекция через ключевое слово и через сохранённое
+      название
+  - url: https://github.com/advisories/GHSA-h89q-4j2h-7h88
+    fix: https://github.com/siyuan-note/siyuan/commit/57bcad4b331836880bfe6be25d4180bdcf10db0d
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-02'
+    summary: Параметр paths[] поиска подставляется в SQL — UNION с разрешёнными box/path обходит последующий фильтр доступа
+  - url: https://github.com/advisories/GHSA-7q96-f8xw-jv5j
+    product: github.com/fleetdm/fleet
+    closed: '2026-08-20'
+    summary: Значение, сообщённое агентом хоста и сохранённое как есть, подставляется в SQL эндпоинта условного доступа
 RWB-0090:
   pattern: Параметры с URL и хостами не дают доступа к внутренней сети
   checks:
@@ -2511,6 +2904,32 @@ RWB-0090:
     closed: '2025-12-23'
     summary: Значение из запроса используется как путь к внешнему API; абсолютный URL заменяет базовый адрес, и сервер шлёт
       свой API-ключ на чужой хост
+  - url: https://github.com/advisories/GHSA-w98g-5w9p-p3rc
+    fix: https://github.com/maximhq/bifrost/pull/4092
+    product: github.com/maximhq/bifrost/core
+    closed: '2026-08-28'
+    summary: Список запрета SSRF пропускает CGNAT, 6to4, NAT64 и site-local
+  - url: https://github.com/advisories/GHSA-87fv-vqqr-m4jr
+    fix: https://github.com/seaweedfs/seaweedfs/pull/9441
+    product: github.com/seaweedfs/seaweedfs
+    closed: '2026-08-11'
+    summary: RPC загрузки по URL без аутентификации и проверки адреса, ответ читается обратно
+  - url: https://github.com/advisories/GHSA-4p3g-4hcj-wpvx
+    fix: https://github.com/prebid/prebid-server/pull/4802
+    product: github.com/prebid/prebid-server, github.com/prebid/prebid-server/v2, github.com/prebid/prebid-server/v3, github.com/prebid/prebid-server/v4
+    closed: '2026-07-29'
+    summary: Параметр запроса подставляется в хост исходящего URL без валидации — SSRF
+  - url: https://github.com/advisories/GHSA-r2v3-8gwf-7ghm
+    fix: https://github.com/bank-vaults/vault-secrets-webhook/commit/76db45976fee0f54cafd94dffa425e6b542f65a0
+    product: github.com/bank-vaults/vault-secrets-webhook
+    closed: '2026-07-31'
+    summary: Адрес Vault из аннотации объекта используется без проверки — SSRF и отправка токенов сервисных учёток на чужой
+      адрес
+  - url: https://github.com/advisories/GHSA-2wm4-vwp6-v7xc
+    fix: https://github.com/go-gitea/gitea/commit/de4b8277e9cb576f2315fb03b5ab6478b42a1d31
+    product: code.gitea.io/gitea, gitea.dev
+    closed: '2026-07-21'
+    summary: URL вложений и патчей из мигрируемого источника скачиваются сервером в обход SSRF-защиты, включая file://
 RWB-0091:
   pattern: Инъекция в серверные шаблоны не исполняется
   checks:
@@ -2552,6 +2971,23 @@ RWB-0091:
     product: camaleon_cms
     closed: '2023-05-26'
     summary: SSTI через параметр formats
+  - url: https://github.com/advisories/GHSA-j8px-rmrx-76h9
+    fix: https://github.com/caddyserver/caddy/pull/7761
+    product: github.com/caddyserver/caddy/v2
+    closed: '2026-09-18'
+    summary: Повторная подстановка плейсхолдеров раскрывает переменные окружения по значению заголовка
+  - url: https://github.com/advisories/GHSA-x67c-8pwr-m8g3
+    fix: https://github.com/siyuan-note/siyuan/commit/0a176345e02a0d19bdc7762e50e0b92002087d20
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-03'
+    summary: Шаблонная колонка импортированного пакета вызывает функцию с подстановкой строки в SQL — исполнение произвольного
+      SQL при отображении
+  - url: https://github.com/advisories/GHSA-pfvc-3p5h-x7h6
+    fix: https://github.com/pterodactyl/wings/commit/eb65e27ae077a63e38518c490768486af1cd86a9
+    product: github.com/pterodactyl/wings
+    closed: '2026-07-31'
+    summary: Плейсхолдер {{config.*}} в значении пользовательской переменной разрешается против полной конфигурации демона
+      — утечка токена узла
 RWB-0092:
   pattern: Чувствительные действия фиксируются в журнале аудита
   checks:
@@ -2711,6 +3147,16 @@ RWB-0098:
     product: '@backstage/plugin-kubernetes-backend'
     closed: '2026-10-07'
     summary: Через один из путей запроса ресурсов пользователь получает немаскированные секреты, которые на других путях маскируются.
+  - url: https://github.com/advisories/GHSA-8wvg-r2j4-3737
+    fix: https://github.com/go-vikunja/vikunja/pull/3688
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: Один эндпоинт отдаёт email пользователей, остальные маскируют
+  - url: https://github.com/advisories/GHSA-88p2-jj8w-j8qg
+    product: github.com/fleetdm/fleet/v4
+    closed: '2026-08-12'
+    summary: Эндпоинт поиска целей отдаёт наблюдателям секреты регистрации и конфигурацию с учётными данными, другие эндпоинты
+      маскируют
 RWB-0099:
   pattern: Одно правило продукта одинаково в API разных клиентов
   checks:
@@ -2747,6 +3193,11 @@ RWB-0099:
     product: Directus
     closed: '2024-10-24'
     summary: GraphQL не отдаёт поля описания столбца, которые есть в REST
+  - url: https://github.com/advisories/GHSA-g38j-7v97-x298
+    fix: https://github.com/go-vikunja/vikunja/pull/3688
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: Создание связи через CalDAV не выполняет проверку прав, которую делает REST
 RWB-0100:
   pattern: Массовые операции соблюдают лимиты и сообщают о каждом элементе
   checks:
@@ -2833,6 +3284,26 @@ RWB-0104:
     product: Kong
     closed: '2021-08-25'
     summary: Явная ссылка на родителя во вложенной конфигурации в неверной форме даёт 500.
+  - url: https://github.com/advisories/GHSA-39p5-2wrr-xh29
+    fix: https://github.com/go-vikunja/vikunja/pull/3688
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: Привязка любой команды к своему проекту раскрывает её состав
+  - url: https://github.com/advisories/GHSA-w39f-h553-h2mx
+    fix: https://github.com/go-vikunja/vikunja/pull/3688
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: ID представления в теле не сверяется с проектом задачи
+  - url: https://github.com/advisories/GHSA-42cj-m3vj-89wv
+    fix: https://github.com/traefik/traefik/pull/13458
+    product: github.com/traefik/traefik/v3
+    closed: '2026-08-05'
+    summary: Ограничение межпровайдерных ссылок применяется к HTTP-, но не к TCP-маршрутам
+  - url: https://github.com/advisories/GHSA-w7c2-w76w-5hmj
+    fix: https://github.com/cilium/cilium/commit/7422068aff67ac77c7dcc57aa5b9240c91333deb
+    product: github.com/cilium/cilium, github.com/cilium/ciliumCilium
+    closed: '2026-09-24'
+    summary: Маршрут в одном пространстве имён направляет трафик в сервис другого без разрешающего объекта
 RWB-0105:
   pattern: Клиент не может задать серверные поля (id, createdAt, status, version)
   checks:
@@ -3221,6 +3692,16 @@ RWB-0121:
     product: org.springframework.hateoas:spring-hateoas
     closed: '2026-06-09'
     summary: Десериализаторы альтернативных медиатипов связывали свойства без учёта аннотаций доступа
+  - url: https://github.com/advisories/GHSA-569v-q83c-3j3g
+    fix: https://github.com/go-vikunja/vikunja/pull/3239
+    product: code.vikunja.io/api
+    closed: '2026-08-28'
+    summary: project_view_id из тела переносит свою колонку в представление чужого арендатора
+  - url: https://github.com/advisories/GHSA-48p8-g2fx-3wwm
+    fix: https://github.com/argoproj/argo-workflows/commit/277e9cef0ad16d7eaaab253573d0695951a65dbd
+    product: github.com/argoproj/argo-workflows, github.com/argoproj/argo-workflows/v3, github.com/argoproj/argo-workflows/v4
+    closed: '2026-08-13'
+    summary: Список разрешённых полей проверяет только верхний уровень — вложенный PodSpecPatch в разрешённом ArtifactGC проходит
 RWB-0122:
   pattern: Null и отсутствующее поле
   checks:
@@ -3451,6 +3932,10 @@ RWB-0129:
     product: com.fasterxml.jackson.core:jackson-databind, tools.jackson.core:jackson-databind
     closed: '2026-06-23'
     summary: Поле только для чтения записывается из запроса через скрытое поле класса
+  - url: https://github.com/advisories/GHSA-3r5c-2xxx-h872
+    product: code.gitea.io/gitea
+    closed: '2026-07-21'
+    summary: API вебхуков расшифровывает и отдаёт в открытом виде заголовок авторизации, заданный как секрет
 RWB-0130:
   pattern: Лимит размера тела
   checks:
@@ -3486,6 +3971,16 @@ RWB-0130:
     product: ruby-saml
     closed: '2025-07-30'
     summary: Лимит размера SAML-сообщения проверялся после regex-проверки base64 по всему вводу
+  - url: https://github.com/advisories/GHSA-j3hg-9rp3-5hw9
+    fix: https://github.com/0xJacky/nginx-ui/commit/8c9b9a1aff218ee6c980d047b750e49da3c46796
+    product: github.com/0xJacky/Nginx-UI
+    closed: '2026-10-09'
+    summary: Тело запроса пишется на диск до проверки подписи и без лимита размера
+  - url: https://github.com/advisories/GHSA-v828-m3pf-vq9q
+    fix: https://github.com/QuantumNous/new-api/pull/5244
+    product: github.com/QuantumNous/new-api
+    closed: '2026-08-17'
+    summary: Публичные эндпоинты вебхуков читают и логируют всё тело до проверки подписи
 RWB-0131:
   pattern: Отсутствует обязательный параметр
   checks:
@@ -3545,6 +4040,16 @@ RWB-0133:
     product: Keycloak
     closed: '2026-09-25'
     summary: Новая версия Admin API отдавала открытый секрет клиента роли только на просмотр; v1 его маскировала
+  - url: https://github.com/advisories/GHSA-32gc-wf3m-78w9
+    fix: https://github.com/0xJacky/nginx-ui/commit/0ecbd106c37b5143be14880c9447a66135151512
+    product: github.com/0xJacky/Nginx-UI
+    closed: '2026-10-09'
+    summary: Список узлов кластера отдаёт обычному пользователю секрет узла
+  - url: https://github.com/advisories/GHSA-6x2c-phff-wx57
+    fix: https://github.com/QuantumNous/new-api/pull/4929
+    product: github.com/QuantumNous/new-api
+    closed: '2026-08-17'
+    summary: Список пользователей отдаёт access_token, включая root — повышение привилегий администратора
 RWB-0134:
   pattern: Сортировка по неизвестному полю
   checks:
@@ -3565,6 +4070,10 @@ RWB-0134:
     product: org.springframework.data:spring-data-commons
     closed: '2026-06-10'
     summary: Разбор параметров сортировки вызывал StackOverflow
+  - url: https://github.com/advisories/GHSA-rxhg-vcww-2mpw
+    product: github.com/fleetdm/fleet/v4
+    closed: '2026-08-20'
+    summary: Ключ сортировки подставляется в ORDER BY без списка разрешённых столбцов — сортировка по скрытым столбцам
 RWB-0135:
   pattern: Контроль server-side URL fetch
   checks:
@@ -3654,6 +4163,24 @@ RWB-0135:
     product: camaleon_cms
     closed: '2022-05-24'
     summary: SSRF в загрузке медиа по внешнему URL
+  - url: https://github.com/advisories/GHSA-x8gv-g2g3-65fj
+    fix: https://github.com/siyuan-note/siyuan/commit/dd2778b70d020b15491ef7418f5f63214583cd63
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-10-02'
+    summary: Проверка SSRF резолвит имя отдельно от подключения — обход через DNS rebinding
+  - url: https://github.com/advisories/GHSA-jvh5-97xg-v99f
+    fix: https://github.com/cloudreve/cloudreve/commit/1c5cad6dec7ec3037c6479e3a26a3909995d16a2
+    product: github.com/cloudreve/Cloudreve/v4
+    closed: '2026-09-22'
+    summary: Защита от SSRF не распознаёт IPv6-обёртки внутренних IPv4
+  - url: https://github.com/advisories/GHSA-jgh3-fggc-mcpm
+    product: github.com/obot-platform/obot
+    closed: '2026-09-18'
+    summary: URL удалённого сервера загружается сервером без ограничения адресов
+  - url: https://github.com/advisories/GHSA-pqqc-8v73-9gg2
+    product: github.com/lf-edge/ekuiper/v2
+    closed: '2026-09-09'
+    summary: Адрес внешнего сервиса не проверяется на внутренние адреса
 RWB-0136:
   pattern: Статус ответа соответствует контракту
   checks:
@@ -3778,6 +4305,21 @@ RWB-0142:
     product: Directus
     closed: '2025-03-06'
     summary: Сброс пароля с токеном не-JWT и проверка хеша с некорректным хешем дают 500
+  - url: https://github.com/advisories/GHSA-xwwr-4h3p-r22c
+    fix: https://github.com/rclone/rclone/commit/90595f34f27f569be6b27c57fe5ab65057d323bd
+    product: github.com/rclone/rclone
+    closed: '2026-09-10'
+    summary: S3-сервер в одном режиме принимает подпись с пустым секретом для любого ключа
+  - url: https://github.com/advisories/GHSA-5fqm-cc34-fcf5
+    fix: https://github.com/azukaar/Cosmos-Server/commit/59c561d686c8f9843b3e092b50f6346c481d8bbf
+    product: github.com/azukaar/cosmos-server
+    closed: '2026-07-28'
+    summary: 'Эндпоинт принимает любое значение Authorization: Bearer — проверяется только наличие заголовка'
+  - url: https://github.com/advisories/GHSA-c3jm-gv5r-9wcp
+    fix: https://github.com/cloudreve/cloudreve/commit/f3347130ac48f2ff996af9ef66c97be2dda9cba9
+    product: github.com/cloudreve/Cloudreve/v3, github.com/cloudreve/Cloudreve/v4
+    closed: '2026-07-24'
+    summary: Токен WOPI проверяется только по ID сессии без секретной части, сессия просмотра может писать файл
 RWB-0143:
   pattern: Protected operation rejects missing credentials
   checks:
@@ -3808,6 +4350,31 @@ RWB-0143:
     product: org.openidentityplatform.openam:openam-federation-library
     closed: '2026-06-24'
     summary: SOAP-эндпоинт без аутентификации записывает данные в профиль любого пользователя с правами сервера
+  - url: https://github.com/advisories/GHSA-rqcc-94gv-wjm9
+    fix: https://github.com/sipcapture/homer/pull/839
+    product: github.com/sipcapture/homer-app
+    closed: '2026-10-07'
+    summary: При пустом секрете JWT по умолчанию защищённые маршруты открыты
+  - url: https://github.com/advisories/GHSA-p378-jp5r-gpgw
+    fix: https://github.com/Basekick-Labs/arc/pull/505
+    product: github.com/basekick-labs/arc
+    closed: '2026-08-28'
+    summary: Присоединение узла к кластеру без аутентификации при пустом общем секрете
+  - url: https://github.com/advisories/GHSA-pr6h-vr44-xq8j
+    product: github.com/obot-platform/obot
+    closed: '2026-09-18'
+    summary: При включённой аутентификации префикс реестра остаётся открытым из-за default-allow
+  - url: https://github.com/advisories/GHSA-p569-5gjg-9cmj
+    fix: https://github.com/rclone/rclone/commit/739403963abf6f58003c2becd5f7c4ad0d644153
+    product: github.com/rclone/rclone
+    closed: '2026-09-10'
+    summary: Опция аутентификации, переданная через API управления, молча игнорируется
+  - url: https://github.com/advisories/GHSA-r277-6w6q-xmqw
+    fix: https://github.com/getkin/kin-openapi/commit/f0407d53b0730280266f454b755010e7eeb985da
+    product: github.com/getkin/kin-openapi
+    closed: '2026-07-24'
+    summary: Валидирующий middleware по OpenAPI без функции аутентификации молча пропускает операции с security без учётных
+      данных
 RWB-0144:
   pattern: Authorization is rechecked for asynchronous job access
   checks:
@@ -3990,6 +4557,111 @@ RWB-0147:
     product: org.apache.tomcat.embed:tomcat-embed-core, org.apache.tomcat:tomcat, org.apache.tomcat:tomcat-catalina
     closed: '2026-08-26'
     summary: Процесс входа через форму позволяет обойти ограничение, разрешающее пользователю POST, но не GET
+  - url: https://github.com/advisories/GHSA-xp3c-3jw3-4vcr
+    fix: https://github.com/openbao/openbao/pull/3389
+    product: github.com/openbao/openbao
+    closed: '2026-09-22'
+    summary: Deny с wildcard не применяется к LIST при разрешённом LIST на родителе
+  - url: https://github.com/advisories/GHSA-fmmf-xq98-g327
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: Проверка прав на удаление читает уровень объекта из пустой заготовки, а не из сохранённого объекта
+  - url: https://github.com/advisories/GHSA-4vpg-gwqq-w44c
+    fix: https://github.com/siyuan-note/siyuan/commit/bd067a4fe9b208c0858d8d9dc6220dc8affc403e
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-10-02'
+    summary: 17 эндпоинтов чтения блоков не применяют фильтр доступа, который есть у соседних
+  - url: https://github.com/advisories/GHSA-9cqf-hhrq-7v45
+    fix: https://github.com/siyuan-note/siyuan/commit/9b8e8956f997d6452d40aff4159d58f3283a98a4
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-10-01'
+    summary: Новый эндпоинт поиска по строкам базы не проверяет доступ, в отличие от соседних
+  - url: https://github.com/advisories/GHSA-j4ph-9xwf-wcj4
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-10-01'
+    summary: Список всех меток закладок отдаётся читателю без фильтрации
+  - url: https://github.com/advisories/GHSA-53fp-9jmv-227g
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-10-01'
+    summary: Чтение данных без проверки прав, хотя запись тех же данных требует администратора
+  - url: https://github.com/advisories/GHSA-74pj-6g7r-j55c
+    fix: https://github.com/siyuan-note/siyuan/commit/9edb321eb451db445f3c824380e1993c3df0fc16
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-08'
+    summary: Сведения о скрытом блокноте отдаются без проверки доступа
+  - url: https://github.com/advisories/GHSA-57v5-wqx3-cgj4
+    fix: https://github.com/siyuan-note/siyuan/commit/64c26e74bb82c24a73513107684b91cc01335fab
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-08'
+    summary: Структура представлений базы отдаётся без фильтрации доступа
+  - url: https://github.com/advisories/GHSA-mp7r-57w4-5qm3
+    fix: https://github.com/siyuan-note/siyuan/commit/4515fa257cfae2db0a43844c61de8ef1ac853796
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-04'
+    summary: Список тегов включает теги документов под паролем
+  - url: https://github.com/advisories/GHSA-f2rw-w22v-54vh
+    fix: https://github.com/siyuan-note/siyuan/commit/8fb1b5766093371f6a516c221c92026b904fe779
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-04'
+    summary: Статус зашифрованных блокнотов отдаётся читателю без фильтрации
+  - url: https://github.com/advisories/GHSA-5w7r-f4cg-rqq7
+    fix: https://github.com/siyuan-note/siyuan/commit/5bae0926b896eaff0bc5cc6a75d421c2d161a806
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-04'
+    summary: Эндпоинты разрешения путей по ID не применяют фильтр публикации и раскрывают анонимному читателю дерево закрытых
+      документов
+  - url: https://github.com/advisories/GHSA-5fhr-f75j-8wr9
+    fix: https://github.com/siyuan-note/siyuan/commit/931ba693375ea9877b2ef74f9bfb632fad5bab3f
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-03'
+    summary: Эндпоинт схемы колонок базы и два эндпоинта перечисления ID блоков не фильтруют доступ читателя
+  - url: https://github.com/advisories/GHSA-qvq9-hq6p-v378
+    fix: https://github.com/siyuan-note/siyuan/commit/229fdffd7e4afdef543d4d8495657fda8a369400
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-03'
+    summary: Эндпоинты чтения атрибутов блока и пакетного чтения не проверяют доступ публикации
+  - url: https://github.com/advisories/GHSA-vpjw-wf5h-cgpq
+    fix: https://github.com/siyuan-note/siyuan/commit/82e9ded423e45eabcc96010abd30c0f96bfe0323
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-03'
+    summary: Эндпоинты графа фильтруют только по видимости и не проверяют пароль публикации — читатель получает содержимое
+      защищённых документов
+  - url: https://github.com/advisories/GHSA-67x2-mq63-v9vm
+    fix: https://github.com/siyuan-note/siyuan/commit/931ba693375ea9877b2ef74f9bfb632fad5bab3f
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-03'
+    summary: Три эндпоинта блоков отдают фрагменты содержимого и метаданные закрытых документов, хотя соседний getBlockInfo
+      проверяет доступ
+  - url: https://github.com/advisories/GHSA-6mcf-g667-w3qv
+    fix: https://github.com/siyuan-note/siyuan/commit/768427f20f13bbd8dc4effa8aa4e1d09a7741bf4
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-03'
+    summary: Фильтр строк представления базы не проверяет пароль публикации — читатель получает строки защищённых документов
+  - url: https://github.com/advisories/GHSA-pm3w-vxp9-ccwc
+    fix: https://github.com/siyuan-note/siyuan/commit/ffde3b21eca49ae98828747ca126581a553cce8b
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-03'
+    summary: getBlockInfo возвращает название закрытого документа без проверки публикации, соседний getDocInfo фильтрует
+  - url: https://github.com/advisories/GHSA-36v8-mpjm-8j5r
+    fix: https://github.com/siyuan-note/siyuan/commit/f45749a7ef6e385f6e2af6b7dd12429d56d46f32
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-03'
+    summary: Эндпоинты содержимого обратных ссылок отдают отрисованный DOM закрытых документов, списочные — фильтруют
+  - url: https://github.com/advisories/GHSA-69mh-gvh4-8gp7
+    fix: https://github.com/siyuan-note/siyuan/commit/69db783b782aea865ea70a1c5ab656e5c0f3dadb
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-03'
+    summary: Эндпоинты расчёта транзакций заголовка возвращают отрисованный DOM документа без проверки публикации
+  - url: https://github.com/advisories/GHSA-jm28-2wcr-qf3h
+    fix: https://github.com/OliveTin/OliveTin/commit/e421780c9885aa5024d2f47b4ed4898f2f18eb90
+    product: github.com/OliveTin/OliveTin
+    closed: '2026-07-30'
+    summary: Синхронные методы «запустить и дождаться» возвращают вывод действия без проверки права logs
+  - url: https://github.com/advisories/GHSA-xg4h-6gfc-h4m8
+    fix: https://github.com/etcd-io/etcd/commit/6643f80602461a6095c9b294b6512fd9719bef41
+    product: go.etcd.io/etcd/v3
+    closed: '2026-07-24'
+    summary: Watch с открытым диапазоном от разрешённого ключа отдаёт события всех ключей после него
 RWB-0148:
   pattern: Bulk endpoint enforces ownership per item
   checks:
@@ -4041,6 +4713,11 @@ RWB-0149:
     product: fat_free_crm
     closed: '2026-04-14'
     summary: Любой пользователь удаляет чужие письма по ID
+  - url: https://github.com/advisories/GHSA-gg93-x632-9ccv
+    fix: https://github.com/go-vikunja/vikunja/pull/3239
+    product: code.vikunja.io/api
+    closed: '2026-08-28'
+    summary: Каскадное удаление представления не ограничено проектом из пути
 RWB-0150:
   pattern: User cannot read another owner’s resource
   checks:
@@ -4146,6 +4823,64 @@ RWB-0151:
     product: publify_core
     closed: '2022-05-17'
     summary: Анонимный пользователь не видит черновик, но может его комментировать
+  - url: https://github.com/advisories/GHSA-w2ch-4xgr-22ww
+    fix: https://github.com/go-vikunja/vikunja/pull/3688
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: Удаление связи проверяет права только на одну сторону связи
+  - url: https://github.com/advisories/GHSA-3hc7-r24j-rpwc
+    fix: https://github.com/go-vikunja/vikunja/pull/3688
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: Раскрытие подзадач в списке не применяет фильтр доступа
+  - url: https://github.com/advisories/GHSA-52gf-6rpq-fgmx
+    fix: https://github.com/openchoreo/openchoreo/pull/4251
+    product: github.com/openchoreo/openchoreo
+    closed: '2026-09-02'
+    summary: Права проверяются по проекту из запроса, а не по владельцу компонента
+  - url: https://github.com/advisories/GHSA-qq9q-x9w4-chhj
+    fix: https://github.com/traefik/traefik/pull/13462
+    product: Traefik
+    closed: '2026-08-05'
+    summary: Имя middleware разрешается в пространстве бэкенда, а не маршрута
+  - url: https://github.com/advisories/GHSA-rj9j-8772-4h6c
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: ID представления из пути не проверяется на принадлежность доступному проекту
+  - url: https://github.com/advisories/GHSA-vg99-7gj7-2fr5
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-10-01'
+    summary: Фильтр обратных ссылок не учитывает защиту документа паролем
+  - url: https://github.com/advisories/GHSA-4227-9989-jrhx
+    fix: https://github.com/perses/perses/commit/2368c9ef4eb0a70fbca5df69aa20e595821ab625
+    product: github.com/perses/perses
+    closed: '2026-09-18'
+    summary: Можно привязать к своему объекту секрет без права его чтения и получить его значение
+  - url: https://github.com/advisories/GHSA-h6w7-xxcf-w2mq
+    fix: https://github.com/siyuan-note/siyuan/commit/1ca1c3c9d94bea14fc9728ff2fb8392bb0f29732
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-04'
+    summary: Встроенное содержимое других блоков не фильтруется по доступу
+  - url: https://github.com/advisories/GHSA-mfrj-v65r-979c
+    fix: https://github.com/siyuan-note/siyuan/commit/426991d155c0c7c3a9e71badd6761eddfa8aad5b
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-04'
+    summary: Фильтр строк смотрит только первую ячейку, данные связанных баз не фильтруются
+  - url: https://github.com/advisories/GHSA-c9f5-j9c3-mhrg
+    fix: https://github.com/lxc/incus/pull/3542
+    product: github.com/lxc/incus/v7/cmd/incusd
+    closed: '2026-08-28'
+    summary: Копирование инстанса проверяет права на целевой проект, но не на исходный — копия чужого инстанса в свой проект
+  - url: https://github.com/advisories/GHSA-64f3-v33m-w89f
+    fix: https://github.com/lxc/incus/commit/2e01078366e2653712719dec82318e51c6d21b28
+    product: github.com/lxc/incus, github.com/lxc/incus/v6, github.com/lxc/incus/v7
+    closed: '2026-08-28'
+    summary: Копирование пользовательского тома проверяет права только на целевой проект, источник из чужого проекта не проверяется
+  - url: https://github.com/advisories/GHSA-62fc-8686-hfmq
+    fix: https://github.com/traefik/traefik/commit/65ebf4b47fbdc33e3856803a5844a404e094d52d
+    product: github.com/traefik/traefik, github.com/traefik/traefik/v2, github.com/traefik/traefik/v3
+    closed: '2026-08-06'
+    summary: Запрет межпространственных ссылок не применяется к ссылкам на сервис шлюза — маршрут тенанта ведёт на чужой backend
 RWB-0152:
   pattern: User cannot modify another owner’s resource
   checks:
@@ -4166,6 +4901,11 @@ RWB-0152:
     product: publify_core
     closed: '2022-05-24'
     summary: Подмена article[id] в теле позволяет менять и удалять чужие статьи
+  - url: https://github.com/advisories/GHSA-5pg6-m483-7vrg
+    fix: https://github.com/go-vikunja/vikunja/pull/3239
+    product: code.vikunja.io/api
+    closed: '2026-08-28'
+    summary: task_id из тела перемещения не проверяется на права
 RWB-0153:
   pattern: User cannot grant self a higher role
   checks:
@@ -4192,6 +4932,11 @@ RWB-0153:
     product: org.xwiki.platform:xwiki-platform-livedata-livetable
     closed: '2026-08-19'
     summary: REST API табличного редактирования позволяет пользователю с правом правки изменить права на странице
+  - url: https://github.com/advisories/GHSA-gfjv-gqf2-c888
+    fix: https://github.com/gardener/gardener/pull/15080
+    product: gardener/gardener, github.com/gardener/gardener
+    closed: '2026-09-22'
+    summary: Проверка права управления участниками учитывает только субъекты вида User
 RWB-0154:
   pattern: Client cannot add scopes by request parameter
   checks:
@@ -4213,6 +4958,11 @@ RWB-0154:
     product: Keycloak
     closed: '2026-05-29'
     summary: Динамические scope отклонялись в одном из grant type (CIBA), хотя работали в других
+  - url: https://github.com/advisories/GHSA-vrh8-c9cm-wh8v
+    fix: https://github.com/zitadel/zitadel/commit/e2886a61670ca8fd41c9434f87036546e5620bcc
+    product: github.com/zitadel/zitadel
+    closed: '2026-09-14'
+    summary: Token exchange выдаёт токен другого приложения с расширенными scope
 RWB-0155:
   pattern: Token without required scope is denied
   checks:
@@ -4224,6 +4974,37 @@ RWB-0155:
     product: '@backstage/backend-defaults'
     closed: '2026-10-07'
     summary: Сервисная учётка с ограничением «только чтение» выполняет запись через пути делегирования между плагинами.
+  - url: https://github.com/advisories/GHSA-9rg3-v78m-26q8
+    fix: https://github.com/go-vikunja/vikunja/pull/3688
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: Scope токена проверяется по маршруту, expand встраивает данные других групп
+  - url: https://github.com/advisories/GHSA-qg67-7m6v-qg25
+    fix: https://github.com/project-zot/zot/pull/4161
+    product: zotregistry.dev/zot/v2
+    closed: '2026-09-18'
+    summary: DELETE сопоставляется со scope push, удаление без права delete
+  - url: https://github.com/advisories/GHSA-fq2p-5p22-8g6j
+    fix: https://github.com/go-gitea/gitea/pull/37118
+    product: code.gitea.io/gitea
+    closed: '2026-07-21'
+    summary: Токен с ограничением «только публичное» получает приватные организации через списочные эндпоинты
+  - url: https://github.com/advisories/GHSA-w89x-c962-c44g
+    fix: https://github.com/cloudreve/cloudreve/commit/bce08f88e9d8f881e78fd18e7a6598b31922c492
+    product: github.com/cloudreve/Cloudreve/v4
+    closed: '2026-09-22'
+    summary: Административные операции с побочным эффектом доступны токену только для чтения
+  - url: https://github.com/advisories/GHSA-v6w6-358x-2433
+    fix: https://github.com/cloudreve/cloudreve/commit/332a9d800205082a2469e555fd66a63f18d9d5dc
+    product: github.com/cloudreve/Cloudreve/v3, github.com/cloudreve/Cloudreve/v4
+    closed: '2026-07-24'
+    summary: Эндпоинты теста узлов, выполняющие исходящие запросы, доступны со scope только чтения
+  - url: https://github.com/advisories/GHSA-hq88-5x99-x3gf
+    fix: https://github.com/cloudreve/cloudreve/commit/9e9fb43e7288924cca052e5fdbb70d5365ef1ede
+    product: github.com/cloudreve/Cloudreve/v3, github.com/cloudreve/Cloudreve/v4
+    closed: '2026-07-24'
+    summary: Токен со scope только на чтение администрирования вызывает изменяющий маршрут и перезаписывает учётные данные
+      хранилища
 RWB-0156:
   pattern: Client cannot assign resource to another tenant
   checks:
@@ -4260,6 +5041,31 @@ RWB-0157:
     product: io.openremote:openremote-manager
     closed: '2026-07-06'
     summary: Администратор одного realm читает профиль и роли пользователей других realm по UUID
+  - url: https://github.com/advisories/GHSA-p5vg-v7mj-f6q4
+    fix: https://github.com/frain-dev/convoy/pull/2755
+    product: github.com/frain-dev/convoy
+    closed: '2026-09-18'
+    summary: Объект читается по ID без проверки принадлежности проекту из пути
+  - url: https://github.com/advisories/GHSA-gv5w-hfx8-8cwq
+    fix: https://github.com/seaweedfs/seaweedfs/pull/9439
+    product: github.com/seaweedfs/seaweedfs
+    closed: '2026-09-02'
+    summary: Префикс пути в токене сравнивается как строка, соседние каталоги доступны
+  - url: https://github.com/advisories/GHSA-992g-9cr3-vm5x
+    fix: https://github.com/hatchet-dev/hatchet/commit/15bc7923d3a8ebfeb0d88c19160dd24828921e85
+    product: github.com/hatchet-dev/hatchet
+    closed: '2026-09-22'
+    summary: gRPC-стрим возвращает записи задачи по ID без фильтра арендатора
+  - url: https://github.com/advisories/GHSA-9q4h-f4x5-ffq8
+    fix: https://github.com/hatchet-dev/hatchet/commit/9555bfdd1e97f61d25e614ccaa107c5fb7dc4976
+    product: github.com/hatchet-dev/hatchet
+    closed: '2026-09-22'
+    summary: После неуспешной проверки владения подписка на результат чужой задачи остаётся
+  - url: https://github.com/advisories/GHSA-g26x-m427-f48f
+    fix: https://github.com/hatchet-dev/hatchet/commit/06c1fe43543e853ea98ecc2e6a575e2b8310bbeb
+    product: github.com/hatchet-dev/hatchet
+    closed: '2026-09-22'
+    summary: Журнал событий задачи читается без проверки арендатора
 RWB-0158:
   pattern: Tenant filter cannot be bypassed in list/search
   checks:
@@ -4275,6 +5081,20 @@ RWB-0158:
     product: n8n
     closed: '2026-09-10'
     summary: Список активных workflow и push-события об активации отдавались всем участникам без фильтра по доступу.
+  - url: https://github.com/advisories/GHSA-p6ph-3jx2-3337
+    fix: https://github.com/OpenListTeam/OpenList/commit/59bd3431408578f420895457554700cc9a52375a
+    product: github.com/OpenListTeam/OpenList/v4
+    closed: '2026-07-24'
+    summary: Поиск пропускает соседний каталог с тем же префиксом и отдаёт общее число результатов по всему индексу
+  - url: https://github.com/advisories/GHSA-w8x7-h2px-xmq8
+    fix: https://github.com/cloudreve/cloudreve/commit/0b00dd308f132d6e6e8476857ef79f4865600bbc
+    product: github.com/cloudreve/Cloudreve/v3, github.com/cloudreve/Cloudreve/v4
+    closed: '2026-07-24'
+    summary: Подписка на поток событий по общему доступу к одному файлу отдаёт события о неразделённых соседних файлах владельца
+  - url: https://github.com/advisories/GHSA-frpw-3h2q-4jj6
+    product: code.gitea.io/gitea
+    closed: '2026-07-21'
+    summary: Списки запусков и заданий на уровне организации отдают данные всех репозиториев без проверки прав на каждый
 RWB-0159:
   pattern: Tenant A cannot mutate tenant B data
   checks:
@@ -4291,6 +5111,11 @@ RWB-0159:
     product: decidim-verifications
     closed: '2026-07-13'
     summary: Администратор одной организации читает и подтверждает заявки на верификацию другой
+  - url: https://github.com/advisories/GHSA-8x7x-83cf-c3pg
+    fix: https://github.com/hatchet-dev/hatchet/commit/591a30deb8b80f02eba7014997de387d710986c9
+    product: github.com/hatchet-dev/hatchet
+    closed: '2026-08-28'
+    summary: gRPC-методы диспетчера принимают worker_id другого тенанта из тела без проверки принадлежности
 RWB-0160:
   pattern: Token for another audience is rejected
   checks:
@@ -4317,6 +5142,10 @@ RWB-0160:
     product: decidim
     closed: '2026-07-13'
     summary: JWT, выданный в одной организации, принимается на хосте другой организации
+  - url: https://github.com/advisories/GHSA-xwmw-prc4-v3cr
+    product: github.com/obot-platform/obot
+    closed: '2026-09-18'
+    summary: Токен, выпущенный для другого ресурса, принимается основным API
 RWB-0161:
   pattern: Expired access token is rejected
   checks:
@@ -4381,6 +5210,16 @@ RWB-0164:
     product: '@backstage/plugin-scaffolder-backend'
     closed: '2026-10-07'
     summary: Ограничения на действия шаблона обходятся вариацией регистра (CWE-178) — запуск запрещённого действия через API.
+  - url: https://github.com/advisories/GHSA-328g-jx67-v94g
+    fix: https://github.com/tinyauthapp/tinyauth/pull/1000
+    product: github.com/tinyauthapp/tinyauth
+    closed: '2026-09-22'
+    summary: ACL forward-auth сравнивает хост с учётом регистра
+  - url: https://github.com/advisories/GHSA-qc2q-p7wx-3px3
+    fix: https://github.com/grpc/grpc-go/pull/9332
+    product: google.golang.org/grpc
+    closed: '2026-09-08'
+    summary: Правило RBAC по заголовку в смешанном регистре не срабатывает
 RWB-0165:
   pattern: Чрезмерно вложенный JSON отклоняется без деградации сервиса
   checks:
@@ -4497,6 +5336,21 @@ RWB-0169:
     closed: '2026-10-05'
     summary: Маленький сериализованный payload с большим полем length выделяет огромный типизированный массив — исчерпание
       памяти и блокировка event loop.
+  - url: https://github.com/advisories/GHSA-pqf9-h8g4-8gmh
+    fix: https://github.com/go-vikunja/vikunja/pull/3688
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: Импорт CSV ограничен по байтам, но не по числу строк
+  - url: https://github.com/advisories/GHSA-4jfq-pmq9-257h
+    fix: https://github.com/luskaner/ageLANServer/commit/1dd40166a59356865c0a4b1800f32d05dc8bec79
+    product: github.com/luskaner/ageLANServer/server
+    closed: '2026-10-09'
+    summary: Размер выделяемой памяти задаётся длиной массива в запросе без ограничения
+  - url: https://github.com/advisories/GHSA-xhj3-7xw9-vr34
+    fix: https://github.com/getkin/kin-openapi/commit/1223a0f215d2cf9beb2d9eb9ea2649d001c21388
+    product: github.com/getkin/kin-openapi
+    closed: '2026-08-21'
+    summary: Декодер deepObject выделяет массив до максимального индекса из запроса до проверки maxItems
 RWB-0170:
   pattern: Синтаксически некорректный JSON отклоняется
   checks:
@@ -4670,6 +5524,16 @@ RWB-0179:
     product: org.yamcs:yamcs-core
     closed: '2026-08-28'
     summary: Подписки WebSocket не проверяют права, которые проверяют аналогичные REST-эндпоинты
+  - url: https://github.com/advisories/GHSA-xcw9-qmmf-vqxj
+    fix: https://github.com/amir20/dozzle/pull/4803
+    product: github.com/amir20/dozzle
+    closed: '2026-09-24'
+    summary: Поток событий фильтрует только часть каналов по фильтру пользователя
+  - url: https://github.com/advisories/GHSA-mw8r-mw84-88v2
+    fix: https://github.com/siyuan-note/siyuan/commit/ba948639d7f6bd5594ce584072dc68310da87a68
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-09-03'
+    summary: WebSocket-сессии анонимного читателя попадают в общий пул рассылки и получают все правки, включая закрытые документы
 RWB-0180:
   pattern: Заголовки запроса и параметры подключения (в том числе WebSocket) с именами внутренних управляющих параметров (запрос
     к хранилищу или поиску, операция, ID объекта, адрес исходящего запроса, DNS-сервер, ключи во внешней системе) не меняют
@@ -4743,6 +5607,11 @@ RWB-0181:
     product: org.yamcs:yamcs-core
     closed: '2026-05-27'
     summary: Текст Java-выражения из PATCH-запроса компилируется Janino без песочницы — RCE через API
+  - url: https://github.com/advisories/GHSA-fgmf-7rf8-m6vf
+    fix: https://github.com/zitadel/zitadel/commit/afe108640cf57a17e8b743fbcdad9ae636eb3eb7
+    product: github.com/zitadel/zitadel
+    closed: '2026-09-24'
+    summary: Пользовательские скрипты действий читают файлы хоста
 RWB-0182:
   pattern: Функция, отключённая настройкой, недоступна через все API и не попадает в токены (scope, claims), даже если у пользователя
     остались её данные
@@ -4841,6 +5710,11 @@ RWB-0189:
     product: io.netty:netty-codec-http2
     closed: '2026-06-15'
     summary: Клиент через SETTINGS_MAX_HEADER_LIST_SIZE заставлял сервер выполнить запрос и упасть на записи заголовков ответа
+  - url: https://github.com/advisories/GHSA-vp52-pcj8-j9qc
+    fix: https://github.com/grpc/grpc-go/pull/9331
+    product: google.golang.org/grpc
+    closed: '2026-09-01'
+    summary: Фрагментация данных на крошечные кадры HTTP/2 DATA раздувает память сервера
 RWB-0190:
   pattern: Изменяющие операции с cookie-аутентификацией защищены от CSRF
   checks:
@@ -4915,6 +5789,20 @@ RWB-0190:
     product: fat_free_crm
     closed: '2022-05-17'
     summary: Нет CSRF-защиты в приложении
+  - url: https://github.com/advisories/GHSA-33rr-wq23-g6gg
+    fix: https://github.com/0xJacky/nginx-ui/commit/a3999bd78a3b97ab22e6b5e9fd478ac57598a954
+    product: github.com/0xJacky/Nginx-UI
+    closed: '2026-10-09'
+    summary: API принимает JWT из cookie без защиты от CSRF
+  - url: https://github.com/advisories/GHSA-hxjg-93wc-h8p8
+    product: github.com/komari-monitor/komari
+    closed: '2026-09-09'
+    summary: Административные операции по cookie без CSRF-защиты, text/plain принимается как JSON
+  - url: https://github.com/advisories/GHSA-8cj9-r88m-8945
+    fix: https://github.com/semaphoreui/semaphore/commit/2d6e2e3eb10e8bf688e2ab59609b909a012fad4c
+    product: github.com/semaphoreui/semaphore
+    closed: '2026-09-03'
+    summary: Смена пароля по cookie без CSRF-токена и без текущего пароля, тело JSON принимается из формы text/plain
 RWB-0191:
   pattern: Идентификатор сессии меняется после входа
   checks:
@@ -4936,6 +5824,20 @@ RWB-0192:
     product: org.openidentityplatform.openam:openam-oauth2
     closed: '2026-06-25'
     summary: Путь чтения OAuth-токена принимает любую запись общего хранилища под известным ID, включая созданную атакующим
+  - url: https://github.com/advisories/GHSA-vfxw-3x8p-2vjr
+    fix: https://github.com/go-vikunja/vikunja/pull/3688
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: Токен гостевой ссылки принимается эндпоинтами v2 для поиска пользователей
+  - url: https://github.com/advisories/GHSA-32r8-5843-4qw2
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: Принципал ссылки-доступа с ID, равным ID пользователя, проходит проверки прав как этот пользователь
+  - url: https://github.com/advisories/GHSA-vvcv-vpph-h844
+    fix: https://github.com/go-vikunja/vikunja/commit/95b7e673fb5ee407498fa4b13e8b4c57847a4a0b
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: Ссылка-доступа с ID, равным ID пользователя, управляет его API-токенами
 RWB-0193:
   pattern: Ответы входа, регистрации и восстановления не раскрывают существование аккаунта
   checks:
@@ -5036,6 +5938,11 @@ RWB-0197:
     closed: '2026-07-29'
     summary: Закодированные ; / \ в пути обходят правила доступа по путям из-за разной нормализации в слое безопасности и
       обработчике
+  - url: https://github.com/advisories/GHSA-964w-f6gj-5236
+    fix: https://github.com/goshs-labs/goshs/pull/222
+    product: github.com/patrickhener/goshs, github.com/patrickhener/goshs/v2, goshs.de/goshs, goshs.de/goshs/v2
+    closed: '2026-07-28'
+    summary: Слэш в конце пути обходит список блокировки файлов и защиту файла ACL
 RWB-0198:
   pattern: Небезопасная десериализация пользовательских данных невозможна
   checks:
@@ -5158,6 +6065,11 @@ RWB-0205:
     product: websocket-driver
     closed: '2026-07-15'
     summary: Длина кадра draft-протокола WebSocket разбиралась в неограниченное целое
+  - url: https://github.com/advisories/GHSA-4fwh-wrm6-97xm
+    fix: https://github.com/klever-io/klever-go/pull/76
+    product: github.com/klever-io/klever-go
+    closed: '2026-09-23'
+    summary: WebSocket /subscribe без лимита размера чтения и числа соединений
 RWB-0206:
   pattern: Валидный токен принимается — подпись каждым поддерживаемым алгоритмом (включая EdDSA), JWKS с ключами неизвестного
     use рядом с ключом подписи, claims по настроенному пути (claims map) и значения по умолчанию; позитивная пара к AUTH-JWT-*
@@ -5723,6 +6635,16 @@ RWB-0247:
     product: chef
     closed: '2022-05-17'
     summary: Управление пользователями без прав администратора
+  - url: https://github.com/advisories/GHSA-hgpf-8634-g44c
+    fix: https://github.com/seaweedfs/seaweedfs/pull/9961
+    product: github.com/seaweedfs/seaweedfs
+    closed: '2026-08-28'
+    summary: Учётка только для чтения S3 получает операции управления S3Tables
+  - url: https://github.com/advisories/GHSA-p845-629j-rcj6
+    fix: https://github.com/QuantumNous/new-api/pull/4929
+    product: github.com/QuantumNous/new-api
+    closed: '2026-08-17'
+    summary: Сброс passkey администратором не проверяет уровень роли цели — можно снять фактор у root
 RWB-0248:
   pattern: Mass assignment cannot elevate privileges
   checks:
@@ -6135,3 +7057,258 @@ RWB-0281:
     product: Kong
     closed: '2025-02-06'
     summary: Шлюз перестал передавать в запрос к upstream заголовки остатка лимита — видно через echo-upstream.
+RWB-0282:
+  pattern: Значения из запроса (метод, путь, заголовки, коды) не создают неограниченно новых серий метрик — кардинальность
+    меток ограничена (например, неизвестные значения сводятся в other, пути — в шаблон маршрута); размер /metrics и память
+    не растут
+  checks:
+  - OBS-METRICS-LABEL-CARDINALITY
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-6r69-c6wg-7g8m
+    fix: https://github.com/jhaals/yopass/pull/3773
+    product: github.com/jhaals/yopass
+    closed: '2026-10-09'
+    summary: Произвольные HTTP-методы создают новые серии метрик без ограничения
+RWB-0283:
+  pattern: Данные, которые пользователь задаёт сам (имя, атрибуты, метаданные сущности) и которые подставляются в шаблон политики
+    доступа (<username>/*, *.{name}.example.com), не работают как wildcard и метасимволы — экранируются или отклоняются при
+    создании
+  checks:
+  - SEC-POLICY-TEMPLATE-USER-DATA
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-59w7-v8rr-pr4p
+    fix: https://github.com/openbao/openbao/pull/3401
+    product: github.com/openbao/openbao
+    closed: '2026-09-22'
+    summary: Символы wildcard в имени пользователя расширяют шаблонную политику
+RWB-0284:
+  pattern: Каждый элемент списка запрещённых значений (ключи меток и аннотаций, имена полей, домены, команды) отклоняется
+    — проверка перебором всех элементов списка, в том числе в разном регистре и при любом составе и порядке списка
+  checks:
+  - HARD-DENYLIST-EVERY-ENTRY
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-gjw4-3v3v-rqxg
+    fix: https://github.com/projectcapsule/capsule/pull/1982
+    product: github.com/projectcapsule/capsule
+    closed: '2026-09-18'
+    summary: Поиск по списку запрещённых меток ошибается при смешанном регистре списка
+RWB-0285:
+  pattern: Запись файлов пользователем через API (патч, загрузка в репозиторий, распаковка, синхронизация) не попадает в служебные
+    каталоги и файлы с особым смыслом (.git/, hooks/, конфигурация, .htaccess) даже по законному относительному пути — без
+    ../; служебный файл не исполняется
+  checks:
+  - INJ-RESERVED-PATH-WRITE
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-rcr6-4jqh-j84m
+    fix: https://github.com/go-gitea/gitea/pull/38637
+    product: gitea.dev
+    closed: '2026-09-08'
+    summary: Патч через API записывает git-хук в служебный каталог временного репозитория
+RWB-0286:
+  pattern: В шлюзе или прокси несколько маршрутов (в том числе разных арендаторов и пространств имён) к одному бэкенду применяют
+    каждый свои фильтры и заголовки (идентичность арендатора) — конфигурация маршрутов не смешивается
+  checks:
+  - HARD-ROUTE-SHARED-BACKEND-ISOLATION
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-6p8f-p8j2-rqmv
+    fix: https://github.com/traefik/traefik/pull/13367
+    product: github.com/traefik/traefik/v3
+    closed: '2026-08-06'
+    summary: Маршруты к одному Service:port получают фильтры заголовков одного из них
+RWB-0287:
+  pattern: В иерархии объектов (проект → подпроект, папка → файл) явное право на дочерний объект — в том числе пониженное
+    — имеет приоритет над унаследованным от родителя, по документированному правилу ближайшего назначения
+  checks:
+  - SEC-AUTHZ-EXPLICIT-OVER-INHERITED
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-pjr3-86v4-5p7w
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: Явно пониженное право на дочерний проект перекрывается унаследованным более высоким
+RWB-0288:
+  pattern: Восстановление из резервной копии через API не обходит защиту записи — доступно только администратору, подлинность
+    копии проверяется ключом сервера (а не ключом из запроса), защищённые настройки (команды, секреты, роли) подделанной копией
+    не перезаписываются
+  checks:
+  - HARD-BACKUP-RESTORE-PROTECTED
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-p393-cf76-4jmr
+    fix: https://github.com/0xJacky/nginx-ui/commit/a467ed652591fc0cd1b466a1ec751b493faef9f7
+    product: github.com/0xJacky/Nginx-UI
+    closed: '2026-10-09'
+    summary: Восстановление поддельной резервной копии меняет защищённые настройки и ведёт к выполнению команд
+RWB-0289:
+  pattern: Перечисление субъектов или объектов с доступом (кто имеет отношение, какие объекты доступны) согласовано с точечной
+    проверкой каждого — с пересечением, исключением и wildcard в модели прав исключённый не попадает в список
+  checks:
+  - SEC-AUTHZ-LIST-CHECK-CONSISTENCY
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-g3pg-frfm-pr2m
+    fix: https://github.com/openfga/openfga/commit/171806c93b86bca29e0212ceb8b6ee9c48eb9ac3
+    product: github.com/openfga/openfga
+    closed: '2026-09-16'
+    summary: Перечисление пользователей с доступом расходится с исключением в модели прав
+RWB-0290:
+  pattern: Эндпоинты первоначальной настройки (создание первого администратора, восстановление базы в окне инициализации)
+    не позволяют захватить экземпляр без доказательства владения — секрета настройки или локального доступа; после настройки
+    закрыты
+  checks:
+  - HARD-SETUP-ENDPOINTS-PROTECTED
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-x626-fcwx-f5pc
+    fix: https://github.com/portainer/portainer/commit/49f19107cf9a3540cbe406c9eb7f24390e1af02b
+    product: github.com/portainer/portainer
+    closed: '2026-08-28'
+    summary: Неаутентифицированные эндпоинты восстановления из бэкапа и создания первого администратора позволяют захват неинициализированного
+      экземпляра
+RWB-0291:
+  pattern: Токены с nbf/iat в будущем и без exp обрабатываются по политике
+  checks:
+  - AUTH-JWT-TIME-CLAIMS
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-v77h-2w3m-94hx
+    fix: https://github.com/zitadel/zitadel/commit/4925fab849d39a88674485d937b79e54318b48a8
+    product: github.com/zitadel/zitadel
+    closed: '2026-09-11'
+    summary: JWT внешнего IdP без exp принимается бессрочно
+RWB-0292:
+  pattern: Одноразовый код нельзя использовать повторно и после выдачи нового
+  checks:
+  - AUTH-OTP-REUSE
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-hf33-q6cf-c66f
+    fix: https://github.com/lucasdillmann/nginx-ignition/pull/104
+    product: github.com/lucasdillmann/nginx-ignition
+    closed: '2026-09-21'
+    summary: TOTP можно использовать повторно в пределах окна действия
+RWB-0293:
+  pattern: Лимиты и квоты соблюдаются на границе и не обходятся параллельно
+  checks:
+  - BIZ-LIMITS-QUOTAS
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-xj3h-wwxq-gfcj
+    fix: https://github.com/cloudreve/cloudreve/commit/7329602751c00bb4136fe9ad8b364d0df70773df
+    product: github.com/cloudreve/Cloudreve/v4
+    closed: '2026-09-22'
+    summary: Проверка и списание квоты хранилища неатомарны
+RWB-0294:
+  pattern: Каждый RPC сервиса требует аутентификационные метаданные
+  checks:
+  - GRPC-METADATA-AUTH-MISSING
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-2v6v-25fm-p4fg
+    fix: https://github.com/seaweedfs/seaweedfs/pull/9442
+    product: github.com/seaweedfs/seaweedfs
+    closed: '2026-09-02'
+    summary: gRPC-сервис IAM зарегистрирован без аутентификации
+  - url: https://github.com/advisories/GHSA-rrwh-6jrq-wp5v
+    product: github.com/dgraph-io/dgraph/v25
+    closed: '2026-08-20'
+    summary: Потоковые RPC импорта снимка на публичном gRPC-порту без stream-интерцептора и проверки прав — замена базы
+RWB-0295:
+  pattern: Предсказуемые идентификаторы не позволяют собрать данные перебором
+  checks:
+  - HARD-ID-PREDICTABILITY
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-q9c5-pp7m-fm2g
+    product: github.com/fleetdm/fleet/v4
+    closed: '2026-08-20'
+    summary: Эндпоинты загрузки пакетов приложений для устройств доступны без сессии и без случайного токена по последовательным
+      ID
+RWB-0296:
+  pattern: Заголовки переопределения метода не обходят авторизацию
+  checks:
+  - HARD-METHOD-OVERRIDE
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-6wcg-mqvh-fcvg
+    fix: https://github.com/TecharoHQ/anubis/pull/1630
+    product: github.com/TecharoHQ/anubis
+    closed: '2026-10-02'
+    summary: Клиентский заголовок X-Original-URI подменяет путь при проверке политики
+RWB-0297:
+  pattern: Мягко удалённые ресурсы не видны в обычных операциях
+  checks:
+  - RES-SOFT-DELETE-VISIBILITY
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-8r7f-r8hj-r3rv
+    fix: https://github.com/cloudreve/cloudreve/commit/7e1289d552794bdbeb551be78456115c87dcb3da
+    product: github.com/cloudreve/Cloudreve/v3, github.com/cloudreve/Cloudreve/v4
+    closed: '2026-07-24'
+    summary: Поиск пользователей не фильтрует по статусу и раскрывает email неактивных и заблокированных учёток
+RWB-0298:
+  pattern: Role revocation takes effect within policy window
+  checks:
+  - SEC-AUTHZ-REVOKE-ROLE
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-hjx8-qv73-f7cm
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: После удаления участника его вебхуки и ссылки-доступа продолжают отдавать данные проекта
+  - url: https://github.com/advisories/GHSA-w6p7-2fxx-4f44
+    fix: https://github.com/pocket-id/pocket-id/commit/978ac87deffec58beaccd15aead975e91b94c8a5
+    product: github.com/pocket-id/pocket-id/backend
+    closed: '2026-07-28'
+    summary: Обновление по refresh-токену не перепроверяет отзыв согласия, отключение пользователя и членство в группе
+  - url: https://github.com/advisories/GHSA-q423-49rw-g9mh
+    product: code.gitea.io/gitea
+    closed: '2026-07-21'
+    summary: Перевод репозитория в приватный через API не снимает подписки, и бывшие подписчики видят его в своём списке
+RWB-0299:
+  pattern: Untrusted tenant header cannot override identity context
+  checks:
+  - SEC-TENANT-HEADER-SPOOF
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-cjgj-2fwf-4c2w
+    fix: https://github.com/perses/perses/commit/8015fb340bdc625953e73a7a688be5b939159540
+    product: github.com/perses/perses
+    closed: '2026-09-18'
+    summary: Query-параметр project переопределяет проект из пути при авторизации
+  - url: https://github.com/advisories/GHSA-2rx5-2g7j-2659
+    product: github.com/azukaar/cosmos-server
+    closed: '2026-07-28'
+    summary: Ветка обхода аутентификации для туннеля пропускает запрос до удаления заголовков x-cosmos-user — backend видит
+      admin
+RWB-0300:
+  pattern: Проверка Origin защищает от cross-site WebSocket hijacking
+  checks:
+  - WS-ORIGIN-CHECK
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-3cc2-h3v6-rqpq
+    fix: https://github.com/siyuan-note/siyuan/commit/cb67e0b4fab57c9c5f458c1fd0df5ecf4417b696
+    product: github.com/siyuan-note/siyuan/kernel
+    closed: '2026-10-02'
+    summary: WebSocket-прокси отключает проверку Origin
+  - url: https://github.com/advisories/GHSA-8r62-w5wh-fc5m
+    fix: https://github.com/axllent/mailpit/commit/fbe5e006c3f1682b819df58b4a932d7a84920be9
+    product: github.com/axllent/mailpit
+    closed: '2026-08-20'
+    summary: Проверка Origin привязана к сырому URI, процентно-закодированный путь доходит до WebSocket без проверки
+RWB-0301:
+  pattern: Истечение или отзыв токена учитывается в открытом соединении
+  checks:
+  - WS-TOKEN-EXPIRY
+  batch: ghsa-go
+  bugs:
+  - url: https://github.com/advisories/GHSA-4hv6-xc92-j86g
+    product: code.vikunja.io/api
+    closed: '2026-10-09'
+    summary: WebSocket принимает JWT отозванной сессии и продолжает присылать события

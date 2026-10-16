@@ -315,3 +315,40 @@ checks:
   references:
   - Смежная — OBS-AUDIT-TRAIL
   - 'Real-world bug: RWB-0273'
+- id: OBS-METRICS-LABEL-CARDINALITY
+  status: draft
+  title: Значения из запроса не создают неограниченно новых серий метрик
+  category: observability
+  protocols:
+  - generic
+  kind: performance
+  priority: P2
+  tags:
+  - performance
+  - observability
+  - hardening
+  - real-world-bug
+  - nightly
+  preconditions:
+  - Сервис экспортирует метрики с метками из запроса (метод, путь, коды, заголовки); есть доступ к /metrics и к памяти процесса.
+  steps:
+  - action: Отправить тысячи запросов с уникальными методами (M1, M2, …), путями и значениями заголовков; сравнить /metrics и память до и после.
+  expected:
+  - Кардинальность меток ограничена (например, неизвестные значения сводятся в other, пути — в шаблон маршрута); размер /metrics и память не растут.
+  applicability:
+    when:
+    - Есть метрики с метками из запроса.
+    skip_when:
+    - Нет метрик.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Nightly
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - OWASP API4:2023
+  - Практика Prometheus — ограничение кардинальности меток
+  - 'Real-world bug: RWB-0282'

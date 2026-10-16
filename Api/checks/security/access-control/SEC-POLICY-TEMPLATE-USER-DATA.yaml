@@ -1,0 +1,43 @@
+checks:
+- id: SEC-POLICY-TEMPLATE-USER-DATA
+  status: draft
+  title: Данные пользователя, подставляемые в шаблон политики доступа, не работают как wildcard
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authz
+  - privilege-escalation
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Политики доступа шаблонные — в них подставляются имя или атрибуты субъекта (ACL <username>/*, домены сертификатов *.{name}.example.com, SSH-принципалы).
+  - Пользователь сам задаёт подставляемое значение (имя, метаданные сущности).
+  steps:
+  - action: Создать субъект с именем или атрибутом *, +, /, запятой и другими метасимволами шаблона и запросить данные других субъектов или сертификат на *.example.com.
+  - action: Повторить для каждого вида шаблона, который поддерживает продукт.
+  expected:
+  - 'Отказ: значение отклоняется при создании или подставляется экранированным; права не расширяются.'
+  applicability:
+    when:
+    - Есть шаблонные политики с атрибутами субъекта.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: low
+  references:
+  - CWE-1220, CWE-155
+  - Смежные — INJ-FILTER-EXPRESSION, HARD-WILDCARD-DOMAIN-MATCH, SEC-AUTHZ-DYNAMIC-VARIABLES
+  - 'Real-world bug: RWB-0283'

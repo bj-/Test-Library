@@ -27,6 +27,20 @@ checks:
   - action: Токен без нужного scope не получает доступ через промежуточный сервис, вызывающий целевой от своего имени (ограничения
       при делегировании)
     notes: 'Real-world bug: RWB-0155 (GHSA-cq7v-rfgc-5c7v)'
+  - action: Запросить ресурс токеном с узким scope и параметром expand, встраивающим данные других групп прав, и проверить
+      их отсутствие
+    notes: 'Real-world bug: RWB-0155 (GHSA-9rg3-v78m-26q8)'
+  - action: Отправить DELETE токеном со scope записи без права удаления и проверить отказ
+    notes: 'Real-world bug: RWB-0155 (GHSA-qg67-7m6v-qg25)'
+  - action: Токеном с ограничением «только публичные ресурсы» запросить списочные эндпоинты и эндпоинты прав своего аккаунта
+      и проверить отсутствие приватных объектов
+    notes: 'Real-world bug: RWB-0155 (GHSA-fq2p-5p22-8g6j)'
+  - action: Токеном только со scope чтения вызвать каждую операцию с побочным эффектом (отправка письма, проверка подключения)
+      и проверить отказ
+    notes: 'Real-world bug: RWB-0155 (GHSA-w89x-c962-c44g)'
+  - action: Вызвать токеном только со scope чтения операции, выполняющие действия (тест подключения, исходящий запрос), и
+      проверить отказ
+    notes: 'Real-world bug: RWB-0155 (GHSA-v6w6-358x-2433)'
   expected:
   - Request is denied according to the API’s scope policy; no protected side effect occurs.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

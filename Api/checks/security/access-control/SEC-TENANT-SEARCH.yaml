@@ -30,6 +30,15 @@ checks:
   - action: Служебные/вспомогательные списки (активные, запущенные) и broadcast push-событий — тот же фильтр доступа, что
       у основного списка
     notes: 'Real-world bug: RWB-0158 (GHSA-65xw-2v52-jhxc)'
+  - action: Выполнить поиск пользователем с ограниченной областью и проверить, что общее число результатов считается только
+      по доступным ему объектам
+    notes: 'Real-world bug: RWB-0158 (GHSA-p6ph-3jx2-3337)'
+  - action: Подписаться на поток событий по общему доступу к одному файлу, изменить соседние неразделённые объекты владельца
+      и проверить, что события о них не приходят
+    notes: 'Real-world bug: RWB-0158 (GHSA-w8x7-h2px-xmq8)'
+  - action: Запросить список на уровне организации и проверить, что он не содержит элементов из дочерних объектов, к которым
+      у пользователя нет доступа
+    notes: 'Real-world bug: RWB-0158 (GHSA-frpw-3h2q-4jj6)'
   expected:
   - Returned items are limited to authorized tenant scope regardless of client-supplied filters.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

@@ -49,6 +49,11 @@ checks:
     notes: 'Real-world bug: RWB-0121 (GHSA-cv39-x4c6-hhp2)'
   - action: Отправить защищённое поле в теле каждого поддерживаемого медиатипа (Collection+JSON, UBER)
     notes: 'Real-world bug: RWB-0121 (GHSA-7fxc-486f-32q9)'
+  - action: Передать в теле обновления своего объекта поле родителя с ID чужого проекта и проверить, что объект не переносится
+    notes: 'Real-world bug: RWB-0121 (GHSA-569v-q83c-3j3g)'
+  - action: Передать защищённое поле вложенным в разрешённый объект верхнего уровня и проверить, что оно отклоняется или не
+      применяется
+    notes: 'Real-world bug: RWB-0121 (GHSA-48p8-g2fx-3wwm)'
   expected:
   - role/owner/status/balance нельзя менять через неразрешённые поля payload
   applicability:

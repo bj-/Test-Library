@@ -42,6 +42,31 @@ checks:
   - action: Анонимно создать дочерний объект (комментарий) у ресурса в непубличном состоянии (черновик) и проверить отказ,
       как при его чтении
     notes: 'Real-world bug: RWB-0151 (GHSA-79m3-q3wh-c3qm)'
+  - action: Удалить связь своего объекта с объектом недоступного проекта и проверить отказ и сохранность связи у второй стороны
+    notes: 'Real-world bug: RWB-0151 (GHSA-w2ch-4xgr-22ww)'
+  - action: Запросить список с раскрытием связанных объектов (expand) и проверить, что объекты недоступных проектов, включая
+      вложенные уровни, не возвращаются
+    notes: 'Real-world bug: RWB-0151 (GHSA-3hc7-r24j-rpwc)'
+  - action: Указать в запросе свой проект и имя объекта чужого проекта для действия над ним и проверить отказ
+    notes: 'Real-world bug: RWB-0151 (GHSA-52gf-6rpq-fgmx)'
+  - action: Сослаться по имени на объект в ресурсе с межпространственной ссылкой и проверить, что имя разрешается в пространстве
+      ссылающегося ресурса
+    notes: 'Real-world bug: RWB-0151 (GHSA-qq9q-x9w4-chhj)'
+  - action: Запросить данные своего проекта, подставив в путь ID вложенного объекта чужого проекта, и проверить отказ без
+      его данных
+    notes: 'Real-world bug: RWB-0151 (GHSA-rj9j-8772-4h6c)'
+  - action: Ролью без пароля документа запросить обратные ссылки на открытый объект и проверить, что ссылки из защищённых
+      документов не возвращаются
+    notes: 'Real-world bug: RWB-0151 (GHSA-vg99-7gj7-2fr5)'
+  - action: Создать объект со ссылкой на секрет, к которому нет права чтения, и проверить отказ
+    notes: 'Real-world bug: RWB-0151 (GHSA-4227-9989-jrhx)'
+  - action: Запросить доступный объект, встраивающий содержимое других объектов, и проверить, что содержимое недоступных объектов
+      не возвращается
+    notes: 'Real-world bug: RWB-0151 (GHSA-h6w7-xxcf-w2mq)'
+  - action: Создать ресурс копированием, указав в источнике ресурс недоступного проекта, и проверить отказ
+    notes: 'Real-world bug: RWB-0151 (GHSA-c9f5-j9c3-mhrg)'
+  - action: Повторить ссылку на ресурс другого пространства имён для каждого типа ссылок конфигурации и проверить единый отказ
+    notes: 'Real-world bug: RWB-0151 (GHSA-62fc-8686-hfmq)'
   expected:
   - Authorization is enforced for both parent and referenced child resources; no cross-owner association is created.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

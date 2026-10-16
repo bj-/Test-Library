@@ -157,6 +157,7 @@ checks:
   - negative
   - authn
   - metadata
+  - real-world-bug
   - pr
   - ci
   - regression
@@ -166,6 +167,8 @@ checks:
   - Сервис содержит защищённые методы.
   steps:
   - action: Перебрать все методы сервиса через reflection или descriptor и вызвать без метаданных.
+  - action: Вызвать без метаданных аутентификации каждый потоковый RPC сервиса и проверить UNAUTHENTICATED до любых изменений
+    notes: 'Real-world bug: RWB-0294 (GHSA-rrwh-6jrq-wp5v)'
   expected:
   - Все защищённые методы отклоняют вызов; публичные методы явно перечислены.
   applicability:
@@ -185,6 +188,8 @@ checks:
   risk:
     impact: critical
     likelihood: medium
+  references:
+  - 'Real-world bug: RWB-0294'
 - id: GRPC-METADATA-MALFORMED
   status: approved
   title: Некорректные и чрезмерные метаданные отклоняются

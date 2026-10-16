@@ -1,0 +1,40 @@
+checks:
+- id: SEC-AUTHZ-EXPLICIT-OVER-INHERITED
+  status: draft
+  title: Явное пониженное право на дочерний объект имеет приоритет над унаследованным
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - negative
+  - authz
+  - real-world-bug
+  - regression
+  - nightly
+  preconditions:
+  - Иерархия объектов с наследованием прав (проект → подпроект, папка → файл); можно выдать право на дочерний объект явно.
+  steps:
+  - action: Выдать пользователю право записи или администратора на родителя и явное право чтения на дочерний объект.
+  - action: Этим пользователем изменить, удалить и расшарить дочерний объект; запросить эффективные права.
+  expected:
+  - '403: действует ближайшее явное назначение по документированной модели наследования; эффективные права — чтение.'
+  applicability:
+    when:
+    - Есть иерархия с наследованием прав.
+    skip_when:
+    - Права без наследования.
+  automation:
+    level: full
+    deterministic: true
+  profiles:
+  - Regression
+  - Nightly
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - Смежные — SEC-ROLE-LOW-TO-HIGH, SEC-AUTHZ-PATH-RULE-PRECEDENCE, BIZ-CONFIG-SCOPE-PRECEDENCE
+  - 'Real-world bug: RWB-0287'

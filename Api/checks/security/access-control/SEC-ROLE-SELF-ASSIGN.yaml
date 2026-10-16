@@ -34,6 +34,9 @@ checks:
   - action: Выдать себе более высокое право через универсальный API редактирования данных объекта и проверить, что применяются
       те же проверки, что в основном пути
     notes: 'Real-world bug: RWB-0153 (GHSA-45ph-gxxr-gwgw)'
+  - action: Включить в участники субъект другого вида (группа, сервисный аккаунт, «все аутентифицированные») без права управления
+      участниками и проверить отказ
+    notes: 'Real-world bug: RWB-0153 (GHSA-gfjv-gqf2-c888)'
   expected:
   - Privileged fields are ignored or rejected unless the caller has explicit grant permission; effective privileges do not
     increase.

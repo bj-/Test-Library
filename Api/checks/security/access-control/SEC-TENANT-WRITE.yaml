@@ -26,6 +26,9 @@ checks:
     notes: 'Matrix axis: Tenant isolation; scenario: Cross-tenant mutation. Use isolated synthetic identities and data.'
   - action: Окружения внутри проекта как граница изоляции; действия-команды (cancel) против чтения
     notes: 'Real-world bug: RWB-0159 (GHSA-4672-hwv6-gq62)'
+  - action: Вызвать gRPC-методы служебного сервиса (метки, отписка воркера) с ID объекта другого тенанта в теле и проверить
+      PERMISSION_DENIED или NOT_FOUND
+    notes: 'Real-world bug: RWB-0159 (GHSA-8x7x-83cf-c3pg)'
   expected:
   - Request is denied and tenant B persisted data is unchanged.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API
