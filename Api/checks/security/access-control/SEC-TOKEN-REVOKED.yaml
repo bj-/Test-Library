@@ -26,6 +26,8 @@ checks:
     notes: 'Matrix axis: Authentication; scenario: Revoked token. Use isolated synthetic identities and data.'
   - action: Отозвать refresh-токен, перезапустить сервис и повторить обмен этим токеном
     notes: 'Real-world bug: RWB-0203 (GHSA-v5g5-wwmp-jppw)'
+  - action: Отозвать refresh-токен и перезапустить сервис — отметка отзыва сохраняется в персистентном хранилище
+    notes: inbox №159
   expected:
   - Revoked credentials are rejected within the documented revocation propagation window; no protected side effect occurs.
   - Verify persisted state and audit/security events where applicable; do not assert a universal HTTP status unless the API

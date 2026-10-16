@@ -2,8 +2,8 @@
 
 Файл генерируется `python tools/build_catalog.py .` — не редактируйте вручную.
 
-Всего проверок: **548** — approved: 467, draft: 65, needs_clarification: 16.
-Протоколы: generic: 117, graphql: 228, grpc: 149, rest: 420, websocket: 65.
+Всего проверок: **568** — approved: 467, draft: 85, needs_clarification: 16.
+Протоколы: db: 20, generic: 117, graphql: 228, grpc: 149, rest: 420, websocket: 65.
 
 | Категория | Описание | Проверок |
 |---|---|---:|
@@ -29,6 +29,7 @@
 | [websocket](#websocket) | WebSocket connection, message, and subscription behavior | 10 |
 | [privacy](#privacy) | Personal data handling, masking, consent, and erasure | 6 |
 | [requirements](#requirements) | Requirement transfer errors - spec vs contract vs implementation, unspecified behavior | 5 |
+| [db](#db) | Database - schema and constraints, migrations, indexes and query plans, stored logic, data integrity, application queries | 20 |
 
 ## contract
 
@@ -731,3 +732,30 @@ Requirement transfer errors - spec vs contract vs implementation, unspecified be
 | `REQ-CONTRACT-SELF-CONSISTENCY` | Контракт не противоречит сам себе и своей прежней версии | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `REQ-CROSS-CLIENT-CONSISTENCY` | Одно правило продукта одинаково в API разных клиентов | P2 | approved | generic | CI, Regression, Nightly |
 | `REQ-UNSPECIFIED-BEHAVIOR-PROBE` | Неописанное поведение выясняется тестом и сравнивается со стандартом и здравым смыслом | P2 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly |
+
+## db
+
+Database - schema and constraints, migrations, indexes and query plans, stored logic, data integrity, application queries
+
+| ID | Проверка | P | Статус | Протоколы | Профили |
+|---|---|---|---|---|---|
+| `DB-ACCESS-SCOPE-IN-QUERY` | Граница доступа задаётся в самом запросе к БД | P1 | draft | db | Regression |
+| `DB-API-DATA-MATCH` | После операции API в БД изменены ровно ожидаемые строки с ожидаемыми значениями | P1 | draft | db | Regression |
+| `DB-DYNAMIC-SQL-PARAMETERIZED` | Значения и идентификаторы из ввода и из БД попадают в SQL параметрами или по allowlist | P1 | draft | db | Regression |
+| `DB-KEYS-AND-CONSTRAINTS` | Ключи и ограничения защищают целостность независимо от приложения | P1 | draft | db | Regression |
+| `DB-ROLES-AND-PRIVILEGES` | Роли БД приложения имеют минимальные права, переключение ролей безопасно | P1 | draft | db | Regression |
+| `DB-SENSITIVE-DATA-PROTECTED` | Чувствительные данные хранятся защищённо | P1 | draft | db | Regression |
+| `DB-COLLATION-COMPARISON` | Сравнение строк в БД соответствует назначению колонки | P2 | draft | db | Regression |
+| `DB-IDENTIFIER-QUOTING` | Имена объектов БД экранируются во всех служебных и генерируемых запросах | P2 | draft | db | Regression |
+| `DB-IMPORT-CONSISTENCY` | Импорт не оставляет частичного состояния вне документированной политики | P2 | draft | db | Regression |
+| `DB-METADATA-CACHE-FRESH` | Кэш метаданных схемы в сервисе актуален после изменений БД | P2 | draft | db | Regression |
+| `DB-MIGRATIONS-SAFE` | Миграции схемы применяются предсказуемо и не портят данные | P2 | draft | db | Regression |
+| `DB-QUERY-INDEX-USAGE` | Запросы приложения используют подходящие индексы на реалистичном объёме | P2 | draft | db | Regression |
+| `DB-SCHEMA-MATCHES-SPEC` | Схема БД совпадает со спецификацией и контрактом API | P2 | draft | db | Regression |
+| `DB-STORED-ROUTINES` | Хранимые процедуры и функции установлены и работают по спецификации | P2 | draft | db | Regression |
+| `DB-TRIGGERS` | Триггеры срабатывают ровно на нужные события и изолированы | P2 | draft | db | Regression |
+| `DB-TYPED-COMPARISONS` | Значения сравниваются и приводятся в типе колонки | P2 | draft | db | Regression |
+| `DB-CATALOG-INTROSPECTION` | Чтение каталога схемы корректно и укладывается во время на больших схемах | P3 | draft | db | Regression |
+| `DB-CONNECTION-HANDLING` | Соединения с БД управляются предсказуемо | P3 | draft | db | Regression |
+| `DB-DEFAULT-PRECEDENCE` | Значения по умолчанию применяются по правилам СУБД при любом способе вставки | P3 | draft | db | Regression |
+| `DB-GENERATED-SQL-SHAPE` | Генерируемый SQL не выполняет лишней работы | P3 | draft | db | Regression |

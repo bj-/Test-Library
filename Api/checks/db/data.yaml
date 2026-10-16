@@ -1,0 +1,164 @@
+checks:
+- id: DB-API-DATA-MATCH
+  status: draft
+  title: После операции API в БД изменены ровно ожидаемые строки с ожидаемыми значениями
+  category: db
+  protocols:
+  - db
+  kind: contract
+  priority: P1
+  tags:
+  - db
+  - contract
+  - data-integrity
+  - regression
+  preconditions:
+  - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается осознанно.
+  steps:
+  - action: После каждого create, update, delete через API сравнить запись в БД с запросом и ответом — значения, типы, default, null
+    notes: 'inbox №75'
+  - action: Сравнить снимок затронутых таблиц до и после операции — изменены именно ожидаемые строки и никакие другие
+    notes: 'inbox №136'
+  expected:
+  - Затронуты только ожидаемые таблицы и строки; значения, типы, default и null совпадают с запросом и ответом; удаление удаляет или помечает по правилу.
+  applicability:
+    when:
+    - Есть доступ к БД.
+    skip_when:
+    - Нет доступа к БД стенда.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - Чек-лист guru99 (пер. О. Алифановой)
+  - ADR 0006 (проверки БД)
+- id: DB-SENSITIVE-DATA-PROTECTED
+  status: draft
+  title: Чувствительные данные хранятся защищённо
+  category: db
+  protocols:
+  - db
+  kind: security
+  priority: P1
+  tags:
+  - db
+  - security
+  - privacy
+  - regression
+  preconditions:
+  - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается осознанно.
+  steps:
+  - action: Прочитать колонки с паролями, картами и секретами — нет открытого текста
+    notes: 'inbox №80'
+  - action: Проверить колонки с персональными данными — шифрование по требованиям
+    notes: 'inbox №139'
+  - action: Проверить, что импортированные хеши разных алгоритмов хранятся с префиксом формата и проверяются при входе
+    notes: 'inbox №256'
+  expected:
+  - Пароли — стойкий хэш с солью и префиксом алгоритма; номера карт — токен или маска; секреты и персональные данные зашифрованы; открытого текста нет.
+  applicability:
+    when:
+    - Есть доступ к БД.
+    skip_when:
+    - Нет доступа к БД стенда.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP ASVS V6, V2.4
+  - Смежные — PRIV-DATA-MASKING, AUTH-IMPORTED-PASSWORD-HASH
+  - ADR 0006 (проверки БД)
+- id: DB-ACCESS-SCOPE-IN-QUERY
+  status: draft
+  title: Граница доступа задаётся в самом запросе к БД
+  category: db
+  protocols:
+  - db
+  kind: security
+  priority: P1
+  tags:
+  - db
+  - security
+  - authz
+  - tenant-isolation
+  - regression
+  preconditions:
+  - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается осознанно.
+  steps:
+  - action: Проверить в журнале запросов, что выборка дочерних объектов по ID содержит условие на родительский проект
+    notes: 'inbox №233'
+  - action: Удалить запись с зависимыми строками — каскад ограничен тем же project_id
+    notes: 'inbox №234'
+  - action: Выполнить операцию пользователем без разрешённых объектов — условие IN по пустому списку не превращается в запрос без условия
+    notes: 'inbox №236'
+  - action: Проверить, что фильтр доступа применяется в запросе к БД, а не по полям результата после выборки
+    notes: 'inbox №241'
+  - action: Сменить видимость ресурса на приватную каждым путём изменения — производные записи (подписки, звёзды) пользователей без доступа удаляются
+    notes: 'inbox №246'
+  expected:
+  - Условие на владельца или проект — в WHERE запроса и в каскадах; пустой список разрешённых даёт пустой результат; производные данные чистятся при смене видимости.
+  applicability:
+    when:
+    - Есть доступ к журналу запросов.
+    skip_when:
+    - Нет доступа к БД стенда.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - OWASP API1:2023
+  - Смежные — SEC-TENANT-READ, SEC-OWNERSHIP-REFERENCE-INDIRECT
+  - ADR 0006 (проверки БД)
+- id: DB-IMPORT-CONSISTENCY
+  status: draft
+  title: Импорт не оставляет частичного состояния вне документированной политики
+  category: db
+  protocols:
+  - db
+  kind: reliability
+  priority: P2
+  tags:
+  - db
+  - reliability
+  - data-integrity
+  - regression
+  preconditions:
+  - Нужен доступ к БД стенда (схема, системные каталоги, журнал запросов и планы выполнения); без него проверка пропускается осознанно.
+  steps:
+  - action: Импортировать выгрузку с таблицами, где есть столбцы-счётчики, — импорт не прерывается на полпути
+    notes: 'inbox №228'
+  - action: Импортировать связи с нарушением внешнего ключа в одной строке — строка пропускается по политике, остальные импортируются, транзакция не обрывается
+    notes: 'inbox №268'
+  expected:
+  - Импорт выполняется целиком, или строки с ошибками пропускаются с отчётом по политике; обрыва посередине и частичных данных нет.
+  applicability:
+    when:
+    - Есть импорт данных.
+    skip_when:
+    - Нет доступа к БД стенда.
+  automation:
+    level: partial
+    deterministic: true
+  profiles:
+  - Regression
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Смежная — RES-EXPORT-IMPORT-ROUNDTRIP
+  - ADR 0006 (проверки БД)
