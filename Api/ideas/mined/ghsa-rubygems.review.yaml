@@ -1,0 +1,63 @@
+# Ревью кандидатов партии ghsa-rubygems (шаги 6–7, docs/BUG_MINING_PLAN.md, Api/mining/sessions.md — внутренняя сессия, п. 3).
+#
+# Шаг 6 (Claude, 2026-10-16): 12 new-паттернов склеены в 8 идей (clusters); для каждой — предложение: accept (новая
+# запись draft с предложенным ID в указанном файле) или reject (с причиной). Пруфы к существующим (extends/covered)
+# берутся из batches/*.out.jsonl автоматически. Идеи UI/DB (поле ideas) — inbox №182–188; ideas.md у источника нет.
+# Шаг 7 (человек): поменять decision / check_id / file кластера; неверные совпадения пруфов — в proofs.exclude
+# (ID бага), вариант пруфа без нового шага — в proofs.no_variant. Затем: cluster.py (пересобрать ghsa-rubygems.md) и
+# apply_proofs.py. Перекрёстное ревью другими LLM — reviewcheck.py (mining/README.md, шаги 6–7, п. 7).
+#
+# decision: accept | reject | pending
+batch: ghsa-rubygems
+clusters:
+- key: alt-representation-access
+  decision: accept
+  check_id: SEC-ALT-REPRESENTATION-ACCESS
+  file: checks/security/access-control/SEC-ALT-REPRESENTATION-ACCESS.yaml
+  bugs: [GHSA-qcj6-vxwx-4rqv, GHSA-mqq5-j7w8-2hgh, GHSA-5jm7-g527-m694]
+  idea: Закрытый ресурс (неопубликованный, приватный, защищённый паролем доступа) недоступен ни через одно альтернативное представление — встраивание (embed), превью, дерево и вложенные списки, ленты, поиск, метаданные; правила доступа и публикации такие же, как у основного маршрута
+- key: archive-entry-name-eval
+  decision: accept
+  check_id: INJ-ARCHIVE-ENTRY-NAME-EVAL
+  file: checks/security/injection.yaml
+  bugs: [GHSA-pphf-gfrm-v32r, GHSA-pfpr-3463-c6jh]
+  idea: Имена файлов внутри загруженного пользователем содержимого (git-репозиторий, архив, пакет) с переводом строки, кавычками и выражениями кода (#{...}, ${...}, $(...)) при перечислении и обработке остаются текстом и не исполняются; отличие от FILE-FILENAME-SANITIZATION — имена внутри содержимого, а не имя загружаемого файла
+- key: protocol-session-owner-binding
+  decision: accept
+  check_id: AUTH-PROTOCOL-SESSION-OWNER-BINDING
+  file: checks/security/authentication-session.yaml
+  bugs: [GHSA-5p9g-j988-pcwv, GHSA-qvqr-5cv7-wh35]
+  idea: Идентификатор протокольной сессии (Mcp-Session-Id, ID потока SSE, ID сессии в пути) привязан к аутентифицированному владельцу — чужой ID с другой учёткой или без неё даёт 403/404, существующий поток владельца не перехватывается и не переключается
+- key: oauth-public-client-consent
+  decision: accept
+  check_id: AUTH-OAUTH-PUBLIC-CLIENT-CONSENT
+  file: checks/security/authentication-session.yaml
+  bugs: [GHSA-7w2c-w47h-789w]
+  idea: Для публичного OAuth-клиента (без секрета) повторный запрос авторизации показывает экран согласия, а не выдаёт код автоматически по прошлому одобрению — иначе любой, кто знает client_id и разрешённый redirect_uri, получает код без участия пользователя (RFC 9700 §4.15)
+- key: static-prefix-segment-boundary
+  decision: accept
+  check_id: HTTP-PATH-PREFIX-SEGMENT-BOUNDARY
+  file: checks/rest/http-protocol.yaml
+  bugs: [GHSA-h2jq-g4cq-5ppq]
+  idea: Правило по префиксу пути (статика /css, /js, исключения из аутентификации, маршрутизация прокси) соблюдает границу сегмента — /css-config.env, /cssbackup.sql, /js.env не попадают под правило /css/, /js/
+- key: sendfile-headers-untrusted
+  decision: accept
+  check_id: HARD-SENDFILE-HEADERS-UNTRUSTED
+  file: checks/security/api-hardening.yaml
+  bugs: [GHSA-r657-rxjc-j557]
+  idea: Служебные заголовки отдачи файлов прокси (X-Sendfile-Type, X-Accel-Mapping, X-Accel-Redirect, X-Sendfile), присланные клиентом, игнорируются — ответ и доступ к путям такие же, как без них
+- key: reflected-xss
+  decision: accept
+  check_id: INJ-REFLECTED-XSS
+  file: checks/security/injection.yaml
+  bugs: [GHSA-cmh9-rx85-xj38]
+  idea: Параметры запроса (фильтр, поиск, сообщения об ошибке) не отражаются в HTML-ответе без экранирования по контексту; Content-Type соответствует содержимому; пара к INJ-STORED-XSS
+- key: import-url-credentials
+  decision: accept
+  check_id: PRIV-IMPORT-URL-CREDENTIALS-NOT-STORED
+  file: checks/security/privacy.yaml
+  bugs: [GHSA-mmmm-chjf-jmvw]
+  idea: Учётные данные из URL источника импорта или зеркалирования (https://user:token@host/...) после завершения импорта не сохраняются и не возвращаются в параметрах объекта (адрес источника, настройки зеркала, журнал задачи)
+proofs:
+  exclude: []
+  no_variant: []
