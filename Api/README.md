@@ -26,6 +26,8 @@
 - `checks/common/` — протокольно-независимые проверки: ресурсы, бизнес-логика, конкурентность, ошибки, совместимость, устойчивость, производительность, наблюдаемость, async.
 - `checks/rest/`, `checks/grpc/`, `checks/graphql/`, `checks/websocket/` — протокольные проверки.
 - `checks/security/` — доступ, аутентификация и сессии, инъекции, hardening, приватность.
+- `checks/ui/` — проверки интерфейса (web, desktop, mobile), `checks/db/` — проверки БД и SQL; протоколы `ui-*` и `db`
+  (ADR [0006](../docs/decisions/0006-ui-and-db-checks.md)).
 - `checks/generated/` — кандидаты из реальных контрактов (`draft` / `needs_clarification`).
 - `docs/CATALOG.md` — сгенерированный каталог всех проверок по категориям.
 - `profiles/` — наборы и параметры запуска.

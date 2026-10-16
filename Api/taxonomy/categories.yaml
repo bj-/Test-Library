@@ -21,3 +21,5 @@ categories:
   websocket: WebSocket connection, message, and subscription behavior
   privacy: Personal data handling, masking, consent, and erasure
   requirements: Requirement transfer errors - spec vs contract vs implementation, unspecified behavior
+  ui: User interface - forms, navigation, state, data and error display, client settings, localization and RTL
+  db: Database - schema and constraints, migrations, indexes and query plans, stored logic, data integrity, application queries

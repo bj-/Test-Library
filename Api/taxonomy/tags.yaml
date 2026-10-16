@@ -38,6 +38,8 @@ tag_groups:
   - business-logic
   - money
   - webhooks
+  - ui
+  - db
   - async-jobs
   - streaming
   - deadlines

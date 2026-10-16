@@ -1,6 +1,7 @@
 # Test-Library — API Test Library
 
-Версионируемая библиотека шаблонов проверок для генерации API-тестов REST и gRPC (код и данные — в `Api/`).
+Версионируемая библиотека шаблонов проверок для генерации API-тестов REST и gRPC (код и данные — в `Api/`); с ADR
+[0006](docs/decisions/0006-ui-and-db-checks.md) — также проверки UI (web, desktop, mobile) и БД (`checks/ui/`, `checks/db/`).
 Принципы, структура и формат записей — в `Api/README.md`.
 
 ## Где что лежит

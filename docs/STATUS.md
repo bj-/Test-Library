@@ -30,7 +30,7 @@ _Последнее обновление: 2026-10-16_
 - [x] Выгрузка багов: 50 draft-записей пилота вычитаны и переведены в `approved` (решение bj, 2026-10-16), шаги «Добавить …» переписаны
 - [x] Выгрузка багов: 90 draft масштабирования переведены в `approved` (решение bj, 2026-10-16, по `Api/ideas/mined/scale.drafts-review.md`); в библиотеке approved 467, draft 32 (`REAL-*` из реальных контрактов), needs_clarification 16
 - [ ] Баг-трекеры, пилот: `collect_github.py` + `filter.py` → трассировка и метка `real-world-bug` → калибровка лимита (≤ 5 % недельного в день) → партии
-- [ ] Разобрать `Api/ideas/inbox.md` (26 идей, 2026-10-12/13; №21 - 14 проверок, на которые ссылаются тесты postman, но их нет в библиотеке): дубли, актуальность, новые записи в `checks/`
+- [ ] Разобрать `Api/ideas/inbox.md` целиком — 317 идей, в том числе UI и DB (решение bj 2026-10-16, ADR [0006](decisions/0006-ui-and-db-checks.md): `checks/ui/`, `checks/db/`, протоколы `ui-*` и `db`); каждая идея — запись draft, дополнение существующей или отказ с причиной
 - [ ] Доработать оформление багов по итогам первых разборов (`Process/bugs.md`), затем — перенос в трекер
 - [ ] Свести текущий этап из `Api/docs/IMPLEMENTATION_PLAN.md` / `STAGE_REPORTS.md` в «Цель / текущий фокус»
 
@@ -112,3 +112,4 @@ _Последнее обновление: 2026-10-16_
 | 2026-10-16 | Claude / bj | 50 записей пилота → `approved` (решение bj по `pilot.drafts-review.md`); `assign_profiles.py` — профили и run-теги; `validate_library.py` 0 ошибок |
 | 2026-10-16 | Claude | Вычитка 90 draft масштабирования — `scale.drafts-review.md` (рекомендация: все approved; 10 спорных отдельным списком); автопроверки качества, условия стенда в INJ-SCHEMA-IDENTIFIER-CODEGEN и HARD-SETUP-ENDPOINTS-PROTECTED |
 | 2026-10-16 | Claude / bj | 90 записей масштабирования → `approved` (решение bj); `assign_profiles.py` — профили и run-теги; итог: approved 467, draft 32, needs_clarification 16; `validate_library.py` 0 ошибок |
+| 2026-10-16 | Claude / bj | ADR [0006](decisions/0006-ui-and-db-checks.md): библиотека покрывает API, UI (web, desktop, mobile) и БД — `checks/ui/`, `checks/db/`, протоколы `ui-web`, `ui-desktop`, `ui-mobile`, `db`, категории и метки `ui`, `db`; схема, таксономия, README, CLAUDE.md |

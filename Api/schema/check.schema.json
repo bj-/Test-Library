@@ -50,7 +50,11 @@
           "grpc",
           "graphql",
           "websocket",
-          "generic"
+          "generic",
+          "ui-web",
+          "ui-desktop",
+          "ui-mobile",
+          "db"
         ]
       }
     },
