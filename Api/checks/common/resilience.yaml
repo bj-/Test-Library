@@ -366,7 +366,7 @@ checks:
   - Смежные — HARD-TLS-ONLY, RESIL-ENCRYPTION-KEY-ROTATION
   - 'Real-world bug: RWB-0219'
 - id: RESIL-TOKENS-SURVIVE-RESTART
-  status: draft
+  status: approved
   title: Выданные токены действуют после перезапуска сервера
   category: resilience
   protocols:
@@ -377,6 +377,8 @@ checks:
   - reliability
   - token-lifecycle
   - real-world-bug
+  - ci
+  - regression
   - nightly
   preconditions:
   - Нужна возможность перезапустить сервер (и запустить второй экземпляр, если их несколько).
@@ -395,6 +397,8 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
+  - Regression
   - Nightly
   risk:
     impact: high

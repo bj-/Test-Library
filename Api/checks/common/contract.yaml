@@ -225,7 +225,7 @@ checks:
   - Смежные — PAGE-NEXT-LINK-VALID, HTTP-ABSOLUTE-URL-BASE-PATH
   - inbox №60
 - id: CONTRACT-GENERATED-URI-ENCODING
-  status: draft
+  status: approved
   title: URI, которые формирует сервер, кодируют значения по правилам своей части
   category: contract
   protocols:
@@ -236,6 +236,7 @@ checks:
   - contract
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Сервер выдаёт URI со значениями пользователя — otpauth, ссылки в письмах, Location, redirect.
   steps:
@@ -253,6 +254,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: low
     likelihood: medium

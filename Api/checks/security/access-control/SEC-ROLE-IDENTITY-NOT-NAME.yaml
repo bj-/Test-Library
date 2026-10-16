@@ -1,6 +1,6 @@
 checks:
 - id: SEC-ROLE-IDENTITY-NOT-NAME
-  status: draft
+  status: approved
   title: Ограничения системных ролей применяются по идентичности роли, а не по имени
   category: security
   protocols:
@@ -12,6 +12,7 @@ checks:
   - authz
   - roles-scopes
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -32,6 +33,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

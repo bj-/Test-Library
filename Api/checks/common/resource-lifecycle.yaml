@@ -1319,7 +1319,7 @@ checks:
   - Чек-лист guru99 (пер. О. Алифановой)
   - inbox №59
 - id: RES-TYPED-PATH-LOOKUP
-  status: draft
+  status: approved
   title: Операция с типом ресурса в пути находит объект указанного типа
   category: resources
   protocols:
@@ -1330,6 +1330,7 @@ checks:
   - contract
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Операция принимает тип ресурса и идентификатор в пути (/{type}/{id}).
   steps:
@@ -1347,6 +1348,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: low

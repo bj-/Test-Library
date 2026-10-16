@@ -717,7 +717,7 @@ checks:
   - inbox №79
   - 'Real-world bug: RWB-0353'
 - id: BIZ-IMPOSSIBLE-STEP-NOT-ASSIGNED
-  status: draft
+  status: approved
   title: Невыполнимый обязательный шаг не назначается и не блокирует законную операцию
   category: business-logic
   protocols:
@@ -728,6 +728,7 @@ checks:
   - positive
   - business-logic
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -746,6 +747,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -755,7 +757,7 @@ checks:
   - Позитивная пара к BIZ-WORKFLOW-STEP-SKIP
   - 'Real-world bug: RWB-0342'
 - id: BIZ-RULES-DETERMINISTIC
-  status: draft
+  status: approved
   title: Итог нескольких правил над одним значением детерминирован
   category: business-logic
   protocols:
@@ -766,6 +768,7 @@ checks:
   - contract
   - business-logic
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -784,6 +787,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

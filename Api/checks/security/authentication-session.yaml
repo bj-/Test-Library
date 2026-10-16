@@ -3004,7 +3004,7 @@ checks:
   - Смежная — AUTH-SESSION-FIXATION
   - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
 - id: AUTH-MULTISTEP-LOGIN-STATE-RECHECK
-  status: draft
+  status: approved
   title: Последний шаг многошагового входа перепроверяет состояние пользователя и клиента
   category: security
   protocols:
@@ -3016,8 +3016,10 @@ checks:
   - negative
   - authn
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Вход в несколько шагов — обязательные действия, второй фактор, согласие, выбор организации.
   steps:
@@ -3034,8 +3036,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: low
@@ -3043,7 +3047,7 @@ checks:
   - Смежные — AUTH-ACCOUNT-STATE-ALL-SCHEMES, SEC-AUTHZ-REVOKE-ROLE
   - 'Real-world bug: RWB-0343'
 - id: AUTH-PRE-ACCOUNT-TAKEOVER
-  status: draft
+  status: approved
   title: Незавершённая регистрация на чужой email не даёт входа после подтверждения владельцем
   category: security
   protocols:
@@ -3056,8 +3060,10 @@ checks:
   - authn
   - session
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Регистрация с подтверждением email; можно держать сессию регистрации открытой. Нужны тестовый почтовый ящик и два клиента.
   steps:
@@ -3074,8 +3080,10 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: low
@@ -3084,7 +3092,7 @@ checks:
   - Смежные — AUTH-PASSWORD-CHANGE-REVOKES, BIZ-EMAIL-LINK-CROSS-SESSION
   - 'Real-world bug: RWB-0344'
 - id: AUTH-LOGIN-PARAMS-PRESERVED
-  status: draft
+  status: approved
   title: Параметры первого шага входа действуют через все шаги
   category: security
   protocols:
@@ -3097,6 +3105,7 @@ checks:
   - session
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Вход в несколько шагов; первый шаг принимает параметры — remember me, locale, scope, prompt.
   steps:
@@ -3114,6 +3123,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: medium
     likelihood: medium
@@ -3121,7 +3131,7 @@ checks:
   - Смежные — AUTH-SESSION-TIMEOUT, AUTH-COOKIE-ATTRIBUTES
   - 'Real-world bug: RWB-0347'
 - id: AUTH-TOKEN-EXCHANGE-DEFAULT-SCOPE
-  status: draft
+  status: approved
   title: Обмен токена без scope выдаёт области по документированному правилу для запросившего клиента
   category: security
   protocols:
@@ -3133,6 +3143,7 @@ checks:
   - roles-scopes
   - token-lifecycle
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -3152,6 +3163,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -3162,7 +3174,7 @@ checks:
   - Смежные — AUTH-REFRESH-PRESERVES-SCOPE, SEC-SCOPE-EXTRA-UNTRUSTED
   - 'Real-world bug: RWB-0348'
 - id: AUTH-OIDC-LOGOUT-WITHOUT-SESSION
-  status: draft
+  status: approved
   title: Выход по OIDC без активной сессии завершается перенаправлением по правилам
   category: security
   protocols:
@@ -3174,6 +3186,7 @@ checks:
   - session
   - real-world-bug
   - regression
+  - nightly
   preconditions:
   - Есть RP-Initiated Logout (OIDC).
   steps:
@@ -3192,6 +3205,7 @@ checks:
     deterministic: true
   profiles:
   - Regression
+  - Nightly
   risk:
     impact: low
     likelihood: medium
