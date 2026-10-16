@@ -24,3 +24,15 @@ _Claude, 2026-10-17. Правило — `mining/README.md`, шаги 6–7, п. 
 ## Польза от моделей
 
 ChatGPT — все существенные замечания по оракулам (8 записей); Gemini — согласился по №4, №5, №16, своё — №12 (merge).
+
+## Решения bj (2026-10-17)
+
+1. **Структура** — разделены только 5 тематических сборников, остальные 15 записей — один инвариант с вариантами:
+   - DB-MIGRATIONS-SAFE → DB-MIGRATION-STATE-TRACKED, DB-MIGRATION-CLEAN-INSTALL, DB-ALTER-PRESERVES-COLUMN,
+     DB-MIGRATION-DATA-PRESERVED, DB-SCHEMA-CHANGE-VALIDATED;
+   - DB-CONNECTION-HANDLING → DB-CONNECTION-POOL-LIFECYCLE, DB-CONNECTION-CONFIG-HANDLING, DB-DRIVER-LARGE-PARAMS;
+   - DB-CATALOG-INTROSPECTION → DB-CATALOG-READ-PERFORMANCE, DB-CATALOG-READ-CORRECTNESS, DB-MIN-VERSION-COMPATIBILITY;
+   - DB-METADATA-CACHE-FRESH → DB-METADATA-CACHE-FRESH (кэш и соединения пула), DB-IN-DB-CONFIG-APPLIED;
+   - DB-ROLES-AND-PRIVILEGES → DB-SERVICE-ROLE-LEAST-PRIVILEGE, DB-ROLE-SWITCH-SETTINGS.
+   Шаги перенесены без изменений, статусы идей в inbox обновлены. DB-записей — 30.
+2. **DB-DYNAMIC-SQL-PARAMETERIZED** — оставлена DB-записью (серый ящик); в INJ-SQL — обратная ссылка.

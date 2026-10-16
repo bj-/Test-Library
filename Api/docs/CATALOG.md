@@ -2,8 +2,8 @@
 
 Файл генерируется `python tools/build_catalog.py .` — не редактируйте вручную.
 
-Всего проверок: **598** — approved: 500, draft: 82, needs_clarification: 16.
-Протоколы: db: 20, generic: 117, graphql: 228, grpc: 149, rest: 420, ui-desktop: 23, ui-mobile: 24, ui-web: 29, websocket: 65.
+Всего проверок: **608** — approved: 500, draft: 92, needs_clarification: 16.
+Протоколы: db: 30, generic: 117, graphql: 228, grpc: 149, rest: 420, ui-desktop: 23, ui-mobile: 24, ui-web: 29, websocket: 65.
 
 | Категория | Описание | Проверок |
 |---|---|---:|
@@ -30,7 +30,7 @@
 | [privacy](#privacy) | Personal data handling, masking, consent, and erasure | 6 |
 | [requirements](#requirements) | Requirement transfer errors - spec vs contract vs implementation, unspecified behavior | 5 |
 | [ui](#ui) | User interface - forms, navigation, state, data and error display, client settings, localization and RTL | 30 |
-| [db](#db) | Database - schema and constraints, migrations, indexes and query plans, stored logic, data integrity, application queries | 20 |
+| [db](#db) | Database - schema and constraints, migrations, indexes and query plans, stored logic, data integrity, application queries | 30 |
 
 ## contract
 
@@ -781,19 +781,29 @@ Database - schema and constraints, migrations, indexes and query plans, stored l
 | `DB-API-DATA-MATCH` | После операции API в БД изменены ровно ожидаемые строки с ожидаемыми значениями | P1 | draft | db | Regression |
 | `DB-DYNAMIC-SQL-PARAMETERIZED` | Значения и идентификаторы из ввода и из БД попадают в SQL параметрами или по allowlist | P1 | draft | db | Regression |
 | `DB-KEYS-AND-CONSTRAINTS` | Ключи и ограничения защищают целостность независимо от приложения | P1 | draft | db | Regression |
-| `DB-ROLES-AND-PRIVILEGES` | Роли БД приложения имеют минимальные права, переключение ролей безопасно | P1 | draft | db | Regression |
 | `DB-SENSITIVE-DATA-PROTECTED` | Чувствительные данные хранятся защищённо | P1 | draft | db | Regression |
+| `DB-SERVICE-ROLE-LEAST-PRIVILEGE` | Роль подключения сервиса имеет минимальные права | P1 | draft | db | Regression |
+| `DB-ALTER-PRESERVES-COLUMN` | Изменение столбца или ограничения сохраняет его остальные свойства | P2 | draft | db | Regression |
 | `DB-COLLATION-COMPARISON` | Сравнение строк в БД соответствует назначению колонки | P2 | draft | db | Regression |
 | `DB-IDENTIFIER-QUOTING` | Имена объектов БД экранируются во всех служебных и генерируемых запросах | P2 | draft | db | Regression |
 | `DB-IMPORT-CONSISTENCY` | Импорт не оставляет частичного состояния вне документированной политики | P2 | draft | db | Regression |
 | `DB-METADATA-CACHE-FRESH` | Кэш метаданных схемы в сервисе актуален после изменений БД | P2 | draft | db | Regression |
-| `DB-MIGRATIONS-SAFE` | Миграции схемы применяются предсказуемо и не портят данные | P2 | draft | db | Regression |
+| `DB-MIGRATION-CLEAN-INSTALL` | Миграции разворачиваются на чистой БД, в том числе в нестандартной схеме | P2 | draft | db | Regression |
+| `DB-MIGRATION-DATA-PRESERVED` | Миграции переносят данные и связи и учитывают актуальные ограничения | P2 | draft | db | Regression |
+| `DB-MIGRATION-STATE-TRACKED` | Применённые миграции учитываются, повторный запуск безопасен | P2 | draft | db | Regression |
+| `DB-MIN-VERSION-COMPATIBILITY` | Сервис работает на минимальной поддерживаемой версии СУБД | P2 | draft | db | Regression |
 | `DB-QUERY-INDEX-USAGE` | Запросы приложения используют подходящие индексы на реалистичном объёме | P2 | draft | db | Regression |
+| `DB-ROLE-SWITCH-SETTINGS` | При переключении роли применяются только допустимые для неё настройки | P2 | draft | db | Regression |
 | `DB-SCHEMA-MATCHES-SPEC` | Схема БД совпадает со спецификацией и контрактом API | P2 | draft | db | Regression |
 | `DB-STORED-ROUTINES` | Хранимые процедуры и функции установлены и работают по спецификации | P2 | draft | db | Regression |
 | `DB-TRIGGERS` | Триггеры срабатывают ровно на нужные события и изолированы | P2 | draft | db | Regression |
 | `DB-TYPED-COMPARISONS` | Значения сравниваются и приводятся в типе колонки | P2 | draft | db | Regression |
-| `DB-CATALOG-INTROSPECTION` | Чтение каталога схемы корректно и укладывается во время на больших схемах | P3 | draft | db | Regression |
-| `DB-CONNECTION-HANDLING` | Соединения с БД управляются предсказуемо | P3 | draft | db | Regression |
+| `DB-CATALOG-READ-CORRECTNESS` | Чтение каталога схемы даёт точную модель объектов | P3 | draft | db | Regression |
+| `DB-CATALOG-READ-PERFORMANCE` | Чтение каталога схемы быстрое и не повторяется без нужды | P3 | draft | db | Regression |
+| `DB-CONNECTION-CONFIG-HANDLING` | Ошибки и формы настройки подключения к БД обрабатываются предсказуемо | P3 | draft | db | Regression |
+| `DB-CONNECTION-POOL-LIFECYCLE` | Соединения пула освобождаются и не оставляют фоновой нагрузки | P3 | draft | db | Regression |
 | `DB-DEFAULT-PRECEDENCE` | Значения по умолчанию применяются по правилам СУБД при любом способе вставки | P3 | draft | db | Regression |
+| `DB-DRIVER-LARGE-PARAMS` | Драйвер БД обрабатывает параметры очень большого размера | P3 | draft | db | Regression |
 | `DB-GENERATED-SQL-SHAPE` | Генерируемый SQL не выполняет лишней работы | P3 | draft | db | Regression |
+| `DB-IN-DB-CONFIG-APPLIED` | Настройки сервиса, хранящиеся в БД, применяются ко всем видам ресурсов | P3 | draft | db | Regression |
+| `DB-SCHEMA-CHANGE-VALIDATED` | Запрос изменения схемы проверяется до выполнения DDL | P3 | draft | db | Regression |

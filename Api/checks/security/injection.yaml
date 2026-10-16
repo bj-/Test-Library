@@ -121,6 +121,7 @@ checks:
   references:
   - OWASP Web Security Testing Guide
   - 'Real-world bug: RWB-0089'
+  - Проверка серого ящика по журналу запросов и коду — DB-DYNAMIC-SQL-PARAMETERIZED
 - id: INJ-NOSQL
   status: approved
   title: NoSQL-инъекция операторами запросов не исполняется
