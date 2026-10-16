@@ -76,6 +76,10 @@ Claude работает с одним источником. План, списо
    в `traceability/real-world-bugs.yaml`. Записи принятых кластеров пишет Claude (`status: draft`) до запуска;
    без них — `--proofs-only`. Повторный запуск безопасен.
 5. `validate_library.py`, `build_catalog.py`.
+6. **Перекрёстная проверка пруфов** (по решению человека; он пруфы сам не проверяет): `python tools/mining/proofcheck.py
+   --batch <batch> --checks A,B,C` — пакет `ideas/mined/<batch>.proofcheck.md` для 2–3 других LLM; вердикт Claude —
+   отдельно в `<batch>.proofcheck.claude.yaml`, ответы моделей — `<batch>.proofcheck.answer-N.md`. Правка — только
+   там, где замечание у обеих моделей (`proofs.exclude`, `proofs.no_variant`), до `apply_proofs.py`. Образец — ghsa-maven.
 
 ## Бережная нагрузка на источники
 
