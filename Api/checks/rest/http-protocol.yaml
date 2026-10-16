@@ -657,7 +657,7 @@ checks:
     impact: low
     likelihood: medium
   references:
-  - RFC 9110 §11.6.1, RFC 6750 §3
+  - RFC 9110 §11.6.1 (ранее RFC 7235 §4.1 — в первоисточнике), RFC 6750 §3
   - 'Real-world bug: RWB-0267'
 - id: HTTP-RESPONSE-MODE-HEADER-PARITY
   status: draft
@@ -766,6 +766,6 @@ checks:
     impact: medium
     likelihood: low
   references:
-  - RFC 9112 §6.1, §6.3
+  - RFC 9112 §6.1, §6.3 (ранее RFC 7230 §3.3.2 — в первоисточнике)
   - Пара к HTTP-REQUEST-SMUGGLING
   - 'Real-world bug: RWB-0275'
