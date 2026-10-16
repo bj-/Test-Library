@@ -1,0 +1,77 @@
+# Ревью кандидатов партии directus (шаги 6–7, docs/BUG_MINING_PLAN.md, Api/mining/sessions.md — внутренняя сессия, п. 3).
+#
+# Шаг 6 (Claude, 2026-10-16): 12 new-паттернов склеены в 10 идей (clusters); для каждой — предложение: accept (новая
+# запись draft с предложенным ID в указанном файле) или reject (с причиной). Пруфы к существующим (extends/covered)
+# берутся из batches/*.out.jsonl автоматически. Идеи UI/DB (поле ideas) — inbox №189–227; ideas.md у источника нет.
+# Шаг 7 (человек): поменять decision / check_id / file кластера; неверные совпадения пруфов — в proofs.exclude
+# (ID бага), вариант пруфа без нового шага — в proofs.no_variant, new-паттерн как вариант существующей записи —
+# в proofs.retarget. Затем: cluster.py (пересобрать directus.md) и apply_proofs.py. Перекрёстное ревью другими LLM —
+# reviewcheck.py (mining/README.md, шаги 6–7, п. 7).
+#
+# decision: accept | reject | pending
+batch: directus
+clusters:
+- key: filter-operation-parity
+  decision: accept
+  check_id: REST-FILTER-OPERATION-PARITY
+  file: checks/rest/pagination.yaml
+  bugs: [directus/directus#25975, directus/directus#25892]
+  idea: Один и тот же фильтр (в том числе по полиморфной связи и на нескольких уровнях вложенности) принимается и даёт согласованный результат во всех операциях — список, агрегация (count = числу записей списка), вложенная выборка (deep), экспорт
+- key: dynamic-variables-rule-parity
+  decision: accept
+  check_id: SEC-AUTHZ-DYNAMIC-VARIABLES
+  file: checks/security/access-control/SEC-AUTHZ-DYNAMIC-VARIABLES.yaml
+  bugs: [directus/directus#23695, directus/directus#24848]
+  idea: Каждая динамическая переменная в правилах доступа и валидации ($CURRENT_USER, его поля, $CURRENT_ROLES, $CURRENT_POLICIES) даёт тот же результат, что эквивалентное статическое значение, — в том числе для целочисленных полей и списков (_in); позитивная матрица переменных
+- key: schedule-long-uptime
+  decision: accept
+  check_id: ASYNC-SCHEDULE-LONG-UPTIME
+  file: checks/common/async-integration.yaml
+  bugs: [directus/directus#25855]
+  idea: Задача по расписанию продолжает срабатывать после длительной непрерывной работы процесса (больше 24,8 суток — предел 32-битного таймера в миллисекундах); проверка — длительная работа или сдвиг времени на стенде
+- key: ws-subscription-events
+  decision: accept
+  check_id: WS-SUBSCRIPTION-EVENTS-DELIVERED
+  file: checks/websocket/websocket.yaml
+  bugs: [directus/directus#25457]
+  idea: Подписка на коллекцию (в том числе системную) после подтверждения получает события создания, изменения и удаления, сделанных через API любым способом; базовая доставка, а не права (WS-SUBSCRIPTION-AUTHZ) и не переподключение (WS-RECONNECT-RESUME)
+- key: multipart-metadata-saved
+  decision: accept
+  check_id: FILE-MULTIPART-METADATA-SAVED
+  file: checks/rest/files.yaml
+  bugs: [directus/directus#25055]
+  idea: Метаданные, переданные полями multipart вместе с файлом (имя для скачивания, заголовок, описание, папка), сохраняются и возвращаются при чтении записи файла — и при порядке полей до и после файла
+- key: relation-null-target-rows
+  decision: accept
+  check_id: RES-RELATION-NULL-TARGET-ROWS
+  file: checks/common/resource-lifecycle.yaml
+  bugs: [directus/directus#24145]
+  idea: Чтение связи многие-ко-многим возвращает все записи связующей таблицы, в том числе со ссылкой null или на удалённый объект (связанный объект — null), а не теряет их молча
+- key: relations-shared-junction
+  decision: accept
+  check_id: RES-RELATIONS-SHARED-JUNCTION-ISOLATION
+  file: checks/common/resource-lifecycle.yaml
+  bugs: [directus/directus#23785]
+  idea: Несколько связей ресурса через одну общую связующую таблицу (политика ↔ пользователи и политика ↔ роли) возвращают каждая только свои данные — значения связей не смешиваются и не подменяются
+- key: idp-missing-attributes
+  decision: accept
+  check_id: AUTH-EXTERNAL-IDP-MISSING-ATTRIBUTES
+  file: checks/security/authentication-session.yaml
+  bugs: [directus/directus#24099]
+  idea: Вход через внешний IdP с профилем без необязательных атрибутов (email, имя) создаёт пользователя и пускает либо даёт понятную ошибку с причиной, а не 5xx; позитивная пара к AUTH-EXTERNAL-IDP-UNVERIFIED-EMAIL
+- key: storage-backend-parity
+  decision: accept
+  check_id: FILE-STORAGE-BACKEND-PARITY
+  file: checks/rest/files.yaml
+  bugs: [directus/directus#23955]
+  idea: Операции с файлами (загрузка, отдача, трансформации и пресеты, Range, удаление) работают одинаково на каждом поддерживаемом хранилище (локальный диск, S3, GCS, Azure и т. п.); нужны стенды с несколькими драйверами хранилища
+- key: ws-multiple-endpoints
+  decision: accept
+  check_id: WS-MULTIPLE-ENDPOINTS-INDEPENDENT
+  file: checks/websocket/websocket.yaml
+  bugs: [directus/directus#23625]
+  idea: Несколько WebSocket-эндпоинтов на разных путях (realtime, GraphQL subscriptions, служебные) работают независимо — включение одного не ломает рукопожатие, аутентификацию и сообщения другого
+proofs:
+  exclude: []
+  no_variant: []
+  retarget: []
