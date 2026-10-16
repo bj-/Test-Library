@@ -6,7 +6,7 @@ Usage (from Api/):
   batch.py make  --name cal-01 --n 20         next unprocessed records -> build/mining/<batch>/batches/<name>.md
   batch.py check --name cal-01                validate <name>.out.jsonl against the batch and taxonomy
   batch.py stats                              progress of the batch: processed, verdicts, match types
-  batch.py remaining                          records not yet issued to a batch (-1 before collection)
+  batch.py remaining                          records not yet issued to a batch (-1: collection needed)
 Options: --batch pilot (default).
 """
 from __future__ import annotations
@@ -141,10 +141,24 @@ def cmd_check(args) -> int:
     return 1 if errors else 0
 
 
+def collection_pending(batch: str) -> bool:
+    """A source batch needs (more) collection: never collected, or max_items raised above what was kept and the
+    source is not exhausted (state.json written by collect.py)."""
+    state_path = MINING / batch / "state.json"
+    if not state_path.exists():
+        return True
+    src = next((s for s in load_yaml(Path("mining/sources.yaml"))["sources"] if s["id"] == batch), None)
+    st = json.loads(state_path.read_text(encoding="utf-8")).get(batch, {})
+    if src is None:  # pilot and other multi-source batches
+        return not st and not (MINING / batch / "filtered.jsonl").exists()
+    return not st.get("done") or (not st.get("exhausted") and st.get("kept", 0) < src["max_items"])
+
+
 def cmd_remaining(args) -> None:
-    """Records not yet issued to a batch; -1 before collection (no filtered.jsonl). For start-sessions.ps1 -Loop."""
+    """Records not yet issued to a batch; -1 when collection is needed (none yet, or max_items raised).
+    For start-sessions.ps1 -Loop and the collection session (mining/sessions.md)."""
     base = MINING / args.batch
-    if not (base / "filtered.jsonl").exists():
+    if not (base / "filtered.jsonl").exists() or collection_pending(args.batch):
         print(-1)
         return
     done = processed_ids(base)

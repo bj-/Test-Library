@@ -72,6 +72,7 @@ sources:
     require_labels: '(?i)^area/(authentication|oidc|token|login|account|admin/api|core|authorization|user-profile|brute)'
     exclude_labels: '(?i)^area/(admin/ui|account/ui|ui|docs|dist|testsuite|ci)'
     max_items: 600
+  # strapi: не продолжать (низкая отдача, mining/metrics.md, 2026-10-17)
   - id: strapi
     type: github
     repo: strapi/strapi
@@ -115,6 +116,7 @@ sources:
     ecosystem: composer
     cwes: [639, 284, 285, 862, 863, 287, 306, 384, 613, 640, 915, 1321, 1333, 400, 770, 918, 89, 943, 78, 94, 200, 209, 601, 352]
     max_items: 200
+  # ghsa-nuget: не продолжать (низкая отдача, mining/metrics.md, 2026-10-17)
   - id: ghsa-nuget
     type: ghsa
     ecosystem: nuget
@@ -125,7 +127,8 @@ sources:
     repo: kubernetes/kubernetes
     include_labels: '(?i)^kind/bug$'
     require_labels: '(?i)^(sig/(api-machinery|auth)|area/(api|api-validation|apiserver))$'
-    max_items: 200
+    max_items: 300  # было 200; досбор — mining/metrics.md (2026-10-17)
+  # supabase-auth: не продолжать (низкая отдача, mining/metrics.md, 2026-10-17)
   - id: supabase-auth
     type: github
     repo: supabase/auth
@@ -134,17 +137,17 @@ sources:
     type: github
     repo: PostgREST/postgrest
     issue_type: Bug  # с 2025 баги размечены типом issue, метки bug нет
-    max_items: 150
+    max_items: 300  # было 150; досбор — mining/metrics.md (2026-10-17)
   - id: hasura
     type: github
     repo: hasura/graphql-engine
     exclude_labels: '(?i)console|^c/(console|cli)'
-    max_items: 200
+    max_items: 300  # было 200; досбор — mining/metrics.md (2026-10-17)
   - id: kong
     type: github
     repo: Kong/kong
     exclude_labels: '(?i)manager|^area/(cli|docs)'
-    max_items: 150
+    max_items: 300  # было 150; досбор — mining/metrics.md (2026-10-17)
   - id: grpc-go
     type: github
     repo: grpc/grpc-go

@@ -3,7 +3,8 @@
 
 Usage: collect.py [--batch pilot] [--source ID ...] [--sources mining/sources.yaml]
 A batch named after a source (--batch ghsa-pip) collects only that source.
-Run from Api/. Resumable: a finished source is skipped (state.json), an unfinished one continues
+Run from Api/. Resumable: a finished source is skipped (state.json) unless max_items was raised and it is not
+exhausted (history ran out); an unfinished one continues
 from the saved cursor. Requests are sequential and paced (politeness in sources.yaml).
 """
 from __future__ import annotations
@@ -110,12 +111,17 @@ def collect_github(gh: GitHub, src: dict, defaults: dict, out: Path, state: dict
     state["query_labels"] = query_labels
 
     kept, after, scanned = state.get("kept", 0), state.get("cursor"), state.get("scanned", 0)
+    # max_items raised after a finished run: the cursor may point at a partly read page, skip what is saved
+    seen = {json.loads(line)["id"] for line in out.open(encoding="utf-8")} if out.exists() else set()
     with out.open("a", encoding="utf-8") as f:
         while kept < src["max_items"]:
             d = gh.graphql(ISSUES_QUERY, {"owner": owner, "name": name, "labels": query_labels,
                                              "type": issue_type, "after": after})
             page = d["repository"]["issues"]
+            page_start, cut_short = after, False
             for n in page["nodes"]:
+                if f"{src['repo']}#{n['number']}" in seen:
+                    continue
                 scanned += 1
                 labels = [lb["name"] for lb in n["labels"]["nodes"]]
                 if req and not any(req.search(lb) for lb in labels):
@@ -130,12 +136,15 @@ def collect_github(gh: GitHub, src: dict, defaults: dict, out: Path, state: dict
                 f.write(json.dumps(rec, ensure_ascii=False) + "\n")
                 kept += 1
                 if kept >= src["max_items"]:
+                    cut_short = n is not page["nodes"][-1]
                     break
-            after = page["pageInfo"]["endCursor"]
+            # stopped mid-page: keep the page start so a later run with a higher max_items reads the rest
+            after = page_start if cut_short else page["pageInfo"]["endCursor"]
             state.update(kept=kept, cursor=after, scanned=scanned)
             f.flush()
             yield_state(state)
-            if not page["pageInfo"]["hasNextPage"]:
+            if not cut_short and not page["pageInfo"]["hasNextPage"]:
+                state["exhausted"] = True  # nothing older to collect even if max_items is raised
                 break
     print(f"  просмотрено {scanned}, сохранено {kept}")
 
@@ -168,6 +177,8 @@ def collect_ghsa(gh: GitHub, src: dict, out: Path, state: dict) -> None:
             kept += 1
             state["kept"] = kept
             yield_state(state)
+    if kept < src["max_items"]:
+        state["exhausted"] = True  # advisories ran out before max_items
     print(f"  сохранено {kept}")
 
 
@@ -206,9 +217,12 @@ def main() -> int:
         if args.source and src["id"] not in args.source:
             continue
         st = states.setdefault(src["id"], {})
-        if st.get("done"):
-            print(f"{src['id']}: уже собран ({st.get('kept')}), пропуск")
+        if st.get("done") and (st.get("exhausted") or st.get("kept", 0) >= src["max_items"]):
+            print(f"{src['id']}: уже собран ({st.get('kept')}{', исчерпан' if st.get('exhausted') else ''}), пропуск")
             continue
+        if st.get("done"):
+            print(f"{src['id']}: досбор {st.get('kept')} → {src['max_items']}")
+            st.pop("done", None)
         print(f"{src['id']}:")
         out = raw / f"{src['id']}.jsonl"
         try:

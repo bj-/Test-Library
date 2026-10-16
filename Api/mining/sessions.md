@@ -77,32 +77,26 @@ powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-se
 
 ## Сессии сбора — список (по ожидаемой отдаче, сверху важнее)
 
-Оценка: раз — сколько собрать; пачек — после фильтра. Для GHSA доля API в пилоте — 70–80 %, для продуктов — 30–50 %.
+Очередь пересмотрена по замерам отдачи (`mining/metrics.md`, 2026-10-17). Уже собраны и разобраны: `keycloak`,
+`directus`, `strapi`, GHSA maven/go/rubygems/composer/nuget, `supabase-auth`, `apollo-server` (история исчерпана, 46).
+Не продолжать: `ghsa-nuget`, `supabase-auth`, `strapi` (API; для UI — по отдельному решению).
 
 | # | Источник | Что | Собрать | Пачек ≈ | Запуск |
 |---|---|---|---|---|---|
-| 1 | `keycloak` | история глубже пилота | 600 (−200 пилота) | 4–5 | `start-sessions.ps1 keycloak` |
-| 2 | `ghsa-pip` | GHSA, Python | 250 | 3 | `start-sessions.ps1 ghsa-pip` |
-| 3 | `ghsa-maven` | GHSA, Java | 250 | 3 | `start-sessions.ps1 ghsa-maven` |
-| 4 | `ghsa-go` | GHSA, Go | 250 | 3 | `start-sessions.ps1 ghsa-go` |
-| 5 | `directus` | история глубже пилота | 450 (−150) | 2–3 | `start-sessions.ps1 directus` |
-| 6 | `ghsa-composer` | GHSA, PHP | 200 | 2–3 | `start-sessions.ps1 ghsa-composer` |
-| 7 | `ghsa-rubygems` | GHSA, Ruby | 200 | 2–3 | `start-sessions.ps1 ghsa-rubygems` |
-| 8 | `ghsa-nuget` | GHSA, .NET | 150 | 2 | `start-sessions.ps1 ghsa-nuget` |
-| 9 | `kubernetes` | apiserver, api-machinery, auth | 200 | 2–3 | `start-sessions.ps1 kubernetes` |
-| 10 | `hasura` | GraphQL Engine | 200 | 2 | `start-sessions.ps1 hasura` |
-| 11 | `postgrest` | PostgREST (REST поверх PostgreSQL) | 150 | 2 | `start-sessions.ps1 postgrest` |
-| 12 | `strapi` | история глубже пилота | 450 (−150) | 1–2 | `start-sessions.ps1 strapi` |
-| 13 | `supabase-auth` | Supabase Auth (GoTrue) | 120 | 1–2 | `start-sessions.ps1 supabase-auth` |
-| 14 | `kong` | API-шлюз | 150 | 2 | `start-sessions.ps1 kong` |
-| 15 | `apollo-server` | GraphQL | 120 | 1–2 | `start-sessions.ps1 apollo-server` |
-| 16 | `graphql-js` | GraphQL | 100 | 1 | `start-sessions.ps1 graphql-js` |
-| 17 | `grpc-go` | gRPC | 120 | 1–2 | `start-sessions.ps1 grpc-go` |
-| 18 | `grpc-java` | gRPC | 120 | 1–2 | `start-sessions.ps1 grpc-java` |
-| 19 | `grpc-node` | gRPC | 100 | 1 | `start-sessions.ps1 grpc-node` |
-| 20 | `grpc-gateway` | gRPC ↔ REST | 100 | 1 | `start-sessions.ps1 grpc-gateway` |
+| 1 | `kong` | API-шлюз, досбор | 300 (+150) | 2 | `start-sessions.ps1 kong` |
+| 2 | `postgrest` | REST поверх PostgreSQL, досбор | 300 (+150) | 2 | `start-sessions.ps1 postgrest` |
+| 3 | `grpc-go` | gRPC | 120 | 1–2 | `start-sessions.ps1 grpc-go` |
+| 4 | `grpc-java` | gRPC | 120 | 1–2 | `start-sessions.ps1 grpc-java` |
+| 5 | `grpc-node` | gRPC | 100 | 1 | `start-sessions.ps1 grpc-node` |
+| 6 | `grpc-gateway` | gRPC ↔ REST | 100 | 1 | `start-sessions.ps1 grpc-gateway` |
+| 7 | `graphql-js` | GraphQL | 100 | 1 | `start-sessions.ps1 graphql-js` |
+| 8 | `ghsa-pip` | GHSA, Python (в основном пруфы) | 250 | 3 | `start-sessions.ps1 ghsa-pip` |
+| 9 | `kubernetes` | apiserver, api-machinery, auth, досбор | 300 (+100) | 1–2 | `start-sessions.ps1 kubernetes` |
+| 10 | `hasura` | GraphQL Engine, досбор | 300 (+100) | 1–2 | `start-sessions.ps1 hasura` |
 
-Всего ≈ 4000 собранных → ≈ 2700 после фильтра → ≈ 35–40 пачек. По замерам пилота это ≈ 20–25 % недели.
+После сборки — шаги 6–7 во внутренней сессии (кластеризация и пруфы), как для прежних источников.
+
+Всего ≈ 1400 новых → ≈ 1000 после фильтра → ≈ 15 пачек.
 Если лимит останется — ниже «Если останется лимит».
 
 Запуск из таблицы — полностью `powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-sessions.ps1 <id>`.
@@ -117,8 +111,9 @@ powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-se
 1. **Не трогать git**, кроме шага 8: рабочая копия общая с другими сессиями, поэтому никаких `pull`, `stash`,
    `checkout`, `add .`. Не править `docs/STATUS.md`, `mining/budget.md`, `checks/`, `ideas/`,
    `mining/prompts/`, `mining/sources.yaml`. Если что-то из этого нужно поправить, написать человеку.
-2. **Сбор, если его ещё не было.** В `build/mining/<id>/state.json` у источника нет `"done": true`, или нет
-   `filtered.jsonl`, — выполнить по очереди. Не в фоне (в режиме `-Loop` сессия неинтерактивная и фоновых задач
+2. **Сбор, если он нужен:** `python tools/mining/batch.py remaining --batch <id>` выдал `-1` (сбора ещё не было или
+   в `sources.yaml` подняли `max_items` выше собранного — тогда `collect.py` продолжит со своей позиции, а дошедший
+   до конца истории источник помечает `exhausted` и больше не опрашивает) — выполнить по очереди. Не в фоне (в режиме `-Loop` сессия неинтерактивная и фоновых задач
    не дождётся): каждую команду — с тайм-аутом 10 минут и повторять, пока не завершится, скрипты возобновляемы:
    `python tools/mining/collect.py --batch <id>` → `python tools/mining/filter.py --batch <id>` →
    `python tools/mining/enrich.py --batch <id>`.
