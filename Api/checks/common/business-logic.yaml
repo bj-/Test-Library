@@ -463,7 +463,7 @@ checks:
   references:
   - 'Real-world bug: RWB-0065'
 - id: BIZ-EMAIL-LINK-CROSS-SESSION
-  status: draft
+  status: approved
   title: Ссылка-действие из письма работает в другой сессии и после перезапуска сервиса
   category: business-logic
   protocols:
@@ -476,6 +476,7 @@ checks:
   - session
   - error-handling
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -497,6 +498,7 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

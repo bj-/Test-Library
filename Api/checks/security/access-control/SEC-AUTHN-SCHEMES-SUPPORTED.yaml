@@ -1,6 +1,6 @@
 checks:
 - id: SEC-AUTHN-SCHEMES-SUPPORTED
-  status: draft
+  status: approved
   title: Все задокументированные схемы Authorization принимаются на своих эндпоинтах
   category: security
   protocols:
@@ -12,6 +12,7 @@ checks:
   - authn
   - compatibility
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -33,6 +34,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

@@ -1,6 +1,6 @@
 checks:
 - id: SEC-AUTHZ-ROLE-POSITIVE-MATRIX
-  status: draft
+  status: approved
   title: Разрешённая операция работает для каждой роли с правом, а не только для администратора
   category: security
   protocols:
@@ -12,8 +12,10 @@ checks:
   - authz
   - roles-scopes
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Есть матрица прав (ТЗ или контракт) с несколькими ролями, включая ограниченные (фильтры видимости, ограничения полей).
   steps:
@@ -54,8 +56,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium

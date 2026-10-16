@@ -1,6 +1,6 @@
 checks:
 - id: SEC-CONFUSED-DEPUTY
-  status: draft
+  status: approved
   title: Действия во внешней системе от имени пользователя выполняются только с его правами
   category: security
   protocols:
@@ -14,8 +14,10 @@ checks:
   - privilege-escalation
   - money
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Сервер действует во внешней системе (SCM, платежи, почта) от имени пользователя или проксирует запросы со своим ключом.
   steps:
@@ -42,8 +44,10 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: critical
     likelihood: low

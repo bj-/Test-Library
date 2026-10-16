@@ -445,7 +445,7 @@ checks:
     impact: low
     likelihood: medium
 - id: HTTP-VERSION-PARITY
-  status: draft
+  status: approved
   title: Запросы по HTTP/2 и с предложением Upgrade h2c обслуживаются так же, как по HTTP/1.1
   category: http-semantics
   protocols:
@@ -488,7 +488,7 @@ checks:
   - RFC 9110 §7.8
   - 'Real-world bug: RWB-0013'
 - id: HTTP-ABSOLUTE-URL-BASE-PATH
-  status: draft
+  status: approved
   title: Абсолютные URL, которые формирует сервер, учитывают публичный адрес и базовый путь
   category: http-semantics
   protocols:

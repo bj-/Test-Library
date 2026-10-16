@@ -220,7 +220,7 @@ checks:
     impact: high
     likelihood: medium
 - id: CONC-REQUEST-CONTEXT-ISOLATION
-  status: draft
+  status: approved
   title: Параллельные запросы разных пользователей получают только свой контекст и свой ответ
   category: concurrency
   protocols:
@@ -275,7 +275,7 @@ checks:
   - CWE-362
   - 'Real-world bug: RWB-0007'
 - id: CONC-PARALLEL-INDEPENDENT
-  status: draft
+  status: approved
   title: Параллельные независимые запросы одной операции выполняются без 5xx
   category: concurrency
   protocols:

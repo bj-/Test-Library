@@ -100,7 +100,7 @@ checks:
   references:
   - 'Real-world bug: RWB-0068'
 - id: ERR-STATUS-MATCHES-EFFECT
-  status: draft
+  status: approved
   title: Код ответа соответствует фактическому результату операции
   category: errors
   protocols:
@@ -114,6 +114,7 @@ checks:
   - error-handling
   - data-integrity
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -138,6 +139,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

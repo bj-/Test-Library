@@ -240,7 +240,7 @@ checks:
     impact: medium
     likelihood: medium
 - id: RESIL-ENCRYPTION-KEY-ROTATION
-  status: draft
+  status: approved
   title: Нерасшифровываемое после смены ключа значение не ломает чтение и сохранение остальных данных
   category: resilience
   protocols:

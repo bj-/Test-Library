@@ -750,7 +750,7 @@ checks:
     impact: medium
     likelihood: medium
 - id: SEC-FAIL-CLOSED-INPUT
-  status: draft
+  status: approved
   title: Неожиданный тип, пустое или отсутствующее поле проверки безопасности ведёт к отказу, а не к пропуску проверки
   category: security
   protocols:
@@ -764,8 +764,10 @@ checks:
   - validation
   - hardening
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Поле запроса или токена участвует в проверке доступа или политики (claim, scope, client_id, role, тип аутентификатора,
     алгоритм).
@@ -812,8 +814,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: critical
     likelihood: medium
@@ -822,7 +826,7 @@ checks:
   - CWE-636
   - 'Real-world bug: RWB-0006'
 - id: HARD-SLOW-CLIENT-LIMITS
-  status: draft
+  status: approved
   title: Медленные и неполные запросы и непрочитанные ответы не накапливаются без ограничения
   category: security
   protocols:
@@ -899,7 +903,7 @@ checks:
   - CWE-400
   - 'Real-world bug: RWB-0024'
 - id: SEC-READONLY-MODE-ENFORCED
-  status: draft
+  status: approved
   title: Режим только для чтения запрещает изменения любым запросом, а не по первому ключевому слову
   category: security
   protocols:
@@ -913,8 +917,10 @@ checks:
   - authz
   - injection
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Пользователь задаёт запросы сам (SQL, GraphQL, выражения) в режиме или с ролью только для чтения.
   steps:
@@ -938,8 +944,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: critical
     likelihood: low
@@ -949,7 +957,7 @@ checks:
   - CWE-184
   - 'Real-world bug: RWB-0028'
 - id: HARD-CLIENT-IP-TRUSTED-PROXIES
-  status: draft
+  status: approved
   title: IP клиента определяется по цепочке доверенных прокси одинаково на всех маршрутах
   category: security
   protocols:
@@ -962,6 +970,7 @@ checks:
   - rate-limiting
   - audit
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -984,6 +993,7 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

@@ -1063,7 +1063,7 @@ checks:
   - OWASP API Security Top 10
   - 'Real-world bug: RWB-0090'
 - id: INJ-LLM-GENERATED-ACTIONS
-  status: draft
+  status: approved
   title: Код и вызовы инструментов, сгенерированные LLM по вводу пользователя, не выполняют опасных действий
   category: security
   protocols:

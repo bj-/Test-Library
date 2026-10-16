@@ -644,7 +644,7 @@ checks:
     impact: low
     likelihood: medium
 - id: RES-DRAFT-PUBLISH-FIDELITY
-  status: draft
+  status: approved
   title: Публикация черновика переносит все изменения и не ломает связи других объектов
   category: resources
   protocols:
@@ -656,6 +656,7 @@ checks:
   - positive
   - data-integrity
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -684,6 +685,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -693,7 +695,7 @@ checks:
   - Здравый смысл — публикация есть копия черновика
   - 'Real-world bug: RWB-0015'
 - id: RES-RELATION-ORDER-STABLE
-  status: draft
+  status: approved
   title: Изменение связанного ресурса не меняет ручной порядок связей у другой стороны
   category: resources
   protocols:
@@ -733,7 +735,7 @@ checks:
   - Здравый смысл
   - 'Real-world bug: RWB-0016'
 - id: RES-LARGE-RELATION-SET
-  status: draft
+  status: approved
   title: Тысячи связанных объектов не дают 5xx из-за лимитов СУБД на параметры запроса
   category: resources
   protocols:
@@ -777,7 +779,7 @@ checks:
   - Oracle 1000 в IN; CWE-770
   - 'Real-world bug: RWB-0022'
 - id: RES-CACHE-KEY-COMPLETENESS
-  status: draft
+  status: approved
   title: Серверный кэш различает ответы по всем значимым параметрам и по типу ресурса
   category: resources
   protocols:
@@ -789,6 +791,7 @@ checks:
   - caching
   - data-integrity
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -817,6 +820,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -826,7 +830,7 @@ checks:
   - RFC 9111 §4
   - 'Real-world bug: RWB-0023'
 - id: RES-EXPORT-IMPORT-ROUNDTRIP
-  status: draft
+  status: approved
   title: Данные, выгруженные API, принимаются им же обратно без изменений
   category: resources
   protocols:
@@ -885,7 +889,7 @@ checks:
   - Здравый смысл
   - 'Real-world bug: RWB-0029'
 - id: RES-SYSTEM-OBJECT-PROTECTED
-  status: draft
+  status: approved
   title: Встроенные системные объекты защищены от удаления и изменения при любой конфигурации
   category: resources
   protocols:
@@ -898,6 +902,7 @@ checks:
   - hardening
   - error-handling
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -919,6 +924,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

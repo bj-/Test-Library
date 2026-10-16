@@ -80,7 +80,7 @@ checks:
   - Regression
   - Nightly
 - id: CONTRACT-FIELD-SELECTION
-  status: draft
+  status: approved
   title: Выбор полей возвращает ровно запрошенные поля с правильными значениями
   category: contract
   protocols:
@@ -91,6 +91,7 @@ checks:
   - contract
   - compatibility
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -127,6 +128,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -136,7 +138,7 @@ checks:
   - JSON API sparse fieldsets
   - 'Real-world bug: RWB-0026'
 - id: CONTRACT-PUBLISHED-SCHEMA-VALID
-  status: draft
+  status: approved
   title: Опубликованные сервисом описания API валидны в заявленном диалекте
   category: contract
   protocols:
@@ -147,6 +149,7 @@ checks:
   - contract
   - compatibility
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -170,6 +173,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

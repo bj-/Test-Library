@@ -386,7 +386,7 @@ checks:
     impact: medium
     likelihood: medium
 - id: GQL-EQUIVALENT-SELECTION-FORMS
-  status: draft
+  status: approved
   title: Эквивалентные формы выбора полей GraphQL дают одинаковые данные
   category: graphql
   protocols:

@@ -1273,7 +1273,7 @@ checks:
   - docs/decisions/0002-expected-behavior-sources.md
   - 'Real-world bug: RWB-0058'
 - id: AUTH-TOKEN-INTROSPECTION
-  status: draft
+  status: approved
   title: Интроспекция токена возвращает актуальное состояние и те же claims, что в токене
   category: security
   protocols:
@@ -1285,6 +1285,7 @@ checks:
   - authn
   - token-lifecycle
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -1308,6 +1309,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -1318,7 +1320,7 @@ checks:
   - RFC 8693 §4.1
   - 'Real-world bug: RWB-0010'
 - id: AUTH-SESSION-NOT-BEFORE-LOGIN
-  status: draft
+  status: approved
   title: Анонимный запрос не получает cookie сессии и не создаёт серверную сессию
   category: security
   protocols:
@@ -1363,7 +1365,7 @@ checks:
   - OWASP Session Management Cheat Sheet
   - 'Real-world bug: RWB-0011'
 - id: AUTH-REFRESH-PRESERVES-SCOPE
-  status: draft
+  status: approved
   title: Refresh без параметра scope сохраняет scope исходной авторизации
   category: security
   protocols:
@@ -1376,6 +1378,7 @@ checks:
   - token-lifecycle
   - roles-scopes
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -1395,6 +1398,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -1405,7 +1409,7 @@ checks:
   - OpenID Connect Core §12
   - 'Real-world bug: RWB-0018'
 - id: AUTH-MFA-UNENROLLED-ERROR
-  status: draft
+  status: approved
   title: Ошибка шага второго фактора у пользователя без зарегистрированного фактора — обычная 4xx
   category: security
   protocols:
@@ -1417,6 +1421,7 @@ checks:
   - authn
   - error-handling
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -1436,6 +1441,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -1445,7 +1451,7 @@ checks:
   - CWE-755
   - 'Real-world bug: RWB-0019'
 - id: AUTH-OAUTH-PAR
-  status: draft
+  status: approved
   title: Pushed Authorization Request действует как прямой запрос авторизации и не ограничивает длительность входа
   category: security
   protocols:
@@ -1486,7 +1492,7 @@ checks:
   - RFC 9126 §2.2, §4
   - 'Real-world bug: RWB-0020'
 - id: AUTH-GENERATED-SECRET-STRENGTH
-  status: draft
+  status: approved
   title: Сгенерированные сервером секреты имеют стойкость не ниже требуемой алгоритмом
   category: security
   protocols:
@@ -1498,6 +1504,7 @@ checks:
   - hardening
   - authn
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -1516,6 +1523,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -1526,7 +1534,7 @@ checks:
   - CWE-331
   - 'Real-world bug: RWB-0034'
 - id: AUTH-TOKEN-RESERVED-CLAIMS
-  status: draft
+  status: approved
   title: Пользовательские поля не переопределяют зарезервированные claims токена
   category: security
   protocols:
@@ -1539,8 +1547,10 @@ checks:
   - token-lifecycle
   - privilege-escalation
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - В токен при входе включаются поля профиля пользователя.
   steps:
@@ -1557,8 +1567,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: critical
     likelihood: low
@@ -1567,7 +1579,7 @@ checks:
   - CWE-915
   - 'Real-world bug: RWB-0038'
 - id: AUTH-OAUTH-RESOURCE-INDICATOR
-  status: draft
+  status: approved
   title: Индикатор ресурса, не соответствующий аудитории клиента, даёт 400 invalid_target
   category: security
   protocols:
@@ -1606,7 +1618,7 @@ checks:
   - RFC 6749 §5.2
   - 'Real-world bug: RWB-0039'
 - id: AUTH-EXTERNAL-IDP-UNVERIFIED-EMAIL
-  status: draft
+  status: approved
   title: Вход через внешний IdP не связывается с учёткой по неподтверждённому email
   category: security
   protocols:
@@ -1619,8 +1631,10 @@ checks:
   - authn
   - privilege-escalation
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Включён вход через внешний OAuth/OIDC-провайдер; учётка ищется по email; есть тестовый IdP.
   steps:
@@ -1642,8 +1656,10 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: critical
     likelihood: medium
@@ -1653,7 +1669,7 @@ checks:
   - CWE-287
   - 'Real-world bug: RWB-0041'
 - id: AUTH-TOKEN-SENDER-CONSTRAINED
-  status: draft
+  status: approved
   title: Обмен и обновление токена сохраняют привязку к отправителю (DPoP, mTLS)
   category: security
   protocols:
@@ -1665,6 +1681,7 @@ checks:
   - authn
   - token-lifecycle
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -1689,6 +1706,7 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

@@ -1049,7 +1049,7 @@ checks:
     impact: high
     likelihood: medium
 - id: VAL-DEFERRED-FAILURE
-  status: draft
+  status: approved
   title: Принятые при записи данные не вызывают 5xx в зависимых операциях
   category: validation
   protocols:
@@ -1062,6 +1062,7 @@ checks:
   - data-integrity
   - error-handling
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -1098,6 +1099,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

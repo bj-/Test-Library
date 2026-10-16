@@ -1,6 +1,6 @@
 checks:
 - id: SEC-IDENTITY-PROOF-OF-POSSESSION
-  status: draft
+  status: approved
   title: Заявленная клиентом идентичность без доказательства владения не даёт прав и льгот
   category: security
   protocols:
@@ -14,8 +14,10 @@ checks:
   - business-logic
   - money
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Запрос содержит идентификатор (адрес кошелька, DID, account id), по которому сервер выдаёт льготу или доступ.
   steps:
@@ -44,8 +46,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: low

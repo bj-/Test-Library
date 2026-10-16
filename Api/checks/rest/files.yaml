@@ -479,7 +479,7 @@ checks:
     impact: low
     likelihood: medium
 - id: FILE-TRANSFORM-LIMITS
-  status: draft
+  status: approved
   title: Лимит трансформации файла пропускает допустимые комбинации и отклоняет превышение
   category: files
   protocols:
@@ -519,7 +519,7 @@ checks:
   - OWASP API4:2023
   - 'Real-world bug: RWB-0012'
 - id: FILE-MALFORMED-STRUCTURE
-  status: draft
+  status: approved
   title: Повреждённый файл при разборе метаданных даёт 4xx, а не падение процесса
   category: files
   protocols:
@@ -532,6 +532,7 @@ checks:
   - resilience
   - hardening
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -574,6 +575,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -584,7 +586,7 @@ checks:
   - CWE-400
   - 'Real-world bug: RWB-0031'
 - id: FILE-UPLOAD-KEY-COLLISION
-  status: draft
+  status: approved
   title: Загрузка не перезаписывает чужой файл с тем же именем или ключом хранилища
   category: files
   protocols:
@@ -597,8 +599,10 @@ checks:
   - ownership
   - authz
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Разные владельцы или коллекции хранят файлы в общем хранилище.
   steps:
@@ -617,8 +621,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: low
@@ -627,7 +633,7 @@ checks:
   - CWE-639
   - 'Real-world bug: RWB-0037'
 - id: FILE-ABORTED-UPLOAD-CLEANUP
-  status: draft
+  status: approved
   title: Прерванная загрузка не оставляет данных в хранилище и не учитывается в квоте
   category: files
   protocols:

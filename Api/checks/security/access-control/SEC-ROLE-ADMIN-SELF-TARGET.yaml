@@ -1,6 +1,6 @@
 checks:
 - id: SEC-ROLE-ADMIN-SELF-TARGET
-  status: draft
+  status: approved
   title: Административная операция над собственной учёткой обрабатывается по политике без 5xx
   category: security
   protocols:
@@ -13,6 +13,7 @@ checks:
   - roles-scopes
   - error-handling
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -31,6 +32,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

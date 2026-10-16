@@ -1,6 +1,6 @@
 checks:
 - id: SEC-AUTHZ-RECREATED-IDENTITY
-  status: draft
+  status: approved
   title: Права и согласия не переходят к пересозданному пользователю с тем же логином
   category: security
   protocols:
@@ -13,8 +13,10 @@ checks:
   - privilege-escalation
   - token-lifecycle
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Можно удалить пользователя и создать нового с тем же логином или email.
   steps:
@@ -31,8 +33,10 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: low

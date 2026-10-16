@@ -345,7 +345,7 @@ checks:
   references:
   - 'Real-world bug: RWB-0051'
 - id: ASYNC-RPC-ERROR-PROPAGATION
-  status: draft
+  status: approved
   title: Ошибка обработчика в схеме запрос-ответ через брокер возвращается вызывающему
   category: async
   protocols:
@@ -357,6 +357,7 @@ checks:
   - async-jobs
   - error-handling
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -374,6 +375,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -383,7 +385,7 @@ checks:
   - CWE-755
   - 'Real-world bug: RWB-0032'
 - id: ASYNC-MESSAGE-VALIDATION
-  status: draft
+  status: approved
   title: Входящие сообщения брокера валидируются по схеме так же, как HTTP-запросы
   category: async
   protocols:
@@ -395,6 +397,7 @@ checks:
   - validation
   - async-jobs
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -412,6 +415,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -421,7 +425,7 @@ checks:
   - CWE-20
   - 'Real-world bug: RWB-0033'
 - id: ASYNC-EVENT-PATH-SAME-RULES
-  status: draft
+  status: approved
   title: Событийный путь применяет те же фильтры и границы доступа, что и плановый
   category: async
   protocols:
@@ -434,8 +438,10 @@ checks:
   - webhooks
   - authz
   - real-world-bug
+  - ci
   - regression
   - nightly
+  - release
   preconditions:
   - Объекты или пользователи попадают в систему двумя путями — плановой синхронизацией с фильтрами и входящим событием или
     вебхуком.
@@ -457,8 +463,10 @@ checks:
     level: partial
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
+  - Release
   risk:
     impact: high
     likelihood: medium
@@ -467,7 +475,7 @@ checks:
   - CWE-863
   - 'Real-world bug: RWB-0040'
 - id: ASYNC-SSE-STREAM
-  status: draft
+  status: approved
   title: Потоковый ответ SSE работает для всех методов и отдаёт text/event-stream
   category: async
   protocols:
@@ -478,6 +486,7 @@ checks:
   - contract
   - streaming
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -495,6 +504,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:

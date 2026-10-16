@@ -171,7 +171,7 @@ checks:
     impact: low
     likelihood: medium
 - id: PRIV-RESPONSE-FOREIGN-DATA
-  status: draft
+  status: approved
   title: Ответ не содержит фрагментов данных других запросов и памяти процесса
   category: privacy
   protocols:

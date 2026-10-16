@@ -79,7 +79,7 @@ checks:
   references:
   - 'Real-world bug: RWB-0118'
 - id: REST-FILTER-OPERATOR-TYPE-MATRIX
-  status: draft
+  status: approved
   title: Каждый оператор фильтра работает для каждого допустимого типа поля и возвращает ровно подходящие записи
   category: pagination
   protocols:
@@ -93,6 +93,7 @@ checks:
   - validation
   - data-integrity
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -124,6 +125,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
@@ -133,7 +135,7 @@ checks:
   - Документация операторов фильтра
   - 'Real-world bug: RWB-0001'
 - id: REST-FILTER-EQUIVALENT-FORMS
-  status: draft
+  status: approved
   title: Логически эквивалентные формы фильтра дают одинаковый ответ
   category: pagination
   protocols:

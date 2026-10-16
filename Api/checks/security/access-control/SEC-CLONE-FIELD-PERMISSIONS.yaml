@@ -1,6 +1,6 @@
 checks:
 - id: SEC-CLONE-FIELD-PERMISSIONS
-  status: draft
+  status: approved
   title: Копирование ресурса соблюдает полевые права чтения и создания
   category: security
   protocols:
@@ -12,6 +12,7 @@ checks:
   - security
   - authz
   - real-world-bug
+  - ci
   - regression
   - nightly
   preconditions:
@@ -34,6 +35,7 @@ checks:
     level: full
     deterministic: true
   profiles:
+  - CI
   - Regression
   - Nightly
   risk:
