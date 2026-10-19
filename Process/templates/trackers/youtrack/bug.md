@@ -1,7 +1,7 @@
 <!--
-Шаблон задачи-бага для YouTrack. Перенос из базового бага (test-runs/bugs/BUG-NNNN-*.md):
+Шаблон задачи-бага для YouTrack. Перенос из базового бага (test-runs/bugs/BUG-<PRJ>-NNNN-*.md):
 1. «Заголовок» -> поле Summary новой задачи: префикс темы из настроек запускающего (по умолчанию [AT]) + заголовок
-   базового бага без номера BUG-NNNN.
+   базового бага без номера BUG-<PRJ>-NNNN.
 2. Всё между маркерами ОПИСАНИЕ -> поле Description (YouTrack понимает Markdown: таблицы, ```-блоки с подсветкой).
 3. «Команда» -> окно команд задачи (Ctrl+Alt+J / «Применить команду»): заполняет поля и метки одной строкой;
    метки - из настроек запускающего (по умолчанию Autotest).
@@ -24,7 +24,7 @@ Type Bug Severity <Minor> Subsystem <BFF-Admin-Auth> tag <метка, по ум�
 <!-- ОПИСАНИЕ: начало -->
 **Стенд:** <baseUrl> (версия <...>)
 **Учётка:** `<логин>` / `<пароль>` (стенд не production)
-**Найден:** <YYYY-MM-DD>, [прогон <каталог>](https://gitlab.viiitech.ru/test/test-runs/-/blob/main/runs/<Модуль>/<каталог>/report.md), баг-файл [BUG-NNNN](https://gitlab.viiitech.ru/test/test-runs/-/blob/main/bugs/<файл>.md)
+**Найден:** <YYYY-MM-DD>, [прогон <каталог>](https://gitlab.viiitech.ru/test/test-runs/-/blob/main/runs/<Модуль>/<каталог>/report.md), баг-файл [BUG-<PRJ>-NNNN](https://gitlab.viiitech.ru/test/test-runs/-/blob/main/bugs/<файл>.md)
 
 ### Описание
 

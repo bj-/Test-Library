@@ -120,7 +120,7 @@ sources.yaml → [1 сбор] → raw/*.jsonl → [2 фильтр] → [3 три
 
 | Источник | Почему | Фильтр |
 |---|---|---|
-| `nestjs/nest`, `expressjs/express`, `expressjs/body-parser`, `expressjs/session`, `jshttp/cookie` | Парсинг тел, cookie, сессии, коды ошибок: прямо наши находки (BUG-0002…0008) | closed + label bug, связанный PR |
+| `nestjs/nest`, `expressjs/express`, `expressjs/body-parser`, `expressjs/session`, `jshttp/cookie` | Парсинг тел, cookie, сессии, коды ошибок: прямо наши находки (BUG-BFF-0002…0008) | closed + label bug, связанный PR |
 | `keycloak/keycloak` | Аутентификация, токены, сессии, logout, brute-force detection | label `kind/bug`, area `authentication`/`oidc` |
 | `strapi/strapi`, `directus/directus` | Node-продукты, где API и есть продукт: фильтры, пагинация, права, mass assignment | closed bug + PR |
 | GitHub Security Advisories, ecosystem npm | Уязвимости с CWE: BOLA, mass assignment, prototype pollution, ReDoS, SSRF | `ecosystem:npm`, CWE из списка OWASP API Top 10 |
