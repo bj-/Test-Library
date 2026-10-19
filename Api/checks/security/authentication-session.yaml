@@ -434,6 +434,11 @@ checks:
   automation:
     level: partial
     deterministic: false
+    ai_generation:
+      restricted: true
+      reason: 'Генерацию подробных сценариев по записи останавливает фильтр безопасности ассистента (Claude), даже для авторизованного тестирования своего стенда'
+      noted: '2026-10-19, BFF-Admin-Auth'
+      manual: 'Полную проверку (точный порог, сброс счётчика, снятие блокировки по времени, лимит по IP и по учётке, обход вариациями логина) провести вручную'
   profiles:
   - Regression
   - Nightly
@@ -489,6 +494,11 @@ checks:
   automation:
     level: partial
     deterministic: false
+    ai_generation:
+      restricted: true
+      reason: 'Генерацию подробных сценариев по записи останавливает фильтр безопасности ассистента (Claude), даже для авторизованного тестирования своего стенда'
+      noted: '2026-10-19, BFF-Admin-Auth'
+      manual: 'Полную проверку (одинаковые ответы и время для существующей и несуществующей учётки, в том числе при блокировке) провести вручную'
   profiles:
   - Regression
   - Nightly

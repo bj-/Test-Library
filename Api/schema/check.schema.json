@@ -161,6 +161,28 @@
         },
         "notes": {
           "type": "string"
+        },
+        "ai_generation": {
+          "type": "object",
+          "description": "Ограничения генерации тестов ассистентом (LLM): restricted - генерация подробных сценариев по записи останавливается фильтром безопасности ассистента; тест по записи помечается неполным, полная проверка - вручную",
+          "required": [
+            "restricted"
+          ],
+          "properties": {
+            "restricted": {
+              "type": "boolean"
+            },
+            "reason": {
+              "type": "string"
+            },
+            "noted": {
+              "type": "string"
+            },
+            "manual": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
