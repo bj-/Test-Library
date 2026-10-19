@@ -1,6 +1,6 @@
 # Шаблоны багов под трекеры
 
-Баг сначала оформляется по базовому шаблону [`../bug.md`](../bug.md) (файл в `test-runs/bugs/`), затем при переносе
+Баг сначала оформляется по базовому шаблону [`../bug.md`](../bug.md) (файл в `bugs/` репозитория результатов), затем при переносе
 в трекер - по шаблону трекера из этой папки. Содержание то же; меняются разметка, разбиение на поля и способ
 заполнения полей трекера.
 
@@ -13,7 +13,7 @@
 
 Тип и адрес трекера выбирает тот, кто запускает прогон:
 
-- в `postman/.local/tracker.yaml` (не в git, у каждого свой; образец - `postman/tools/run/tracker.example.yaml`):
+- в `tests/.local/tracker.yaml` (не в git, у каждого свой; образец - `test-engine/examples/tracker.example.yaml`):
   ```yaml
   type: youtrack                        # имя папки здесь
   url: https://youtrack.example.ru      # адрес трекера
@@ -21,12 +21,12 @@
   summary_prefix: '[AT]'                # префикс темы бага, по умолчанию [AT]
   tags: [Autotest]                      # метки бага, по умолчанию Autotest
   ```
-- или ключами `run.py --tracker youtrack --tracker-url <адрес> --tracker-project <ключ> --bug-prefix <префикс>
+- или ключами `autotest.py run --tracker youtrack --tracker-url <адрес> --tracker-project <ключ> --bug-prefix <префикс>
   --bug-tag <метка>` (`--bug-tag` можно несколько; ключи перекрывают файл).
 
 Тема бага в трекере = префикс + заголовок базового бага (без номера BUG-<PRJ>-NNNN); метки ставятся все из настроек.
 
-Заводит баги `postman/tools/run/file_bugs.py` - только после решения пользователя (режимы `ask` / `auto` / `links`,
+Заводит баги `python autotest.py file-bugs` - только после решения пользователя (режимы `ask` / `auto` / `links`,
 `../../bugs.md`, «Заведение в трекер»). Для `auto` нужен токен трекера: env `TRACKER_TOKEN` (или `token` в
 `.local/tracker.yaml`; в git не класть).
 

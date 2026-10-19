@@ -34,7 +34,7 @@ fields:
       reopened: Reopened
 
 tags: "{tags}"                                # метки из настроек запускающего (по умолчанию [Autotest]);
-                                              # связь с файлом test-runs - ссылкой в описании
+                                              # связь с файлом бага - ссылкой в описании
 
 # Команда для окна команд YouTrack (заполняет поля одной строкой):
 command: "Type Bug Severity {Severity} Subsystem {Subsystem} {tag <метка> для каждой метки}"

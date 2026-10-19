@@ -1,6 +1,6 @@
 # Статус проекта
 
-_Последнее обновление: 2026-10-16_
+_Последнее обновление: 2026-10-19_
 
 ## Цель / текущий фокус
 
@@ -137,3 +137,4 @@ _Последнее обновление: 2026-10-16_
 | 2026-10-17 | Claude | Разбор inbox №318–344 (27 идей UI/DB keycloak): 23 шага к существующим UI-, DB- и API-записям, 4 уже покрыты; новых записей нет; inbox разобран целиком (344 идеи) |
 | 2026-10-17 | Claude | Подготовка нового сбора: `collect.py` дособирает источник, если поднят `max_items` (продолжение с позиции, признак `exhausted` — история кончилась), `batch.py remaining` = -1 и в этом случае; `sources.yaml` — kong, postgrest, kubernetes, hasura до 300, ghsa-nuget, supabase-auth, strapi — «не продолжать»; `sessions.md` — условие сбора и новая очередь (kong, postgrest, gRPC ×4, graphql-js, ghsa-pip, kubernetes, hasura) |
 | 2026-10-17 | Claude / bj | Правило (решение bj): при каждой генерации и перегенерации коллекции подбирать проверки из последней версии библиотеки — все применимые записи и их шаги, коммит библиотеки и неприменимое в `analysis.md` (`Process/collections.md`, п. 1.4; п. 5 — минимум); цифры в `Api/docs/TEST_SELECTION_AND_COMMANDS.md` обновлены (631 / 583 approved) |
+| 2026-10-19 | Claude / demopolish | [ADR 0007](decisions/0007-autotest-workspace.md): рабочее место `C:\Git\Autotest`, движок `test-engine`, результаты BFF — репозиторий `autotest/bff` (вместо `test-runs`), RUN-ID и `run.yaml`, tinySmoke, `X-Request-ID`; `Process/` переписан под новую раскладку |

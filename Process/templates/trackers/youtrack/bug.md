@@ -1,14 +1,14 @@
 <!--
-Шаблон задачи-бага для YouTrack. Перенос из базового бага (test-runs/bugs/BUG-<PRJ>-NNNN-*.md):
+Шаблон задачи-бага для YouTrack. Перенос из базового бага (bugs/BUG-<PRJ>-NNNN-*.md репозитория результатов):
 1. «Заголовок» -> поле Summary новой задачи: префикс темы из настроек запускающего (по умолчанию [AT]) + заголовок
    базового бага без номера BUG-<PRJ>-NNNN.
 2. Всё между маркерами ОПИСАНИЕ -> поле Description (YouTrack понимает Markdown: таблицы, ```-блоки с подсветкой).
 3. «Команда» -> окно команд задачи (Ctrl+Alt+J / «Применить команду»): заполняет поля и метки одной строкой;
    метки - из настроек запускающего (по умолчанию Autotest).
    Названия полей и значений - fields.yaml; сверить с проектом в YouTrack.
-4. Ссылку на задачу записать в поле «Трекер» базового бага, номер задачи - в реестр test-runs/bugs/README.md.
-Ссылки на прогоны и файлы test-runs в описании - полные URL репозитория (относительные в YouTrack не работают):
-https://gitlab.viiitech.ru/test/test-runs/-/blob/main/<путь>
+4. Ссылку на задачу записать в поле «Трекер» базового бага, номер задачи - в реестр bugs/README.md.
+Ссылки на прогоны и файлы репозитория результатов в описании - полные URL репозитория (относительные в YouTrack не работают):
+<results.url из autotest.yaml проекта><путь>, для BFF - https://gitlab.viiitech.ru/test/autotest/bff/-/blob/main/<путь>
 -->
 
 ## Заголовок
@@ -24,7 +24,7 @@ Type Bug Severity <Minor> Subsystem <BFF-Admin-Auth> tag <метка, по ум�
 <!-- ОПИСАНИЕ: начало -->
 **Стенд:** <baseUrl> (версия <...>)
 **Учётка:** `<логин>` / `<пароль>` (стенд не production)
-**Найден:** <YYYY-MM-DD>, [прогон <каталог>](https://gitlab.viiitech.ru/test/test-runs/-/blob/main/runs/<Модуль>/<каталог>/report.md), баг-файл [BUG-<PRJ>-NNNN](https://gitlab.viiitech.ru/test/test-runs/-/blob/main/bugs/<файл>.md)
+**Найден:** <YYYY-MM-DD>, [прогон <каталог>](<results.url>runs/<YYYY>/<MM>/<RUN-ID>/report.md), баг-файл [BUG-<PRJ>-NNNN](<results.url>bugs/BUG-<PRJ>-NNNN-<имя>.md)
 
 ### Описание
 
