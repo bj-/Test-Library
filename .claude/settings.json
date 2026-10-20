@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(**/restricted/**)",
+      "Edit(**/restricted/**)",
+      "Write(**/restricted/**)",
+      "Bash(cat *restricted*)",
+      "Bash(head *restricted*)",
+      "Bash(tail *restricted*)",
+      "Bash(less *restricted*)",
+      "Bash(more *restricted*)",
+      "Bash(sed *restricted*)",
+      "Bash(awk *restricted*)",
+      "Bash(grep *restricted/*)",
+      "Bash(rg *restricted/*)",
+      "Bash(type *restricted*)",
+      "Bash(git show *restricted*)",
+      "Bash(git diff *restricted*)",
+      "Bash(git log -p*)",
+      "PowerShell(Get-Content *restricted*)",
+      "PowerShell(gc *restricted*)",
+      "PowerShell(cat *restricted*)",
+      "PowerShell(type *restricted*)",
+      "PowerShell(Select-String *restricted*)"
+    ]
+  }
+}

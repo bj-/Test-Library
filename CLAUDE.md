@@ -42,6 +42,15 @@
 - `C:\Git\Autotest` — движок `test-engine` и проекты тестов (`projects\<КОД>\tests`, `results` — прогоны и баги).
 - `postman` — коллекции, построенные по библиотеке; реальные контракты — `Api/examples/real-contracts/`.
 
+## Закрытые материалы (ADR Test-Library 0008)
+
+- Каталоги `restricted/` и блоки `<!-- ai-restricted:begin -->`…`<!-- ai-restricted:end -->` - только для человека:
+  ассистенту не читать, не искать по ним, не пересказывать и не писать в них (запрет - `.claude/settings.json`).
+- Тесты, баги и отчёты прогонов читать через `python autotest.py view <путь>`; дубли багов - `python autotest.py dupes`
+  (без LLM); задачи трекера с тегом `ai-restricted` - без описания (`yt.py show` его скрывает).
+- Тесты `[DRAFT]` и записи с `automation.ai_generation.restricted` не расширять и сценарии к ним не дописывать;
+  падения - ручной разбор, баг - с полем `AI-доступ: restricted` (`Test-Library/Process/bugs.md`).
+
 ## Общий контекст проекта
 
 Над проектом работают несколько человек с разных машин. Локальная история и память
