@@ -1,6 +1,6 @@
 # Статус проекта
 
-_Последнее обновление: 2026-10-19_
+_Последнее обновление: 2026-10-21_
 
 ## Цель / текущий фокус
 
@@ -14,6 +14,9 @@ _Последнее обновление: 2026-10-19_
 
 ## Следующие шаги
 
+- [ ] Тестовые значения по ссылке ([ADR 0009](decisions/0009-test-data-by-reference.md), `Process/test-data.md`): проверка изоляции (раздел 0) → сессия сбора, пилот INJ-SQL + INJ-REFLECTED-XSS → сессия словаря → очередь тем; затем генератор: `{{TD-…}}` по полю `test_data`, вердикт по отражению — в скрипте теста
+- [ ] Эксперимент A/B/C/D по стоп-темам (`ideas/LookForLLMStopers/LLM-Claude.md`, «Итог для исполнителя») — после пилота словаря
+- [ ] Примитив `attemptLimit` во фреймворке — задание другой модели: `PostmanScripts/docs/tasks/attempt-limit.md` (архив — `Api/tools/export_for_llm.py --task …`)
 - [x] Выгрузка багов, keycloak: шаги 6–7 выполнены (2026-10-17) — сверка blind с ChatGPT, Gemini, Qwen: 11 записей draft (RWB-0341…0351), №12 и №16 reject, №15 — новая запись; пруфы: 73 записи, 76 RWB, +102 бага; 11 записей **approved** (решение bj)
 - [ ] Выгрузка багов по итогам метрик (`Api/mining/metrics.md`): ещё пачки kong и postgrest (затем kubernetes, hasura); gRPC-источники (не начаты); ghsa-nuget, supabase-auth, strapi (API) — не продолжать
 
@@ -139,3 +142,4 @@ _Последнее обновление: 2026-10-19_
 | 2026-10-17 | Claude / bj | Правило (решение bj): при каждой генерации и перегенерации коллекции подбирать проверки из последней версии библиотеки — все применимые записи и их шаги, коммит библиотеки и неприменимое в `analysis.md` (`Process/collections.md`, п. 1.4; п. 5 — минимум); цифры в `Api/docs/TEST_SELECTION_AND_COMMANDS.md` обновлены (631 / 583 approved) |
 | 2026-10-19 | Claude / demopolish | [ADR 0007](decisions/0007-autotest-workspace.md): рабочее место `C:\Git\Autotest`, движок `test-engine`, результаты BFF — репозиторий `autotest/bff` (вместо `test-runs`), RUN-ID и `run.yaml`, tinySmoke, `X-Request-ID`; `Process/` переписан под новую раскладку |
 | 2026-10-20 | Claude / bj | [ADR 0008](decisions/0008-ai-restricted-isolation.md): изоляция чувствительных проверок от ассистента - стоп-темы `Api/taxonomy/ai-stop-topics.yaml`, подробности restricted-записей в `Api/restricted/` (`tools/restrict_records.py`: перенос, `--restore`, `--suggest`, `--flag`, `--check`; перенесены AUTH-BRUTE-FORCE-PROTECTION, AUTH-USER-ENUMERATION без потерь), схема `ai_generation.details/checklist`, запрет `restricted/` в `.claude/settings.json`, правила в `CLAUDE.md`, `Process/bugs.md` («Баги с ограничением AI»), `collections.md` (заготовки `[DRAFT]`), шаблон бага (`AI-доступ`) |
+| 2026-10-21 | Claude / demopolish | Идея LookForLLMStopers: разбор `ideas/LookForLLMStopers/LLM-Claude.md` (части 1–2); [ADR 0009](decisions/0009-test-data-by-reference.md) — тестовые значения по ссылке: словарь `Api/test-data/` (две сессии: сбор → inbox, словарь), `tools/test_data.py` (next-id, ingest, merge, index, check, env, html), индекс `taxonomy/test-data-index.yaml`, поле схемы `test_data`, запреты в `.claude/settings.json`, `Process/test-data.md` с промптами; `tools/export_for_llm.py` — выгрузка для внешних LLM без закрытых частей (библиотека, `--records`, `--task`) |

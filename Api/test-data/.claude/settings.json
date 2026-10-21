@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(**/Api/checks/**)",
+      "Read(**/Api/restricted/**)",
+      "Read(**/Api/ideas/**)",
+      "Read(**/Api/build/**)",
+      "Read(**/Api/mining/**)",
+      "Read(**/Api/examples/**)",
+      "Read(**/Test-Library/ideas/**)",
+      "Edit(**/Api/checks/**)",
+      "Write(**/Api/checks/**)",
+      "Bash(cat *checks*)",
+      "Bash(grep *checks*)",
+      "Bash(rg *checks*)",
+      "PowerShell(Get-Content *checks*)"
+    ]
+  }
+}

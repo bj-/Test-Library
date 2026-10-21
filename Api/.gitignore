@@ -71,3 +71,6 @@ build/mining/**
 !build/mining/*/batches/
 !build/mining/*/batches/*.out.jsonl
 !build/mining/*/batches/*.ids
+
+# Выгрузки для внешних LLM (tools/export_for_llm.py)
+build/export/

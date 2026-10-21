@@ -21,7 +21,32 @@
       "PowerShell(gc *restricted*)",
       "PowerShell(cat *restricted*)",
       "PowerShell(type *restricted*)",
-      "PowerShell(Select-String *restricted*)"
+      "PowerShell(Select-String *restricted*)",
+      "Read(**/test-data/dict/**)",
+      "Edit(**/test-data/dict/**)",
+      "Write(**/test-data/dict/**)",
+      "Read(**/test-data/build/**)",
+      "Edit(**/test-data/build/**)",
+      "Write(**/test-data/build/**)",
+      "Read(**/test-data/inbox/**)",
+      "Edit(**/test-data/inbox/**)",
+      "Bash(cat *test-data/*)",
+      "Bash(head *test-data/*)",
+      "Bash(tail *test-data/*)",
+      "Bash(less *test-data/*)",
+      "Bash(more *test-data/*)",
+      "Bash(sed *test-data/*)",
+      "Bash(awk *test-data/*)",
+      "Bash(type *test-data/*)",
+      "Bash(git show *test-data/*)",
+      "Bash(git diff *test-data/*)",
+      "Bash(grep *test-data/*)",
+      "Bash(rg *test-data/*)",
+      "PowerShell(Get-Content *test-data*)",
+      "PowerShell(gc *test-data*)",
+      "PowerShell(cat *test-data*)",
+      "PowerShell(type *test-data*)",
+      "PowerShell(Select-String *test-data*)"
     ]
   }
 }

@@ -231,6 +231,14 @@
       "items": {
         "type": "string"
       }
+    },
+    "test_data": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^(TD-[A-Z][A-Z0-9]*-[0-9]{4}|TDS-[A-Z][A-Z0-9-]*)$"
+      },
+      "description": "Тестовые значения по ссылке (ADR 0009): ID значений TD-<КЛАСС>-NNNN и наборов TDS-..., которые использует запись; значения - в test-data/dict/, ассистенту не читать; индекс без значений - taxonomy/test-data-index.yaml"
     }
   },
   "additionalProperties": false
