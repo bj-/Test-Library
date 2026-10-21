@@ -1,15 +1,14 @@
 {
   "permissions": {
     "deny": [
-      "Read(**/Api/checks/**)",
-      "Read(**/Api/restricted/**)",
-      "Read(**/Api/ideas/**)",
-      "Read(**/Api/build/**)",
-      "Read(**/Api/mining/**)",
-      "Read(**/Api/examples/**)",
-      "Read(**/Test-Library/ideas/**)",
-      "Edit(**/Api/checks/**)",
-      "Write(**/Api/checks/**)",
+      "Read(//c/Git/Test-Library/Api/checks/**)",
+      "Read(//c/Git/Test-Library/Api/restricted/**)",
+      "Read(//c/Git/Test-Library/Api/ideas/**)",
+      "Read(//c/Git/Test-Library/Api/build/**)",
+      "Read(//c/Git/Test-Library/Api/mining/**)",
+      "Read(//c/Git/Test-Library/Api/examples/**)",
+      "Read(//c/Git/Test-Library/ideas/**)",
+      "Edit(//c/Git/Test-Library/Api/checks/**)",
       "Bash(cat *checks*)",
       "Bash(grep *checks*)",
       "Bash(rg *checks*)",
