@@ -1,0 +1,36 @@
+- id: TD-FILE-0001
+  value: ../../x
+  encoding: raw
+  set: TDS-FILE-FILENAME
+  title: имя файла с выходом за каталог хранения
+  records:
+  - FILE-FILENAME-SANITIZATION
+  source: library
+  response: hidden
+  added: '2026-10-21'
+- id: TD-FILE-0002
+  value: CON
+  encoding: raw
+  set: TDS-FILE-FILENAME
+  title: зарезервированное имя устройства Windows
+  records:
+  - FILE-FILENAME-SANITIZATION
+  source: library
+  added: '2026-10-21'
+- id: TD-FILE-0003
+  value: .php.jpg
+  encoding: raw
+  set: TDS-FILE-FILENAME
+  title: двойное расширение с исполняемым серверным типом
+  records:
+  - FILE-FILENAME-SANITIZATION
+  source: library
+  added: '2026-10-21'
+- id: TD-FILE-0004
+  value: xlink:HrEf
+  encoding: raw
+  title: атрибут ссылки SVG в смешанном регистре
+  records:
+  - FILE-ARCHIVE-BOMB
+  source: library
+  added: '2026-10-21'

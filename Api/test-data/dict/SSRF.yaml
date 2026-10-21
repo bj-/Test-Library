@@ -50,5 +50,15 @@
   title: IPv4-литерал адреса облачных метаданных
   records:
   - INJ-SSRF-PARAMETERS
+  - ASYNC-WEBHOOK-URL-SSRF
+  source: library
+  added: '2026-10-21'
+- id: TD-SSRF-0007
+  value: localhost
+  encoding: raw
+  set: TDS-SSRF-WEBHOOK-INTERNAL
+  title: внутреннее имя хоста для URL вебхука
+  records:
+  - ASYNC-WEBHOOK-URL-SSRF
   source: library
   added: '2026-10-21'

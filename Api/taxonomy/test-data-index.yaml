@@ -154,6 +154,45 @@ values:
     response: visible
     length: 5
     sha256: 2ca25de1f2de
+  TD-FILE-0001:
+    title: имя файла с выходом за каталог хранения
+    set: TDS-FILE-FILENAME
+    records:
+    - FILE-FILENAME-SANITIZATION
+    response: hidden
+    length: 7
+    sha256: 9cdf6a50100a
+  TD-FILE-0002:
+    title: зарезервированное имя устройства Windows
+    set: TDS-FILE-FILENAME
+    records:
+    - FILE-FILENAME-SANITIZATION
+    response: visible
+    length: 3
+    sha256: a3dbc4b644a9
+  TD-FILE-0003:
+    title: двойное расширение с исполняемым серверным типом
+    set: TDS-FILE-FILENAME
+    records:
+    - FILE-FILENAME-SANITIZATION
+    response: visible
+    length: 8
+    sha256: 86879fe823ed
+  TD-FILE-0004:
+    title: атрибут ссылки SVG в смешанном регистре
+    records:
+    - FILE-ARCHIVE-BOMB
+    response: visible
+    length: 10
+    sha256: a0c0105d4feb
+  TD-JWT-0001:
+    title: параметр заголовка JWT о сжатии payload
+    records:
+    - FILE-ARCHIVE-BOMB
+    - FILE-MALFORMED-STRUCTURE
+    response: visible
+    length: 7
+    sha256: a467c54a4120
   TD-LOG-0001:
     title: Журнал, перевод строки в escape-записи
     set: TDS-LOG-NEWLINE
@@ -304,6 +343,29 @@ values:
     response: visible
     length: 37
     sha256: 5d74f0983cdf
+  TD-RANGE-0001:
+    title: диапазон с начала файла
+    set: TDS-RANGE-BASIC
+    records:
+    - FILE-RANGE-REQUESTS
+    response: visible
+    length: 10
+    sha256: 00af7d1179e7
+  TD-RANGE-0002:
+    title: диапазон от конца файла
+    set: TDS-RANGE-BASIC
+    records:
+    - FILE-RANGE-REQUESTS
+    response: visible
+    length: 10
+    sha256: a388e83489d3
+  TD-RANGE-0003:
+    title: минимальный диапазон для многократного повтора
+    records:
+    - FILE-RANGE-REQUESTS
+    response: visible
+    length: 3
+    sha256: 22841ea360fc
   TD-REDOS-0001:
     title: строка для катастрофического backtracking в regex-валидации полей
     records:
@@ -416,9 +478,18 @@ values:
     set: TDS-SSRF-INTERNAL-IP
     records:
     - INJ-SSRF-PARAMETERS
+    - ASYNC-WEBHOOK-URL-SSRF
     response: hidden
     length: 15
     sha256: 34146ce1ba49
+  TD-SSRF-0007:
+    title: внутреннее имя хоста для URL вебхука
+    set: TDS-SSRF-WEBHOOK-INTERNAL
+    records:
+    - ASYNC-WEBHOOK-URL-SSRF
+    response: hidden
+    length: 9
+    sha256: 49960de5880e
   TD-TPL-0001:
     title: Шаблон, арифметическое выражение (Jinja/Twig-подобный)
     set: TDS-TPL-EXPRESSION
@@ -521,6 +592,10 @@ sets:
   - TD-EVAL-0002
   - TD-EVAL-0003
   - TD-EVAL-0004
+  TDS-FILE-FILENAME:
+  - TD-FILE-0001
+  - TD-FILE-0002
+  - TD-FILE-0003
   TDS-LOG-NEWLINE:
   - TD-LOG-0001
   - TD-LOG-0002
@@ -544,6 +619,9 @@ sets:
   TDS-PROTO-BASIC:
   - TD-PROTO-0001
   - TD-PROTO-0002
+  TDS-RANGE-BASIC:
+  - TD-RANGE-0001
+  - TD-RANGE-0002
   TDS-SQLI-BASIC:
   - TD-SQLI-0001
   - TD-SQLI-0002
@@ -558,6 +636,8 @@ sets:
   TDS-SSRF-INTERNAL-IP:
   - TD-SSRF-0005
   - TD-SSRF-0006
+  TDS-SSRF-WEBHOOK-INTERNAL:
+  - TD-SSRF-0007
   TDS-TPL-EXPRESSION:
   - TD-TPL-0001
   - TD-TPL-0002
@@ -570,14 +650,5 @@ sets:
   - TD-XSS-0002
   - TD-XSS-0003
 reserved:
-- TD-FILE-0001
-- TD-FILE-0002
-- TD-FILE-0003
-- TD-FILE-0004
-- TD-JWT-0001
 - TD-JWT-0002
-- TD-RANGE-0001
-- TD-RANGE-0002
-- TD-RANGE-0003
-- TD-SSRF-0007
 - TD-SSRF-0008

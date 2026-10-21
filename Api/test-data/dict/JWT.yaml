@@ -1,0 +1,9 @@
+- id: TD-JWT-0001
+  value: zip=DEF
+  encoding: raw
+  title: параметр заголовка JWT о сжатии payload
+  records:
+  - FILE-ARCHIVE-BOMB
+  - FILE-MALFORMED-STRUCTURE
+  source: library
+  added: '2026-10-21'

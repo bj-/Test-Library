@@ -1,0 +1,26 @@
+- id: TD-RANGE-0001
+  value: bytes=0-99
+  encoding: raw
+  set: TDS-RANGE-BASIC
+  title: диапазон с начала файла
+  records:
+  - FILE-RANGE-REQUESTS
+  source: library
+  added: '2026-10-21'
+- id: TD-RANGE-0002
+  value: bytes=-100
+  encoding: raw
+  set: TDS-RANGE-BASIC
+  title: диапазон от конца файла
+  records:
+  - FILE-RANGE-REQUESTS
+  source: library
+  added: '2026-10-21'
+- id: TD-RANGE-0003
+  value: 0-0
+  encoding: raw
+  title: минимальный диапазон для многократного повтора
+  records:
+  - FILE-RANGE-REQUESTS
+  source: library
+  added: '2026-10-21'

@@ -1,6 +1,0 @@
-- id: TD-JWT-0002
-  value: "zip=DEF"
-  encoding: raw
-  title: Параметр заголовка JWT о сжатии payload
-  records: [FILE-MALFORMED-STRUCTURE]
-  source: library
