@@ -1,6 +1,7 @@
 """Словарь тестовых значений по ссылке (ADR 0009): значения - в test-data/dict/, в записях и тестах - только ID.
 
     python tools/test_data.py next-id SQLI [N]  # зарезервировать N следующих ID класса (печатает ID)
+    python tools/test_data.py put FILE [ИМЯ]    # перенести файл сессии сбора в inbox/ (исходный удаляется; inbox закрыт для Write)
     python tools/test_data.py ingest            # inbox/*.yaml -> dict/<КЛАСС>.yaml, индекс; дубли значений -> ссылки
     python tools/test_data.py merge OLD NEW     # убрать OLD из словаря, ссылки на него в записях -> NEW
     python tools/test_data.py index             # пересобрать публичный индекс taxonomy/test-data-index.yaml
@@ -100,6 +101,25 @@ def relink(old, new):
             f.write_text(t2, encoding="utf-8")
             n += 1
     return n
+
+
+def cmd_put(src, name=None):
+    """Файл сессии сбора -> inbox/. Инструмент Write в inbox/ не пишет: запрет чтения каталога закрывает и запись."""
+    src = Path(src)
+    try:
+        batch = load_list(src)
+    except yaml.YAMLError as ex:
+        sys.exit(f"{src.name}: не YAML ({ex.__class__.__name__})")
+    if not isinstance(batch, list) or not all(isinstance(e, dict) and ID_RE.match(str(e.get("id", ""))) and "value" in e
+                                              for e in batch):
+        sys.exit(f"{src.name}: нужен список записей с id вида TD-<КЛАСС>-NNNN и value (формат - test-data/README.md)")
+    INBOX.mkdir(parents=True, exist_ok=True)
+    dst = INBOX / (name or f"{datetime.date.today().isoformat()}-{src.stem}.yaml")
+    if dst.exists():
+        sys.exit(f"уже есть {dst.name} - другое имя")
+    dst.write_bytes(src.read_bytes())
+    src.unlink()
+    print(f"в inbox: {len(batch)} - {' '.join(str(e['id']) for e in batch)} -> {dst.name}")
 
 
 def cmd_ingest():
@@ -218,6 +238,9 @@ def main():
     p = sub.add_parser("next-id")
     p.add_argument("cls")
     p.add_argument("n", nargs="?", type=int, default=1)
+    p = sub.add_parser("put")
+    p.add_argument("src")
+    p.add_argument("name", nargs="?")
     p = sub.add_parser("merge")
     p.add_argument("old")
     p.add_argument("new")
@@ -226,6 +249,8 @@ def main():
     a = ap.parse_args()
     if a.cmd == "next-id":
         return cmd_next_id(a.cls, a.n)
+    if a.cmd == "put":
+        return cmd_put(a.src, a.name)
     if a.cmd == "merge":
         return cmd_merge(a.old, a.new)
     if a.cmd == "index":
