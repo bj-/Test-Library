@@ -30,7 +30,10 @@ DICT, INBOX, BUILD = TD / "dict", TD / "inbox", TD / "build"
 INDEX = ROOT / "taxonomy" / "test-data-index.yaml"
 ID_RE = re.compile(r"^TD-([A-Z][A-Z0-9]*)-(\d{4})$")
 REF_RE = re.compile(r"\bTD-[A-Z][A-Z0-9]*-\d{4}\b|\bTDS-[A-Z][A-Z0-9-]*\b")   # значение или набор
-FIELDS = ("id", "value", "encoding", "set", "title", "records", "source", "added")
+FIELDS = ("id", "value", "encoding", "set", "title", "records", "source", "response", "detect", "added")
+# Тело ответа на значение этих классов модели не показывается (сервер может вернуть свои данные: файлы, ответы
+# внутренних служб); у значения - поле response: visible | hidden. Остальные классы - visible: тело очищено от значений.
+HIDDEN_CLASSES = {"PATH", "SSRF", "XXE"}
 
 
 def load_list(path):
@@ -47,6 +50,22 @@ def raw_value(e):
     """Значение как строка для запроса: encoding base64 - для двоичных и чувствительных к пробелам значений."""
     v = str(e.get("value", ""))
     return base64.b64decode(v).decode("utf-8", errors="surrogateescape") if e.get("encoding") == "base64" else v
+
+
+def response_of(e):
+    return e.get("response") or ("hidden" if ID_RE.match(e["id"]).group(1) in HIDDEN_CLASSES else "visible")
+
+
+def detect_problem(e):
+    """detect - регулярное выражение признака срабатывания в ответе; не должно совпадать с самим значением (отражение)."""
+    d = e.get("detect")
+    if not d:
+        return None
+    try:
+        rx = re.compile(d)
+    except re.error as ex:
+        return f"detect не регулярное выражение ({ex.__class__.__name__})"
+    return "detect совпадает с самим значением - отражённое значение даст ложное срабатывание" if rx.search(raw_value(e)) else None
 
 
 def load_dict():
@@ -68,8 +87,8 @@ def write_index(entries, reserved):
         e = entries[i]
         v = raw_value(e)
         values[i] = {"title": e.get("title", ""), "set": e.get("set"), "records": e.get("records") or [],
-                     "length": len(v), "sha256": hashlib.sha256(v.encode("utf-8", "surrogateescape")).hexdigest()[:12]}
-        values[i] = {k: x for k, x in values[i].items() if x not in (None, [])}
+                     "response": response_of(e), "detect": bool(e.get("detect")), "length": len(v), "sha256": hashlib.sha256(v.encode("utf-8", "surrogateescape")).hexdigest()[:12]}
+        values[i] = {k: x for k, x in values[i].items() if x not in (None, [], False)}
         if e.get("set"):
             sets.setdefault(e["set"], []).append(i)
     head = ("# Публичный индекс словаря тестовых значений (ADR 0009) - без значений, читать можно всем.\n"
@@ -189,6 +208,9 @@ def cmd_merge(old, new):
 
 
 def cmd_check():
+    bad = [(i, detect_problem(e)) for i, e in sorted(load_dict().items()) if detect_problem(e)]
+    for i, why in bad:
+        print(f"{i}: {why}")
     idx = load_index()
     known = set(idx.get("values") or {}) | set(idx.get("sets") or {})
     missing = {}
@@ -198,8 +220,8 @@ def cmd_check():
                 missing.setdefault(ref, set()).add(f.relative_to(ROOT).as_posix())
     for ref, files in sorted(missing.items()):
         print(f"нет в словаре: {ref} - {', '.join(sorted(files))}")
-    print(f"ссылок без значения: {len(missing)}")
-    return 1 if missing else 0
+    print(f"ссылок без значения: {len(missing)}, ошибок detect: {len(bad)}")
+    return 1 if missing or bad else 0
 
 
 def cmd_env():
@@ -210,6 +232,8 @@ def cmd_env():
         if e.get("set"):
             sets.setdefault(e["set"], []).append(i)
     vals += [{"key": s, "value": json.dumps(sorted(ids)), "enabled": True} for s, ids in sorted(sets.items())]
+    detect = {i: e["detect"] for i, e in sorted(entries.items()) if e.get("detect")}
+    vals.append({"key": "td_detect", "value": json.dumps(detect, ensure_ascii=False), "enabled": True})
     BUILD.mkdir(parents=True, exist_ok=True)
     out = BUILD / "test-data.postman_environment.json"
     out.write_text(json.dumps({"name": "test-data", "values": vals}, ensure_ascii=False, indent=1), encoding="utf-8")

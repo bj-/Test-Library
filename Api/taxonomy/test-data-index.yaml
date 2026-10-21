@@ -6,6 +6,7 @@ values:
     set: TDS-BODY-FIELD-INJECTION
     records:
     - INJ-DOWNSTREAM-BODY-INJECTION
+    response: visible
     length: 27
     sha256: b676ade9d2cd
   TD-BODY-0002:
@@ -13,6 +14,7 @@ values:
     set: TDS-BODY-FIELD-INJECTION
     records:
     - INJ-DOWNSTREAM-BODY-INJECTION
+    response: visible
     length: 31
     sha256: 782949f03360
   TD-CMD-0001:
@@ -20,6 +22,7 @@ values:
     set: TDS-CMD-SHELL-META
     records:
     - INJ-OS-COMMAND
+    response: visible
     length: 4
     sha256: 665eee4698b2
   TD-CMD-0002:
@@ -27,6 +30,7 @@ values:
     set: TDS-CMD-SHELL-META
     records:
     - INJ-OS-COMMAND
+    response: visible
     length: 8
     sha256: e24da9a23aef
   TD-CMD-0003:
@@ -34,6 +38,7 @@ values:
     set: TDS-CMD-SHELL-META
     records:
     - INJ-OS-COMMAND
+    response: visible
     length: 10
     sha256: b8d07f0edef6
   TD-CMD-0004:
@@ -41,6 +46,7 @@ values:
     set: TDS-CMD-SHELL-META
     records:
     - INJ-OS-COMMAND
+    response: visible
     length: 11
     sha256: 9b288b7106f0
   TD-CMD-0005:
@@ -48,6 +54,7 @@ values:
     set: TDS-CMD-SHELL-META
     records:
     - INJ-OS-COMMAND
+    response: visible
     length: 7
     sha256: 2ec10e0f5b5d
   TD-CRLF-0001:
@@ -55,6 +62,7 @@ values:
     set: TDS-CRLF-HEADER
     records:
     - INJ-HEADER-CRLF
+    response: visible
     length: 20
     sha256: 771e88147f9e
   TD-CRLF-0002:
@@ -62,12 +70,14 @@ values:
     set: TDS-CRLF-HEADER
     records:
     - INJ-HEADER-CRLF
+    response: visible
     length: 4
     sha256: ce318ab44926
   TD-CRLF-0003:
     title: CRLF с внедряемым заголовком письма
     records:
     - INJ-HEADER-CRLF
+    response: visible
     length: 8
     sha256: 8f7f52a62988
   TD-CSV-0001:
@@ -75,6 +85,7 @@ values:
     set: TDS-CSV-FORMULA-PREFIX
     records:
     - INJ-CSV-FORMULA
+    response: visible
     length: 1
     sha256: 380918b946a5
   TD-CSV-0002:
@@ -82,6 +93,7 @@ values:
     set: TDS-CSV-FORMULA-PREFIX
     records:
     - INJ-CSV-FORMULA
+    response: visible
     length: 1
     sha256: a318c24216de
   TD-CSV-0003:
@@ -89,6 +101,7 @@ values:
     set: TDS-CSV-FORMULA-PREFIX
     records:
     - INJ-CSV-FORMULA
+    response: visible
     length: 1
     sha256: 3973e022e932
   TD-CSV-0004:
@@ -96,6 +109,7 @@ values:
     set: TDS-CSV-FORMULA-PREFIX
     records:
     - INJ-CSV-FORMULA
+    response: visible
     length: 1
     sha256: c3641f8544d7
   TD-CSV-0005:
@@ -103,6 +117,7 @@ values:
     set: TDS-CSV-FORMULA-PREFIX
     records:
     - INJ-CSV-FORMULA
+    response: visible
     length: 2
     sha256: 9e6ce9779949
   TD-EVAL-0001:
@@ -110,6 +125,7 @@ values:
     set: TDS-EVAL-NAME-EXPR
     records:
     - INJ-ARCHIVE-ENTRY-NAME-EVAL
+    response: visible
     length: 6
     sha256: 21b40a8e6302
   TD-EVAL-0002:
@@ -117,6 +133,7 @@ values:
     set: TDS-EVAL-NAME-EXPR
     records:
     - INJ-ARCHIVE-ENTRY-NAME-EVAL
+    response: visible
     length: 6
     sha256: 4ddaf2baa4b0
   TD-EVAL-0003:
@@ -124,6 +141,7 @@ values:
     set: TDS-EVAL-NAME-EXPR
     records:
     - INJ-ARCHIVE-ENTRY-NAME-EVAL
+    response: visible
     length: 6
     sha256: 0714d7d75290
   TD-EVAL-0004:
@@ -131,6 +149,7 @@ values:
     set: TDS-EVAL-NAME-EXPR
     records:
     - INJ-ARCHIVE-ENTRY-NAME-EVAL
+    response: visible
     length: 5
     sha256: 2ca25de1f2de
   TD-LOG-0001:
@@ -138,6 +157,7 @@ values:
     set: TDS-LOG-NEWLINE
     records:
     - INJ-LOG-FORGING
+    response: visible
     length: 2
     sha256: a80e516bfb19
   TD-LOG-0002:
@@ -145,18 +165,21 @@ values:
     set: TDS-LOG-NEWLINE
     records:
     - INJ-LOG-FORGING
+    response: visible
     length: 2
     sha256: 156de42b059b
   TD-LOG-0003:
     title: Журнал, ANSI-последовательность смены цвета в escape-записи
     records:
     - INJ-LOG-FORGING
+    response: visible
     length: 10
     sha256: 78ba80d3bd02
   TD-LOG-0004:
     title: Журнал, lookup-выражение JNDI
     records:
     - INJ-LOG-FORGING
+    response: visible
     length: 18
     sha256: 94c56922c2b4
   TD-NOSQL-0001:
@@ -164,6 +187,7 @@ values:
     set: TDS-NOSQL-OPERATORS
     records:
     - INJ-NOSQL
+    response: visible
     length: 13
     sha256: 597f48ef9732
   TD-NOSQL-0002:
@@ -171,6 +195,7 @@ values:
     set: TDS-NOSQL-OPERATORS
     records:
     - INJ-NOSQL
+    response: visible
     length: 11
     sha256: 2e05efcb8c8b
   TD-NOSQL-0003:
@@ -178,6 +203,7 @@ values:
     set: TDS-NOSQL-OPERATORS
     records:
     - INJ-NOSQL
+    response: visible
     length: 16
     sha256: f79e2f7cc2a4
   TD-NOSQL-0004:
@@ -185,6 +211,7 @@ values:
     set: TDS-NOSQL-OPERATORS
     records:
     - INJ-NOSQL
+    response: visible
     length: 6
     sha256: 01e8244422ab
   TD-PATH-0001:
@@ -192,6 +219,7 @@ values:
     set: TDS-PATH-TRAVERSAL-BASIC
     records:
     - INJ-PATH-TRAVERSAL
+    response: hidden
     length: 16
     sha256: 3754d6cb3a38
   TD-PATH-0002:
@@ -199,6 +227,7 @@ values:
     set: TDS-PATH-TRAVERSAL-BASIC
     records:
     - INJ-PATH-TRAVERSAL
+    response: hidden
     length: 21
     sha256: 061b8d03ce5c
   TD-PATH-0003:
@@ -206,6 +235,7 @@ values:
     set: TDS-PATH-TRAVERSAL-BASIC
     records:
     - INJ-PATH-TRAVERSAL
+    response: hidden
     length: 9
     sha256: 8ea6fbff0678
   TD-PATH-0004:
@@ -213,6 +243,7 @@ values:
     set: TDS-PATH-FD
     records:
     - INJ-PATH-TRAVERSAL
+    response: hidden
     length: 4
     sha256: 2526ff672171
   TD-PATH-0005:
@@ -220,6 +251,7 @@ values:
     set: TDS-PATH-FD
     records:
     - INJ-PATH-TRAVERSAL
+    response: hidden
     length: 4
     sha256: e155645ad824
   TD-PATH-0006:
@@ -227,6 +259,7 @@ values:
     set: TDS-PATH-RESERVED
     records:
     - INJ-RESERVED-PATH-WRITE
+    response: hidden
     length: 5
     sha256: 06484013e13b
   TD-PATH-0007:
@@ -234,6 +267,7 @@ values:
     set: TDS-PATH-RESERVED
     records:
     - INJ-RESERVED-PATH-WRITE
+    response: hidden
     length: 23
     sha256: 1cb290b09a92
   TD-PATH-0008:
@@ -241,6 +275,7 @@ values:
     set: TDS-PATH-RESERVED
     records:
     - INJ-RESERVED-PATH-WRITE
+    response: hidden
     length: 9
     sha256: 270939b4fba4
   TD-PATH-0009:
@@ -248,6 +283,7 @@ values:
     set: TDS-PATH-RESERVED
     records:
     - INJ-RESERVED-PATH-WRITE
+    response: hidden
     length: 8
     sha256: 0b7beefe4fb6
   TD-PROTO-0001:
@@ -255,6 +291,7 @@ values:
     set: TDS-PROTO-BASIC
     records:
     - INJ-PROTOTYPE-POLLUTION
+    response: visible
     length: 32
     sha256: b26dc22cba1e
   TD-PROTO-0002:
@@ -262,18 +299,21 @@ values:
     set: TDS-PROTO-BASIC
     records:
     - INJ-PROTOTYPE-POLLUTION
+    response: visible
     length: 37
     sha256: 5d74f0983cdf
   TD-REDOS-0001:
     title: строка для катастрофического backtracking в regex-валидации полей
     records:
     - INJ-REDOS
+    response: visible
     length: 31
     sha256: 3947140990cc
   TD-REDOS-0002:
     title: фрагмент незакрытого тега для длинного повтора в поле с HTML-экранированием
     records:
     - INJ-REDOS
+    response: visible
     length: 3
     sha256: b50be833ecaa
   TD-SQLI-0001:
@@ -281,6 +321,7 @@ values:
     set: TDS-SQLI-BASIC
     records:
     - INJ-SQL
+    response: visible
     length: 11
     sha256: eaec06bf3a1b
   TD-SQLI-0002:
@@ -288,24 +329,28 @@ values:
     set: TDS-SQLI-BASIC
     records:
     - INJ-SQL
+    response: visible
     length: 5
     sha256: b937222f0419
   TD-SQLI-0003:
     title: SQL, кавычка с экранированием обратным слэшем
     records:
     - INJ-SQL
+    response: visible
     length: 3
     sha256: 27969763c109
   TD-SQLI-0004:
     title: SQL, закрытие блочного комментария
     records:
     - INJ-SQL
+    response: visible
     length: 2
     sha256: ed9623369ff0
   TD-SQLI-0005:
     title: SQL, условный комментарий MySQL
     records:
     - INJ-SQL
+    response: visible
     length: 5
     sha256: 26435078e36d
   TD-SQLI-0006:
@@ -313,6 +358,7 @@ values:
     set: TDS-SQLI-NUMERIC-BOOL
     records:
     - INJ-SQL
+    response: visible
     length: 8
     sha256: 77c18c859817
   TD-SQLI-0007:
@@ -320,6 +366,7 @@ values:
     set: TDS-SQLI-NUMERIC-BOOL
     records:
     - INJ-SQL
+    response: visible
     length: 9
     sha256: 0cf4937b938f
   TD-SSRF-0001:
@@ -327,6 +374,7 @@ values:
     set: TDS-SSRF-BASIC
     records:
     - INJ-SSRF-PARAMETERS
+    response: hidden
     length: 23
     sha256: e5602f1d749c
   TD-SSRF-0002:
@@ -334,6 +382,7 @@ values:
     set: TDS-SSRF-BASIC
     records:
     - INJ-SSRF-PARAMETERS
+    response: hidden
     length: 16
     sha256: 8605b8ba08c2
   TD-SSRF-0003:
@@ -341,6 +390,7 @@ values:
     set: TDS-SSRF-BASIC
     records:
     - INJ-SSRF-PARAMETERS
+    response: hidden
     length: 7
     sha256: 71205e448034
   TD-SSRF-0004:
@@ -348,6 +398,7 @@ values:
     set: TDS-SSRF-BASIC
     records:
     - INJ-SSRF-PARAMETERS
+    response: hidden
     length: 9
     sha256: fda003881ddb
   TD-SSRF-0005:
@@ -355,6 +406,7 @@ values:
     set: TDS-SSRF-INTERNAL-IP
     records:
     - INJ-SSRF-PARAMETERS
+    response: hidden
     length: 9
     sha256: 12ca17b49af2
   TD-SSRF-0006:
@@ -362,6 +414,7 @@ values:
     set: TDS-SSRF-INTERNAL-IP
     records:
     - INJ-SSRF-PARAMETERS
+    response: hidden
     length: 15
     sha256: 34146ce1ba49
   TD-TPL-0001:
@@ -369,6 +422,7 @@ values:
     set: TDS-TPL-EXPRESSION
     records:
     - INJ-TEMPLATE-SSTI
+    response: visible
     length: 7
     sha256: d095461aa318
   TD-TPL-0002:
@@ -376,6 +430,7 @@ values:
     set: TDS-TPL-EXPRESSION
     records:
     - INJ-TEMPLATE-SSTI
+    response: visible
     length: 6
     sha256: b59cc8c9d7fe
   TD-TPL-0003:
@@ -383,6 +438,7 @@ values:
     set: TDS-TPL-EXPRESSION
     records:
     - INJ-TEMPLATE-SSTI
+    response: visible
     length: 10
     sha256: 5d2f0fc8c232
   TD-TPL-0004:
@@ -390,6 +446,7 @@ values:
     set: TDS-TPL-EXPRESSION
     records:
     - INJ-TEMPLATE-SSTI
+    response: visible
     length: 6
     sha256: 3a64589352c1
   TD-TPL-0005:
@@ -397,6 +454,7 @@ values:
     set: TDS-TPL-CONTEXT
     records:
     - INJ-TEMPLATE-SSTI
+    response: visible
     length: 16
     sha256: 20eece1794e3
   TD-TPL-0006:
@@ -404,12 +462,14 @@ values:
     set: TDS-TPL-CONTEXT
     records:
     - INJ-TEMPLATE-SSTI
+    response: visible
     length: 26
     sha256: 7d8e0ef18a62
   TD-XSS-0001:
     title: HTML, открывающий тег скрипта
     records:
     - INJ-REFLECTED-XSS
+    response: visible
     length: 8
     sha256: 5b63e5b2097f
   TD-XSS-0002:
@@ -417,6 +477,7 @@ values:
     set: TDS-XSS-STORED-BASIC
     records:
     - INJ-STORED-XSS
+    response: visible
     length: 25
     sha256: 5c140d35dcb4
   TD-XSS-0003:
@@ -424,12 +485,14 @@ values:
     set: TDS-XSS-STORED-BASIC
     records:
     - INJ-STORED-XSS
+    response: visible
     length: 23
     sha256: 3e554daa6a57
   TD-XSS-0004:
     title: HTML, закрывающий тег скрипта (выход из JS-контекста)
     records:
     - INJ-STORED-XSS
+    response: visible
     length: 9
     sha256: 6c9656210a02
 sets:
