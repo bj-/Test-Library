@@ -61,6 +61,8 @@ def detect_problem(e):
     d = e.get("detect")
     if not d:
         return None
+    if re.search(r"\(\?[a-zA-Z]", d) or "(?<" in d.replace("(?<=", "").replace("(?<!", ""):
+        return "detect: встроенные флаги и именованные группы Python - в JavaScript (new RegExp) не работают; регистр - [Uu]sage"
     try:
         rx = re.compile(d)
     except re.error as ex:
