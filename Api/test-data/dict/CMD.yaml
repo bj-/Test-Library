@@ -43,4 +43,5 @@
   records:
   - INJ-OS-COMMAND
   source: library
+  detect: '[Uu]sage'
   added: '2026-10-21'
