@@ -1,13 +1,63 @@
 # Публичный индекс словаря тестовых значений (ADR 0009) - без значений, читать можно всем.
 # Генерируется: python tools/test_data.py index | ingest | next-id. Руками не править.
-values: {}
-sets: {}
-reserved:
-- TD-SQLI-0001
-- TD-SQLI-0002
-- TD-SQLI-0003
-- TD-SQLI-0004
-- TD-SQLI-0005
-- TD-SQLI-0006
-- TD-SQLI-0007
-- TD-XSS-0001
+values:
+  TD-SQLI-0001:
+    title: SQL, строковый литерал с всегда истинным условием
+    set: TDS-SQLI-BASIC
+    records:
+    - INJ-SQL
+    length: 11
+    sha256: eaec06bf3a1b
+  TD-SQLI-0002:
+    title: SQL, закрытие литерала и комментарий до конца строки
+    set: TDS-SQLI-BASIC
+    records:
+    - INJ-SQL
+    length: 5
+    sha256: b937222f0419
+  TD-SQLI-0003:
+    title: SQL, кавычка с экранированием обратным слэшем
+    records:
+    - INJ-SQL
+    length: 3
+    sha256: 27969763c109
+  TD-SQLI-0004:
+    title: SQL, закрытие блочного комментария
+    records:
+    - INJ-SQL
+    length: 2
+    sha256: ed9623369ff0
+  TD-SQLI-0005:
+    title: SQL, условный комментарий MySQL
+    records:
+    - INJ-SQL
+    length: 5
+    sha256: 26435078e36d
+  TD-SQLI-0006:
+    title: SQL, числовой контекст, всегда истинное условие
+    set: TDS-SQLI-NUMERIC-BOOL
+    records:
+    - INJ-SQL
+    length: 8
+    sha256: 77c18c859817
+  TD-SQLI-0007:
+    title: SQL, числовой контекст, всегда ложное условие
+    set: TDS-SQLI-NUMERIC-BOOL
+    records:
+    - INJ-SQL
+    length: 9
+    sha256: 0cf4937b938f
+  TD-XSS-0001:
+    title: HTML, открывающий тег скрипта
+    records:
+    - INJ-REFLECTED-XSS
+    length: 8
+    sha256: 5b63e5b2097f
+sets:
+  TDS-SQLI-BASIC:
+  - TD-SQLI-0001
+  - TD-SQLI-0002
+  TDS-SQLI-NUMERIC-BOOL:
+  - TD-SQLI-0006
+  - TD-SQLI-0007
+reserved: []

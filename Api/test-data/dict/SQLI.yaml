@@ -1,52 +1,60 @@
 - id: TD-SQLI-0001
-  value: "' OR '1'='1"
+  value: ''' OR ''1''=''1'
   encoding: raw
   set: TDS-SQLI-BASIC
   title: SQL, строковый литерал с всегда истинным условием
-  records: [INJ-SQL]
+  records:
+  - INJ-SQL
   source: library
+  added: '2026-10-21'
 - id: TD-SQLI-0002
-  value: "'; --"
+  value: '''; --'
   encoding: raw
   set: TDS-SQLI-BASIC
   title: SQL, закрытие литерала и комментарий до конца строки
-  records: [INJ-SQL]
+  records:
+  - INJ-SQL
   source: library
+  added: '2026-10-21'
 - id: TD-SQLI-0003
-  value: "\\\\'"
+  value: \\'
   encoding: raw
   title: SQL, кавычка с экранированием обратным слэшем
-  records: [INJ-SQL]
+  records:
+  - INJ-SQL
   source: library
+  added: '2026-10-21'
 - id: TD-SQLI-0004
-  value: "*/"
+  value: '*/'
   encoding: raw
   title: SQL, закрытие блочного комментария
-  records: [INJ-SQL]
+  records:
+  - INJ-SQL
   source: library
+  added: '2026-10-21'
 - id: TD-SQLI-0005
-  value: "/*!*/"
+  value: /*!*/
   encoding: raw
   title: SQL, условный комментарий MySQL
-  records: [INJ-SQL]
+  records:
+  - INJ-SQL
   source: library
+  added: '2026-10-21'
 - id: TD-SQLI-0006
-  value: "1 OR 1=1"
+  value: 1 OR 1=1
   encoding: raw
   set: TDS-SQLI-NUMERIC-BOOL
   title: SQL, числовой контекст, всегда истинное условие
-  records: [INJ-SQL]
+  records:
+  - INJ-SQL
   source: library
+  added: '2026-10-21'
 - id: TD-SQLI-0007
-  value: "1 AND 1=0"
+  value: 1 AND 1=0
   encoding: raw
   set: TDS-SQLI-NUMERIC-BOOL
   title: SQL, числовой контекст, всегда ложное условие
-  records: [INJ-SQL]
+  records:
+  - INJ-SQL
   source: library
-- id: TD-XSS-0001
-  value: "<script>"
-  encoding: raw
-  title: HTML, открывающий тег скрипта
-  records: [INJ-REFLECTED-XSS]
-  source: library
+  added: '2026-10-21'

@@ -1,0 +1,8 @@
+- id: TD-XSS-0001
+  value: <script>
+  encoding: raw
+  title: HTML, открывающий тег скрипта
+  records:
+  - INJ-REFLECTED-XSS
+  source: library
+  added: '2026-10-21'
