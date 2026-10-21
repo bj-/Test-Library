@@ -108,7 +108,7 @@ checks:
   preconditions:
   - Сервер использует или возвращает имя файла.
   steps:
-  - action: Загрузить файлы с именами ../../x, CON, имя длиной 1000, unicode, управляющие символы, двойное расширение .php.jpg.
+  - action: Загрузить файлы с именами из набора `TDS-FILE-FILENAME`, имя длиной 1000, unicode, управляющие символы, двойное расширение (значение `TD-FILE-0003`).
   expected:
   - Имя нормализуется или заменяется; файл не выходит за каталог хранения.
   applicability:
@@ -127,6 +127,8 @@ checks:
   risk:
     impact: high
     likelihood: medium
+  test_data:
+  - TDS-FILE-FILENAME
 - id: FILE-MALICIOUS-CONTENT
   status: approved
   title: Вредоносное содержимое обнаруживается или изолируется
@@ -198,7 +200,7 @@ checks:
     notes: 'Real-world bug: RWB-0069 (GHSA-c6fg-446q-cg94)'
   - action: Не бомба, а испорченные сжатые данные — проверять живость сервиса после ответа
     notes: 'Real-world bug: RWB-0069 (GHSA-8238-w5pm-2374)'
-  - action: Отправить JWT с заголовком zip=DEF и payload, распаковывающимся в сотни мегабайт, и проверить отказ по лимиту
+  - action: Отправить JWT с заголовком (значение `TD-JWT-0001`) и payload, распаковывающимся в сотни мегабайт, и проверить отказ по лимиту
       размера
     notes: 'Real-world bug: RWB-0069 (GHSA-3w98-rrpr-fprr)'
   - action: Отправить сжатые данные из тысяч минимальных пустых фреймов с максимальным размером блока и проверить, что время
@@ -212,7 +214,7 @@ checks:
   - action: Загрузить крошечное изображение с экстремальным соотношением сторон (20000×10) в каждый путь загрузки изображений
       и проверить отказ
     notes: 'Real-world bug: RWB-0069 (GHSA-4vh2-39rq-rq8j)'
-  - action: Загрузить SVG с глубоко вложенными элементами <use>, где атрибут ссылки записан в смешанном регистре (xlink:HrEf),
+  - action: Загрузить SVG с глубоко вложенными элементами <use>, где атрибут ссылки записан в смешанном регистре (значение `TD-FILE-0004`),
       и проверить скачанный результат
     notes: 'Real-world bug: RWB-0069 (GHSA-m9xh-6747-9r6f)'
   - action: Встроить в рендеримый HTML base64-изображение огромных размеров со случайным шумом
@@ -242,6 +244,9 @@ checks:
     likelihood: medium
   references:
   - 'Real-world bug: RWB-0069'
+  test_data:
+  - TD-JWT-0001
+  - TD-FILE-0004
 - id: FILE-EMPTY-AND-MALFORMED-MULTIPART
   status: approved
   title: Пустой файл и некорректный multipart обрабатываются корректно
@@ -421,8 +426,8 @@ checks:
   preconditions:
   - Поддерживается Range.
   steps:
-  - action: Запросить bytes=0-99, bytes=-100, диапазон за концом файла, множественные диапазоны.
-  - action: Отправить Range с тысячами перекрывающихся диапазонов 0-0 и проверить, что ответ — 416 или 200 без multipart
+  - action: Запросить значения набора `TDS-RANGE-BASIC`, диапазон за концом файла, множественные диапазоны.
+  - action: Отправить Range с тысячами перекрывающихся диапазонов (значение `TD-RANGE-0003`) и проверить, что ответ — 416 или 200 без multipart
     notes: 'Real-world bug: RWB-0239 (GHSA-x8cg-fq8g-mxfx)'
   - action: Отправить специально построенный Range и проверить, что размер ответа не превышает размер ресурса многократно
     notes: 'Real-world bug: RWB-0239 (GHSA-xj5v-6v4g-jfw6)'
@@ -444,6 +449,9 @@ checks:
     likelihood: medium
   references:
   - 'Real-world bug: RWB-0239'
+  test_data:
+  - TDS-RANGE-BASIC
+  - TD-RANGE-0003
 - id: FILE-METADATA-STRIP
   status: approved
   title: Метаданные изображений с ПДн удаляются
