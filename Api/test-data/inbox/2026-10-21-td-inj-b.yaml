@@ -1,0 +1,115 @@
+- id: TD-XSS-0002
+  value: '<script>alert(1)</script>'
+  encoding: raw
+  set: TDS-XSS-STORED-BASIC
+  title: HTML, тег скрипта с вызовом диалога
+  records: [INJ-STORED-XSS]
+  source: library
+- id: TD-XSS-0003
+  value: '<img src=x onerror=...>'
+  encoding: raw
+  set: TDS-XSS-STORED-BASIC
+  title: HTML, изображение с обработчиком ошибки загрузки
+  records: [INJ-STORED-XSS]
+  source: library
+- id: TD-XSS-0004
+  value: '</script>'
+  encoding: raw
+  title: HTML, закрывающий тег скрипта (выход из JS-контекста)
+  records: [INJ-STORED-XSS]
+  source: library
+- id: TD-CRLF-0001
+  value: '%0d%0aSet-Cookie:x=1'
+  encoding: raw
+  set: TDS-CRLF-HEADER
+  title: CRLF в URL-кодировке с внедряемым заголовком cookie
+  records: [INJ-HEADER-CRLF]
+  source: library
+- id: TD-CRLF-0002
+  value: '\r\n'
+  encoding: raw
+  set: TDS-CRLF-HEADER
+  title: CRLF в escape-записи
+  records: [INJ-HEADER-CRLF]
+  source: library
+- id: TD-CRLF-0003
+  value: '\r\nBcc:'
+  encoding: raw
+  title: CRLF с внедряемым заголовком письма
+  records: [INJ-HEADER-CRLF]
+  source: library
+- id: TD-LOG-0001
+  value: '\n'
+  encoding: raw
+  set: TDS-LOG-NEWLINE
+  title: Журнал, перевод строки в escape-записи
+  records: [INJ-LOG-FORGING]
+  source: library
+- id: TD-LOG-0002
+  value: '\r'
+  encoding: raw
+  set: TDS-LOG-NEWLINE
+  title: Журнал, возврат каретки в escape-записи
+  records: [INJ-LOG-FORGING]
+  source: library
+- id: TD-LOG-0003
+  value: '\u001b[32m'
+  encoding: raw
+  title: Журнал, ANSI-последовательность смены цвета в escape-записи
+  records: [INJ-LOG-FORGING]
+  source: library
+- id: TD-LOG-0004
+  value: '${jndi:ldap://...}'
+  encoding: raw
+  title: Журнал, lookup-выражение JNDI
+  records: [INJ-LOG-FORGING]
+  source: library
+- id: TD-CSV-0001
+  value: '='
+  encoding: raw
+  set: TDS-CSV-FORMULA-PREFIX
+  title: CSV, начальный символ формулы (равно)
+  records: [INJ-CSV-FORMULA]
+  source: library
+- id: TD-CSV-0002
+  value: '+'
+  encoding: raw
+  set: TDS-CSV-FORMULA-PREFIX
+  title: CSV, начальный символ формулы (плюс)
+  records: [INJ-CSV-FORMULA]
+  source: library
+- id: TD-CSV-0003
+  value: '-'
+  encoding: raw
+  set: TDS-CSV-FORMULA-PREFIX
+  title: CSV, начальный символ формулы (минус)
+  records: [INJ-CSV-FORMULA]
+  source: library
+- id: TD-CSV-0004
+  value: '@'
+  encoding: raw
+  set: TDS-CSV-FORMULA-PREFIX
+  title: CSV, начальный символ формулы (at)
+  records: [INJ-CSV-FORMULA]
+  source: library
+- id: TD-CSV-0005
+  value: '\t'
+  encoding: raw
+  set: TDS-CSV-FORMULA-PREFIX
+  title: CSV, начальный символ табуляции в escape-записи
+  records: [INJ-CSV-FORMULA]
+  source: library
+- id: TD-BODY-0001
+  value: 'x", "role": "admin", "y": "'
+  encoding: raw
+  set: TDS-BODY-FIELD-INJECTION
+  title: JSON, закрытие строки и внедрение ключа роли
+  records: [INJ-DOWNSTREAM-BODY-INJECTION]
+  source: library
+- id: TD-BODY-0002
+  value: '</name><role>admin</role><name>'
+  encoding: raw
+  set: TDS-BODY-FIELD-INJECTION
+  title: XML, закрытие элемента и внедрение элемента роли
+  records: [INJ-DOWNSTREAM-BODY-INJECTION]
+  source: library

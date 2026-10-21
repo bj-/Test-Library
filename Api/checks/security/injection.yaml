@@ -381,7 +381,7 @@ checks:
   preconditions:
   - Данные API отображаются в веб-интерфейсе или админке.
   steps:
-  - action: 'Сохранить <script>alert(1)</script>, <img src=x onerror=...>, javascript: URL в текстовых и URL-полях.'
+  - action: 'Сохранить значения набора `TDS-XSS-STORED-BASIC`, javascript: URL в текстовых и URL-полях.'
   - action: Прочитать данные через API и открыть в UI.
   - action: Сохранить от имени администратора HTML-блок с script и обработчиками событий и проверить, что на публичной странице
       они удалены
@@ -391,9 +391,9 @@ checks:
     notes: 'Real-world bug: RWB-0244 (GHSA-97jj-33gv-5xf9)'
   - action: Вернуть из подменённой внешней интеграции поля с HTML/JS и проверить, что страница отдаёт их экранированными
     notes: 'Real-world bug: RWB-0244 (GHSA-7gww-x7fh-jf9j)'
-  - action: Загрузить файл со строкой <script> в метаданных и запросить конвертацию в HTML; проверить экранирование в результате
+  - action: Загрузить файл со строкой (значение `TD-XSS-0001`) в метаданных и запросить конвертацию в HTML; проверить экранирование в результате
     notes: 'Real-world bug: RWB-0244 (GHSA-rw6c-xp26-225v)'
-  - action: Сохранить в настраиваемом тексте (сообщение, заголовок) кавычку и </script> и проверить, что страница, встраивающая
+  - action: Сохранить в настраиваемом тексте (сообщение, заголовок) кавычку и значение `TD-XSS-0004` и проверить, что страница, встраивающая
       его в JavaScript, экранирует значение для JS-контекста
     notes: 'Real-world bug: RWB-0244 (keycloak/keycloak#48241)'
   expected:
@@ -418,6 +418,10 @@ checks:
   references:
   - OWASP Web Security Testing Guide
   - 'Real-world bug: RWB-0244'
+  test_data:
+  - TDS-XSS-STORED-BASIC
+  - TD-XSS-0001
+  - TD-XSS-0004
 - id: INJ-HEADER-CRLF
   status: approved
   title: CRLF в значениях не позволяет внедрять заголовки ответа
@@ -437,8 +441,8 @@ checks:
   preconditions:
   - Пользовательское значение попадает в заголовки ответа (Location, Set-Cookie, Content-Disposition).
   steps:
-  - action: Передать значение с %0d%0aSet-Cookie:x=1 и \r\n в параметре redirect, имени файла, языке.
-  - action: 'Передать в поля, попадающие в письмо (тема, имя, адрес), значения с \r\nBcc: — новых заголовков письма нет (CWE-93)'
+  - action: Передать значения набора `TDS-CRLF-HEADER` в параметре redirect, имени файла, языке.
+  - action: 'Передать в поля, попадающие в письмо (тема, имя, адрес), значения со значением `TD-CRLF-0003` — новых заголовков письма нет (CWE-93)'
     notes: inbox №73
   expected:
   - В ответе нет внедрённого заголовка или разделения ответа.
@@ -461,6 +465,9 @@ checks:
     likelihood: medium
   references:
   - OWASP Web Security Testing Guide
+  test_data:
+  - TDS-CRLF-HEADER
+  - TD-CRLF-0003
 - id: INJ-PATH-TRAVERSAL
   status: approved
   title: Обход каталогов через параметры файлов и путей невозможен
@@ -563,8 +570,8 @@ checks:
   preconditions:
   - Доступ к логам тестового окружения.
   steps:
-  - action: Передать значения с \n, \r, ANSI escape-последовательностями и поддельной строкой лога, ${jndi:ldap://...}.
-  - action: Отправить в параметре, который попадает в журнал, ANSI escape-последовательности (\u001b[32m) и управляющие символы
+  - action: Передать значения набора `TDS-LOG-NEWLINE`, ANSI escape-последовательностями и поддельной строкой лога, значение `TD-LOG-0004`.
+  - action: Отправить в параметре, который попадает в журнал, ANSI escape-последовательности (значение `TD-LOG-0003`) и управляющие символы
       0–31 и проверить, что в журнале они экранированы
     notes: 'Real-world bug: RWB-0083 (keycloak/keycloak#47681)'
   expected:
@@ -586,6 +593,10 @@ checks:
     likelihood: medium
   references:
   - 'Real-world bug: RWB-0083'
+  test_data:
+  - TDS-LOG-NEWLINE
+  - TD-LOG-0003
+  - TD-LOG-0004
 - id: INJ-PROTOTYPE-POLLUTION
   status: approved
   title: Специальные ключи __proto__ и constructor не меняют поведение сервера
@@ -955,7 +966,7 @@ checks:
   preconditions:
   - API экспортирует пользовательские данные в CSV/XLSX.
   steps:
-  - action: Сохранить значения, начинающиеся с =, +, -, @, \t, и выгрузить экспорт.
+  - action: Сохранить значения, начинающиеся со значений набора `TDS-CSV-FORMULA-PREFIX`, и выгрузить экспорт.
   expected:
   - Опасные значения экранированы (например, префикс ') и не исполняются как формулы.
   applicability:
@@ -973,6 +984,8 @@ checks:
   risk:
     impact: medium
     likelihood: medium
+  test_data:
+  - TDS-CSV-FORMULA-PREFIX
 - id: INJ-SSRF-PARAMETERS
   status: approved
   title: Параметры с URL и хостами не дают доступа к внутренней сети
@@ -1421,8 +1434,7 @@ checks:
   - Сервис пересылает данные пользователя дальше — в другой API, очередь, XML- или JSON-сообщение; есть наблюдение за нижестоящим
     запросом.
   steps:
-  - action: 'Передать значения вида x", "role": "admin", "y": " и </name><role>admin</role><name>; посмотреть тело нижестоящего
-      запроса и результат.'
+  - action: 'Передать значения набора `TDS-BODY-FIELD-INJECTION`; посмотреть тело нижестоящего запроса и результат.'
   expected:
   - Значение передаётся экранированным как одно поле; новых ключей и элементов в нижестоящем запросе нет.
   applicability:
@@ -1444,3 +1456,5 @@ checks:
   references:
   - CWE-74, CWE-91
   - inbox №47
+  test_data:
+  - TDS-BODY-FIELD-INJECTION
