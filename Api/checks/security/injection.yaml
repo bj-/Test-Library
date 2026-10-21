@@ -854,7 +854,7 @@ checks:
   preconditions:
   - Поля валидируются регулярными выражениями или поиск поддерживает regex.
   steps:
-  - action: Отправить строки вида aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa! против уязвимых паттернов (email, url).
+  - action: Отправить строки вида значение `TD-REDOS-0001` против уязвимых паттернов (email, url).
   - action: 'data: URL и другие нестандартные схемы в параметрах с URL; заодно — ограничение допустимых схем'
     notes: 'Real-world bug: RWB-0088 (GHSA-c29m-xwm3-cm6r)'
   - action: Патологический хост в Location редиректа при server-side загрузке URL
@@ -891,7 +891,7 @@ checks:
     notes: 'Real-world bug: RWB-0088 (GHSA-7cmj-v6x8-frvv)'
   - action: Повторить проверку ReDoS для каждой функции выражений с regex (matches, replaceMatches) и каждой версии API
     notes: 'Real-world bug: RWB-0088 (GHSA-fxj4-p9xp-37v5)'
-  - action: Отправить в поле, которое сервер экранирует как HTML, длинный повтор незакрытых тегов '<A '
+  - action: Отправить в поле, которое сервер экранирует как HTML, длинный повтор незакрытых тегов (значение `TD-REDOS-0002`)
     notes: 'Real-world bug: RWB-0088 (GHSA-mhwm-jh88-3gjf)'
   - action: Передать в параметр, который используется как CSS-селектор, незакрытую строку в кавычках и длинную цепочку hex-экранирований
     notes: 'Real-world bug: RWB-0088 (GHSA-c4rq-3m3g-8wgx)'
@@ -952,6 +952,9 @@ checks:
     likelihood: medium
   references:
   - 'Real-world bug: RWB-0088'
+  test_data:
+  - TD-REDOS-0001
+  - TD-REDOS-0002
 - id: INJ-CSV-FORMULA
   status: approved
   title: Экспорт в CSV/XLSX нейтрализует формулы

@@ -1,0 +1,12 @@
+- id: TD-REDOS-0001
+  value: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!"
+  encoding: raw
+  title: строка для катастрофического backtracking в regex-валидации полей
+  records: [INJ-REDOS]
+  source: library
+- id: TD-REDOS-0002
+  value: "PEEg"
+  encoding: base64
+  title: фрагмент незакрытого тега для длинного повтора в поле с HTML-экранированием
+  records: [INJ-REDOS]
+  source: library
