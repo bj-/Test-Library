@@ -6,6 +6,7 @@
   records:
   - INJ-OS-COMMAND
   source: library
+  detect: 'uid=\d+\([^)]*\)'
   added: '2026-10-21'
 - id: TD-CMD-0002
   value: '| whoami'

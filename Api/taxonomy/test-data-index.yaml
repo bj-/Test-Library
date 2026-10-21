@@ -23,6 +23,7 @@ values:
     records:
     - INJ-OS-COMMAND
     response: visible
+    detect: true
     length: 4
     sha256: 665eee4698b2
   TD-CMD-0002:
