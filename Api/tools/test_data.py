@@ -100,6 +100,32 @@ def write_index(entries, reserved):
     INDEX.write_text(head + body, encoding="utf-8")
 
 
+# ---- API для генераторов коллекций (без значений: только публичный индекс и записи библиотеки)
+
+def public_index(api_root=ROOT):
+    """Публичный индекс словаря: {"values": {ID: {...}}, "sets": {TDS: [ID]}}."""
+    p = Path(api_root) / "taxonomy" / "test-data-index.yaml"
+    return (yaml.safe_load(p.read_text(encoding="utf-8")) if p.exists() else None) or {"values": {}, "sets": {}}
+
+
+def expand(ref, idx):
+    """Ссылка -> ID значений: набор TDS-... - его значения, TD-... - он сам; неизвестная - []."""
+    if ref in (idx.get("sets") or {}):
+        return sorted(idx["sets"][ref])
+    return [ref] if ref in (idx.get("values") or {}) else []
+
+
+def record_refs(api_root=ROOT):
+    """Записи библиотеки с полем test_data: {ID записи: [ссылки]}."""
+    out = {}
+    for f in (Path(api_root) / "checks").rglob("*.yaml"):
+        d = yaml.safe_load(f.read_text(encoding="utf-8"))
+        for c in (d.get("checks", [d]) if isinstance(d, dict) else d) or []:
+            if isinstance(c, dict) and c.get("test_data"):
+                out[c["id"]] = list(c["test_data"])
+    return out
+
+
 def cmd_next_id(cls, n):
     if not re.fullmatch(r"[A-Z][A-Z0-9]*", cls):
         sys.exit("класс - латиница в верхнем регистре и цифры, например SQLI, XSS, PATH, JWT")
