@@ -493,7 +493,7 @@ checks:
   preconditions:
   - Параметр задаёт имя файла, путь, шаблон или ключ объекта в хранилище.
   steps:
-  - action: Передать ../../etc/passwd, ..\..\windows\win.ini, %2e%2e%2f, двойное кодирование, абсолютные пути, null byte.
+  - action: Передать значения набора `TDS-PATH-TRAVERSAL-BASIC`, двойное кодирование, абсолютные пути, null byte.
   - action: Директивы включения (include/snippets) в загружаемой разметке и её конфигурации
     notes: 'Real-world bug: RWB-0086 (GHSA-f7v3-xhm6-w245)'
   - action: Целевой путь переименования/перемещения (newPath) и соответствие операции требуемому праву (rename = delete)
@@ -519,7 +519,7 @@ checks:
   - action: Загрузить шаблон с директивой подключения файла по абсолютному пути и через ../ и проверить, что содержимое файлов
       вне каталога шаблона не попадает в ответ
     notes: 'Real-world bug: RWB-0086 (GHSA-wxhm-2mq7-7697)'
-  - action: Передать в параметр имени или пути файла псевдоимена дескрипторов fd:0 и fd:1 и проверить отказ без доступа к
+  - action: Передать в параметр имени или пути файла псевдоимена дескрипторов (значения набора `TDS-PATH-FD`) и проверить отказ без доступа к
       потокам процесса
     notes: 'Real-world bug: RWB-0086 (GHSA-xwc6-v6g8-pw2h)'
   - action: Передать в параметр временного файла пути к существующему и несуществующему файлу вне каталога загрузки и проверить
@@ -548,6 +548,9 @@ checks:
   references:
   - OWASP Web Security Testing Guide
   - 'Real-world bug: RWB-0086'
+  test_data:
+  - TDS-PATH-TRAVERSAL-BASIC
+  - TDS-PATH-FD
 - id: INJ-LOG-FORGING
   status: approved
   title: Пользовательские данные не позволяют подделывать записи журналов
@@ -618,7 +621,7 @@ checks:
   preconditions:
   - Бэкенд на JavaScript/TypeScript или выполняет глубокое слияние объектов.
   steps:
-  - action: 'Отправить {"__proto__": {"isAdmin": true}}, {"constructor": {"prototype": {...}}} в теле и query.'
+  - action: Отправить значения набора `TDS-PROTO-BASIC` в теле и query.
   - action: Выполнить последующий запрос другим пользователем.
   - action: Передать __proto__ как алиас поля GraphQL
     notes: 'Real-world bug: RWB-0087 (directus/directus#28209)'
@@ -660,6 +663,8 @@ checks:
     likelihood: medium
   references:
   - 'Real-world bug: RWB-0087'
+  test_data:
+  - TDS-PROTO-BASIC
 - id: INJ-UNSAFE-DESERIALIZATION
   status: approved
   title: Небезопасная десериализация пользовательских данных невозможна
@@ -1207,8 +1212,8 @@ checks:
   preconditions:
   - Сервис принимает git-репозиторий, архив или пакет и перечисляет или обрабатывает файлы внутри.
   steps:
-  - action: Загрузить содержимое с файлами, имена которых содержат перевод строки, кавычки и выражения кода (#{...}, ${...},
-      $(...), `...`); вызвать операции, перечисляющие и обрабатывающие файлы.
+  - action: Загрузить содержимое с файлами, имена которых содержат перевод строки, кавычки и выражения кода (значения набора
+      `TDS-EVAL-NAME-EXPR`); вызвать операции, перечисляющие и обрабатывающие файлы.
   expected:
   - Список файлов корректен, имена возвращаются как текст; код не исполняется, побочных эффектов нет.
   applicability:
@@ -1231,6 +1236,8 @@ checks:
   - CWE-94, CWE-95
   - Имя самого загружаемого файла — FILE-FILENAME-SANITIZATION
   - 'Real-world bug: RWB-0232'
+  test_data:
+  - TDS-EVAL-NAME-EXPR
 - id: INJ-REFLECTED-XSS
   status: approved
   title: Параметры запроса не отражаются в HTML-ответе без экранирования
@@ -1296,8 +1303,8 @@ checks:
   preconditions:
   - API записывает файлы по путям пользователя — патч, загрузка в репозиторий, распаковка, синхронизация.
   steps:
-  - action: 'Записать файлы по законным путям без ../, совпадающим со служебными: .git/, hooks/post-index-change, конфигурация,
-      .htaccess, WEB-INF/; повторить операцию.'
+  - action: 'Записать файлы по законным путям без ../, совпадающим со служебными: значения набора `TDS-PATH-RESERVED`,
+      конфигурация; повторить операцию.'
   expected:
   - Запись отклоняется или файл попадает только в пользовательское дерево; служебный файл не исполняется.
   applicability:
@@ -1320,6 +1327,8 @@ checks:
   - CWE-22, CWE-94
   - Смежные — INJ-PATH-TRAVERSAL, INJ-ARCHIVE-ENTRY-NAME-EVAL
   - 'Real-world bug: RWB-0285'
+  test_data:
+  - TDS-PATH-RESERVED
 - id: INJ-SCHEMA-IDENTIFIER-CODEGEN
   status: approved
   title: Идентификаторы пользовательской схемы не внедряют код и SQL при генерации кода и DDL
