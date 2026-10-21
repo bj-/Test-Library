@@ -2,4 +2,12 @@
 # Генерируется: python tools/test_data.py index | ingest | next-id. Руками не править.
 values: {}
 sets: {}
-reserved: []
+reserved:
+- TD-SQLI-0001
+- TD-SQLI-0002
+- TD-SQLI-0003
+- TD-SQLI-0004
+- TD-SQLI-0005
+- TD-SQLI-0006
+- TD-SQLI-0007
+- TD-XSS-0001

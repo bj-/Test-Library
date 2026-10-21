@@ -23,10 +23,10 @@ checks:
   preconditions:
   - Параметр попадает в запрос к реляционной БД (фильтр, поиск, сортировка, id).
   steps:
-  - action: 'Подставить в path, query, body и заголовки: '' OR ''1''=''1, ''; --, UNION SELECT, boolean- и time-based payload
-      (pg_sleep, WAITFOR).'
+  - action: 'Подставить в path, query, body и заголовки: значения набора `TDS-SQLI-BASIC`, UNION SELECT, boolean- и time-based
+      payload (pg_sleep, WAITFOR).'
   - action: Сравнить ответы и время с контрольным запросом.
-  - action: Передать нагрузки, рассчитанные на экранирование обратным слэшем (\\'), — ломаются при режиме удвоения кавычек
+  - action: Передать нагрузки, рассчитанные на экранирование обратным слэшем (значение `TD-SQLI-0003`), — ломаются при режиме удвоения кавычек
     notes: 'Real-world bug: RWB-0089 (GHSA-r3rv-jm3r-62q2)'
   - action: Инъекция в имени поля (ключе JSON), а не в значении; связано с REST-MASS-ASSIGNMENT
     notes: 'Real-world bug: RWB-0089 (GHSA-v6pj-gxxw-phfw)'
@@ -48,7 +48,7 @@ checks:
       время ответа
     notes: 'Real-world bug: RWB-0089 (GHSA-jvqq-cvh4-xm37)'
   - action: Передать в значение, которое попадает в комментарий SQL-запроса (аннотации, теги журналирования запросов), последовательность
-      */ с SQL после неё
+      (значение `TD-SQLI-0004`) с SQL после неё
     notes: 'Real-world bug: RWB-0089 (GHSA-hq7p-j377-6v63)'
   - action: Отправить в поле сырого запроса каждого эндпоинта, принимающего SQL, изменяющий оператор и чтение системного каталога
       и проверить отказ
@@ -62,7 +62,7 @@ checks:
   - action: 'Передать SQL-фрагмент в параметр, который подставляется в запрос как ключевое слово: тип приведения, часть даты,
       единица интервала'
     notes: 'Real-world bug: RWB-0089 (GHSA-vjqc-q4mp-2rvf)'
-  - action: Передать в поля конфигурации, принимающие SQL-фрагменты, UNION SELECT, INTO OUTFILE, комментарии /*!*/ и стековые
+  - action: Передать в поля конфигурации, принимающие SQL-фрагменты, UNION SELECT, INTO OUTFILE, комментарии (значение `TD-SQLI-0005`) и стековые
       запросы в обход чёрного списка ключевых слов, а в limit и offset — нечисловое значение
     notes: 'Real-world bug: RWB-0089 (GHSA-23rh-xw42-fq82)'
   - action: Передать SQL-фрагмент в параметр пути внутри JSON-поля (jsonPath), по которому сервер фильтрует или выбирает данные
@@ -81,7 +81,7 @@ checks:
   - action: Создать ресурс со значением-SQL-фрагментом в имени или идентификаторе, затем вызвать операции, использующие сохранённое
       значение (удаление, связи, отчёты)
     notes: 'Real-world bug: RWB-0089 (GHSA-8f2v-2qhj-gfwg)'
-  - action: Передать в фильтре по числовому полю булево SQL-выражение без кавычек (1 OR 1=1, 1 AND 1=0) и сравнить выборки
+  - action: Передать в фильтре по числовому полю булево SQL-выражение без кавычек (значения набора `TDS-SQLI-NUMERIC-BOOL`) и сравнить выборки
     notes: 'Real-world bug: RWB-0089 (GHSA-qg78-vmvc-fhjw)'
   - action: Передать SQL-нагрузку в аргументе макроса в сохраняемом контенте, если тот же параметр в query проверяется whitelist,
       и открыть страницу
@@ -122,6 +122,12 @@ checks:
   - OWASP Web Security Testing Guide
   - 'Real-world bug: RWB-0089'
   - Проверка серого ящика по журналу запросов и коду — DB-DYNAMIC-SQL-PARAMETERIZED
+  test_data:
+  - TDS-SQLI-BASIC
+  - TD-SQLI-0003
+  - TD-SQLI-0004
+  - TD-SQLI-0005
+  - TDS-SQLI-NUMERIC-BOOL
 - id: INJ-NOSQL
   status: approved
   title: NoSQL-инъекция операторами запросов не исполняется
@@ -1231,7 +1237,7 @@ checks:
   preconditions:
   - Эндпоинт возвращает HTML (админка, служебный веб-интерфейс, страница ошибки) и вставляет в него значения параметров.
   steps:
-  - action: Передать в параметры (фильтр, поиск, сортировка, сообщение об ошибке) значения с <script>, закрывающими кавычками
+  - action: Передать в параметры (фильтр, поиск, сортировка, сообщение об ошибке) значения со значением `TD-XSS-0001`, закрывающими кавычками
       и тегами, javascript-URL; проверить тело и Content-Type ответа.
   expected:
   - Значения экранированы по контексту (HTML, атрибут, JS, URL); Content-Type соответствует содержимому.
@@ -1254,6 +1260,8 @@ checks:
   - OWASP XSS Prevention Cheat Sheet, CWE-79
   - Пара к INJ-STORED-XSS
   - 'Real-world bug: RWB-0236'
+  test_data:
+  - TD-XSS-0001
 - id: INJ-RESERVED-PATH-WRITE
   status: approved
   title: Запись файлов через API не попадает в служебные каталоги
