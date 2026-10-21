@@ -12,3 +12,7 @@ topics:
   - id: account-enumeration
     title: Перечисление учёток
     match: ['ENUMERATION', 'enumeration', 'перечислен', 'существование аккаунта', 'существование учёт']
+  - id: command-template-injection-values
+    title: Готовые значения инъекций команд ОС, шаблонов и NoSQL (перенос в словарь ADR 0009)
+    noted: '2026-10-21: сессия сбора inj-a (INJ-NOSQL, INJ-OS-COMMAND, INJ-TEMPLATE-SSTI) остановлена на переносе значений; сбор - другой моделью (Process/test-data.md, раздел 3)'
+    match: ['OS-COMMAND', 'TEMPLATE-SSTI', 'NOSQL']
