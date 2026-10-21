@@ -1,0 +1,81 @@
+- id: TD-PATH-0001
+  value: ../../etc/passwd
+  encoding: raw
+  set: TDS-PATH-TRAVERSAL-BASIC
+  title: обход каталогов, относительный путь к системному файлу Unix
+  records:
+  - INJ-PATH-TRAVERSAL
+  source: library
+  added: '2026-10-21'
+- id: TD-PATH-0002
+  value: ..\..\windows\win.ini
+  encoding: raw
+  set: TDS-PATH-TRAVERSAL-BASIC
+  title: обход каталогов, относительный путь к системному файлу Windows
+  records:
+  - INJ-PATH-TRAVERSAL
+  source: library
+  added: '2026-10-21'
+- id: TD-PATH-0003
+  value: '%2e%2e%2f'
+  encoding: raw
+  set: TDS-PATH-TRAVERSAL-BASIC
+  title: обход каталогов, URL-кодированный сегмент
+  records:
+  - INJ-PATH-TRAVERSAL
+  source: library
+  added: '2026-10-21'
+- id: TD-PATH-0004
+  value: fd:0
+  encoding: raw
+  set: TDS-PATH-FD
+  title: псевдоимя дескриптора потока процесса (ввод)
+  records:
+  - INJ-PATH-TRAVERSAL
+  source: library
+  added: '2026-10-21'
+- id: TD-PATH-0005
+  value: fd:1
+  encoding: raw
+  set: TDS-PATH-FD
+  title: псевдоимя дескриптора потока процесса (вывод)
+  records:
+  - INJ-PATH-TRAVERSAL
+  source: library
+  added: '2026-10-21'
+- id: TD-PATH-0006
+  value: .git/
+  encoding: raw
+  set: TDS-PATH-RESERVED
+  title: служебный каталог системы контроля версий
+  records:
+  - INJ-RESERVED-PATH-WRITE
+  source: library
+  added: '2026-10-21'
+- id: TD-PATH-0007
+  value: hooks/post-index-change
+  encoding: raw
+  set: TDS-PATH-RESERVED
+  title: путь исполняемого хука системы контроля версий
+  records:
+  - INJ-RESERVED-PATH-WRITE
+  source: library
+  added: '2026-10-21'
+- id: TD-PATH-0008
+  value: .htaccess
+  encoding: raw
+  set: TDS-PATH-RESERVED
+  title: служебный файл конфигурации веб-сервера
+  records:
+  - INJ-RESERVED-PATH-WRITE
+  source: library
+  added: '2026-10-21'
+- id: TD-PATH-0009
+  value: WEB-INF/
+  encoding: raw
+  set: TDS-PATH-RESERVED
+  title: служебный каталог Java-веб-приложения
+  records:
+  - INJ-RESERVED-PATH-WRITE
+  source: library
+  added: '2026-10-21'

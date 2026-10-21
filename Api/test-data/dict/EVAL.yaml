@@ -1,0 +1,36 @@
+- id: TD-EVAL-0001
+  value: '#{...}'
+  encoding: raw
+  set: TDS-EVAL-NAME-EXPR
+  title: шаблон интерполяции выражения (Ruby-подобный)
+  records:
+  - INJ-ARCHIVE-ENTRY-NAME-EVAL
+  source: library
+  added: '2026-10-21'
+- id: TD-EVAL-0002
+  value: ${...}
+  encoding: raw
+  set: TDS-EVAL-NAME-EXPR
+  title: шаблон интерполяции выражения (shell/JS-подобный)
+  records:
+  - INJ-ARCHIVE-ENTRY-NAME-EVAL
+  source: library
+  added: '2026-10-21'
+- id: TD-EVAL-0003
+  value: $(...)
+  encoding: raw
+  set: TDS-EVAL-NAME-EXPR
+  title: шаблон подстановки команды оболочки
+  records:
+  - INJ-ARCHIVE-ENTRY-NAME-EVAL
+  source: library
+  added: '2026-10-21'
+- id: TD-EVAL-0004
+  value: '`...`'
+  encoding: raw
+  set: TDS-EVAL-NAME-EXPR
+  title: шаблон подстановки команды в обратных кавычках
+  records:
+  - INJ-ARCHIVE-ENTRY-NAME-EVAL
+  source: library
+  added: '2026-10-21'

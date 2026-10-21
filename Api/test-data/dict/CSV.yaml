@@ -1,0 +1,45 @@
+- id: TD-CSV-0001
+  value: '='
+  encoding: raw
+  set: TDS-CSV-FORMULA-PREFIX
+  title: CSV, начальный символ формулы (равно)
+  records:
+  - INJ-CSV-FORMULA
+  source: library
+  added: '2026-10-21'
+- id: TD-CSV-0002
+  value: +
+  encoding: raw
+  set: TDS-CSV-FORMULA-PREFIX
+  title: CSV, начальный символ формулы (плюс)
+  records:
+  - INJ-CSV-FORMULA
+  source: library
+  added: '2026-10-21'
+- id: TD-CSV-0003
+  value: '-'
+  encoding: raw
+  set: TDS-CSV-FORMULA-PREFIX
+  title: CSV, начальный символ формулы (минус)
+  records:
+  - INJ-CSV-FORMULA
+  source: library
+  added: '2026-10-21'
+- id: TD-CSV-0004
+  value: '@'
+  encoding: raw
+  set: TDS-CSV-FORMULA-PREFIX
+  title: CSV, начальный символ формулы (at)
+  records:
+  - INJ-CSV-FORMULA
+  source: library
+  added: '2026-10-21'
+- id: TD-CSV-0005
+  value: \t
+  encoding: raw
+  set: TDS-CSV-FORMULA-PREFIX
+  title: CSV, начальный символ табуляции в escape-записи
+  records:
+  - INJ-CSV-FORMULA
+  source: library
+  added: '2026-10-21'

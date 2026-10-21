@@ -1,6 +1,218 @@
 # Публичный индекс словаря тестовых значений (ADR 0009) - без значений, читать можно всем.
 # Генерируется: python tools/test_data.py index | ingest | next-id. Руками не править.
 values:
+  TD-BODY-0001:
+    title: JSON, закрытие строки и внедрение ключа роли
+    set: TDS-BODY-FIELD-INJECTION
+    records:
+    - INJ-DOWNSTREAM-BODY-INJECTION
+    length: 27
+    sha256: b676ade9d2cd
+  TD-BODY-0002:
+    title: XML, закрытие элемента и внедрение элемента роли
+    set: TDS-BODY-FIELD-INJECTION
+    records:
+    - INJ-DOWNSTREAM-BODY-INJECTION
+    length: 31
+    sha256: 782949f03360
+  TD-CRLF-0001:
+    title: CRLF в URL-кодировке с внедряемым заголовком cookie
+    set: TDS-CRLF-HEADER
+    records:
+    - INJ-HEADER-CRLF
+    length: 20
+    sha256: 771e88147f9e
+  TD-CRLF-0002:
+    title: CRLF в escape-записи
+    set: TDS-CRLF-HEADER
+    records:
+    - INJ-HEADER-CRLF
+    length: 4
+    sha256: ce318ab44926
+  TD-CRLF-0003:
+    title: CRLF с внедряемым заголовком письма
+    records:
+    - INJ-HEADER-CRLF
+    length: 8
+    sha256: 8f7f52a62988
+  TD-CSV-0001:
+    title: CSV, начальный символ формулы (равно)
+    set: TDS-CSV-FORMULA-PREFIX
+    records:
+    - INJ-CSV-FORMULA
+    length: 1
+    sha256: 380918b946a5
+  TD-CSV-0002:
+    title: CSV, начальный символ формулы (плюс)
+    set: TDS-CSV-FORMULA-PREFIX
+    records:
+    - INJ-CSV-FORMULA
+    length: 1
+    sha256: a318c24216de
+  TD-CSV-0003:
+    title: CSV, начальный символ формулы (минус)
+    set: TDS-CSV-FORMULA-PREFIX
+    records:
+    - INJ-CSV-FORMULA
+    length: 1
+    sha256: 3973e022e932
+  TD-CSV-0004:
+    title: CSV, начальный символ формулы (at)
+    set: TDS-CSV-FORMULA-PREFIX
+    records:
+    - INJ-CSV-FORMULA
+    length: 1
+    sha256: c3641f8544d7
+  TD-CSV-0005:
+    title: CSV, начальный символ табуляции в escape-записи
+    set: TDS-CSV-FORMULA-PREFIX
+    records:
+    - INJ-CSV-FORMULA
+    length: 2
+    sha256: 9e6ce9779949
+  TD-EVAL-0001:
+    title: шаблон интерполяции выражения (Ruby-подобный)
+    set: TDS-EVAL-NAME-EXPR
+    records:
+    - INJ-ARCHIVE-ENTRY-NAME-EVAL
+    length: 6
+    sha256: 21b40a8e6302
+  TD-EVAL-0002:
+    title: шаблон интерполяции выражения (shell/JS-подобный)
+    set: TDS-EVAL-NAME-EXPR
+    records:
+    - INJ-ARCHIVE-ENTRY-NAME-EVAL
+    length: 6
+    sha256: 4ddaf2baa4b0
+  TD-EVAL-0003:
+    title: шаблон подстановки команды оболочки
+    set: TDS-EVAL-NAME-EXPR
+    records:
+    - INJ-ARCHIVE-ENTRY-NAME-EVAL
+    length: 6
+    sha256: 0714d7d75290
+  TD-EVAL-0004:
+    title: шаблон подстановки команды в обратных кавычках
+    set: TDS-EVAL-NAME-EXPR
+    records:
+    - INJ-ARCHIVE-ENTRY-NAME-EVAL
+    length: 5
+    sha256: 2ca25de1f2de
+  TD-LOG-0001:
+    title: Журнал, перевод строки в escape-записи
+    set: TDS-LOG-NEWLINE
+    records:
+    - INJ-LOG-FORGING
+    length: 2
+    sha256: a80e516bfb19
+  TD-LOG-0002:
+    title: Журнал, возврат каретки в escape-записи
+    set: TDS-LOG-NEWLINE
+    records:
+    - INJ-LOG-FORGING
+    length: 2
+    sha256: 156de42b059b
+  TD-LOG-0003:
+    title: Журнал, ANSI-последовательность смены цвета в escape-записи
+    records:
+    - INJ-LOG-FORGING
+    length: 10
+    sha256: 78ba80d3bd02
+  TD-LOG-0004:
+    title: Журнал, lookup-выражение JNDI
+    records:
+    - INJ-LOG-FORGING
+    length: 18
+    sha256: 94c56922c2b4
+  TD-PATH-0001:
+    title: обход каталогов, относительный путь к системному файлу Unix
+    set: TDS-PATH-TRAVERSAL-BASIC
+    records:
+    - INJ-PATH-TRAVERSAL
+    length: 16
+    sha256: 3754d6cb3a38
+  TD-PATH-0002:
+    title: обход каталогов, относительный путь к системному файлу Windows
+    set: TDS-PATH-TRAVERSAL-BASIC
+    records:
+    - INJ-PATH-TRAVERSAL
+    length: 21
+    sha256: 061b8d03ce5c
+  TD-PATH-0003:
+    title: обход каталогов, URL-кодированный сегмент
+    set: TDS-PATH-TRAVERSAL-BASIC
+    records:
+    - INJ-PATH-TRAVERSAL
+    length: 9
+    sha256: 8ea6fbff0678
+  TD-PATH-0004:
+    title: псевдоимя дескриптора потока процесса (ввод)
+    set: TDS-PATH-FD
+    records:
+    - INJ-PATH-TRAVERSAL
+    length: 4
+    sha256: 2526ff672171
+  TD-PATH-0005:
+    title: псевдоимя дескриптора потока процесса (вывод)
+    set: TDS-PATH-FD
+    records:
+    - INJ-PATH-TRAVERSAL
+    length: 4
+    sha256: e155645ad824
+  TD-PATH-0006:
+    title: служебный каталог системы контроля версий
+    set: TDS-PATH-RESERVED
+    records:
+    - INJ-RESERVED-PATH-WRITE
+    length: 5
+    sha256: 06484013e13b
+  TD-PATH-0007:
+    title: путь исполняемого хука системы контроля версий
+    set: TDS-PATH-RESERVED
+    records:
+    - INJ-RESERVED-PATH-WRITE
+    length: 23
+    sha256: 1cb290b09a92
+  TD-PATH-0008:
+    title: служебный файл конфигурации веб-сервера
+    set: TDS-PATH-RESERVED
+    records:
+    - INJ-RESERVED-PATH-WRITE
+    length: 9
+    sha256: 270939b4fba4
+  TD-PATH-0009:
+    title: служебный каталог Java-веб-приложения
+    set: TDS-PATH-RESERVED
+    records:
+    - INJ-RESERVED-PATH-WRITE
+    length: 8
+    sha256: 0b7beefe4fb6
+  TD-PROTO-0001:
+    title: загрязнение прототипа через специальный ключ объекта
+    set: TDS-PROTO-BASIC
+    records:
+    - INJ-PROTOTYPE-POLLUTION
+    length: 32
+    sha256: b26dc22cba1e
+  TD-PROTO-0002:
+    title: загрязнение прототипа через ключ конструктора
+    set: TDS-PROTO-BASIC
+    records:
+    - INJ-PROTOTYPE-POLLUTION
+    length: 37
+    sha256: 5d74f0983cdf
+  TD-REDOS-0001:
+    title: строка для катастрофического backtracking в regex-валидации полей
+    records:
+    - INJ-REDOS
+    length: 31
+    sha256: 3947140990cc
+  TD-REDOS-0002:
+    title: фрагмент незакрытого тега для длинного повтора в поле с HTML-экранированием
+    records:
+    - INJ-REDOS
+    length: 3
+    sha256: b50be833ecaa
   TD-SQLI-0001:
     title: SQL, строковый литерал с всегда истинным условием
     set: TDS-SQLI-BASIC
@@ -47,57 +259,125 @@ values:
     - INJ-SQL
     length: 9
     sha256: 0cf4937b938f
+  TD-SSRF-0001:
+    title: URL адреса облачных метаданных
+    set: TDS-SSRF-BASIC
+    records:
+    - INJ-SSRF-PARAMETERS
+    length: 23
+    sha256: e5602f1d749c
+  TD-SSRF-0002:
+    title: URL локального хоста по имени
+    set: TDS-SSRF-BASIC
+    records:
+    - INJ-SSRF-PARAMETERS
+    length: 16
+    sha256: 8605b8ba08c2
+  TD-SSRF-0003:
+    title: префикс схемы локальных файлов
+    set: TDS-SSRF-BASIC
+    records:
+    - INJ-SSRF-PARAMETERS
+    length: 7
+    sha256: 71205e448034
+  TD-SSRF-0004:
+    title: префикс устаревшей схемы для произвольных TCP-запросов
+    set: TDS-SSRF-BASIC
+    records:
+    - INJ-SSRF-PARAMETERS
+    length: 9
+    sha256: fda003881ddb
+  TD-SSRF-0005:
+    title: IPv4-литерал петлевого адреса
+    set: TDS-SSRF-INTERNAL-IP
+    records:
+    - INJ-SSRF-PARAMETERS
+    length: 9
+    sha256: 12ca17b49af2
+  TD-SSRF-0006:
+    title: IPv4-литерал адреса облачных метаданных
+    set: TDS-SSRF-INTERNAL-IP
+    records:
+    - INJ-SSRF-PARAMETERS
+    length: 15
+    sha256: 34146ce1ba49
   TD-XSS-0001:
     title: HTML, открывающий тег скрипта
     records:
     - INJ-REFLECTED-XSS
     length: 8
     sha256: 5b63e5b2097f
+  TD-XSS-0002:
+    title: HTML, тег скрипта с вызовом диалога
+    set: TDS-XSS-STORED-BASIC
+    records:
+    - INJ-STORED-XSS
+    length: 25
+    sha256: 5c140d35dcb4
+  TD-XSS-0003:
+    title: HTML, изображение с обработчиком ошибки загрузки
+    set: TDS-XSS-STORED-BASIC
+    records:
+    - INJ-STORED-XSS
+    length: 23
+    sha256: 3e554daa6a57
+  TD-XSS-0004:
+    title: HTML, закрывающий тег скрипта (выход из JS-контекста)
+    records:
+    - INJ-STORED-XSS
+    length: 9
+    sha256: 6c9656210a02
 sets:
+  TDS-BODY-FIELD-INJECTION:
+  - TD-BODY-0001
+  - TD-BODY-0002
+  TDS-CRLF-HEADER:
+  - TD-CRLF-0001
+  - TD-CRLF-0002
+  TDS-CSV-FORMULA-PREFIX:
+  - TD-CSV-0001
+  - TD-CSV-0002
+  - TD-CSV-0003
+  - TD-CSV-0004
+  - TD-CSV-0005
+  TDS-EVAL-NAME-EXPR:
+  - TD-EVAL-0001
+  - TD-EVAL-0002
+  - TD-EVAL-0003
+  - TD-EVAL-0004
+  TDS-LOG-NEWLINE:
+  - TD-LOG-0001
+  - TD-LOG-0002
+  TDS-PATH-TRAVERSAL-BASIC:
+  - TD-PATH-0001
+  - TD-PATH-0002
+  - TD-PATH-0003
+  TDS-PATH-FD:
+  - TD-PATH-0004
+  - TD-PATH-0005
+  TDS-PATH-RESERVED:
+  - TD-PATH-0006
+  - TD-PATH-0007
+  - TD-PATH-0008
+  - TD-PATH-0009
+  TDS-PROTO-BASIC:
+  - TD-PROTO-0001
+  - TD-PROTO-0002
   TDS-SQLI-BASIC:
   - TD-SQLI-0001
   - TD-SQLI-0002
   TDS-SQLI-NUMERIC-BOOL:
   - TD-SQLI-0006
   - TD-SQLI-0007
-reserved:
-- TD-BODY-0001
-- TD-BODY-0002
-- TD-CRLF-0001
-- TD-CRLF-0002
-- TD-CRLF-0003
-- TD-CSV-0001
-- TD-CSV-0002
-- TD-CSV-0003
-- TD-CSV-0004
-- TD-CSV-0005
-- TD-EVAL-0001
-- TD-EVAL-0002
-- TD-EVAL-0003
-- TD-EVAL-0004
-- TD-LOG-0001
-- TD-LOG-0002
-- TD-LOG-0003
-- TD-LOG-0004
-- TD-PATH-0001
-- TD-PATH-0002
-- TD-PATH-0003
-- TD-PATH-0004
-- TD-PATH-0005
-- TD-PATH-0006
-- TD-PATH-0007
-- TD-PATH-0008
-- TD-PATH-0009
-- TD-PROTO-0001
-- TD-PROTO-0002
-- TD-REDOS-0001
-- TD-REDOS-0002
-- TD-SSRF-0001
-- TD-SSRF-0002
-- TD-SSRF-0003
-- TD-SSRF-0004
-- TD-SSRF-0005
-- TD-SSRF-0006
-- TD-XSS-0002
-- TD-XSS-0003
-- TD-XSS-0004
+  TDS-SSRF-BASIC:
+  - TD-SSRF-0001
+  - TD-SSRF-0002
+  - TD-SSRF-0003
+  - TD-SSRF-0004
+  TDS-SSRF-INTERNAL-IP:
+  - TD-SSRF-0005
+  - TD-SSRF-0006
+  TDS-XSS-STORED-BASIC:
+  - TD-XSS-0002
+  - TD-XSS-0003
+reserved: []

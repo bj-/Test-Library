@@ -1,0 +1,26 @@
+- id: TD-CRLF-0001
+  value: '%0d%0aSet-Cookie:x=1'
+  encoding: raw
+  set: TDS-CRLF-HEADER
+  title: CRLF в URL-кодировке с внедряемым заголовком cookie
+  records:
+  - INJ-HEADER-CRLF
+  source: library
+  added: '2026-10-21'
+- id: TD-CRLF-0002
+  value: \r\n
+  encoding: raw
+  set: TDS-CRLF-HEADER
+  title: CRLF в escape-записи
+  records:
+  - INJ-HEADER-CRLF
+  source: library
+  added: '2026-10-21'
+- id: TD-CRLF-0003
+  value: '\r\nBcc:'
+  encoding: raw
+  title: CRLF с внедряемым заголовком письма
+  records:
+  - INJ-HEADER-CRLF
+  source: library
+  added: '2026-10-21'

@@ -6,3 +6,29 @@
   - INJ-REFLECTED-XSS
   source: library
   added: '2026-10-21'
+- id: TD-XSS-0002
+  value: <script>alert(1)</script>
+  encoding: raw
+  set: TDS-XSS-STORED-BASIC
+  title: HTML, тег скрипта с вызовом диалога
+  records:
+  - INJ-STORED-XSS
+  source: library
+  added: '2026-10-21'
+- id: TD-XSS-0003
+  value: <img src=x onerror=...>
+  encoding: raw
+  set: TDS-XSS-STORED-BASIC
+  title: HTML, изображение с обработчиком ошибки загрузки
+  records:
+  - INJ-STORED-XSS
+  source: library
+  added: '2026-10-21'
+- id: TD-XSS-0004
+  value: </script>
+  encoding: raw
+  title: HTML, закрывающий тег скрипта (выход из JS-контекста)
+  records:
+  - INJ-STORED-XSS
+  source: library
+  added: '2026-10-21'

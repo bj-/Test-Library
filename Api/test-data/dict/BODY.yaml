@@ -1,0 +1,18 @@
+- id: TD-BODY-0001
+  value: 'x", "role": "admin", "y": "'
+  encoding: raw
+  set: TDS-BODY-FIELD-INJECTION
+  title: JSON, закрытие строки и внедрение ключа роли
+  records:
+  - INJ-DOWNSTREAM-BODY-INJECTION
+  source: library
+  added: '2026-10-21'
+- id: TD-BODY-0002
+  value: </name><role>admin</role><name>
+  encoding: raw
+  set: TDS-BODY-FIELD-INJECTION
+  title: XML, закрытие элемента и внедрение элемента роли
+  records:
+  - INJ-DOWNSTREAM-BODY-INJECTION
+  source: library
+  added: '2026-10-21'

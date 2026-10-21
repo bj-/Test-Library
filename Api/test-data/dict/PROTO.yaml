@@ -1,0 +1,18 @@
+- id: TD-PROTO-0001
+  value: '{"__proto__": {"isAdmin": true}}'
+  encoding: raw
+  set: TDS-PROTO-BASIC
+  title: загрязнение прототипа через специальный ключ объекта
+  records:
+  - INJ-PROTOTYPE-POLLUTION
+  source: library
+  added: '2026-10-21'
+- id: TD-PROTO-0002
+  value: '{"constructor": {"prototype": {...}}}'
+  encoding: raw
+  set: TDS-PROTO-BASIC
+  title: загрязнение прототипа через ключ конструктора
+  records:
+  - INJ-PROTOTYPE-POLLUTION
+  source: library
+  added: '2026-10-21'
