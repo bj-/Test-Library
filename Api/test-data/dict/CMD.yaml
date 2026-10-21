@@ -1,0 +1,45 @@
+- id: TD-CMD-0001
+  value: ; id
+  encoding: raw
+  set: TDS-CMD-SHELL-META
+  title: Shell, разделитель команд и команда с выводом в ответ
+  records:
+  - INJ-OS-COMMAND
+  source: library
+  added: '2026-10-21'
+- id: TD-CMD-0002
+  value: '| whoami'
+  encoding: raw
+  set: TDS-CMD-SHELL-META
+  title: Shell, конвейер и команда с выводом в ответ
+  records:
+  - INJ-OS-COMMAND
+  source: library
+  added: '2026-10-21'
+- id: TD-CMD-0003
+  value: '`sleep 10`'
+  encoding: raw
+  set: TDS-CMD-SHELL-META
+  title: Shell, подстановка команды в обратных кавычках, задержка ответа
+  records:
+  - INJ-OS-COMMAND
+  source: library
+  added: '2026-10-21'
+- id: TD-CMD-0004
+  value: $(sleep 10)
+  encoding: raw
+  set: TDS-CMD-SHELL-META
+  title: Shell, подстановка команды через $( ), задержка ответа
+  records:
+  - INJ-OS-COMMAND
+  source: library
+  added: '2026-10-21'
+- id: TD-CMD-0005
+  value: '&& ping'
+  encoding: raw
+  set: TDS-CMD-SHELL-META
+  title: Shell, условное выполнение второй команды (без аргументов)
+  records:
+  - INJ-OS-COMMAND
+  source: library
+  added: '2026-10-21'

@@ -15,6 +15,41 @@ values:
     - INJ-DOWNSTREAM-BODY-INJECTION
     length: 31
     sha256: 782949f03360
+  TD-CMD-0001:
+    title: Shell, разделитель команд и команда с выводом в ответ
+    set: TDS-CMD-SHELL-META
+    records:
+    - INJ-OS-COMMAND
+    length: 4
+    sha256: 665eee4698b2
+  TD-CMD-0002:
+    title: Shell, конвейер и команда с выводом в ответ
+    set: TDS-CMD-SHELL-META
+    records:
+    - INJ-OS-COMMAND
+    length: 8
+    sha256: e24da9a23aef
+  TD-CMD-0003:
+    title: Shell, подстановка команды в обратных кавычках, задержка ответа
+    set: TDS-CMD-SHELL-META
+    records:
+    - INJ-OS-COMMAND
+    length: 10
+    sha256: b8d07f0edef6
+  TD-CMD-0004:
+    title: Shell, подстановка команды через $( ), задержка ответа
+    set: TDS-CMD-SHELL-META
+    records:
+    - INJ-OS-COMMAND
+    length: 11
+    sha256: 9b288b7106f0
+  TD-CMD-0005:
+    title: Shell, условное выполнение второй команды (без аргументов)
+    set: TDS-CMD-SHELL-META
+    records:
+    - INJ-OS-COMMAND
+    length: 7
+    sha256: 2ec10e0f5b5d
   TD-CRLF-0001:
     title: CRLF в URL-кодировке с внедряемым заголовком cookie
     set: TDS-CRLF-HEADER
@@ -124,6 +159,34 @@ values:
     - INJ-LOG-FORGING
     length: 18
     sha256: 94c56922c2b4
+  TD-NOSQL-0001:
+    title: NoSQL, объект оператора неравенства
+    set: TDS-NOSQL-OPERATORS
+    records:
+    - INJ-NOSQL
+    length: 13
+    sha256: 597f48ef9732
+  TD-NOSQL-0002:
+    title: NoSQL, объект оператора сравнения больше
+    set: TDS-NOSQL-OPERATORS
+    records:
+    - INJ-NOSQL
+    length: 11
+    sha256: 2e05efcb8c8b
+  TD-NOSQL-0003:
+    title: NoSQL, объект оператора регулярного выражения
+    set: TDS-NOSQL-OPERATORS
+    records:
+    - INJ-NOSQL
+    length: 16
+    sha256: f79e2f7cc2a4
+  TD-NOSQL-0004:
+    title: NoSQL, имя оператора серверного выражения
+    set: TDS-NOSQL-OPERATORS
+    records:
+    - INJ-NOSQL
+    length: 6
+    sha256: 01e8244422ab
   TD-PATH-0001:
     title: обход каталогов, относительный путь к системному файлу Unix
     set: TDS-PATH-TRAVERSAL-BASIC
@@ -301,6 +364,48 @@ values:
     - INJ-SSRF-PARAMETERS
     length: 15
     sha256: 34146ce1ba49
+  TD-TPL-0001:
+    title: Шаблон, арифметическое выражение (Jinja/Twig-подобный)
+    set: TDS-TPL-EXPRESSION
+    records:
+    - INJ-TEMPLATE-SSTI
+    length: 7
+    sha256: d095461aa318
+  TD-TPL-0002:
+    title: Шаблон, арифметическое выражение (EL/FreeMarker-подобный)
+    set: TDS-TPL-EXPRESSION
+    records:
+    - INJ-TEMPLATE-SSTI
+    length: 6
+    sha256: b59cc8c9d7fe
+  TD-TPL-0003:
+    title: Шаблон, арифметическое выражение (ERB/EJS-подобный)
+    set: TDS-TPL-EXPRESSION
+    records:
+    - INJ-TEMPLATE-SSTI
+    length: 10
+    sha256: 5d2f0fc8c232
+  TD-TPL-0004:
+    title: Шаблон, арифметическое выражение (Ruby/Thymeleaf-подобный)
+    set: TDS-TPL-EXPRESSION
+    records:
+    - INJ-TEMPLATE-SSTI
+    length: 6
+    sha256: 3a64589352c1
+  TD-TPL-0005:
+    title: Шаблон, чтение секрета из объекта конфигурации
+    set: TDS-TPL-CONTEXT
+    records:
+    - INJ-TEMPLATE-SSTI
+    length: 16
+    sha256: 20eece1794e3
+  TD-TPL-0006:
+    title: Шаблон, изменение свойства объекта контекста
+    set: TDS-TPL-CONTEXT
+    records:
+    - INJ-TEMPLATE-SSTI
+    length: 26
+    sha256: 7d8e0ef18a62
   TD-XSS-0001:
     title: HTML, открывающий тег скрипта
     records:
@@ -331,6 +436,12 @@ sets:
   TDS-BODY-FIELD-INJECTION:
   - TD-BODY-0001
   - TD-BODY-0002
+  TDS-CMD-SHELL-META:
+  - TD-CMD-0001
+  - TD-CMD-0002
+  - TD-CMD-0003
+  - TD-CMD-0004
+  - TD-CMD-0005
   TDS-CRLF-HEADER:
   - TD-CRLF-0001
   - TD-CRLF-0002
@@ -348,6 +459,11 @@ sets:
   TDS-LOG-NEWLINE:
   - TD-LOG-0001
   - TD-LOG-0002
+  TDS-NOSQL-OPERATORS:
+  - TD-NOSQL-0001
+  - TD-NOSQL-0002
+  - TD-NOSQL-0003
+  - TD-NOSQL-0004
   TDS-PATH-TRAVERSAL-BASIC:
   - TD-PATH-0001
   - TD-PATH-0002
@@ -377,6 +493,14 @@ sets:
   TDS-SSRF-INTERNAL-IP:
   - TD-SSRF-0005
   - TD-SSRF-0006
+  TDS-TPL-EXPRESSION:
+  - TD-TPL-0001
+  - TD-TPL-0002
+  - TD-TPL-0003
+  - TD-TPL-0004
+  TDS-TPL-CONTEXT:
+  - TD-TPL-0005
+  - TD-TPL-0006
   TDS-XSS-STORED-BASIC:
   - TD-XSS-0002
   - TD-XSS-0003

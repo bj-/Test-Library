@@ -1,0 +1,54 @@
+- id: TD-TPL-0001
+  value: '{{7*7}}'
+  encoding: raw
+  set: TDS-TPL-EXPRESSION
+  title: Шаблон, арифметическое выражение (Jinja/Twig-подобный)
+  records:
+  - INJ-TEMPLATE-SSTI
+  source: library
+  added: '2026-10-21'
+- id: TD-TPL-0002
+  value: ${7*7}
+  encoding: raw
+  set: TDS-TPL-EXPRESSION
+  title: Шаблон, арифметическое выражение (EL/FreeMarker-подобный)
+  records:
+  - INJ-TEMPLATE-SSTI
+  source: library
+  added: '2026-10-21'
+- id: TD-TPL-0003
+  value: <%= 7*7 %>
+  encoding: raw
+  set: TDS-TPL-EXPRESSION
+  title: Шаблон, арифметическое выражение (ERB/EJS-подобный)
+  records:
+  - INJ-TEMPLATE-SSTI
+  source: library
+  added: '2026-10-21'
+- id: TD-TPL-0004
+  value: '#{7*7}'
+  encoding: raw
+  set: TDS-TPL-EXPRESSION
+  title: Шаблон, арифметическое выражение (Ruby/Thymeleaf-подобный)
+  records:
+  - INJ-TEMPLATE-SSTI
+  source: library
+  added: '2026-10-21'
+- id: TD-TPL-0005
+  value: '{{config.token}}'
+  encoding: raw
+  set: TDS-TPL-CONTEXT
+  title: Шаблон, чтение секрета из объекта конфигурации
+  records:
+  - INJ-TEMPLATE-SSTI
+  source: library
+  added: '2026-10-21'
+- id: TD-TPL-0006
+  value: '{{ user.is_admin = true }}'
+  encoding: raw
+  set: TDS-TPL-CONTEXT
+  title: Шаблон, изменение свойства объекта контекста
+  records:
+  - INJ-TEMPLATE-SSTI
+  source: library
+  added: '2026-10-21'

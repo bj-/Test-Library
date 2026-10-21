@@ -1,0 +1,36 @@
+- id: TD-NOSQL-0001
+  value: '{"$ne": null}'
+  encoding: raw
+  set: TDS-NOSQL-OPERATORS
+  title: NoSQL, объект оператора неравенства
+  records:
+  - INJ-NOSQL
+  source: library
+  added: '2026-10-21'
+- id: TD-NOSQL-0002
+  value: '{"$gt": ""}'
+  encoding: raw
+  set: TDS-NOSQL-OPERATORS
+  title: NoSQL, объект оператора сравнения больше
+  records:
+  - INJ-NOSQL
+  source: library
+  added: '2026-10-21'
+- id: TD-NOSQL-0003
+  value: '{"$regex": ".*"}'
+  encoding: raw
+  set: TDS-NOSQL-OPERATORS
+  title: NoSQL, объект оператора регулярного выражения
+  records:
+  - INJ-NOSQL
+  source: library
+  added: '2026-10-21'
+- id: TD-NOSQL-0004
+  value: $where
+  encoding: raw
+  set: TDS-NOSQL-OPERATORS
+  title: NoSQL, имя оператора серверного выражения
+  records:
+  - INJ-NOSQL
+  source: library
+  added: '2026-10-21'
