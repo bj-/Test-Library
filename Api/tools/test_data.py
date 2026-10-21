@@ -165,7 +165,12 @@ def cmd_ingest():
             v = raw_value(e)
             if v in by_value:
                 if by_value[v] != i:
-                    dupes.append((i, by_value[v], relink(i, by_value[v])))
+                    old = by_value[v]
+                    dupes.append((i, old, relink(i, old)))
+                    if e.get("set") and e.get("set") != entries[old].get("set"):
+                        # у значения один набор: дубль остаётся в наборе существующего - ссылки на набор проверить
+                        errors.append(f"{f.name}: {i} = {old} из набора {entries[old].get('set') or '-'}, набор {e['set']} "
+                                      f"его теряет - записи со ссылкой на {e['set']}: добавить {old} (сессия сбора)")
                 continue
             if i in entries:
                 errors.append(f"{f.name}: {i} уже занят другим значением - нужен новый ID (next-id)")

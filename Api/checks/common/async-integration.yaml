@@ -73,7 +73,7 @@ checks:
   preconditions:
   - Пользователь задаёт URL вебхука.
   steps:
-  - action: Зарегистрировать URL на значения набора `TDS-SSRF-WEBHOOK-INTERNAL`, внутренние имена, редирект на внутренний адрес.
+  - action: Зарегистрировать URL на значения набора `TDS-SSRF-WEBHOOK-INTERNAL` и значение `TD-SSRF-0006`, внутренние имена, редирект на внутренний адрес.
   - action: Зарегистрировать URL уведомлений о событиях сессии на внешний адрес и проверить, что данные сессии туда не уходят
     notes: 'Real-world bug: RWB-0054 (GHSA-c556-q2mh-477v)'
   - action: Создать push-подписку с endpoint на произвольный и на внутренний хост и проверить, что принимаются только адреса
@@ -108,6 +108,7 @@ checks:
   - 'Real-world bug: RWB-0054'
   test_data:
   - TDS-SSRF-WEBHOOK-INTERNAL
+  - TD-SSRF-0006
 - id: ASYNC-WEBHOOK-RETRY
   status: approved
   title: Неуспешная доставка вебхука повторяется с backoff и ограничением
