@@ -1018,8 +1018,8 @@ checks:
   preconditions:
   - API принимает URL для загрузки, превью, импорта или вебхуков.
   steps:
-  - action: Передать http://169.254.169.254/, http://localhost, внутренние DNS-имена, IPv6, десятичную запись IP, редирект
-      на внутренний адрес, file://, gopher://.
+  - action: Передать значения набора `TDS-SSRF-BASIC`, внутренние DNS-имена, IPv6, десятичную запись IP, редирект
+      на внутренний адрес.
   - action: URL спрятан в base64/JSON сегменте пути; слепой SSRF с побочным каналом через статус ответа
     notes: 'Real-world bug: RWB-0090 (GHSA-q8hw-4fvp-9rwv)'
   - action: Адрес задаётся заголовком запроса, сервер прикладывает к исходящему вызову свои учётные данные
@@ -1074,7 +1074,7 @@ checks:
   - action: Создать объект с аннотацией адреса внешнего сервиса, указывающей на подконтрольный адрес, и проверить, что сервер
       туда не обращается и не передаёт токены
     notes: 'Real-world bug: RWB-0090 (GHSA-r2v3-8gwf-7ghm)'
-  - action: Отправить заголовок Signature с keyId на внутренний адрес (127.0.0.1, 169.254.169.254) и проверить, что сервер
+  - action: Отправить заголовок Signature с keyId на внутренний адрес (значения набора `TDS-SSRF-INTERNAL-IP`) и проверить, что сервер
       не обращается к нему
     notes: 'Real-world bug: RWB-0090 (GHSA-vw42-752g-5mrp)'
   - action: Передать внутренний IPv4, вложенный в IPv6-адрес NAT64 (64:ff9b::/96), в параметрах с URL и URL вебхуков
@@ -1103,6 +1103,9 @@ checks:
   references:
   - OWASP API Security Top 10
   - 'Real-world bug: RWB-0090'
+  test_data:
+  - TDS-SSRF-BASIC
+  - TDS-SSRF-INTERNAL-IP
 - id: INJ-LLM-GENERATED-ACTIONS
   status: approved
   title: Код и вызовы инструментов, сгенерированные LLM по вводу пользователя, не выполняют опасных действий

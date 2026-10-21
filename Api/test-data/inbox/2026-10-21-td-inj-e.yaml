@@ -1,0 +1,42 @@
+- id: TD-SSRF-0001
+  value: "http://169.254.169.254/"
+  encoding: raw
+  set: TDS-SSRF-BASIC
+  title: URL адреса облачных метаданных
+  records: [INJ-SSRF-PARAMETERS]
+  source: library
+- id: TD-SSRF-0002
+  value: "http://localhost"
+  encoding: raw
+  set: TDS-SSRF-BASIC
+  title: URL локального хоста по имени
+  records: [INJ-SSRF-PARAMETERS]
+  source: library
+- id: TD-SSRF-0003
+  value: "file://"
+  encoding: raw
+  set: TDS-SSRF-BASIC
+  title: префикс схемы локальных файлов
+  records: [INJ-SSRF-PARAMETERS]
+  source: library
+- id: TD-SSRF-0004
+  value: "gopher://"
+  encoding: raw
+  set: TDS-SSRF-BASIC
+  title: префикс устаревшей схемы для произвольных TCP-запросов
+  records: [INJ-SSRF-PARAMETERS]
+  source: library
+- id: TD-SSRF-0005
+  value: "127.0.0.1"
+  encoding: raw
+  set: TDS-SSRF-INTERNAL-IP
+  title: IPv4-литерал петлевого адреса
+  records: [INJ-SSRF-PARAMETERS]
+  source: library
+- id: TD-SSRF-0006
+  value: "169.254.169.254"
+  encoding: raw
+  set: TDS-SSRF-INTERNAL-IP
+  title: IPv4-литерал адреса облачных метаданных
+  records: [INJ-SSRF-PARAMETERS]
+  source: library
