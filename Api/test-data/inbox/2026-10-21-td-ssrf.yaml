@@ -1,0 +1,14 @@
+- id: TD-SSRF-0007
+  value: "localhost"
+  encoding: raw
+  set: TDS-SSRF-WEBHOOK-INTERNAL
+  title: внутреннее имя хоста для URL вебхука
+  records: [ASYNC-WEBHOOK-URL-SSRF]
+  source: library
+- id: TD-SSRF-0008
+  value: "169.254.169.254"
+  encoding: raw
+  set: TDS-SSRF-WEBHOOK-INTERNAL
+  title: адрес службы метаданных облака для URL вебхука
+  records: [ASYNC-WEBHOOK-URL-SSRF]
+  source: library

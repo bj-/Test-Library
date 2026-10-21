@@ -569,4 +569,6 @@ sets:
   TDS-XSS-STORED-BASIC:
   - TD-XSS-0002
   - TD-XSS-0003
-reserved: []
+reserved:
+- TD-SSRF-0007
+- TD-SSRF-0008
