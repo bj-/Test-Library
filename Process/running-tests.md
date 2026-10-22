@@ -124,7 +124,7 @@ gate: tiny-smoke.yaml                # tinySmoke - набор, который и
 # items: all                         # вся коллекция; only: destructive - только разрушающие; exclude: [пути, папки]
 contract: docs/sources/contracts/admin/api.yaml   # контракт для сверки стенда (желательно всегда)
 description: что проверяет набор
-items:                               # путь запроса от корня коллекции без .request.yaml
+items:                               # путь запроса от корня коллекции без .request.yaml; `<папка>/` - вся папка (движок 0.7.0)
   - api/auth/login/TESTS/Pos/Login - P01 200 admin login
 ```
 
