@@ -1,0 +1,1 @@
+{"id": "grpc/grpc-node#1289", "verdict": "out_of_scope", "oos_class": "other", "reason": "Нестабильный юнит-тест DNS-резолвера клиента grpc-js (IPv6-адрес приходит не всегда); фикс лишь отключает тест — дефекта сервера нет", "pattern": null, "match": null, "ideas": []}
