@@ -1,6 +1,6 @@
 # Статус проекта
 
-_Последнее обновление: 2026-10-21_
+_Последнее обновление: 2026-10-23_
 
 ## Цель / текущий фокус
 
@@ -14,6 +14,7 @@ _Последнее обновление: 2026-10-21_
 
 ## Следующие шаги
 
+- [ ] Группы безопасности ([ADR 0011](decisions/0011-security-groups.md), `Process/security-groups.md`): заведены (2026-10-23) - 8 групп, 288 записей; первая группа - `sg-token` для BFF-Mobile (генерация -> прогон -> разбор -> баги); затем `sg-authz`, `sg-hardening`, `sg-privacy`, потом `sg-session`, `sg-login`, `sg-injection`
 - [ ] Тестовые значения по ссылке ([ADR 0009](decisions/0009-test-data-by-reference.md), `Process/test-data.md`): проверка изоляции (раздел 0) ✅, пилот INJ-SQL + INJ-REFLECTED-XSS ✅ (2026-10-21, дочерние сессии: 8 значений, 2 набора, `1332d11`, `271b1d2`) → INJ-* (2026-10-21): 40 значений, 12 наборов в словаре, записи без значений — INJ-FILTER-EXPRESSION, INJ-XXE, INJ-UNSAFE-DESERIALIZATION, INJ-USER-CODE-EXECUTION, INJ-USER-DATA-CALLABLE, INJ-SCHEMA-IDENTIFIER-CODEGEN, INJ-LLM-GENERATED-ACTIONS; INJ-NOSQL, INJ-OS-COMMAND, INJ-TEMPLATE-SSTI — остановка фильтра на сборе, собраны ChatGPT (раздел 3), записи подставлены скриптом, словарь принят сессией словаря без остановки (`56e4b38`, `48d5e31`); открыто: значения TD-TPL-0001/0005/0006 в синтаксисе `{{…}}` — проверить подстановку Postman/newman на прогоне; TD-CMD-0005 — неполное, решить по INJ-OS-COMMAND → SSRF вне INJ, токены, файлы, GraphQL (2026-10-21): +9 значений (FILE, RANGE, JWT, SSRF), без значений — REST-SSRF-URL-FETCH, AUTH-JWT-* и SEC-TOKEN-SIGNATURE, все GQL-*, 13 из 17 FILE-*; словарь — 72 значения, 21 набор; затем генератор: `{{TD-…}}` по полю `test_data`, вердикт по отражению — в скрипте теста
 - [ ] Эксперимент A/B/C/D по стоп-темам (`ideas/LookForLLMStopers/LLM-Claude.md`, «Итог для исполнителя») — после пилота словаря
 - [ ] Примитив `attemptLimit` во фреймворке — задание другой модели: `PostmanScripts/docs/tasks/attempt-limit.md` (архив — `Api/tools/export_for_llm.py --task …`)
@@ -149,3 +150,4 @@ _Последнее обновление: 2026-10-21_
 | 2026-10-21 | Claude / demopolish | Сбор SSRF, токенов, файлов, GraphQL дочерними сессиями (`d6026d8`, `56898e6`, `5a0376c`, словарь `25d9101`) без остановок фильтра; ASYNC-WEBHOOK-URL-SSRF: значение, ушедшее из набора при объединении дублей, добавлено ссылкой; `ingest` предупреждает о потере значения набором |
 | 2026-10-21 | Claude / demopolish | Правило о проектной документации разработки (из BFF ADR 0005, решение bj): исходный документ, мнение разработки, расхождение с ЧТЗ - баг `requirements`; ADR 0002 п. 7, `Process/collections.md` шаг 0 |
 | 2026-10-22 | Claude / bj | ADR [0010](decisions/0010-collection-per-contract.md) «Коллекция = контракт»: каркас коллекции - дерево путей контракта (как при импорте в Postman) со всеми ручками, заготовки `[Контракт]`, тест - в ветке проверяемой ручки, проверки по многим ручкам - в папке группы проверок, покрытие от генератора; `Process/collections.md` п. 3, `running-tests.md` (папка в `items`, движок 0.7.0); пример - BFF `BFF-Mobile` |
+| 2026-10-23 | Claude / bj | [ADR 0011](decisions/0011-security-groups.md) - группы проверок безопасности, группа = отдельная сессия на всех этапах: `Api/taxonomy/security-groups.yaml` (8 групп, правила), `tools/security_groups.py` (index, list, of, stats), индекс `taxonomy/security-groups-index.yaml` (проверяет `validate_library.py`), поле схемы `security_group`, `export_for_llm.py --group`; `Process/security-groups.md`, поле бага «Группа», `bugs.md`, `running-tests.md`; движок 0.9.0 (метка в метаданных, `run --group`, `split`, `view/dupes --group`, тег в трекере), `yt.py search/show --group`; исполнитель группы - логическое поле `executor` (self / child / human, решение bj); рутина рискованных групп (sg-token, sg-session, sg-login, sg-injection) - дочерние сессии (по умолчанию), модель в одном месте `executors.child.model` (сегодня claude-opus-4-8), при выводе модели или остановке - внешняя/локальная LLM (Qwen, ChatGPT) через `export_for_llm.py --group` |

@@ -97,6 +97,9 @@ def validate(root: Path):
         if "real-world-bug" in c.get("tags", []) and not rwb:
             errors.append(f"{cid}: tag real-world-bug requires a 'Real-world bug: RWB-NNNN' reference")
 
+    from security_groups import check_index      # группы безопасности (ADR 0011): индекс актуален, группы известны
+    errors += check_index()
+
     by_status = {s: sum(c.get("status") == s for c in checks) for s in CHECK_STATUSES}
     print(f"Checks: {len(checks)} | Unique IDs: {len(seen)} | Profiles: {len(profiles)}")
     print("Status: " + ", ".join(f"{s}={n}" for s, n in by_status.items()))

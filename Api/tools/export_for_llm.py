@@ -2,6 +2,7 @@
 
     python Api/tools/export_for_llm.py                         # вся библиотека (файлы из git) -> Api/build/export/test-library-<дата>.zip
     python Api/tools/export_for_llm.py --records INJ-SQL,INJ-REFLECTED-XSS   # только эти записи + порядок сбора значений
+    python Api/tools/export_for_llm.py --group sg-token      # записи группы безопасности (ADR 0011), кроме sg-restricted
     python Api/tools/export_for_llm.py --task ../PostmanScripts/docs/tasks/attempt-limit.md   # задание + его файлы
 
 Не попадает никогда: каталоги restricted/, словарь test-data/ (кроме README.md), .claude/, блоки
@@ -114,8 +115,18 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--records", help="ID записей через запятую")
     ap.add_argument("--task", type=Path, help="файл задания с заголовком files:")
+    ap.add_argument("--group", help="группа безопасности из taxonomy/security-groups.yaml (ADR 0011)")
     a = ap.parse_args()
-    if a.task:
+    if a.group:
+        sys.path.insert(0, str(Path(__file__).parent))
+        from security_groups import RESTRICTED, load_index
+        if a.group == RESTRICTED:
+            sys.exit(f"{RESTRICTED} не выгружается (ADR 0008)")
+        ids = sorted(i for i, g in load_index().items() if g == a.group)
+        if not ids:
+            sys.exit(f"в группе {a.group} нет записей (или нет такой группы)")
+        export_records(ids)
+    elif a.task:
         export_task(a.task)
     elif a.records:
         export_records([x.strip() for x in a.records.split(",") if x.strip()])
