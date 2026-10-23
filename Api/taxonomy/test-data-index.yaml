@@ -193,6 +193,20 @@ values:
     response: visible
     length: 7
     sha256: a467c54a4120
+  TD-JWT-0003:
+    title: JWT с alg=none и пустой подписью
+    records:
+    - AUTH-JWT-ALG-NONE
+    response: visible
+    length: 116
+    sha256: 8ef6667b217b
+  TD-JWT-0004:
+    title: JWT, структурно корректный, подписанный неизвестным ключом
+    records:
+    - SEC-TOKEN-SIGNATURE
+    response: visible
+    length: 160
+    sha256: f46104890d60
   TD-LOG-0001:
     title: Журнал, перевод строки в escape-записи
     set: TDS-LOG-NEWLINE
@@ -327,6 +341,13 @@ values:
     response: hidden
     length: 8
     sha256: 0b7beefe4fb6
+  TD-PATH-0010:
+    title: URL-кодированный сегмент «точка» в пути
+    records:
+    - AUTH-PATH-NORMALIZATION-BYPASS
+    response: hidden
+    length: 3
+    sha256: 48edc5293685
   TD-PROTO-0001:
     title: загрязнение прототипа через специальный ключ объекта
     set: TDS-PROTO-BASIC
@@ -651,7 +672,4 @@ sets:
   - TD-XSS-0003
 reserved:
 - TD-JWT-0002
-- TD-JWT-0003
-- TD-JWT-0004
-- TD-PATH-0010
 - TD-SSRF-0008

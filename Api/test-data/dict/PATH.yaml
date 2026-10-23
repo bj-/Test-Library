@@ -79,3 +79,11 @@
   - INJ-RESERVED-PATH-WRITE
   source: library
   added: '2026-10-21'
+- id: TD-PATH-0010
+  value: '%2e'
+  encoding: raw
+  title: URL-кодированный сегмент «точка» в пути
+  records:
+  - AUTH-PATH-NORMALIZATION-BYPASS
+  source: spec BFF-Mobile sgtoken.py
+  added: '2026-10-23'
