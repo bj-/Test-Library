@@ -7,9 +7,12 @@
 # issue_type — баги размечены типом issue (GitHub Issue Types): запрос по типу вместо include_labels.
 # exclude_title — предфильтр до LLM по заголовку (внутренности фреймворка, сборка); калибровка на пилоте:
 #   у nest и express отсекает 28 багов вне области, API-баги не теряются (build/mining/pilot/REPORT.md).
-# max_items — сколько issue сохранить в raw после отбора по меткам (до фильтра). У источников пилота при
-#   масштабировании увеличен (keycloak 200 → 600, strapi и directus 150 → 450): уже обработанное в пилоте
-#   отсекает filter.py («уже в другой партии»), остаётся более старая история.
+# max_items — сколько issue сохранить в raw после отбора по меткам (до фильтра). С 2026-10-23 — в defaults
+#   100000, то есть вся история источника (решение bj, ADR 0012: пригодятся и для нагрузки, Web, Desktop);
+#   источникам с малой отдачей понижаем приоритет в очереди (mining/sessions.md), а не предел.
+#   Уже обработанное в других партиях отсекает filter.py («уже в другой партии»).
+# allow_no_fix — оставлять issue, закрытые COMPLETED без PR/коммита (fix_evidence: closed-completed): с ADR 0012
+#   в defaults для всех источников — баг без исправления триажится как идея теста.
 #
 # Масштабирование (ADR 0005): партия = источник (--batch <id>), одна сессия Claude — один источник,
 # порядок и промпты — mining/sessions.md.
@@ -23,6 +26,8 @@ politeness:
   user_agent: Test-Library-bug-mining (github.com/bj-/Test-Library)
 
 defaults:
+  max_items: 100000
+  allow_no_fix: true
   include_labels: '(?i)\bbug\b'
   exclude_labels: >-
     (?i)not.?a.?bug|bug.?bounty|question|feature|enhancement|\bdocs?\b|documentation|duplicate|invalid|
@@ -31,147 +36,115 @@ defaults:
   body_max_chars: 4000
 
 sources:
-  # allow_no_fix: мейнтейнеры закрывают исправленное как COMPLETED без привязки PR («fixed in vX» в комментарии);
-  # такие записи помечаются fix_evidence: closed-completed, окончательно решает триаж.
   - id: nestjs-nest
     type: github
     repo: nestjs/nest
-    allow_no_fix: true
     exclude_title: >-
       (?i)(\bDI\b|dependency injection|\binjectable\b|\bdecorators?\b|lifecycle hooks?|\bonModule\w*|
       \bonApplication\w*|\bCLI\b|schematics?|\bwebpack\b|\bswc\b|\besbuild\b|\btsc\b|\btypescript\b|\btypings?\b|
       \bjest\b|testing ?module|\bvitest\b|\brepl\b|\bmonorepo\b|circular (dependency|import)|dynamic module|
       forRoot(Async)?|\bbuild\b|compil(e|er|ation))
-    max_items: 200
   - id: express
     type: github
     repo: expressjs/express
-    allow_no_fix: true
     exclude_title: >-
       (?i)(\bDI\b|dependency injection|\binjectable\b|\bdecorators?\b|lifecycle hooks?|\bonModule\w*|
       \bonApplication\w*|\bCLI\b|schematics?|\bwebpack\b|\bswc\b|\besbuild\b|\btsc\b|\btypescript\b|\btypings?\b|
       \bjest\b|testing ?module|\bvitest\b|\brepl\b|\bmonorepo\b|circular (dependency|import)|dynamic module|
       forRoot(Async)?|\bbuild\b|compil(e|er|ation))
-    max_items: 80
   - id: body-parser
     type: github
     repo: expressjs/body-parser
-    max_items: 40
   - id: express-session
     type: github
     repo: expressjs/session
-    max_items: 40
   - id: jshttp-cookie
     type: github
     repo: jshttp/cookie
-    max_items: 20
   - id: keycloak
     type: github
     repo: keycloak/keycloak
     include_labels: '(?i)^kind/bug$'
     require_labels: '(?i)^area/(authentication|oidc|token|login|account|admin/api|core|authorization|user-profile|brute)'
     exclude_labels: '(?i)^area/(admin/ui|account/ui|ui|docs|dist|testsuite|ci)'
-    max_items: 600
   # strapi: не продолжать (низкая отдача, mining/metrics.md, 2026-10-17)
   - id: strapi
     type: github
     repo: strapi/strapi
     exclude_labels: '(?i)admin|design|i18n.?ui|cli|upgrade'
-    max_items: 450
   - id: directus
     type: github
     repo: directus/directus
     exclude_labels: '(?i)^app$|studio|frontend|extension.?sdk'
-    max_items: 450
   - id: ghsa-npm
     type: ghsa
     ecosystem: npm
     # CWE под OWASP API Top 10: доступ, аутентификация, сессии, mass assignment, prototype pollution,
     # ReDoS и ресурсы, SSRF, инъекции, раскрытие данных, open redirect.
     cwes: [639, 284, 285, 862, 863, 287, 306, 384, 613, 640, 915, 1321, 1333, 400, 770, 918, 89, 943, 78, 94, 200, 209, 601, 352]
-    max_items: 200
   # --- Масштабирование после пилота (ADR 0005) ---
   - id: ghsa-pip
     type: ghsa
     ecosystem: pip
     cwes: [639, 284, 285, 862, 863, 287, 306, 384, 613, 640, 915, 1321, 1333, 400, 770, 918, 89, 943, 78, 94, 200, 209, 601, 352]
-    max_items: 250
   - id: ghsa-maven
     type: ghsa
     ecosystem: maven
     cwes: [639, 284, 285, 862, 863, 287, 306, 384, 613, 640, 915, 1321, 1333, 400, 770, 918, 89, 943, 78, 94, 200, 209, 601, 352]
-    max_items: 250
   - id: ghsa-go
     type: ghsa
     ecosystem: go
     cwes: [639, 284, 285, 862, 863, 287, 306, 384, 613, 640, 915, 1321, 1333, 400, 770, 918, 89, 943, 78, 94, 200, 209, 601, 352]
-    max_items: 250
   - id: ghsa-rubygems
     type: ghsa
     ecosystem: rubygems
     cwes: [639, 284, 285, 862, 863, 287, 306, 384, 613, 640, 915, 1321, 1333, 400, 770, 918, 89, 943, 78, 94, 200, 209, 601, 352]
-    max_items: 200
   - id: ghsa-composer
     type: ghsa
     ecosystem: composer
     cwes: [639, 284, 285, 862, 863, 287, 306, 384, 613, 640, 915, 1321, 1333, 400, 770, 918, 89, 943, 78, 94, 200, 209, 601, 352]
-    max_items: 200
   # ghsa-nuget: не продолжать (низкая отдача, mining/metrics.md, 2026-10-17)
   - id: ghsa-nuget
     type: ghsa
     ecosystem: nuget
     cwes: [639, 284, 285, 862, 863, 287, 306, 384, 613, 640, 915, 1321, 1333, 400, 770, 918, 89, 943, 78, 94, 200, 209, 601, 352]
-    max_items: 150
   - id: kubernetes
     type: github
     repo: kubernetes/kubernetes
     include_labels: '(?i)^kind/bug$'
     require_labels: '(?i)^(sig/(api-machinery|auth)|area/(api|api-validation|apiserver))$'
-    max_items: 300  # было 200; досбор — mining/metrics.md (2026-10-17)
   # supabase-auth: не продолжать (низкая отдача, mining/metrics.md, 2026-10-17)
   - id: supabase-auth
     type: github
     repo: supabase/auth
-    max_items: 120
   - id: postgrest
     type: github
     repo: PostgREST/postgrest
     issue_type: Bug  # с 2025 баги размечены типом issue, метки bug нет
-    max_items: 300  # было 150; досбор — mining/metrics.md (2026-10-17)
   - id: hasura
     type: github
     repo: hasura/graphql-engine
     exclude_labels: '(?i)console|^c/(console|cli)'
-    max_items: 300  # было 200; досбор — mining/metrics.md (2026-10-17)
   - id: kong
     type: github
     repo: Kong/kong
     exclude_labels: '(?i)manager|^area/(cli|docs)'
-    max_items: 300  # было 150; досбор — mining/metrics.md (2026-10-17)
   - id: grpc-go
     type: github
     repo: grpc/grpc-go
-    max_items: 100000  # было 120; все баги до конца истории — решение bj 2026-10-23 (пригодятся для нагрузки, Web, Desktop)
+    include_labels: '^Type: (Bug|Performance|Security)$'  # + производительность и безопасность (bj, 2026-10-23)
   - id: grpc-java
     type: github
     repo: grpc/grpc-java
-    max_items: 120
   - id: grpc-node
     type: github
     repo: grpc/grpc-node
-    max_items: 100
   - id: grpc-gateway
     type: github
     repo: grpc-ecosystem/grpc-gateway
-    allow_no_fix: true
-    max_items: 100
   - id: graphql-js
     type: github
     repo: graphql/graphql-js
-    allow_no_fix: true
-    max_items: 100
   - id: apollo-server
     type: github
     repo: apollographql/apollo-server
-    allow_no_fix: true
-    max_items: 120

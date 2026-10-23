@@ -131,7 +131,7 @@ powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-se
    `taxonomy/categories.yaml`, `taxonomy/tags.yaml` и файл пачки `build/mining/<id>/batches/b-NN.md`.
    - Файл пачки читать кусками по ~1300 строк. Ответы по каждому куску писать в отдельный файл в scratchpad,
      затем склеить в `batches/b-NN.out.jsonl`: UTF-8 без BOM, одна строка на баг, порядок как в пачке.
-   - Идеи UI и БД/SQL — в поле `ideas` ответа (промпт, п. 4). Прочие идеи вне паттернов — в
+   - Идеи UI и БД/SQL — в поле `ideas` ответа (промпт, п. 5). Прочие идеи вне паттернов — в
      `build/mining/<id>/ideas.md` с ID бага.
 6. `python tools/mining/batch.py check --batch <id> --name b-NN` — должно быть N/N и 0 ошибок; ошибки исправить.
    Затем `python tools/mining/batch.py stats --batch <id>`.

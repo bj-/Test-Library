@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -19,6 +18,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from library import load_yaml, setup_console  # noqa: E402
 from github_api import GitHub, StopCollection  # noqa: E402
+from batch import query_labels as select_labels, rx, selection_changed  # noqa: E402
 
 ISSUES_QUERY = """
 query($owner:String!,$name:String!,$labels:[String!],$type:String,$after:String){
@@ -52,10 +52,6 @@ query($owner:String!,$name:String!,$after:String){
 
 def now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
-
-
-def rx(pattern: str | None):
-    return re.compile(" ".join(pattern.split())) if pattern else None
 
 
 def repo_labels(gh: GitHub, owner: str, name: str) -> list[str]:
@@ -94,17 +90,13 @@ def collect_github(gh: GitHub, src: dict, defaults: dict, out: Path, state: dict
     owner, name = src["repo"].split("/")
     all_labels = state.get("labels") or repo_labels(gh, owner, name)
     state["labels"] = all_labels
-    inc = rx(src.get("include_labels", defaults["include_labels"]))
-    exc_patterns = [p for p in (defaults.get("exclude_labels"), src.get("exclude_labels")) if p]
-    exc = [rx(p) for p in exc_patterns]
     req = rx(src.get("require_labels"))
     # issue_type — репозиторий размечает баги типом issue (GitHub Issue Types), а не меткой: запрос по типу
     issue_type = src.get("issue_type")
+    query_labels = select_labels(src, defaults, all_labels)
     if issue_type:
-        query_labels = None
         print(f"  тип issue: {issue_type}")
     else:
-        query_labels = [lb for lb in all_labels if inc.search(lb) and not any(e.search(lb) for e in exc)]
         if not query_labels:
             raise RuntimeError(f"{src['id']}: ни одна метка не подошла под include_labels; метки: {all_labels}")
         print(f"  метки запроса: {query_labels}")
@@ -214,9 +206,15 @@ def main() -> int:
         args.source = [args.batch]  # batch per source (scaling, one session per source)
     gh = GitHub(cfg["politeness"])
     for src in cfg["sources"]:
+        src.setdefault("max_items", cfg["defaults"]["max_items"])
         if args.source and src["id"] not in args.source:
             continue
         st = states.setdefault(src["id"], {})
+        if selection_changed(src, cfg["defaults"], st):
+            print(f"{src['id']}: изменился отбор меток {st['query_labels']} → "
+                  f"{select_labels(src, cfg['defaults'], st['labels'])}, сбор заново с новых (сохранённые пропускаются)")
+            for k in ("done", "exhausted", "cursor"):
+                st.pop(k, None)
         if st.get("done") and (st.get("exhausted") or st.get("kept", 0) >= src["max_items"]):
             print(f"{src['id']}: уже собран ({st.get('kept')}{', исчерпан' if st.get('exhausted') else ''}), пропуск")
             continue

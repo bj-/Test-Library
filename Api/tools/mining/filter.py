@@ -3,7 +3,7 @@
 
 Usage: filter.py [--batch pilot] [--allow-no-fix] [--sources mining/sources.yaml]
 Run from Api/. Keeps fixed bugs only (merged PR or fixing commit; advisories are kept as published;
-sources with allow_no_fix also keep issues closed as COMPLETED, marked fix_evidence: closed-completed),
+with allow_no_fix, on by default since ADR 0012, also issues closed as COMPLETED: fix_evidence: closed-completed),
 drops records of other batches, excluded labels, feature/question titles and per-source exclude_title (framework internals, build) —
 except records already answered by an LLM batch, so re-filtering never orphans results; dedups by id, cleans and truncates bodies.
 Prints drop reasons per source; the same numbers go to filter_stats.json.
@@ -76,7 +76,7 @@ def main() -> int:
             elif r["kind"] == "issue" and r["state_reason"] in ("NOT_PLANNED", "DUPLICATE"):
                 reason = f"закрыт как {r['state_reason'].lower().replace('_', ' ')}"
             elif (r["kind"] == "issue" and not (r["fix"]["prs"] or r["fix"]["commits"])
-                  and not (args.allow_no_fix or src.get("allow_no_fix"))):
+                  and not (args.allow_no_fix or src.get("allow_no_fix", defaults.get("allow_no_fix")))):
                 reason = "нет PR/коммита с исправлением"
             elif any(e.search(lb) for e in exc for lb in r["labels"]):
                 reason = "исключающая метка"

@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from collections import Counter
 from pathlib import Path
@@ -28,6 +29,7 @@ MATCH_TYPES = {"covered", "extends", "new"}
 IDEA_MARKS = {"UI", "UI web", "UI desktop", "UI mobile", "DB"}  # ideas beyond the API library (inbox)
 PROTOCOLS = {"rest", "grpc", "graphql", "websocket", "generic"}
 MINING = Path("build/mining")
+FAMILY_KEY = re.compile(r"[a-z0-9]+(-[a-z0-9]+)*")  # family hint of a pattern (ADR 0012), grouped at step 6
 
 
 def library_ids() -> dict[str, dict]:
@@ -133,6 +135,8 @@ def cmd_check(args) -> int:
             errors.append(f"{where}: variant только у extends")
         if variant and variant.lower().startswith(("добавить", "вариант")):
             errors.append(f"{where}: variant — шаг в повелительной форме, без «Добавить …»")
+        if (family := r.get("family")) is not None and not FAMILY_KEY.fullmatch(str(family)):
+            errors.append(f"{where}: family {family!r} — ключ латиницей через дефис или null")
     if missing := set(ids) - seen:
         errors.append(f"нет ответа для {len(missing)}: {sorted(missing)[:5]}")
     for e in errors:
@@ -141,17 +145,41 @@ def cmd_check(args) -> int:
     return 1 if errors else 0
 
 
+def rx(pattern: str | None):
+    return re.compile(" ".join(pattern.split())) if pattern else None
+
+
+def query_labels(src: dict, defaults: dict, all_labels: list[str]) -> list[str] | None:
+    """Repository labels the GitHub query asks for (None: query by issue type)."""
+    if src.get("issue_type"):
+        return None
+    inc = rx(src.get("include_labels", defaults["include_labels"]))
+    exc = [rx(p) for p in (defaults.get("exclude_labels"), src.get("exclude_labels")) if p]
+    return [lb for lb in all_labels if inc.search(lb) and not any(e.search(lb) for e in exc)]
+
+
+def selection_changed(src: dict, defaults: dict, st: dict) -> bool:
+    """Label or type selection of a GitHub source changed since the saved run: its cursor and `exhausted` belong to
+    the old query, collection restarts from the newest issue (saved ones are skipped)."""
+    if src.get("type") != "github" or "query_labels" not in st or not st.get("labels"):
+        return False
+    return query_labels(src, defaults, st["labels"]) != st["query_labels"]
+
+
 def collection_pending(batch: str) -> bool:
-    """A source batch needs (more) collection: never collected, or max_items raised above what was kept and the
-    source is not exhausted (state.json written by collect.py)."""
+    """A source batch needs (more) collection: never collected, max_items raised above what was kept and the
+    source is not exhausted, or its label selection changed (state.json written by collect.py)."""
     state_path = MINING / batch / "state.json"
     if not state_path.exists():
         return True
-    src = next((s for s in load_yaml(Path("mining/sources.yaml"))["sources"] if s["id"] == batch), None)
+    cfg = load_yaml(Path("mining/sources.yaml"))
+    src = next((s for s in cfg["sources"] if s["id"] == batch), None)
     st = json.loads(state_path.read_text(encoding="utf-8")).get(batch, {})
     if src is None:  # pilot and other multi-source batches
         return not st and not (MINING / batch / "filtered.jsonl").exists()
-    return not st.get("done") or (not st.get("exhausted") and st.get("kept", 0) < src["max_items"])
+    limit = src.get("max_items", cfg["defaults"]["max_items"])
+    return (not st.get("done") or selection_changed(src, cfg["defaults"], st)
+            or (not st.get("exhausted") and st.get("kept", 0) < limit))
 
 
 def cmd_remaining(args) -> None:
