@@ -51,6 +51,8 @@ checks:
     likelihood: medium
   references:
   - 'Real-world bug: RWB-0352'
+  test_data:
+  - TD-JWT-0003
 - id: AUTH-JWT-ALG-CONFUSION
   status: approved
   title: Подмена алгоритма RS256 на HS256 с публичным ключом не принимается
@@ -2467,6 +2469,8 @@ checks:
   - Смежная — HTTP-TRAILING-SLASH-CASE
   - CWE-22, CWE-647
   - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
+  test_data:
+  - TD-PATH-0010
 - id: AUTH-CREDENTIAL-CHANNEL-STRICT
   status: approved
   title: Учётные данные принимаются только по документированному каналу

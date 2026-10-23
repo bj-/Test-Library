@@ -651,4 +651,7 @@ sets:
   - TD-XSS-0003
 reserved:
 - TD-JWT-0002
+- TD-JWT-0003
+- TD-JWT-0004
+- TD-PATH-0010
 - TD-SSRF-0008
