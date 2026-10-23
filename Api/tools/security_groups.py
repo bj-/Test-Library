@@ -6,11 +6,16 @@
     python tools/security_groups.py list sg-token --ids   # только id через запятую (для export_for_llm --records)
     python tools/security_groups.py of AUTH-JWT-ALG-NONE INJ-SQL   # группа записей
     python tools/security_groups.py stats              # сколько записей в каждой группе
+    python tools/security_groups.py check <коллекция> [--group sg-token]   # значения вне {{TD-…}} в запросах
 
 Правила - taxonomy/security-groups.yaml. Запись группы sg-restricted печатается только id (без заголовка).
+`check` печатает только файл, поле и класс значения - само значение не показывает (проверка работы исполнителя child
+без чтения содержимого, память child-sessions-allowed).
+
 """
 import argparse
 import fnmatch
+import re
 import sys
 from pathlib import Path
 
@@ -90,6 +95,53 @@ def check_index():
     return errors
 
 
+# Похожие на тестовые значения безопасности (ADR 0009: в запросе - только {{TD-…}}). Класс - префикс словаря TD.
+SUSPECT = [
+    ("JWT", re.compile(r"eyJ[\w-]{6,}\.[\w-]*\.?")),
+    ("PATH", re.compile(r"\.\./|\.\.\x5c|%2e|%2f|%5c|%00", re.I)),
+    ("SQLI", re.compile(r"'\s*(or|and)\s|union\s+select|;\s*drop\s|--\s*$|sleep\(\d", re.I)),
+    ("XSS", re.compile(r"<\s*script|on(error|load)\s*=|javascript:|<\s*svg|<\s*img", re.I)),
+    ("TPL", re.compile(r"\$\{[^}]*\}|<%|#\{|\{\{\s*\d+\s*\*")),
+    ("CMD", re.compile(r"\$\(|`[^`]+`|;\s*(id|ls|cat|whoami)\b|\|\s*(id|ls|cat|whoami)\b")),
+    ("NOSQL", re.compile(r"\$(ne|gt|lt|regex|where|in)\b")),
+    ("CRLF", re.compile(r"%0d|%0a|\x5cr\x5cn|\r\n", re.I)),
+    ("SSRF", re.compile(r"169\.254\.|127\.0\.0\.1|\blocalhost\b|\[::1?\]|file://|gopher://|dict://", re.I)),
+    ("XXE", re.compile(r"<!(ENTITY|DOCTYPE)", re.I)),
+]
+VAR = re.compile(r"\{\{[^{}]*\}\}")
+LITERAL = re.compile(r"\"([^\"\n]*)\"|'([^'\n]*)'")
+
+
+def strings(node, path=""):
+    if isinstance(node, str):
+        yield path, node
+    elif isinstance(node, dict):
+        for k, v in node.items():
+            yield from strings(v, f"{path}.{k}" if path else str(k))
+    elif isinstance(node, list):
+        for i, v in enumerate(node):
+            yield from strings(v, f"{path}[{i}]")
+
+
+def check_collection(root, group=None):
+    """Файлы *.request.yaml: (файл, поле, класс) для строк, похожих на тестовое значение, без {{TD-…}}."""
+    hits = []
+    for f in sorted(Path(root).rglob("*.request.yaml")):
+        doc = yaml.safe_load(f.read_text(encoding="utf-8")) or {}
+        if group and group not in (doc.get("description") or ""):
+            continue
+        for field, text in strings({k: v for k, v in doc.items() if k != "description"}):
+            if field.endswith(".type") or field.endswith(".language"):
+                continue
+            if field.endswith(".code"):  # в скриптах значение - только в строковых литералах, код фреймворка не смотреть
+                text = " ".join(a or b for a, b in LITERAL.findall(text))
+            text = VAR.sub("", text)  # ссылки {{TD-…}} и переменные окружения - не значения
+            for cls, rx in SUSPECT:
+                if rx.search(text):
+                    hits.append((f.relative_to(root).as_posix(), field, cls))
+    return hits
+
+
 def main():
     setup_console()
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -102,7 +154,17 @@ def main():
     p = sub.add_parser("of")
     p.add_argument("ids", nargs="+")
     sub.add_parser("stats")
+    p = sub.add_parser("check")
+    p.add_argument("collection")
+    p.add_argument("--group")
     a = ap.parse_args()
+
+    if a.cmd == "check":
+        hits = check_collection(a.collection, a.group)
+        for f, field, cls in hits:
+            print(f"{cls}	{f}	{field}")
+        print(f"значений вне TD: {len(hits)}" + (f" (группа {a.group})" if a.group else ""))
+        return 1 if hits else 0
 
     if a.cmd == "index" and a.check:
         errors = check_index()
