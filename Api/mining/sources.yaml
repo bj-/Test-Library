@@ -151,7 +151,7 @@ sources:
   - id: grpc-go
     type: github
     repo: grpc/grpc-go
-    max_items: 120
+    max_items: 100000  # было 120; все баги до конца истории — решение bj 2026-10-23 (пригодятся для нагрузки, Web, Desktop)
   - id: grpc-java
     type: github
     repo: grpc/grpc-java
