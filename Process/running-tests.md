@@ -2,8 +2,9 @@
 
 Короткий путь (Claude на новой машине делает именно это):
 
-1. Рабочее место `C:\Git\Autotest\`: клонировать `test-engine`, в `projects\<КОД>\` -
-   репозиторий тестов (`tests`) и результатов (`results`); рядом с `Autotest` - `Test-Library` (раскладка - README движка).
+1. Рабочее место и проект - по [`workspace.md`](workspace.md): `python C:\Git\Autotest\test-engine\engine\autotest.py setup <КОД>`
+   клонирует `tests` и `results` проекта из реестра [`projects.yaml`](projects.yaml); проекта нет в реестре - спросить
+   у пользователя адреса; нет движка или Test-Library - спросить, откуда склонировать.
 2. Проверить инструменты (раздел «Подготовка машины»).
 3. Стенд и учётки тестовых стендов уже в окружении `tests/postman/environments/<Окружение>.environment.yaml`.
    Нет нужного окружения или это production - **спросить у пользователя**.

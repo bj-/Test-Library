@@ -6,6 +6,8 @@
 
 | Документ | О чём |
 |---|---|
+| [`workspace.md`](workspace.md) | **Начать здесь на новой машине:** раскладка, репозитории проекта, развернуть существующий проект или завести новый (`autotest.py setup`) |
+| [`projects.yaml`](projects.yaml) | Реестр проектов: код -> адреса репозиториев тестов и результатов (единственное место адресов) |
 | [`collections.md`](collections.md) | Создание коллекции: порядок работы, формат и расположение (Postman v3, Local Mode), структура, тест, обязательный набор тестов, безопасность стенда |
 | [`running-tests.md`](running-tests.md) | Запуск: раннеры, окружение и секреты, наборы, отчёт о прогоне, разбор результатов |
 | [`bugs.md`](bugs.md) | Правила оформления багов: когда заводить, классификация, серьёзность, жизненный цикл |
@@ -19,16 +21,9 @@
 |---|---|
 | `Test-Library` (этот) | Библиотека проверок (`Api/`), правила процесса (`Process/`) |
 | `test-engine` | Движок: запуск наборов, отчёты, Allure, сверка с контрактом, баги в трекер (`python autotest.py ...`) |
-| BFF: `tests` (gitlab.viiitech.ru/test/autotest/bff-tests) | Документация проекта (`docs/sources`, ревью `docs/reviews`), коллекции, окружения, наборы `suites/`, `autotest.yaml`; ветки по версиям продукта (ADR 0013) |
-| BFF: `results` (gitlab.viiitech.ru/test/autotest/bff-results) | Прогоны `runs/`, баги `bugs/`, история Allure `history/`; без веток (ADR 0013) |
+| `<код>-tests` проекта | Документация проекта (`docs/sources`, ревью `docs/reviews`), коллекции, окружения, наборы `suites/`, `autotest.yaml`; ветки по версиям продукта (ADR 0013). Адреса - [`projects.yaml`](projects.yaml) |
+| `<код>-results` проекта | Прогоны `runs/`, баги `bugs/`, история Allure `history/`; без веток (ADR 0013). Адреса - [`projects.yaml`](projects.yaml) |
 | `PostmanScripts` | Фреймворк проверок (`utils.bind`, `test(...)`), вставлен в коллекции |
 | `13vpn` (локально, без remote) | Отдельный проект VPN13: коллекция, свой фреймворк Bearer JWT, раннер, прогоны и баги внутри каталога (на движок ещё не переведён) |
 
-Раскладка:
-
-```
-C:\Git\Autotest\test-engine\
-C:\Git\Autotest\projects\<КОД>\tests\     autotest.yaml - пути к движку, результатам и Test-Library
-C:\Git\Autotest\projects\<КОД>\results\
-C:\Git\Test-Library\
-```
+Раскладка рабочего места и разворачивание проектов - [`workspace.md`](workspace.md).

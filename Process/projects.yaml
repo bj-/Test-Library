@@ -1,0 +1,11 @@
+# Реестр проектов тестов: код проекта -> репозитории (ADR 0013, порядок работы - workspace.md).
+# Читает `autotest.py setup`; проект не из реестра дописывает `autotest.py setup <КОД> --tests <адрес> --results <адрес>`.
+#   tests       документация + тесты, ветки по версиям продукта -> <Autotest>/projects/<КОД>/tests
+#   results     прогоны, отчёты, баги, без веток                 -> <Autotest>/projects/<КОД>/results
+#   results_web (необязательно) база ссылок на файлы результатов для results.url в autotest.yaml;
+#               по умолчанию <results без .git>/-/blob/main/
+projects:
+  BFF:
+    title: Умный Дом - BFF (мобильное API, админка)
+    tests: https://gitlab.viiitech.ru/test/autotest/bff-tests.git
+    results: https://gitlab.viiitech.ru/test/autotest/bff-results.git

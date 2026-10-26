@@ -8,7 +8,7 @@
    Названия полей и значений - fields.yaml; сверить с проектом в YouTrack.
 4. Ссылку на задачу записать в поле «Трекер» базового бага, номер задачи - в реестр bugs/README.md.
 Ссылки на прогоны и файлы репозитория результатов в описании - полные URL репозитория (относительные в YouTrack не работают):
-<results.url из autotest.yaml проекта><путь>, для BFF - https://gitlab.viiitech.ru/test/autotest/bff-results/-/blob/main/<путь>
+<results.url из autotest.yaml проекта><путь>
 -->
 
 ## Заголовок

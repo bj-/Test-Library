@@ -1,6 +1,6 @@
 # Оформление багов
 
-Баги ведутся файлами в репозитории результатов проекта (`bugs/`, для BFF - gitlab.viiitech.ru/test/autotest/bff-results) по базовому шаблону [`templates/bug.md`](templates/bug.md);
+Баги ведутся файлами в репозитории результатов проекта (`bugs/`; адрес репозитория - реестр [`projects.yaml`](projects.yaml)) по базовому шаблону [`templates/bug.md`](templates/bug.md);
 для переноса в трекер - шаблоны под конкретный трекер в [`templates/trackers/`](templates/trackers/README.md)
 (сейчас YouTrack). Тип и адрес трекера, префикс темы бага (по умолчанию `[AT]`) и метки (по умолчанию `Autotest`)
 выбирает тот, кто запускает прогон; в трекере тема = префикс + заголовок бага.
