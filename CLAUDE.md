@@ -40,7 +40,7 @@
 ## Связанные репозитории
 
 - `C:\Git\Autotest` — движок `test-engine` и проекты тестов (`projects\<КОД>\tests`, `results` — прогоны и баги).
-- `postman` — коллекции, построенные по библиотеке; реальные контракты — `Api/examples/real-contracts/`.
+- `bff-tests` (`C:\Git\Autotest\projects\BFF\tests`) — документация проекта BFF и коллекции, построенные по библиотеке; реальные контракты — `Api/examples/real-contracts/`.
 
 ## Закрытые материалы (ADR Test-Library 0008)
 

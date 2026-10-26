@@ -19,8 +19,8 @@
 |---|---|
 | `Test-Library` (этот) | Библиотека проверок (`Api/`), правила процесса (`Process/`) |
 | `test-engine` | Движок: запуск наборов, отчёты, Allure, сверка с контрактом, баги в трекер (`python autotest.py ...`) |
-| BFF: `tests` (gitlab.viiitech.ru/test/postman) | Коллекции, окружения, наборы `suites/`, `autotest.yaml` |
-| BFF: `results` (gitlab.viiitech.ru/test/autotest/bff) | Прогоны `runs/`, баги `bugs/`, история Allure `history/` |
+| BFF: `tests` (gitlab.viiitech.ru/test/autotest/bff-tests) | Документация проекта (`docs/sources`, ревью `docs/reviews`), коллекции, окружения, наборы `suites/`, `autotest.yaml`; ветки по версиям продукта (ADR 0013) |
+| BFF: `results` (gitlab.viiitech.ru/test/autotest/bff-results) | Прогоны `runs/`, баги `bugs/`, история Allure `history/`; без веток (ADR 0013) |
 | `PostmanScripts` | Фреймворк проверок (`utils.bind`, `test(...)`), вставлен в коллекции |
 | `13vpn` (локально, без remote) | Отдельный проект VPN13: коллекция, свой фреймворк Bearer JWT, раннер, прогоны и баги внутри каталога (на движок ещё не переведён) |
 
