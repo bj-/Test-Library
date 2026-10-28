@@ -19,6 +19,7 @@
 - id: TD-CRLF-0003
   value: '\r\nBcc:'
   encoding: raw
+  set: TDS-CRLF-HEADER
   title: CRLF с внедряемым заголовком письма
   records:
   - INJ-HEADER-CRLF

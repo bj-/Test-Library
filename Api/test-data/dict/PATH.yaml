@@ -82,6 +82,7 @@
 - id: TD-PATH-0010
   value: '%2e'
   encoding: raw
+  set: TDS-PATH-NORMALIZATION
   title: URL-кодированный сегмент «точка» в пути
   records:
   - AUTH-PATH-NORMALIZATION-BYPASS

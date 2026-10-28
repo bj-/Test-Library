@@ -1,6 +1,7 @@
 - id: TD-XSS-0001
   value: <script>
   encoding: raw
+  set: TDS-XSS-REFLECTED-BASIC
   title: HTML, открывающий тег скрипта
   records:
   - INJ-REFLECTED-XSS
@@ -27,6 +28,7 @@
 - id: TD-XSS-0004
   value: </script>
   encoding: raw
+  set: TDS-XSS-STORED-BASIC
   title: HTML, закрывающий тег скрипта (выход из JS-контекста)
   records:
   - INJ-STORED-XSS

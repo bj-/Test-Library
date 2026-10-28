@@ -29,6 +29,7 @@
 - id: TD-FILE-0004
   value: xlink:HrEf
   encoding: raw
+  set: TDS-FILE-SVG-XLINK
   title: атрибут ссылки SVG в смешанном регистре
   records:
   - FILE-ARCHIVE-BOMB

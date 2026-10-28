@@ -77,6 +77,7 @@ values:
     sha256: ce318ab44926
   TD-CRLF-0003:
     title: CRLF с внедряемым заголовком письма
+    set: TDS-CRLF-HEADER
     records:
     - INJ-HEADER-CRLF
     response: visible
@@ -180,6 +181,7 @@ values:
     sha256: 86879fe823ed
   TD-FILE-0004:
     title: атрибут ссылки SVG в смешанном регистре
+    set: TDS-FILE-SVG-XLINK
     records:
     - FILE-ARCHIVE-BOMB
     response: visible
@@ -187,6 +189,7 @@ values:
     sha256: a0c0105d4feb
   TD-JWT-0001:
     title: параметр заголовка JWT о сжатии payload
+    set: TDS-JWT-ZIP
     records:
     - FILE-ARCHIVE-BOMB
     - FILE-MALFORMED-STRUCTURE
@@ -195,6 +198,7 @@ values:
     sha256: a467c54a4120
   TD-JWT-0003:
     title: JWT с alg=none и пустой подписью
+    set: TDS-JWT-ALG-NONE
     records:
     - AUTH-JWT-ALG-NONE
     response: visible
@@ -202,6 +206,7 @@ values:
     sha256: 8ef6667b217b
   TD-JWT-0004:
     title: JWT, структурно корректный, подписанный неизвестным ключом
+    set: TDS-JWT-UNKNOWN-KEY
     records:
     - SEC-TOKEN-SIGNATURE
     response: visible
@@ -225,6 +230,7 @@ values:
     sha256: 156de42b059b
   TD-LOG-0003:
     title: Журнал, ANSI-последовательность смены цвета в escape-записи
+    set: TDS-LOG-ANSI
     records:
     - INJ-LOG-FORGING
     response: visible
@@ -232,6 +238,7 @@ values:
     sha256: 78ba80d3bd02
   TD-LOG-0004:
     title: Журнал, lookup-выражение JNDI
+    set: TDS-LOG-JNDI
     records:
     - INJ-LOG-FORGING
     response: visible
@@ -269,6 +276,38 @@ values:
     response: visible
     length: 6
     sha256: 01e8244422ab
+  TD-NUL-0001:
+    title: NUL-байт в конце строкового значения
+    set: TDS-NUL-BASIC
+    records:
+    - INJ-NULL-BYTE
+    response: visible
+    length: 6
+    sha256: de00fea45020
+  TD-NUL-0002:
+    title: NUL-байт в середине строкового значения
+    set: TDS-NUL-BASIC
+    records:
+    - INJ-NULL-BYTE
+    response: visible
+    length: 6
+    sha256: d8920a960945
+  TD-NUL-0003:
+    title: NUL-байт перед расширением в имени файла
+    set: TDS-NUL-BASIC
+    records:
+    - INJ-NULL-BYTE
+    response: visible
+    length: 9
+    sha256: 54c99be84111
+  TD-NUL-0004:
+    title: URL-кодированный NUL в конце строкового значения
+    set: TDS-NUL-BASIC
+    records:
+    - INJ-NULL-BYTE
+    response: visible
+    length: 8
+    sha256: 40d8f57f557c
   TD-PATH-0001:
     title: обход каталогов, относительный путь к системному файлу Unix
     set: TDS-PATH-TRAVERSAL-BASIC
@@ -343,6 +382,7 @@ values:
     sha256: 0b7beefe4fb6
   TD-PATH-0010:
     title: URL-кодированный сегмент «точка» в пути
+    set: TDS-PATH-NORMALIZATION
     records:
     - AUTH-PATH-NORMALIZATION-BYPASS
     response: hidden
@@ -382,6 +422,7 @@ values:
     sha256: a388e83489d3
   TD-RANGE-0003:
     title: минимальный диапазон для многократного повтора
+    set: TDS-RANGE-REPEAT
     records:
     - FILE-RANGE-REQUESTS
     response: visible
@@ -389,6 +430,7 @@ values:
     sha256: 22841ea360fc
   TD-REDOS-0001:
     title: строка для катастрофического backtracking в regex-валидации полей
+    set: TDS-REDOS-BASIC
     records:
     - INJ-REDOS
     response: visible
@@ -396,6 +438,7 @@ values:
     sha256: 3947140990cc
   TD-REDOS-0002:
     title: фрагмент незакрытого тега для длинного повтора в поле с HTML-экранированием
+    set: TDS-REDOS-BASIC
     records:
     - INJ-REDOS
     response: visible
@@ -419,6 +462,7 @@ values:
     sha256: b937222f0419
   TD-SQLI-0003:
     title: SQL, кавычка с экранированием обратным слэшем
+    set: TDS-SQLI-ESCAPE
     records:
     - INJ-SQL
     response: visible
@@ -426,6 +470,7 @@ values:
     sha256: 27969763c109
   TD-SQLI-0004:
     title: SQL, закрытие блочного комментария
+    set: TDS-SQLI-ESCAPE
     records:
     - INJ-SQL
     response: visible
@@ -433,6 +478,7 @@ values:
     sha256: ed9623369ff0
   TD-SQLI-0005:
     title: SQL, условный комментарий MySQL
+    set: TDS-SQLI-ESCAPE
     records:
     - INJ-SQL
     response: visible
@@ -561,6 +607,7 @@ values:
     sha256: 7d8e0ef18a62
   TD-XSS-0001:
     title: HTML, открывающий тег скрипта
+    set: TDS-XSS-REFLECTED-BASIC
     records:
     - INJ-REFLECTED-XSS
     response: visible
@@ -584,6 +631,7 @@ values:
     sha256: 3e554daa6a57
   TD-XSS-0004:
     title: HTML, закрывающий тег скрипта (выход из JS-контекста)
+    set: TDS-XSS-STORED-BASIC
     records:
     - INJ-STORED-XSS
     response: visible
@@ -602,6 +650,7 @@ sets:
   TDS-CRLF-HEADER:
   - TD-CRLF-0001
   - TD-CRLF-0002
+  - TD-CRLF-0003
   TDS-CSV-FORMULA-PREFIX:
   - TD-CSV-0001
   - TD-CSV-0002
@@ -617,14 +666,31 @@ sets:
   - TD-FILE-0001
   - TD-FILE-0002
   - TD-FILE-0003
+  TDS-FILE-SVG-XLINK:
+  - TD-FILE-0004
+  TDS-JWT-ZIP:
+  - TD-JWT-0001
+  TDS-JWT-ALG-NONE:
+  - TD-JWT-0003
+  TDS-JWT-UNKNOWN-KEY:
+  - TD-JWT-0004
   TDS-LOG-NEWLINE:
   - TD-LOG-0001
   - TD-LOG-0002
+  TDS-LOG-ANSI:
+  - TD-LOG-0003
+  TDS-LOG-JNDI:
+  - TD-LOG-0004
   TDS-NOSQL-OPERATORS:
   - TD-NOSQL-0001
   - TD-NOSQL-0002
   - TD-NOSQL-0003
   - TD-NOSQL-0004
+  TDS-NUL-BASIC:
+  - TD-NUL-0001
+  - TD-NUL-0002
+  - TD-NUL-0003
+  - TD-NUL-0004
   TDS-PATH-TRAVERSAL-BASIC:
   - TD-PATH-0001
   - TD-PATH-0002
@@ -637,15 +703,26 @@ sets:
   - TD-PATH-0007
   - TD-PATH-0008
   - TD-PATH-0009
+  TDS-PATH-NORMALIZATION:
+  - TD-PATH-0010
   TDS-PROTO-BASIC:
   - TD-PROTO-0001
   - TD-PROTO-0002
   TDS-RANGE-BASIC:
   - TD-RANGE-0001
   - TD-RANGE-0002
+  TDS-RANGE-REPEAT:
+  - TD-RANGE-0003
+  TDS-REDOS-BASIC:
+  - TD-REDOS-0001
+  - TD-REDOS-0002
   TDS-SQLI-BASIC:
   - TD-SQLI-0001
   - TD-SQLI-0002
+  TDS-SQLI-ESCAPE:
+  - TD-SQLI-0003
+  - TD-SQLI-0004
+  - TD-SQLI-0005
   TDS-SQLI-NUMERIC-BOOL:
   - TD-SQLI-0006
   - TD-SQLI-0007
@@ -667,13 +744,12 @@ sets:
   TDS-TPL-CONTEXT:
   - TD-TPL-0005
   - TD-TPL-0006
+  TDS-XSS-REFLECTED-BASIC:
+  - TD-XSS-0001
   TDS-XSS-STORED-BASIC:
   - TD-XSS-0002
   - TD-XSS-0003
+  - TD-XSS-0004
 reserved:
 - TD-JWT-0002
-- TD-NUL-0001
-- TD-NUL-0002
-- TD-NUL-0003
-- TD-NUL-0004
 - TD-SSRF-0008

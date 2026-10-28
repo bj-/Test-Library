@@ -19,6 +19,7 @@
 - id: TD-SQLI-0003
   value: \\'
   encoding: raw
+  set: TDS-SQLI-ESCAPE
   title: SQL, кавычка с экранированием обратным слэшем
   records:
   - INJ-SQL
@@ -27,6 +28,7 @@
 - id: TD-SQLI-0004
   value: '*/'
   encoding: raw
+  set: TDS-SQLI-ESCAPE
   title: SQL, закрытие блочного комментария
   records:
   - INJ-SQL
@@ -35,6 +37,7 @@
 - id: TD-SQLI-0005
   value: /*!*/
   encoding: raw
+  set: TDS-SQLI-ESCAPE
   title: SQL, условный комментарий MySQL
   records:
   - INJ-SQL

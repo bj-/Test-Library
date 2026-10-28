@@ -1,6 +1,7 @@
 - id: TD-JWT-0001
   value: zip=DEF
   encoding: raw
+  set: TDS-JWT-ZIP
   title: параметр заголовка JWT о сжатии payload
   records:
   - FILE-ARCHIVE-BOMB
@@ -10,6 +11,7 @@
 - id: TD-JWT-0003
   value: eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJhdC1mb3JnZWQtZ3Vlc3QiLCJpYXQiOjE3MDAwMDAwMDAsImV4cCI6MTkwMDAwMDAwMH0.
   encoding: raw
+  set: TDS-JWT-ALG-NONE
   title: JWT с alg=none и пустой подписью
   records:
   - AUTH-JWT-ALG-NONE
@@ -18,6 +20,7 @@
 - id: TD-JWT-0004
   value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhdC1mb3JnZWQtZ3Vlc3QiLCJpYXQiOjE3MDAwMDAwMDAsImV4cCI6MTkwMDAwMDAwMH0.rNnRwU2Tk5Agpqc4Wbqetb8OpHaSZv6GtmakZBrXsis
   encoding: raw
+  set: TDS-JWT-UNKNOWN-KEY
   title: JWT, структурно корректный, подписанный неизвестным ключом
   records:
   - SEC-TOKEN-SIGNATURE

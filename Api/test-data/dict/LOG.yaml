@@ -19,6 +19,7 @@
 - id: TD-LOG-0003
   value: \u001b[32m
   encoding: raw
+  set: TDS-LOG-ANSI
   title: Журнал, ANSI-последовательность смены цвета в escape-записи
   records:
   - INJ-LOG-FORGING
@@ -27,6 +28,7 @@
 - id: TD-LOG-0004
   value: ${jndi:ldap://...}
   encoding: raw
+  set: TDS-LOG-JNDI
   title: Журнал, lookup-выражение JNDI
   records:
   - INJ-LOG-FORGING

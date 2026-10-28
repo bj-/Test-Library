@@ -1,6 +1,7 @@
 - id: TD-REDOS-0001
   value: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!
   encoding: raw
+  set: TDS-REDOS-BASIC
   title: строка для катастрофического backtracking в regex-валидации полей
   records:
   - INJ-REDOS
@@ -9,6 +10,7 @@
 - id: TD-REDOS-0002
   value: PEEg
   encoding: base64
+  set: TDS-REDOS-BASIC
   title: фрагмент незакрытого тега для длинного повтора в поле с HTML-экранированием
   records:
   - INJ-REDOS

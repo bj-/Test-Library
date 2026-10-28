@@ -19,6 +19,7 @@
 - id: TD-RANGE-0003
   value: 0-0
   encoding: raw
+  set: TDS-RANGE-REPEAT
   title: минимальный диапазон для многократного повтора
   records:
   - FILE-RANGE-REQUESTS
