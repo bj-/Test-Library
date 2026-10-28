@@ -7,7 +7,7 @@
       "Read(//c/Git/Test-Library/Api/build/**)",
       "Read(//c/Git/Test-Library/Api/mining/**)",
       "Read(//c/Git/Test-Library/Api/examples/**)",
-      "Read(//c/Git/Test-Library/ideas/**)",
+      "Read(//c/Git/Ideas/**)",
       "Edit(//c/Git/Test-Library/Api/checks/**)",
       "Bash(cat *checks*)",
       "Bash(grep *checks*)",
