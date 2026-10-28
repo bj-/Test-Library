@@ -672,4 +672,8 @@ sets:
   - TD-XSS-0003
 reserved:
 - TD-JWT-0002
+- TD-NUL-0001
+- TD-NUL-0002
+- TD-NUL-0003
+- TD-NUL-0004
 - TD-SSRF-0008
