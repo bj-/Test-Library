@@ -2734,7 +2734,7 @@ checks:
   preconditions:
   - Есть строковые поля.
   steps:
-  - action: Передать значение с NUL-байтом в конце и в середине (email входа, имя, путь).
+  - action: Передать значения набора `TDS-NUL-BASIC` в конце и в середине строки (email входа, имя, путь).
   expected:
   - 4xx или значение сохраняется целиком; обрезки по NUL и входа под чужим значением нет.
   applicability:
@@ -2756,6 +2756,8 @@ checks:
   - CWE-158
   - Смежная — VAL-SPECIAL-CHARACTERS
   - postman BFF-Admin-Auth — тесты ссылаются на ID (inbox №21)
+  test_data:
+  - TDS-NUL-BASIC
 - id: AUTH-REVOKED-COOKIE-RELOGIN
   status: approved
   title: Вход с закрытой cookie сессии создаёт новую сессию

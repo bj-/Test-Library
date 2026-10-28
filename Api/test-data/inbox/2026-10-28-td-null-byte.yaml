@@ -1,0 +1,32 @@
+- id: TD-NUL-0001
+  value: "YWRtaW4A"
+  encoding: base64
+  set: TDS-NUL-BASIC
+  title: NUL-байт в конце строкового значения
+  records: [INJ-NULL-BYTE]
+  source: library
+  response: visible
+- id: TD-NUL-0002
+  value: "YWQAbWlu"
+  encoding: base64
+  set: TDS-NUL-BASIC
+  title: NUL-байт в середине строкового значения
+  records: [INJ-NULL-BYTE]
+  source: library
+  response: visible
+- id: TD-NUL-0003
+  value: "ZmlsZQAuanBn"
+  encoding: base64
+  set: TDS-NUL-BASIC
+  title: NUL-байт перед расширением в имени файла
+  records: [INJ-NULL-BYTE]
+  source: library
+  response: visible
+- id: TD-NUL-0004
+  value: "admin%00"
+  encoding: raw
+  set: TDS-NUL-BASIC
+  title: URL-кодированный NUL в конце строкового значения
+  records: [INJ-NULL-BYTE]
+  source: library
+  response: visible
