@@ -28,6 +28,12 @@ ROOT = Path(__file__).resolve().parents[1]                # Api/
 TD = ROOT / "test-data"
 DICT, INBOX, BUILD = TD / "dict", TD / "inbox", TD / "build"
 INDEX = ROOT / "taxonomy" / "test-data-index.yaml"
+# имена устройств Windows (NUL, CON...) - не имя файла: git на Windows такой файл не добавит (TD-NUL, 2026-10-28)
+WIN_RESERVED = {"CON", "PRN", "AUX", "NUL", *(f"COM{i}" for i in range(1, 10)), *(f"LPT{i}" for i in range(1, 10))}
+
+
+def dict_file(cls):
+    return DICT / (f"{cls}_.yaml" if cls in WIN_RESERVED else f"{cls}.yaml")
 ID_RE = re.compile(r"^TD-([A-Z][A-Z0-9]*)-(\d{4})$")
 REF_RE = re.compile(r"\bTD-[A-Z][A-Z0-9]*-\d{4}\b|\bTDS-[A-Z][A-Z0-9-]*\b")   # значение или набор
 FIELDS = ("id", "value", "encoding", "set", "title", "records", "source", "response", "detect", "added")
@@ -207,7 +213,7 @@ def cmd_ingest():
             entries[i] = e
             by_value[v] = i
             cls = ID_RE.match(i).group(1)
-            dump_list(DICT / f"{cls}.yaml", sorted((x for x in entries.values() if ID_RE.match(x["id"]).group(1) == cls),
+            dump_list(dict_file(cls), sorted((x for x in entries.values() if ID_RE.match(x["id"]).group(1) == cls),
                                                    key=lambda x: x["id"]))
             added.append(i)
         if not bad:
@@ -226,15 +232,15 @@ def cmd_merge(old, new):
     if old not in entries or new not in entries:
         sys.exit(f"нет в словаре: {old if old not in entries else new}")
     cls = ID_RE.match(old).group(1)
-    dump_list(DICT / f"{cls}.yaml", [e for e in load_list(DICT / f"{cls}.yaml") if e["id"] != old])
+    dump_list(dict_file(cls), [e for e in load_list(dict_file(cls)) if e["id"] != old])
     rec = sorted(set(entries[new].get("records") or []) | set(entries[old].get("records") or []))
     if rec:
         ncls = ID_RE.match(new).group(1)
-        items = load_list(DICT / f"{ncls}.yaml")
+        items = load_list(dict_file(ncls))
         for e in items:
             if e["id"] == new:
                 e["records"] = rec
-        dump_list(DICT / f"{ncls}.yaml", items)
+        dump_list(dict_file(ncls), items)
     del entries[old]
     write_index(load_dict(), load_index().get("reserved") or [])
     print(f"{old} -> {new}, ссылки заменены в {relink(old, new)} файлах записей")
