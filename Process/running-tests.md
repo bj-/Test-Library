@@ -110,6 +110,12 @@ Git Bash искажает пути при вызове `newman.cmd` напрям
 Группа безопасности (ADR 0011, `security-groups.md`) - метка `sg-...` в метаданных; прогон группы -
 `autotest.py run <набор> --group <G>`, общий прогон делится на части по группам - `autotest.py split <каталог прогона>`.
 
+**Раздельные прогоны** (ADR 0015): у модуля четыре набора - `functional.yaml` (`only: functional`, разбирает основная
+сессия), `security.yaml` (`only: security`, `exclude_groups: [sg-restricted]`, разбор по группам через `split`),
+`security-restricted.yaml` (`only: security`, `tags: [sg-restricted]`, ADR 0014) и `destructive.yaml`
+(`only: destructive`); части делят коллекцию без пересечений. Модель для разбора части выбирается сравнением разборов
+одного прогона - `autotest.py compare-triage <образец> <кандидат>` (ADR 0015).
+
 ## Трекер для багов
 
 Тип и адрес трекера, префикс темы бага (по умолчанию `[AT]`) и метки (по умолчанию `Autotest`) выбирает тот, кто
@@ -125,7 +131,9 @@ Git Bash искажает пути при вызове `newman.cmd` напрям
 collection: BFF-Admin-Auth          # каталог в postman/collections
 kind: full-regression                # вид прогона для run.yaml: smoke, acceptance, regression, full-regression, release, psi, adhoc
 gate: tiny-smoke.yaml                # tinySmoke - набор, который идёт первым; не прошёл - остальное не запускается
-# items: all                         # вся коллекция; only: destructive - только разрушающие; exclude: [пути, папки]
+# items: all                         # вся коллекция; exclude: [пути, папки]
+# only: functional                    # destructive - только разрушающие; security - группы sg-...; functional - без групп (оба без разрушающих)
+# exclude_groups: [sg-restricted]     # без тестов этих групп (движок 0.11.0)
 contract: docs/sources/contracts/admin/api.yaml   # контракт для сверки стенда (желательно всегда)
 description: что проверяет набор
 items:                               # путь запроса от корня коллекции без .request.yaml; `<папка>/` - вся папка (движок 0.7.0)
