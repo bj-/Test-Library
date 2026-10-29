@@ -41,9 +41,10 @@ groups:
   - id: sg-restricted
     title: Стоп-темы - подбор, перечисление, готовые значения закрытых инъекций
     risk: restricted
-    executor: human
+    executor: child
     note: Записи с automation.ai_generation.restricted и кандидаты стоп-тем (ai-stop-topics.yaml) - даже без флага.
-      Ассистент не генерирует и не разбирает; флаг записи по-прежнему ставит человек (restrict_records.py).
+      Генерация - только дочерняя сессия, одна запись на сессию, оркестратор «вслепую» (ADR 0014, bj 2026-10-29);
+      разбор прогона - человек; флаг записи по-прежнему ставит человек (restrict_records.py).
   - id: sg-token
     title: Токены и проверка аутентификации запроса - подделка и структура JWT, подпись, alg, aud/iss, сроки, тип токена
     risk: medium
