@@ -99,6 +99,9 @@ def validate(root: Path):
 
     from security_groups import check_index      # группы безопасности (ADR 0011): индекс актуален, группы известны
     errors += check_index()
+    from library_manifest import check_manifest      # манифест версии (ADR 0016) актуален
+    if root.resolve() == Path(__file__).resolve().parents[1]:
+        errors += check_manifest()
 
     by_status = {s: sum(c.get("status") == s for c in checks) for s in CHECK_STATUSES}
     print(f"Checks: {len(checks)} | Unique IDs: {len(seen)} | Profiles: {len(profiles)}")

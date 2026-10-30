@@ -60,6 +60,9 @@ def main(argv=None):
     if current != text:
         target.write_text(text, encoding="utf-8", newline="\n")
     print(f"Written: {target.relative_to(root).as_posix()}")
+    if root.resolve() == Path(__file__).resolve().parents[1]:   # манифест версии (ADR 0016)
+        from library_manifest import write_manifest
+        print(f"Written: manifest.yaml ({write_manifest()['version']})")
     return 1 if errors else 0
 
 

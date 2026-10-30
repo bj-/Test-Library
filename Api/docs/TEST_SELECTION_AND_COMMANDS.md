@@ -80,6 +80,21 @@ python tools/generate_real_contract_coverage.py
 
 Скрипт читает контракты из `examples/real-contracts/` и формирует артефакты в `build/real-contract-coverage/`, а также кандидаты в `checks/generated/real-contracts/`. Сначала сохраните текущие результаты, если они нужны для сравнения.
 
+## 4а. Версия библиотеки и база подбора (ADR 0016)
+
+```bash
+python tools/library_manifest.py --write     # пересобрать manifest.yaml (--check: актуален ли; build_catalog.py пересобирает сам)
+python tools/library_diff.py init <каталог проекта тестов> <Модуль>    # первая база подбора docs/modules/<Модуль>/library-baseline.yaml
+python tools/library_diff.py diff <baseline> [--library manifest.yaml|каталог]   # что нового с прошлого подбора
+python tools/library_diff.py compact <baseline> --track functional|security      # pending-записи кратко
+python tools/library_diff.py full ID,ID                                          # полный текст спорных записей
+python tools/library_diff.py apply <baseline> decisions.yaml                     # {ID: {decision, reason}}
+```
+
+Хеши считаются от разобранного YAML (`steps`, `expected`, `preconditions`, `applicability`), git не нужен.
+`validate_library.py` падает на устаревшем манифесте. Выгрузка `export_for_llm.py` кладёт в архив свой манифест
+(только записи архива, без закрытых).
+
 ## 5. Имена файлов профилей
 
 Регистр имён файлов в `profiles/` на работу инструментов не влияет. Чтобы всё же переименовать файл с изменением регистра так, чтобы git это зафиксировал (Windows, `core.ignorecase=true`), делайте два шага:

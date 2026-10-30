@@ -1,0 +1,2532 @@
+# Манифест библиотеки (ADR 0016): версия, хеши записей и шагов. Собирается `python tools/library_manifest.py --write`
+# (и build_catalog.py), вручную не править.
+version: "2026.10.30-a452f8"
+library_hash: "a452f8d9590a"
+scope: full
+omitted: 0
+records_total: 631
+records:
+  "ASYNC-DEAD-LETTER":
+    status: approved
+    hash: "56d550d944f5"
+    steps: ["fd13bfb7d003", "f07aa1d9783d"]
+  "ASYNC-EVENT-ORDERING":
+    status: approved
+    hash: "000057d3f08f"
+    steps: ["e9ccfeeb20ba"]
+  "ASYNC-EVENT-PATH-SAME-RULES":
+    status: approved
+    hash: "a42c30d1ea4d"
+    steps: ["6eb330324656", "2565dc485681", "2ab78ab55b0c"]
+  "ASYNC-IDEMPOTENT-CONSUMER":
+    status: approved
+    hash: "63f468b765b8"
+    steps: ["b43b9e175aeb"]
+  "ASYNC-JOB-CANCEL":
+    status: approved
+    hash: "b75c3b3c5754"
+    steps: ["71e2fa4c7fe0"]
+  "ASYNC-JOB-LIFECYCLE":
+    status: approved
+    hash: "dc69400c800c"
+    steps: ["f9ba08f61f35", "7d8c670abab0", "b13583649bbe"]
+  "ASYNC-MESSAGE-VALIDATION":
+    status: approved
+    hash: "4cbe2cb1fbac"
+    steps: ["7ee7999170ef"]
+  "ASYNC-OUTBOUND-REQUEST-HEADERS":
+    status: approved
+    hash: "71971059f678"
+    steps: ["1d51905e663c"]
+  "ASYNC-RPC-ERROR-PROPAGATION":
+    status: approved
+    hash: "618be4b43b9c"
+    steps: ["e8e40f3e1b19"]
+  "ASYNC-SCHEDULE-DST-TRANSITION":
+    status: approved
+    hash: "777de45819ab"
+    steps: ["1b8ca733e512"]
+  "ASYNC-SCHEDULE-LONG-UPTIME":
+    status: approved
+    hash: "bfd7c225f227"
+    steps: ["7580ea1b0dc9"]
+  "ASYNC-SSE-STREAM":
+    status: approved
+    hash: "4ed14bd3b69c"
+    steps: ["f7e937e6e940"]
+  "ASYNC-WEBHOOK-RETRY":
+    status: approved
+    hash: "8630ac1ca8e9"
+    steps: ["194471a68b27"]
+  "ASYNC-WEBHOOK-SIGNATURE":
+    status: approved
+    hash: "073a2cad05f6"
+    steps: ["5a9c12ec7712", "d7699733f152", "61f667175092", "89ce90832476"]
+  "ASYNC-WEBHOOK-URL-SSRF":
+    status: approved
+    hash: "b97f3f8a000f"
+    steps: ["b1dc2608efb1", "d7f5fe5ff565", "eca0b648f4a9", "2b2c572fe796", "c9aa3aa31824"]
+  "AUTH-ACCOUNT-STATE-ALL-SCHEMES":
+    status: approved
+    hash: "9d586831984b"
+    steps: ["edf953e4eec1", "4a34c6b51200"]
+  "AUTH-API-KEY-LIFECYCLE":
+    status: approved
+    hash: "a95ef4c7d440"
+    steps: ["c1f53aa063fc", "70ce20a7c8a5", "9f35d289522c", "ab63433bb33d", "3241211705dd"]
+  "AUTH-BASIC-CREDENTIALS-SPECIAL-CHARS":
+    status: approved
+    hash: "3f31a2619fab"
+    steps: ["ebb5572a129b"]
+  "AUTH-BRUTE-FORCE-PROTECTION":
+    status: approved
+    hash: "68a7af8c7462"
+    steps: ["698a1983f01d"]
+  "AUTH-CLIENT-ASSERTION-BINDING":
+    status: approved
+    hash: "7949fcccc68a"
+    steps: ["9a3573c8842d", "e27f6d256093"]
+  "AUTH-CLIENT-CERT-IDENTITY":
+    status: approved
+    hash: "cb9c410e5afe"
+    steps: ["8505b4a57243", "671f574db9cb"]
+  "AUTH-CONCURRENT-SESSIONS":
+    status: approved
+    hash: "8c2866bcc09c"
+    steps: ["000c914ad134"]
+  "AUTH-CONTACT-CHANGE-PREVIOUS-VALUE":
+    status: approved
+    hash: "c9b4d2f65f92"
+    steps: ["b8c6812bba70"]
+  "AUTH-COOKIE-ATTRIBUTES":
+    status: approved
+    hash: "890a954e2c65"
+    steps: ["820206de4da1", "b178ac14926d", "cf6afb888530", "0b0b0fed3928"]
+  "AUTH-CREDENTIAL-CHANNEL-STRICT":
+    status: approved
+    hash: "5ca4b59ac008"
+    steps: ["ff684cbba443"]
+  "AUTH-CSRF":
+    status: approved
+    hash: "75a23f161973"
+    steps: ["e5089ee673ef", "725ba69e2e5c", "d0a0ee578a5e", "f14bd16d6103", "e662fd6ee1e9", "171974b810b2", "fde4ff7718a9", "12f774f67fde", "21043940ab33", "76102424af3a"]
+  "AUTH-DUPLICATE-CREDENTIALS":
+    status: approved
+    hash: "5aff4307c9e0"
+    steps: ["9edd938855c1"]
+  "AUTH-EXTERNAL-ID-EXACT-MATCH":
+    status: approved
+    hash: "c5c72c0220be"
+    steps: ["fe27e0f7bd02"]
+  "AUTH-EXTERNAL-IDP-MISSING-ATTRIBUTES":
+    status: approved
+    hash: "22862fcad161"
+    steps: ["11e3217dd934"]
+  "AUTH-EXTERNAL-IDP-UNVERIFIED-EMAIL":
+    status: approved
+    hash: "74d860f06072"
+    steps: ["c78153c9b1d2", "8103fb0e7d99", "42c530d23058"]
+  "AUTH-GENERATED-SECRET-STRENGTH":
+    status: approved
+    hash: "31284d6b83a1"
+    steps: ["78072065b287", "2fb443823b7c"]
+  "AUTH-IDENTITY-ATTRIBUTES-ALL-SCHEMES":
+    status: approved
+    hash: "84051bb84d01"
+    steps: ["9e140af90bd4"]
+  "AUTH-IMPORTED-PASSWORD-HASH":
+    status: approved
+    hash: "dc73a2c2dd72"
+    steps: ["7205a1b9ed60"]
+  "AUTH-JWT-ALG-CONFUSION":
+    status: approved
+    hash: "e2ee1b1944f8"
+    steps: ["406f3dd77914"]
+  "AUTH-JWT-ALG-NONE":
+    status: approved
+    hash: "cee8d1b6bc8c"
+    steps: ["59959094abf7", "8dc2b6d0cc10", "b5d47c2dcdcc"]
+  "AUTH-JWT-HEADER-INJECTION":
+    status: approved
+    hash: "67e7dea7cda9"
+    steps: ["358b4c15df83"]
+  "AUTH-JWT-TIME-CLAIMS":
+    status: approved
+    hash: "3a9f892b9e1f"
+    steps: ["12a8b10736ce", "04d6a5c15bb4"]
+  "AUTH-JWT-VALID-ACCEPTED":
+    status: approved
+    hash: "696c02367f8a"
+    steps: ["b9118da5c208", "2f74ecae8049", "1e276bfa35db", "10f3a06874cc", "74b03b29ee7c", "b7b70718c89e"]
+  "AUTH-LOGIN-CROSS-ACCOUNT-COOKIE":
+    status: approved
+    hash: "c799e8a595ac"
+    steps: ["bf8d6e5f980b"]
+  "AUTH-LOGIN-IDENTIFIER-NORMALIZATION":
+    status: approved
+    hash: "f2db43166a74"
+    steps: ["478cf6a355e7", "7f8a0748cb14", "e4694b2873dd", "573e923a2ccc", "65562dd97d7b"]
+  "AUTH-LOGIN-PARAMS-PRESERVED":
+    status: approved
+    hash: "d94ffba9f3f7"
+    steps: ["2bbecc09a71f"]
+  "AUTH-LOGOUT-CLEARS-COOKIE":
+    status: approved
+    hash: "2581526c6414"
+    steps: ["e95b19badfba", "5ab5e6f515cc", "f61c2b74ca63"]
+  "AUTH-LOGOUT-INVALIDATES":
+    status: approved
+    hash: "5e45c793fd43"
+    steps: ["d489013d495d", "d5f7325d2cf8", "40654a84eef8", "72f1f3b955fd", "750bbac5fb8a"]
+  "AUTH-LOGOUT-SCOPE":
+    status: approved
+    hash: "1eefe0a2d5d4"
+    steps: ["1ffd0eeb4489"]
+  "AUTH-MFA-STEP-UP":
+    status: approved
+    hash: "b25c6b6273ad"
+    steps: ["83aaadbeb9cc", "6236a494f84c", "a550c90b561b", "9490551aa197", "3fd4adba8dd4", "7fa17ea2da4b", "3cf11d37e26c", "9a0edb1dc511"]
+  "AUTH-MFA-UNENROLLED-ERROR":
+    status: approved
+    hash: "98540e9c4009"
+    steps: ["50296b482745", "27f65a34e0d8"]
+  "AUTH-MULTISTEP-LOGIN-STATE-RECHECK":
+    status: approved
+    hash: "3a345af89965"
+    steps: ["dab32c7f4817", "ae115679bc64"]
+  "AUTH-NOSQL-OPERATOR-CREDENTIALS":
+    status: approved
+    hash: "fba906eb904d"
+    steps: ["1e900830b273"]
+  "AUTH-OAUTH-OUTBOUND-SCOPE":
+    status: approved
+    hash: "270ec9342dc8"
+    steps: ["4c2e21044812"]
+  "AUTH-OAUTH-PAR":
+    status: approved
+    hash: "205c6a639821"
+    steps: ["484c050858e8", "981af12ab974", "d53c646bd508", "8dad106a1715"]
+  "AUTH-OAUTH-PUBLIC-CLIENT-CONSENT":
+    status: approved
+    hash: "fbea227a66ac"
+    steps: ["6c94e3a506cd"]
+  "AUTH-OAUTH-REDIRECT-STATE":
+    status: approved
+    hash: "40cfd7038105"
+    steps: ["eeb8f75772eb", "64411e992202", "e1845ec6f1eb", "3668e4a2c3bd", "1f71091c1262", "431516070e78", "7f164154fa3d"]
+  "AUTH-OAUTH-RESOURCE-INDICATOR":
+    status: approved
+    hash: "98f9897d121d"
+    steps: ["75f8b58b5348"]
+  "AUTH-OIDC-LOGOUT-WITHOUT-SESSION":
+    status: approved
+    hash: "45bcd793a29a"
+    steps: ["c4554689cbfa", "1bb8f571c3d2"]
+  "AUTH-OTP-ATTEMPT-LIMIT":
+    status: approved
+    hash: "959780608315"
+    steps: ["de5f67843454", "bbddf6709046", "c5d5bb165c6f"]
+  "AUTH-OTP-BINDING":
+    status: approved
+    hash: "5736b7e0acf3"
+    steps: ["7ddf4c05a66c", "f13aaac8c559"]
+  "AUTH-OTP-EXPIRY":
+    status: approved
+    hash: "87cfd7d0882b"
+    steps: ["25731746412f"]
+  "AUTH-OTP-REUSE":
+    status: approved
+    hash: "054f3fa036bb"
+    steps: ["586a97ccad0a", "0aae2857e9e1", "37b0fcffcd6d", "397371296741"]
+  "AUTH-OTP-SEND-LIMIT":
+    status: approved
+    hash: "b14ea88b34ea"
+    steps: ["58a0aa994197", "6a59f1bcfd1b"]
+  "AUTH-PASSWORD-CHANGE-REQUIRES-CURRENT":
+    status: approved
+    hash: "dc64b85027bc"
+    steps: ["f25e7882d44f"]
+  "AUTH-PASSWORD-CHANGE-REVOKES":
+    status: approved
+    hash: "f52fefbfdbc8"
+    steps: ["c05881f03ba7", "3113ad76c8a7"]
+  "AUTH-PASSWORD-POLICY":
+    status: approved
+    hash: "487fdc7c4a66"
+    steps: ["c4328f1d68fb", "8c00793d1e71", "c4304a0153f5", "2e6335c59fb8"]
+  "AUTH-PASSWORD-RESET-TOKEN":
+    status: approved
+    hash: "4e3cdb549be7"
+    steps: ["650accc6b10f", "7b2caadfd0c6", "0d36b849aa3c"]
+  "AUTH-PATH-NORMALIZATION-BYPASS":
+    status: approved
+    hash: "c53e739bf004"
+    steps: ["8561484576fb"]
+  "AUTH-PRE-ACCOUNT-TAKEOVER":
+    status: approved
+    hash: "0774359592c3"
+    steps: ["953a97a171bb"]
+  "AUTH-PROTOCOL-SESSION-OWNER-BINDING":
+    status: approved
+    hash: "43da70412294"
+    steps: ["57183f4931a1", "d26fe8aa0107"]
+  "AUTH-REFRESH-PRESERVES-SCOPE":
+    status: approved
+    hash: "ba7d130a52c6"
+    steps: ["26f8cccf6689", "fd755f263818", "af00bd265964"]
+  "AUTH-REVOKED-COOKIE-RELOGIN":
+    status: approved
+    hash: "86a26e502b0a"
+    steps: ["5e7f6a929493"]
+  "AUTH-SAML-ASSERTION-REPLAY":
+    status: approved
+    hash: "9120e392da87"
+    steps: ["5dc89141cb1b"]
+  "AUTH-SENSITIVE-CHANGE-REAUTH":
+    status: approved
+    hash: "98c4b6a4e338"
+    steps: ["e1f6ac7b78a2"]
+  "AUTH-SESSION-FILTER-SCOPE":
+    status: approved
+    hash: "d8c4a2836611"
+    steps: ["c0349d61be34"]
+  "AUTH-SESSION-FIXATION":
+    status: approved
+    hash: "2b81f96e7ec7"
+    steps: ["32cc5c930536", "78c7d9464b76"]
+  "AUTH-SESSION-ID-ENTROPY":
+    status: approved
+    hash: "53581859d9b7"
+    steps: ["9264d83062d5"]
+  "AUTH-SESSION-ID-NOT-EXPOSED":
+    status: approved
+    hash: "cbdf9ffa28c6"
+    steps: ["3edccb4836ff"]
+  "AUTH-SESSION-NOT-BEFORE-LOGIN":
+    status: approved
+    hash: "e1409184ea38"
+    steps: ["c84f750d067f", "a9d47dc7cf86", "248532fc6884", "77e556cc1225"]
+  "AUTH-SESSION-SLIDING-RENEWAL":
+    status: approved
+    hash: "dbe73e63a4e0"
+    steps: ["3d2c6e5bda42"]
+  "AUTH-SESSION-TIMEOUT":
+    status: approved
+    hash: "5ab75093656e"
+    steps: ["e9af9d8ff160", "77650d505b42", "e0f37ad22c6e", "2103dcdf7748"]
+  "AUTH-SESSION-VALUE-EXACT-MATCH":
+    status: approved
+    hash: "095e637e01bb"
+    steps: ["6f59521706aa"]
+  "AUTH-TOKEN-EXCHANGE-DEFAULT-SCOPE":
+    status: approved
+    hash: "df4877826967"
+    steps: ["6d0d4a0b934e"]
+  "AUTH-TOKEN-IN-URL":
+    status: approved
+    hash: "898c5c2fa16f"
+    steps: ["1d7298a15ec4"]
+  "AUTH-TOKEN-INTROSPECTION":
+    status: approved
+    hash: "037a02517fbd"
+    steps: ["34b3879f76c1", "7d039a0a825e", "9336a97f7612", "3ebb8e9e986e"]
+  "AUTH-TOKEN-RESERVED-CLAIMS":
+    status: approved
+    hash: "b7d88cc510a3"
+    steps: ["2e7eae688f1c"]
+  "AUTH-TOKEN-SENDER-CONSTRAINED":
+    status: approved
+    hash: "cc90046d6f75"
+    steps: ["14045967b9d7", "505425778442", "c7de4a2cf00b", "7069105573e0", "470230ad804a", "0cb600f71320"]
+  "AUTH-TOKEN-TYPE-CONFUSION":
+    status: approved
+    hash: "d84535fe113b"
+    steps: ["1023824bea96", "933c7491e881", "43afc6f97bba", "c357d2cae7e9"]
+  "AUTH-USER-ENUMERATION":
+    status: approved
+    hash: "04926c23ced3"
+    steps: ["5a91d4be7412"]
+  "BIZ-AMBIGUOUS-ADDRESS":
+    status: approved
+    hash: "2cae9223bd18"
+    steps: ["70f697332f47"]
+  "BIZ-CLIENT-PRICE-TAMPERING":
+    status: approved
+    hash: "cc0430406d87"
+    steps: ["a60f01943630"]
+  "BIZ-CONFIG-SCOPE-PRECEDENCE":
+    status: approved
+    hash: "09d9580bc175"
+    steps: ["18981510df26", "e63eea9c42bd"]
+  "BIZ-CURRENCY-MISMATCH":
+    status: approved
+    hash: "7b5d98adbc0d"
+    steps: ["e817664c8644"]
+  "BIZ-DIVISION-BY-ZERO":
+    status: approved
+    hash: "9c52691295b9"
+    steps: ["f1ec3c306ff8"]
+  "BIZ-DOUBLE-SPEND":
+    status: approved
+    hash: "95d0819bc8c5"
+    steps: ["3a1e25b61365"]
+  "BIZ-EMAIL-LINK-CROSS-SESSION":
+    status: approved
+    hash: "b1b703461ec2"
+    steps: ["7a9212ff90e7", "41f3d838415e", "85fc5fab6a2a"]
+  "BIZ-EMAIL-NOTIFICATION-DELIVERY":
+    status: approved
+    hash: "c330e8277154"
+    steps: ["e9181a13ab0d"]
+  "BIZ-FLAG-EFFECT-MATRIX":
+    status: approved
+    hash: "4cb3cc28ea09"
+    steps: ["52285541f99e", "4aa2b9aad7e1"]
+  "BIZ-HIERARCHY-CYCLES":
+    status: approved
+    hash: "2152d1b9bddb"
+    steps: ["1d329ad95897"]
+  "BIZ-IMPOSSIBLE-STEP-NOT-ASSIGNED":
+    status: approved
+    hash: "6b95b04079d4"
+    steps: ["6ac76465945d"]
+  "BIZ-LIMITS-QUOTAS":
+    status: approved
+    hash: "53d429c5a5b4"
+    steps: ["f11e41d9a312", "7dd5f95b9a87", "19795729448d", "4e3369cd63bc"]
+  "BIZ-NEGATIVE-QUANTITY":
+    status: approved
+    hash: "b632c38d292e"
+    steps: ["504ff6c57d6f"]
+  "BIZ-ONE-TIME-BENEFIT-REUSE":
+    status: approved
+    hash: "1784a54e02b8"
+    steps: ["7485171a5f91", "c61932c31e31"]
+  "BIZ-ROUNDING":
+    status: approved
+    hash: "0fcfb7dba3d5"
+    steps: ["f9776f73b145"]
+  "BIZ-RULES-DETERMINISTIC":
+    status: approved
+    hash: "c0ce547a0f46"
+    steps: ["37fb6b98708b"]
+  "BIZ-SIDE-EFFECTS-ONCE":
+    status: approved
+    hash: "ae3cf784c46e"
+    steps: ["78f421baa2aa", "60f434bf9a0b", "79ee66e7bad3", "6ac40407f19f"]
+  "BIZ-TIME-WINDOW":
+    status: approved
+    hash: "a709b882b723"
+    steps: ["898ad774d669"]
+  "BIZ-WORKFLOW-STEP-SKIP":
+    status: approved
+    hash: "59eeac0f3dbb"
+    steps: ["9a611449ed39", "d2b6dd921cd2", "1e2faad311e7", "bdab01c18797"]
+  "COMPAT-ADDITIVE-CHANGE":
+    status: approved
+    hash: "ec38e9621b54"
+    steps: ["cad84164246d"]
+  "COMPAT-BREAKING-CHANGE-DIFF":
+    status: approved
+    hash: "41eaf9546c42"
+    steps: ["6bc59190aa6c", "19a7f03fb0b0", "e0ffbe5f50d3", "124b02905495"]
+  "COMPAT-DEFAULT-VERSION":
+    status: approved
+    hash: "ef4a55639222"
+    steps: ["407668d25f96"]
+  "COMPAT-DEPRECATION-SIGNALS":
+    status: approved
+    hash: "bcbfa84e3a06"
+    steps: ["fa5a8426bd13"]
+  "COMPAT-ENUM-EXTENSION":
+    status: approved
+    hash: "b9355ea15ca3"
+    steps: ["b2161d05b403"]
+  "COMPAT-IMPLEMENTATION-MATCHES-CONTRACT":
+    status: approved
+    hash: "f5cbce583c4e"
+    steps: ["04809034f5b9", "b2d8ecf302a2", "7a44ab35a556", "32025b56f68e", "450626bb06f3", "53c6486e4595", "3c602269f6b0", "8d0a87dce941", "3b06a279580a", "243eec190730", "36e1710693cd"]
+  "COMPAT-MIXED-VERSION-WRITE-STABILITY":
+    status: approved
+    hash: "b09721657d15"
+    steps: ["c79994dce993"]
+  "COMPAT-UPGRADE-STORED-DATA-STABLE":
+    status: approved
+    hash: "146c6640ab7a"
+    steps: ["fe32a22a9034", "19098a3e2632"]
+  "CONC-COUNTER-INCREMENT":
+    status: approved
+    hash: "0de18f2317e9"
+    steps: ["0606f863696f"]
+  "CONC-DELETE-VS-UPDATE":
+    status: approved
+    hash: "577d4302ef20"
+    steps: ["495520816f2a", "bf065d02983f"]
+  "CONC-DOUBLE-SUBMIT":
+    status: approved
+    hash: "93962c730123"
+    steps: ["f680a0326218"]
+  "CONC-LOST-UPDATE":
+    status: approved
+    hash: "0c36e5959c07"
+    steps: ["486e0018d9fb"]
+  "CONC-PARALLEL-CREATE-UNIQUE":
+    status: approved
+    hash: "849078d7259b"
+    steps: ["033501e3b1ad"]
+  "CONC-PARALLEL-INDEPENDENT":
+    status: approved
+    hash: "a57b93c70867"
+    steps: ["81f69aee0f8d", "667ae6e63176", "d45e543fc75f", "d6ed8a1444c3"]
+  "CONC-REQUEST-CONTEXT-ISOLATION":
+    status: approved
+    hash: "e17289264c50"
+    steps: ["76a05cd8fb1c", "3ed34c308788", "97db0f892d34", "ec4dbe45253d", "b1c39cbee9f9", "7ae94a718181"]
+  "CONC-STATE-TRANSITION-RACE":
+    status: approved
+    hash: "292a515badb6"
+    steps: ["a5c0a51f7b6c"]
+  "CONTRACT-FIELD-SELECTION":
+    status: approved
+    hash: "eb42ae7171b7"
+    steps: ["c24b9d639a3b", "fb01fa21a429", "993766873499", "42858a01cb9b", "13902bf2f103", "75f235dfe80b", "db0a4cc558d3", "3bd0e2b73f1e", "57d08516935c", "d433e07f1983"]
+  "CONTRACT-GENERATED-URI-ENCODING":
+    status: approved
+    hash: "cdf8c4644b8e"
+    steps: ["efd810e7f5c9"]
+  "CONTRACT-PUBLISHED-SCHEMA-VALID":
+    status: approved
+    hash: "ffc0d8672261"
+    steps: ["97eca93c8624", "72243ee18b40", "7c7e1c216cd5"]
+  "CONTRACT-REQUIRED-FIELDS":
+    status: approved
+    hash: "a187a33a933e"
+    steps: ["e218670b88fb", "be7039cba949", "cbdc8dbb67ca"]
+  "CONTRACT-RESPONSE-LINKS-RESOLVE":
+    status: approved
+    hash: "5b7ec61f3e57"
+    steps: ["a7ce65fc1991"]
+  "CONTRACT-UNKNOWN-FIELD-POLICY":
+    status: approved
+    hash: "bb81a1783ab4"
+    steps: ["7e6bc5ac0f93"]
+  "DB-ACCESS-SCOPE-IN-QUERY":
+    status: approved
+    hash: "69ecaba18539"
+    steps: ["6e30601575a1", "0dfbd4ca8c25", "e1cf9ebc2773"]
+  "DB-ALTER-PRESERVES-COLUMN":
+    status: approved
+    hash: "91138d5c35ed"
+    steps: ["0806ff0e3b32", "fbc2ff63b8fb", "baa94a33d2bd"]
+  "DB-API-DATA-MATCH":
+    status: approved
+    hash: "8c0eaacacfb8"
+    steps: ["993f0c26a297"]
+  "DB-CASCADE-SCOPE":
+    status: approved
+    hash: "94c8637c3722"
+    steps: ["11fb2437d7cb"]
+  "DB-CATALOG-READ-CORRECTNESS":
+    status: approved
+    hash: "9dcc34b3989e"
+    steps: ["85a4427a2b78", "6c694fbc977d"]
+  "DB-CATALOG-READ-PERFORMANCE":
+    status: approved
+    hash: "518112566a2b"
+    steps: ["2615a205d33d", "20d56e84a747", "59932e7e450f", "58d895867339"]
+  "DB-COLLATION-COMPARISON":
+    status: approved
+    hash: "9f83d6117b47"
+    steps: ["523199e7f239", "f4c1df98bee9", "4c5377511c5e"]
+  "DB-CONNECTION-CONFIG-HANDLING":
+    status: approved
+    hash: "7a96d074ae3c"
+    steps: ["54d5b4e99e41", "d9e20b88510c"]
+  "DB-CONNECTION-POOL-LIFECYCLE":
+    status: approved
+    hash: "f346e44e3b6d"
+    steps: ["61244b015946", "b2d9ba36e0e4"]
+  "DB-DEFAULT-PRECEDENCE":
+    status: approved
+    hash: "3babb93d0057"
+    steps: ["1b18ba973538", "a7cdeba46bfb"]
+  "DB-DRIVER-LARGE-PARAMS":
+    status: approved
+    hash: "60c6a444d9a3"
+    steps: ["3b4419342088"]
+  "DB-DYNAMIC-SQL-PARAMETERIZED":
+    status: approved
+    hash: "1a294d096c50"
+    steps: ["3b96b8b822be", "c39b8e72fb4e", "7be36ef5c449", "0951d61a7e8f", "fd736ceb1aab", "2d8c234db7cf", "5f96aae08616", "c031606dac15"]
+  "DB-GENERATED-SQL-SHAPE":
+    status: approved
+    hash: "be8ba705934c"
+    steps: ["bf5a1d6795e2", "80e5dd215285", "23a0ceb1950b", "858ab2d8282d", "7d00811a13e3"]
+  "DB-IDENTIFIER-QUOTING":
+    status: approved
+    hash: "3f6e9833108b"
+    steps: ["510e9edcb52b", "70bf49cf180e", "24a5f6a1162a", "7b8fc01b036b", "f4e0e4ea842e", "76df6197eb0d", "b460e0dab1ea"]
+  "DB-IMPORT-CONSISTENCY":
+    status: approved
+    hash: "898415935a6a"
+    steps: ["f085514311c4", "afb3e380dfc7"]
+  "DB-IN-DB-CONFIG-APPLIED":
+    status: approved
+    hash: "867b7475fa72"
+    steps: ["76ea105d9dd9", "12312c9d7c8f"]
+  "DB-KEYS-AND-CONSTRAINTS":
+    status: approved
+    hash: "2d034c8bf485"
+    steps: ["82191f6b446a", "75faba680d6f", "646578fbb0d2", "0092bb0ac4cf", "ec1f8b65cef3", "e9781c2eaa80", "1526f56bdae4"]
+  "DB-METADATA-CACHE-FRESH":
+    status: approved
+    hash: "861c76434ee1"
+    steps: ["dc2c1e6e1926", "0ab37a01fc1c", "d2ad8f41abde"]
+  "DB-MIGRATION-CLEAN-INSTALL":
+    status: approved
+    hash: "789a6b4320ad"
+    steps: ["31eff3475478", "9f6bda61108e", "8e885ff993fc"]
+  "DB-MIGRATION-DATA-PRESERVED":
+    status: approved
+    hash: "684eca995099"
+    steps: ["f466271acf1e", "e8c338430916"]
+  "DB-MIGRATION-STATE-TRACKED":
+    status: approved
+    hash: "aa7807fcde91"
+    steps: ["2c4122932ee1", "899d99ed46c5", "158e08a571e7", "3667df5d126b"]
+  "DB-MIN-VERSION-COMPATIBILITY":
+    status: approved
+    hash: "e7955c5cf5bf"
+    steps: ["68c2e752e654"]
+  "DB-MUTATION-SCOPE":
+    status: approved
+    hash: "965d4ced6223"
+    steps: ["d1b9bea3ea3e"]
+  "DB-QUERY-INDEX-USAGE":
+    status: approved
+    hash: "5c5fa81bace6"
+    steps: ["3f8aa2bb9202", "44c5394a15a5", "ebc74c5f947d", "cc3106e6d7ed", "59e1b268e6c6", "e8f7da9df0c8", "ea84c6f9a980"]
+  "DB-ROLE-SWITCH-SETTINGS":
+    status: approved
+    hash: "139a483c1abd"
+    steps: ["3a24c582493c", "00914fccc650"]
+  "DB-SCHEMA-CHANGE-VALIDATED":
+    status: approved
+    hash: "b9d42c730906"
+    steps: ["678c22deb7a5"]
+  "DB-SCHEMA-MATCHES-SPEC":
+    status: approved
+    hash: "36cc87c41a98"
+    steps: ["2d8623e8334e", "fb216f6819cd", "cb6871c80ffe"]
+  "DB-SENSITIVE-DATA-PROTECTED":
+    status: approved
+    hash: "edbe03fcc8d6"
+    steps: ["b0c58171f75a", "2c687143699d", "c32af568c29a"]
+  "DB-SERVICE-ROLE-LEAST-PRIVILEGE":
+    status: approved
+    hash: "c1881faa06dd"
+    steps: ["097efeed36b7", "486b03fddde4"]
+  "DB-STORED-ROUTINES":
+    status: approved
+    hash: "264a00b327e7"
+    steps: ["b8092221391e", "b0e6f8a3f3e6", "c83158630610", "c764b18842fe", "95c68f32ba70", "ce0cca80cce5"]
+  "DB-TRIGGERS":
+    status: approved
+    hash: "85137bd6951d"
+    steps: ["4d6408530568", "9aa17e9eb8b1", "4cbeda27bd4f"]
+  "DB-TYPED-COMPARISONS":
+    status: approved
+    hash: "47c31ff4c7c9"
+    steps: ["f48b749476af", "da61da62ea0d", "8078f6930f31", "fa23ab1ee46c"]
+  "DB-VISIBILITY-CHANGE-CLEANUP":
+    status: approved
+    hash: "74166e49026f"
+    steps: ["6c83923cc132"]
+  "ERR-INTERNAL-ERROR-SHAPE":
+    status: approved
+    hash: "1753c7a5f43f"
+    steps: ["db2f9f3142cc", "5eb45e0ba2cd", "b04a5597b027", "6f2f6c62f47f", "ca075d8e31d3"]
+  "ERR-STABLE-ERROR-CODES":
+    status: approved
+    hash: "d3b401e48be0"
+    steps: ["3f4e32bc762b", "2d03b7086770", "e40e2b466b75", "f5d64c3d3008"]
+  "ERR-STATUS-MATCHES-EFFECT":
+    status: approved
+    hash: "d69b5d3c13be"
+    steps: ["c70f3a9987ff", "1e02d977dbee", "e45c046bbd5c", "2a2f772f600e"]
+  "FILE-ABORTED-UPLOAD-CLEANUP":
+    status: approved
+    hash: "37402110d361"
+    steps: ["85f496fe333c", "7ef22dc12ebb"]
+  "FILE-ARCHIVE-BOMB":
+    status: approved
+    hash: "7f706b6c6910"
+    steps: ["628a204b80c6", "6b15950408eb", "e1ad2631c2bc", "0b83bee7804d", "17514501b856", "f4466b771fb8", "3c170ce47c83", "4e0bbca461c3", "ca9952c86e7c", "b71c1f85b957", "632158692543", "d59eb56ab538", "df5ac0a8d478", "353ab5234f31"]
+  "FILE-DOWNLOAD-AUTHZ":
+    status: approved
+    hash: "881658189769"
+    steps: ["2c73dfac67dc", "7182b4037a9c", "fe4dd8b30f91", "26cb9f8c4778", "0ae791a614f6", "77726739d16a", "6ce3d8844ad8", "7ecf90fabd96", "0a9a2d7fcdfe", "4e72e1b63a59", "fb0eb1796bc3", "a4102144cb5b", "4c60f02124bc"]
+  "FILE-DOWNLOAD-HEADERS":
+    status: approved
+    hash: "5cfda5821292"
+    steps: ["991b210c76cb", "12433d131980"]
+  "FILE-EMPTY-AND-MALFORMED-MULTIPART":
+    status: approved
+    hash: "70d369f72376"
+    steps: ["6e66c41b8682", "467ee7f16401", "9e81519db013"]
+  "FILE-FILENAME-SANITIZATION":
+    status: approved
+    hash: "f248ee96c29f"
+    steps: ["90e401aeeb88"]
+  "FILE-MALFORMED-STRUCTURE":
+    status: approved
+    hash: "9b12394c8aef"
+    steps: ["27ec032b0194", "963a91167308", "26da6c75625c", "ad0942f9c502", "63547a99e305", "7b571feea593", "b74cfd4604d2", "39f16703eabf", "2995153d4151", "0f44685faa4e", "71b023da30c4", "b4e32c65a1bc"]
+  "FILE-MALICIOUS-CONTENT":
+    status: approved
+    hash: "03e066832dce"
+    steps: ["1d16c7b1e251", "ad4b58560329", "3f83ce754047"]
+  "FILE-METADATA-STRIP":
+    status: approved
+    hash: "3742de8986f4"
+    steps: ["7e1cda2ced11"]
+  "FILE-MULTIPART-METADATA-SAVED":
+    status: approved
+    hash: "0a0b9fcacde3"
+    steps: ["2f6308e79e51"]
+  "FILE-RANGE-REQUESTS":
+    status: approved
+    hash: "d980b3aa9f7f"
+    steps: ["fcb6522d1568", "c8530b5b0829", "7abbb5b58e93"]
+  "FILE-ROUNDTRIP-EXACT":
+    status: approved
+    hash: "f4e0b69df7cc"
+    steps: ["ef6263a102d0"]
+  "FILE-TRANSFORM-LIMITS":
+    status: approved
+    hash: "655b1dce2f91"
+    steps: ["120b2805d89a", "90ec889d58b4"]
+  "FILE-TRANSFORM-STORAGE-PARITY":
+    status: approved
+    hash: "eab6fc28a862"
+    steps: ["9f34b9351067"]
+  "FILE-UPLOAD-KEY-COLLISION":
+    status: approved
+    hash: "d63b05f05735"
+    steps: ["f6dadcf72a7b", "85fa1d667b06", "83f129d0b9ea"]
+  "FILE-UPLOAD-SIZE-LIMIT":
+    status: approved
+    hash: "59c690de81d7"
+    steps: ["78894e17d6d5", "36f94a51b5dc"]
+  "FILE-UPLOAD-TYPE-VALIDATION":
+    status: approved
+    hash: "95238db3fd08"
+    steps: ["83b0dfba356f", "80bb1b2947ef"]
+  "GQL-ALIAS-BATCH-ABUSE":
+    status: approved
+    hash: "d3e0cee09619"
+    steps: ["eaf2c60e0d7c"]
+  "GQL-COMPLEXITY-LIMIT":
+    status: approved
+    hash: "4e791353c257"
+    steps: ["e7a51abcd2ab", "ce39be54ed67"]
+  "GQL-CSRF-GET-MUTATION":
+    status: approved
+    hash: "00180c872cd2"
+    steps: ["5b49371e7f2b"]
+  "GQL-DEPTH-LIMIT":
+    status: approved
+    hash: "9405859db163"
+    steps: ["d3187806dd08"]
+  "GQL-EQUIVALENT-SELECTION-FORMS":
+    status: approved
+    hash: "36db135bf39f"
+    steps: ["1fc9f9564150", "fd80a4549ff7", "c7382d8b3c35", "04cd0393e076", "caec7d09771d"]
+  "GQL-ERROR-EXTENSIONS-SHAPE":
+    status: approved
+    hash: "8d4d858f43dc"
+    steps: ["2778d5af1475"]
+  "GQL-ERRORS-NO-LEAK":
+    status: approved
+    hash: "41684bfcda54"
+    steps: ["3169ab9731e9"]
+  "GQL-FIELD-LEVEL-AUTHZ":
+    status: approved
+    hash: "9f6835dbf4a1"
+    steps: ["9b25e77632e1", "4411f98e5692"]
+  "GQL-FIELD-SUGGESTIONS":
+    status: approved
+    hash: "fa45b5b9702e"
+    steps: ["c968bc5c8b5d"]
+  "GQL-GATEWAY-ROUTING":
+    status: approved
+    hash: "3523eaf1bdc3"
+    steps: ["dcc07b0fd11c", "382876c132f5", "ebd1068b6cc3"]
+  "GQL-INPUT-VALIDATION":
+    status: approved
+    hash: "04e0779691aa"
+    steps: ["00f5f2521b28", "62b7c399e0fc"]
+  "GQL-INTROSPECTION":
+    status: approved
+    hash: "928177b40d30"
+    steps: ["def5a5dded8a"]
+  "GQL-PARTIAL-DATA":
+    status: approved
+    hash: "59c44f0d1424"
+    steps: ["301dd2c76d8e"]
+  "GQL-REST-ENDPOINT-PARITY":
+    status: approved
+    hash: "94ef0031e070"
+    steps: ["6d96497c73b1", "efc7d885ecd8"]
+  "GRPC-BIDI-FLOW-CONTROL":
+    status: approved
+    hash: "66b62dbd7784"
+    steps: ["97e516ff746f"]
+  "GRPC-CANCELLATION":
+    status: approved
+    hash: "4ae4f786bc5a"
+    steps: ["5eb26256c314"]
+  "GRPC-CLIENT-STREAM-PARTIAL-FAILURE":
+    status: approved
+    hash: "e6c8298e3599"
+    steps: ["36975693ef8e"]
+  "GRPC-COMPRESSION":
+    status: approved
+    hash: "ff57eb880300"
+    steps: ["53bba30faf90"]
+  "GRPC-DEADLINE-EXCEEDED":
+    status: approved
+    hash: "8e387c15892f"
+    steps: ["245eea07c298"]
+  "GRPC-DEADLINE-PROPAGATION":
+    status: approved
+    hash: "e7363a5cdcd2"
+    steps: ["df79319cb718"]
+  "GRPC-ENUM-UNKNOWN-VALUE":
+    status: approved
+    hash: "e6d7c510ad26"
+    steps: ["9e238298a850"]
+  "GRPC-ERROR-DETAILS":
+    status: approved
+    hash: "87a1eee5afbd"
+    steps: ["dc88d4bad070"]
+  "GRPC-FIELD-PRESENCE":
+    status: approved
+    hash: "c61b8db41a3b"
+    steps: ["b1548d7710f2"]
+  "GRPC-HEALTH-PROTOCOL":
+    status: approved
+    hash: "01cbb4ae8ee6"
+    steps: ["aa7efdd6b93f"]
+  "GRPC-JSON-TRANSCODING":
+    status: approved
+    hash: "454e0c80503d"
+    steps: ["03463d6517d2", "70fa7b5481d2"]
+  "GRPC-KEEPALIVE-POLICY":
+    status: approved
+    hash: "5fe9c3e6b2e1"
+    steps: ["d08b03070b78"]
+  "GRPC-MAX-MESSAGE-SIZE":
+    status: approved
+    hash: "3da4ba0d5101"
+    steps: ["5eb86defdddc"]
+  "GRPC-METADATA-AUTH-MISSING":
+    status: approved
+    hash: "df6ebb352acd"
+    steps: ["b09dfbc8949a", "b7f2e1ae3abd"]
+  "GRPC-METADATA-MALFORMED":
+    status: approved
+    hash: "28afabf3e533"
+    steps: ["77ea47344eb4", "6ed6db70bce3"]
+  "GRPC-NOT-FOUND-ALREADY-EXISTS":
+    status: approved
+    hash: "820659bfb150"
+    steps: ["64583f261fab"]
+  "GRPC-ONEOF":
+    status: approved
+    hash: "47689b898d7e"
+    steps: ["c7e08879ebff"]
+  "GRPC-PRECONDITION-ABORTED":
+    status: approved
+    hash: "824f2043bfb8"
+    steps: ["be751c842b43"]
+  "GRPC-PROTO-BREAKING":
+    status: approved
+    hash: "32676d961eba"
+    steps: ["e887d10eeab8"]
+  "GRPC-REFLECTION-EXPOSURE":
+    status: approved
+    hash: "627dad008417"
+    steps: ["66b272fa2c81"]
+  "GRPC-REPEATED-BOUNDARIES":
+    status: approved
+    hash: "29dd329df8c1"
+    steps: ["cf88dc7521d3"]
+  "GRPC-REQUEST-VALIDATION":
+    status: approved
+    hash: "80011055782b"
+    steps: ["4e088a90bd84"]
+  "GRPC-RESOURCE-EXHAUSTED":
+    status: approved
+    hash: "244ad6fb5ff6"
+    steps: ["de4667c50da1"]
+  "GRPC-RETRY-POLICY":
+    status: approved
+    hash: "c3bae09c57f1"
+    steps: ["55a930f20626"]
+  "GRPC-SERVER-STREAM-COMPLETE":
+    status: approved
+    hash: "ced0866bb411"
+    steps: ["fb5d33758c4a"]
+  "GRPC-STATUS-MAPPING":
+    status: approved
+    hash: "13e3375d8a7e"
+    steps: ["dcd83cefb439"]
+  "GRPC-STREAM-AUTH-EXPIRY":
+    status: approved
+    hash: "1c617a47e8aa"
+    steps: ["484435d6d258"]
+  "GRPC-STREAM-RESOURCE-LIMITS":
+    status: approved
+    hash: "862eaa836e00"
+    steps: ["406baa96e53a", "769832f737d2"]
+  "GRPC-STREAM-TERMINATION":
+    status: approved
+    hash: "f1940afc01e1"
+    steps: ["0e86ec5ec55c", "9b2e7dba9ba8", "66392d0d1856"]
+  "GRPC-TLS-MTLS":
+    status: approved
+    hash: "363845a18a3d"
+    steps: ["a23031a40baf"]
+  "GRPC-UNAUTHENTICATED-VS-PERMISSION-DENIED":
+    status: approved
+    hash: "81dd57ebc98c"
+    steps: ["6db2fb4f9c0d"]
+  "GRPC-UNKNOWN-FIELDS":
+    status: approved
+    hash: "f58e64986687"
+    steps: ["e2433ca94745"]
+  "GRPC-WELL-KNOWN-TYPES":
+    status: approved
+    hash: "80a78a7097f2"
+    steps: ["1adba36670a3"]
+  "HARD-BACKUP-RESTORE-PROTECTED":
+    status: approved
+    hash: "c09d4506cdb9"
+    steps: ["2835df7a09d2", "f6c2284722da", "5613ba346365"]
+  "HARD-BUSINESS-FLOW-AUTOMATION":
+    status: approved
+    hash: "1a8ad47ae235"
+    steps: ["3dd464f72f7b"]
+  "HARD-CACHE-POISONING":
+    status: approved
+    hash: "79b86e5363f4"
+    steps: ["1327f4a400b7"]
+  "HARD-CLIENT-IP-TRUSTED-PROXIES":
+    status: approved
+    hash: "f8794ca439fa"
+    steps: ["e3d87dfed6ce", "b976413877c9", "dc9799bbeba5"]
+  "HARD-DEBUG-ENDPOINTS":
+    status: approved
+    hash: "7d7fe960ff72"
+    steps: ["c390d4565dd1", "d7e3ff9ff4af", "413aa5a489ff", "e49da853a62c", "3250e6f5c7dd", "4298a3827d60", "22fe5277c147", "71c89effaaae", "350367960d64"]
+  "HARD-DENYLIST-EVERY-ENTRY":
+    status: approved
+    hash: "bab4e8b185cd"
+    steps: ["10dd74917fde", "75e33b135b54"]
+  "HARD-ENVIRONMENT-ISOLATION":
+    status: approved
+    hash: "b89d1f41c31f"
+    steps: ["6f68ffb7e070", "3b6bf4990015"]
+  "HARD-EXCESSIVE-DATA-EXPOSURE":
+    status: approved
+    hash: "4bcc09671bbf"
+    steps: ["fad3f89b2c5b", "0ffdb4826c63", "1d88967f58f8", "71f7fb98d88a", "405376c3f6b7", "8b6ed4b5f042", "4e78e8947aee", "ccc2b8348768", "9531c4e1b48c", "ca8b785bb3fa", "a66684b5eb78"]
+  "HARD-EXPENSIVE-OPERATION-LIMITS":
+    status: approved
+    hash: "2ac685df09e1"
+    steps: ["56b58ad8ba8f", "0830df0aeb89", "39f531a77c82", "c6bf9c59e920", "e4fbcad190ea", "583d683a5475", "478db845230c", "ea5041703fc5", "5de558defe1b", "73df001c832f", "f887d2bd3da3", "d803674df55c", "42c1faeebadf", "b35bef218648", "49b1f33377ef", "f05bbb4d9736", "4fabf9177922", "623ab652b342", "42f46631ae43", "4b9a7e9f0c39", "c321aaf60e83", "01517f14883f", "9e2df477cdf1", "e170355c8177", "32d009dbe400", "14f2d839b4e2", "e90ee976c38e", "c5371357a405", "bd005ed717b9", "7a0123376154", "9544574d0fe8", "9f279f98ac85", "a29f9299d5ec", "c0e08d5b2ebd", "8d89daa5e026", "c8790aa0384b", "5d297c134859", "77407762976a", "77a9b536063b", "7f4eb44e519f", "0d138d9540f3", "8f0b6f13dd8a", "8b579126a94f", "fe4a3092de1e", "8932dafbcdac", "e386ae18e192", "6df9ce0bc855", "b1dd2a54dfd6", "7ddcbf8bbcf8", "3883b6dc52a1", "9f62a32b0d8d", "a1bd09042e12", "6b3eaebb443b"]
+  "HARD-HOST-HEADER":
+    status: approved
+    hash: "4b397162b803"
+    steps: ["530063324caf", "b43d69f28d23", "e0bd77c64c7e", "470720f0fbca", "6608b7837dd9", "7a7874465f5a"]
+  "HARD-ID-PREDICTABILITY":
+    status: approved
+    hash: "d4c0e3a8533c"
+    steps: ["f1ef4791d835", "cf549c7e52b5", "421651f5867c"]
+  "HARD-IP-ALLOWLIST":
+    status: approved
+    hash: "120ffc53d3ac"
+    steps: ["1d07700c91fb", "ce3788c16051"]
+  "HARD-METHOD-OVERRIDE":
+    status: approved
+    hash: "39487d065109"
+    steps: ["52d9820c571d", "e1958621343f"]
+  "HARD-NOT-IMPLEMENTED-INERT":
+    status: approved
+    hash: "3ee61cf31f9e"
+    steps: ["bad7b9bb6007"]
+  "HARD-OUTBOUND-CREDENTIALS-SCOPE":
+    status: approved
+    hash: "3e448088638d"
+    steps: ["aa4b29b5f8dd"]
+  "HARD-ROUTE-SHARED-BACKEND-ISOLATION":
+    status: approved
+    hash: "a941e356c450"
+    steps: ["dfa49efc5f31"]
+  "HARD-SENSITIVE-DATA-IN-URL":
+    status: approved
+    hash: "bf86a3469e80"
+    steps: ["0cb72b1e70c2"]
+  "HARD-SETUP-ENDPOINTS-PROTECTED":
+    status: approved
+    hash: "a8df906bbcb0"
+    steps: ["a8c4d2a91126", "b9ce4a3ae060"]
+  "HARD-SHADOW-API-VERSIONS":
+    status: approved
+    hash: "23ee2b53b1b7"
+    steps: ["412e3b1a1334", "ec9119d53866", "55cca1f6509d", "70a5de20d98d", "4dd7153d75fa"]
+  "HARD-SLOW-CLIENT-LIMITS":
+    status: approved
+    hash: "7bf231a62500"
+    steps: ["c68a9baed18e", "1ea2ad3222a0", "02c294f50f92", "3a159fadebce", "9fba190d502a", "f5316b3289ef", "cc72d86498ad", "c42b9c8bd7f1", "16eee9f8c804", "408aa833d077", "9927f5317b50", "b544e2b56ddc", "0df9f3051214", "52b98f43ea12"]
+  "HARD-TLS-ONLY":
+    status: approved
+    hash: "608bedbcbe9f"
+    steps: ["57a238500a28"]
+  "HARD-UNSAFE-API-CONSUMPTION":
+    status: approved
+    hash: "a6df602a7eec"
+    steps: ["ae0dca6976a3", "1ae794f69002", "b417dfe00d55", "a8862fa639a2", "0bc4fe06b372", "14e25287da57", "0b1a0ff4d4e0"]
+  "HARD-VERSION-DISCLOSURE":
+    status: approved
+    hash: "1b39f34b8c3e"
+    steps: ["895960143981"]
+  "HARD-WILDCARD-DOMAIN-MATCH":
+    status: approved
+    hash: "1242c99b41a6"
+    steps: ["07140f945cf8"]
+  "HTTP-ABSOLUTE-URL-BASE-PATH":
+    status: approved
+    hash: "ee088130c7e1"
+    steps: ["3cd00b143e06", "452c3e8d5a19", "5c0892ac596c"]
+  "HTTP-ACCEPT-LANGUAGE":
+    status: approved
+    hash: "dcee6544ddc9"
+    steps: ["f9919ad93850", "db946915479f", "6cda8ed73f52", "52bd6721e7a0"]
+  "HTTP-BODY-ON-GET-DELETE":
+    status: approved
+    hash: "538df2f7364b"
+    steps: ["2d5e83c23460", "bdd9019b6c15"]
+  "HTTP-BODY-WITHOUT-CONTENT-TYPE":
+    status: approved
+    hash: "be37073f59e8"
+    steps: ["f31e0160b28d"]
+  "HTTP-CACHEABLE-RESPONSE-CACHE-CONTROL":
+    status: approved
+    hash: "f405c91da26a"
+    steps: ["3f2a7739ea89"]
+  "HTTP-COMPRESSION":
+    status: approved
+    hash: "adc7bc199d55"
+    steps: ["5e2701a103f5", "968b72c30244", "a3ee07efd687"]
+  "HTTP-HEADER-REPEATED-LINES-ACCEPTED":
+    status: approved
+    hash: "a0f9151968f3"
+    steps: ["a17b45c65270"]
+  "HTTP-HEADER-SIZE-LIMIT":
+    status: approved
+    hash: "19bc25630948"
+    steps: ["9d81928d7f45", "ceb8d71d4747", "43ecfad36b06", "baf03232391a", "9b3ec33d72c4", "5450c5139363", "dbff23a934db", "9c6ef2a9e834"]
+  "HTTP-HTTP2-RESOURCE-LIMITS":
+    status: approved
+    hash: "9abcbd4b4b4a"
+    steps: ["fa0718b84005", "81f1a07e1605", "0616954cde66"]
+  "HTTP-OPTIONS-ALLOW":
+    status: approved
+    hash: "57db4adf3da3"
+    steps: ["c0de92a1b2ae", "086a69f385d5"]
+  "HTTP-PATH-PREFIX-SEGMENT-BOUNDARY":
+    status: approved
+    hash: "37fae63c9f02"
+    steps: ["c4ca113ec2b9"]
+  "HTTP-PREFERENCE-APPLIED-ACCURATE":
+    status: approved
+    hash: "0d25e561527a"
+    steps: ["3b4c2a46528c"]
+  "HTTP-REDIRECT-ENDPOINT-PARITY":
+    status: approved
+    hash: "b5b673050600"
+    steps: ["f5e1d5c38d4f"]
+  "HTTP-REQUEST-SMUGGLING":
+    status: approved
+    hash: "6f4555057bea"
+    steps: ["22286636e221", "0f0f8d9477bf"]
+  "HTTP-RESPONSE-FRAMING-HEADERS":
+    status: approved
+    hash: "210824879cd9"
+    steps: ["6dca2e97416c"]
+  "HTTP-RESPONSE-MODE-HEADER-PARITY":
+    status: approved
+    hash: "4329d4f077fd"
+    steps: ["3844a93049be"]
+  "HTTP-ROUTE-PROTOCOL-CONDITION":
+    status: approved
+    hash: "53982a77a487"
+    steps: ["f210d7b7df20"]
+  "HTTP-TRAILING-SLASH-CASE":
+    status: approved
+    hash: "f42dc2490b1c"
+    steps: ["0f2a8dc00bc2", "24ed6689258d", "5a6f698d2e3b", "9a7182d6d22d"]
+  "HTTP-UNKNOWN-ROUTE":
+    status: approved
+    hash: "436de5e6db9d"
+    steps: ["efc11ab808ec", "a7a3ebce7d18", "e53e57c9b938", "87ffab931110", "a17d586d4bee"]
+  "HTTP-URL-LENGTH-LIMIT":
+    status: approved
+    hash: "a351cf515c37"
+    steps: ["4e2ae501fed0", "9aa7b7f4854a"]
+  "HTTP-VARY-HEADER":
+    status: approved
+    hash: "a3ddce4ab11e"
+    steps: ["4f60323a3de9"]
+  "HTTP-VERSION-PARITY":
+    status: approved
+    hash: "c066f06a861f"
+    steps: ["6a56421aa0f1", "9c677106d690", "c989fecbbc3f"]
+  "HTTP-WWW-AUTHENTICATE-SYNTAX":
+    status: approved
+    hash: "12c9cdcfcffc"
+    steps: ["be505418cbc2"]
+  "INJ-ARCHIVE-ENTRY-NAME-EVAL":
+    status: approved
+    hash: "f9dfe4f7a683"
+    steps: ["61dada094155"]
+  "INJ-CSV-FORMULA":
+    status: approved
+    hash: "59957467cce8"
+    steps: ["6b0da13419d4"]
+  "INJ-DOWNSTREAM-BODY-INJECTION":
+    status: approved
+    hash: "d8bf906ed06f"
+    steps: ["e014e7b54135"]
+  "INJ-FILTER-EXPRESSION":
+    status: approved
+    hash: "31e9628c0057"
+    steps: ["7fd662e0f25f", "60c87a2f7831", "d3d5889fb20d", "31d0bb8a7674", "3031177a000d", "b053e79197df", "0c3df2a57b7c", "f29b5590dbd0", "18a08f142313", "67f4e9d3ff12", "9667841d0ea9", "ccdc2f36e3a1"]
+  "INJ-HEADER-CRLF":
+    status: approved
+    hash: "231d67fefd4e"
+    steps: ["36dcbee4b296", "6f7fc7a802e8"]
+  "INJ-LLM-GENERATED-ACTIONS":
+    status: approved
+    hash: "a39d233aa9b9"
+    steps: ["bc518a888dbc"]
+  "INJ-LOG-FORGING":
+    status: approved
+    hash: "5d6b182cea40"
+    steps: ["1694761bc015", "7858286abe7e"]
+  "INJ-NOSQL":
+    status: approved
+    hash: "b40bc2f45cd3"
+    steps: ["d53b55261ed5", "5aaa8f71c9e5", "0531175453ca", "c21db45517b0"]
+  "INJ-NULL-BYTE":
+    status: approved
+    hash: "d6fbe46b10d0"
+    steps: ["c5990b3c472b"]
+  "INJ-OS-COMMAND":
+    status: approved
+    hash: "39be7e421681"
+    steps: ["bc3042303bf3", "2dc2519565dd", "d6ea1eb39ab8", "f72a9453b51d", "2c53ec79d504", "8c50e45f5495", "543f0f553a22", "ba607e82a1b4", "4736fde117ee", "8df009a04a2f", "61fa4ed9e608", "0ba6f96531b1", "1945e211947f", "9557b13c085a", "b37263dff244", "be47978ab4fb", "bd8a3f7475b7"]
+  "INJ-PATH-TRAVERSAL":
+    status: approved
+    hash: "cf329a3b9923"
+    steps: ["ce8224a0879f", "4cc4438e29d2", "f5126e2bc84d", "20860c88be24", "95875726cde5", "42c47f740fd1", "f75df6031dbc", "6767169ae7b5", "8ba905a035a7", "6a5ba8ac0346", "832c19f89af0", "3f8cc5c67cf2", "70eb51e7e357", "4f41c169620f"]
+  "INJ-PROTOTYPE-POLLUTION":
+    status: approved
+    hash: "62e3b1b0570e"
+    steps: ["44c58ac91ce5", "7f70e5a24d47", "28e7764761bb", "a4365fd6fe73", "5485e52b6232", "a67fd87c6d53", "aaf6df030772", "272ff837f0fe", "920f017aa98c", "eef0a8e900a4", "fa26a6f882f7"]
+  "INJ-REDOS":
+    status: approved
+    hash: "1907eff05629"
+    steps: ["96aa88ce32ee", "f25e86d5a12f", "4a03223c7427", "7508299e2af0", "743a787eb2ac", "254e92e8dda3", "41dd2e9cce64", "533acfb56615", "8781d05bc4af", "9c240edea9bc", "72fce0541c78", "4822ae48877b", "468bb6db092b", "dfc368de3771", "f3eeb6146158", "82e74f79afe5", "2a41a997ea33", "ef94781717ed", "1bbbbe5c8566", "6d8d3a98ed4e", "1c23353e1909", "ae3f53fce4e2", "01104f948111", "d3d2a7925f8f", "c4d856a76de2", "bff5fb77696f", "7ebfdd593d9a", "237cad382c34", "d55246da41f0", "8d5fa1afd83e", "67bd5debbcbe", "ba7855c61a7f", "e77434494252", "50d32bcb5c9c", "9bee914e98eb", "423fb084514e", "faf7fc365725"]
+  "INJ-REFLECTED-XSS":
+    status: approved
+    hash: "d7911ed17aba"
+    steps: ["5106fee3c745"]
+  "INJ-RESERVED-PATH-WRITE":
+    status: approved
+    hash: "476c596d4aef"
+    steps: ["f7a4b9cfc5c4"]
+  "INJ-SCHEMA-IDENTIFIER-CODEGEN":
+    status: approved
+    hash: "0c14da7492f8"
+    steps: ["b98912b1c643", "89a7b56c7b80"]
+  "INJ-SQL":
+    status: approved
+    hash: "b22ba2eeacd0"
+    steps: ["99d34e9089fe", "6513d5fcf727", "5f947eb89376", "d68afbc215d1", "7e0561abe145", "ff9d1a4d5586", "49b3b185a902", "ed2d3eff9d46", "63d3b5720ca4", "b85465734071", "39d2265d9e67", "b71e79599b84", "61c8add18d95", "c8a9ca71a8b1", "a9aa504e3a99", "5a28df86cc7d", "ccc635aa7251", "7e19fd44e80f", "d9ff87845c94", "084b8c68f25a", "e48b0dffe4b4", "7f868697ec0f", "44c90e9a836f", "b39d4ae920ed", "bad655b82655", "b904c891274b", "69d85331d673", "b669a88688d9", "22c115993cf1", "bbc6b8c9d091"]
+  "INJ-SSRF-PARAMETERS":
+    status: approved
+    hash: "00495b7fb12b"
+    steps: ["fca7b7d1def4", "815fb63f4831", "afedd32912f8", "c6aa88958d59", "9e59454f696e", "c12e95e490c9", "ea0f8d304989", "f57f023ca0b3", "cab17f4e2040", "75dcf2c40c17", "e3c6fbeda6d6", "412223c0b9c6", "1b0a8769f364", "b278f2caeec9", "c756d8ece521", "3f49ab80074e", "ff7ddbf548a6", "33957a445f4f", "ea6c004a41f5", "9013b2fc10f5", "0b30bb56ff8a", "408ab0087c38", "95550220613c", "e95df65a5831", "d13577ce90a2", "0e97c4021f07"]
+  "INJ-STORED-XSS":
+    status: approved
+    hash: "d373b96bdc2d"
+    steps: ["906efc0d229e", "5e91dd5cb287", "e6375d61c1a2", "8a860c7c88e2", "f47d174697df", "96cfa179066c", "1a18bd61c204"]
+  "INJ-TEMPLATE-SSTI":
+    status: approved
+    hash: "591c11dd274b"
+    steps: ["e78b1431d38e", "9b96f45770b7", "79a3660d29db", "c501cb814313", "f3f8e68032af", "333ab36aacba", "bb01e5d67ac7", "a51b3e822a51", "ad99da072d48", "c909a72050bb", "90f66315890c", "2e6004354c5d", "eb6ec8f3e438", "e0ebfbcf6b9c", "f727256ce4bc", "6d6f53539a9f", "4e011627851e"]
+  "INJ-UNSAFE-DESERIALIZATION":
+    status: approved
+    hash: "7b70ea3b6e71"
+    steps: ["a8d3daa07df7", "47c4603ff72e", "a1ad87a270af", "4c61277b833c", "ff93f5e5eeb8"]
+  "INJ-USER-CODE-EXECUTION":
+    status: approved
+    hash: "7f6048a563e2"
+    steps: ["c43c6dab1b80", "ae6ff7df2d4a", "f6fdf1116fac", "2a856978b830"]
+  "INJ-USER-DATA-CALLABLE":
+    status: approved
+    hash: "09b81f1170e4"
+    steps: ["9f7f70e274df", "7ed4d1e469fc"]
+  "INJ-XXE":
+    status: approved
+    hash: "101e19bcc1b0"
+    steps: ["0b8083643e53", "7db85f2f2a5f"]
+  "OBS-AUDIT-TRAIL":
+    status: approved
+    hash: "c9413fb63807"
+    steps: ["5d5ae1bb81f4", "e3ed94ec3bed", "22ad382ec3ee", "4fd1aa851da6", "9f5701f0c79a", "7c427b2ed3da", "e0b11ce909aa", "2839e476bbbc", "413c09cf5d90"]
+  "OBS-BUILD-VERSION-TRACEABLE":
+    status: approved
+    hash: "3ed71850cb1b"
+    steps: ["2975a67a3b15", "3adfc710d9c0"]
+  "OBS-CONFIG-ENDPOINT-ACCURATE":
+    status: approved
+    hash: "dd84b9eb1095"
+    steps: ["b492f5a5a0cd"]
+  "OBS-HEALTH-ENDPOINTS":
+    status: approved
+    hash: "3f0b8c734e8d"
+    steps: ["b178a75747f8", "0b36cf4e92a6", "92d8661798ad", "f105897bb494", "df67a4c9b357", "d7e9033d8d49", "07f5e2e133e3", "f9da6d2d91f9", "3d900ed3076a", "d9dbfb8703de"]
+  "OBS-LOG-ENTRY-INTEGRITY":
+    status: approved
+    hash: "e99992723e1d"
+    steps: ["34587a894896"]
+  "OBS-METRICS-LABEL-CARDINALITY":
+    status: approved
+    hash: "49dce40312af"
+    steps: ["fe3175470680"]
+  "OBS-METRICS-VALUE-RANGE":
+    status: approved
+    hash: "131a30acedc3"
+    steps: ["747239848f0d"]
+  "OBS-NO-SECRETS-IN-LOGS":
+    status: approved
+    hash: "c09d867b6935"
+    steps: ["36462c573f4c", "14f6e74416fb", "bb32921d63ec"]
+  "OBS-REQUEST-LOG-ALL-ATTEMPTS":
+    status: approved
+    hash: "6309fde01028"
+    steps: ["68fdb0bd321b"]
+  "OBS-SERVER-TIMING-ACCURATE":
+    status: approved
+    hash: "2a40162416b1"
+    steps: ["b6533af67e5b"]
+  "OBS-TELEMETRY-FORMAT":
+    status: approved
+    hash: "423fb0e5ce63"
+    steps: ["1c15ef439e04", "ae3362917b36"]
+  "OBS-TRACE-PROPAGATION":
+    status: approved
+    hash: "fd634e0cacac"
+    steps: ["b1b03bee9c48", "0f33f59ff83a", "af034db1405a", "b44858ede82c", "1683c1edf77a"]
+  "PAGE-BEYOND-LAST":
+    status: approved
+    hash: "30b53961c3ae"
+    steps: ["ca554b0c5db0", "8d1c39d16bce"]
+  "PAGE-CONCURRENT-MODIFICATION":
+    status: approved
+    hash: "b8d5cace2711"
+    steps: ["31dcdd794024"]
+  "PAGE-CURSOR-TAMPERING":
+    status: approved
+    hash: "3bd7daeb4b8e"
+    steps: ["4ccb523a9770"]
+  "PAGE-NEXT-LINK-VALID":
+    status: approved
+    hash: "222e7336e072"
+    steps: ["de3753869d78"]
+  "PAGE-SEARCH-SPECIAL-CHARS":
+    status: approved
+    hash: "3f68c1f2c87a"
+    steps: ["6fe2f2582206", "9fbd2b6f41db", "9789f4e4d902"]
+  "PAGE-SORT-FIELD-TYPE-MATRIX":
+    status: approved
+    hash: "e4c48f218d0d"
+    steps: ["130bdc945222", "cda49edd8164", "b767ba7378b2"]
+  "PAGE-SORT-MULTI-KEY-PRIORITY":
+    status: approved
+    hash: "d59069c1912c"
+    steps: ["0af3f00e472e"]
+  "PAGE-SORT-NULLS-TIES":
+    status: approved
+    hash: "7464473c2eb0"
+    steps: ["fae4f50ec82a"]
+  "PAGE-TOTAL-COUNT":
+    status: approved
+    hash: "f1d493e7519c"
+    steps: ["d4637b01b354", "71c0b782e214", "87cfdec90270", "12e8350ceb48", "4afd8f9a17b4"]
+  "PERF-DEEP-PAGINATION":
+    status: approved
+    hash: "04c89ec289ea"
+    steps: ["4eeefe25b82c", "e11d264bef14"]
+  "PERF-LATENCY-BASELINE":
+    status: approved
+    hash: "a6d0ec5de7f8"
+    steps: ["f711c143c385", "274360d64274", "7c2bc6c9e1f7", "e71a95369538", "168ff8dad588", "94536a235363", "f7e497ab9987", "434b8faefb3e", "7de1cc62a62c", "f8f58b62d22f"]
+  "PERF-LOAD-THROUGHPUT":
+    status: approved
+    hash: "52c47663a25b"
+    steps: ["159a321713e9"]
+  "PERF-METADATA-RELOAD-NO-BLOCK":
+    status: approved
+    hash: "92c5f5172c9e"
+    steps: ["24aa6ed772fd"]
+  "PERF-NO-UNNEEDED-DEPENDENCY-CALLS":
+    status: approved
+    hash: "f7f9a2911d56"
+    steps: ["240739c3269c", "1cbfdde30553"]
+  "PERF-PAYLOAD-SIZE":
+    status: approved
+    hash: "4a3fb70ecb4d"
+    steps: ["befd594a14cc", "52168b3645d3"]
+  "PERF-SOAK":
+    status: approved
+    hash: "df56a9ecdec1"
+    steps: ["bdd56d791256"]
+  "PERF-SPIKE":
+    status: approved
+    hash: "567265731bc5"
+    steps: ["398d6f2b1654"]
+  "PRIV-CONSENT-ENFORCEMENT":
+    status: approved
+    hash: "cf181113e7df"
+    steps: ["4bb8bd0c4df2"]
+  "PRIV-DATA-MASKING":
+    status: approved
+    hash: "487d9d3b430a"
+    steps: ["08dda247830a", "0ae858f3ceed", "2ecedcf6c6a8", "b1905d668697", "f02891d8344f", "583c7a4ff0a0"]
+  "PRIV-ERASURE":
+    status: approved
+    hash: "9cb4eec93ded"
+    steps: ["2579ee2ddd58"]
+  "PRIV-IMPORT-URL-CREDENTIALS-NOT-STORED":
+    status: approved
+    hash: "ecd205c10069"
+    steps: ["062413daf506"]
+  "PRIV-RESPONSE-FOREIGN-DATA":
+    status: approved
+    hash: "4eb740114135"
+    steps: ["9c0315ed2444", "bd993c2a550e", "9ed10592c701"]
+  "PRIV-SELF-DATA-EXPORT":
+    status: approved
+    hash: "f2353bd381a7"
+    steps: ["4062828958f3"]
+  "REAL-BFF-ADMIN-API-AUDITCONTROLLER-GETENTRIES-OPERATION-ACCESS-PO":
+    status: needs_clarification
+    hash: "a22c0848960f"
+    steps: ["825a63f09477", "5c559db0b51a"]
+  "REAL-BFF-ADMIN-API-AUTHCONTROLLER-CHANGEPASSWORD-MISSING-OR-INVAL":
+    status: draft
+    hash: "6254c1e27e1b"
+    steps: ["5477b7d52e2e", "79dc8bd1573b"]
+  "REAL-BFF-ADMIN-API-AUTHCONTROLLER-CHANGEPASSWORD-ROLE-MODEL-UNRES":
+    status: needs_clarification
+    hash: "adcfe9b6b7f0"
+    steps: ["a89426cdb988", "fbee35823dba"]
+  "REAL-BFF-ADMIN-API-AUTHCONTROLLER-CHANGEPASSWORD-WRONG-CURRENT-PA":
+    status: draft
+    hash: "9913ae1e6e78"
+    steps: ["6932727ac4a3", "79dc8bd1573b"]
+  "REAL-BFF-ADMIN-API-AUTHCONTROLLER-DELETESESSION-CROSS-ACCOUNT-SES":
+    status: draft
+    hash: "1fc67fc5f2ca"
+    steps: ["6a6f50957a6d", "3abdee611731"]
+  "REAL-BFF-ADMIN-API-AUTHCONTROLLER-DELETESESSION-MISSING-OR-INVALI":
+    status: draft
+    hash: "d0fb3b271572"
+    steps: ["cd2f847314f3", "3abdee611731"]
+  "REAL-BFF-ADMIN-API-AUTHCONTROLLER-DELETESESSION-ROLE-MODEL-UNRESO":
+    status: needs_clarification
+    hash: "256b875ad754"
+    steps: ["0137d627b833", "2cbac5e4a0a2"]
+  "REAL-BFF-ADMIN-API-AUTHCONTROLLER-GETSESSIONS-CROSS-ACCOUNT-SESSI":
+    status: draft
+    hash: "38f014df6b6b"
+    steps: ["1aa22bd7ff29", "92f6aa806819"]
+  "REAL-BFF-ADMIN-API-AUTHCONTROLLER-GETSESSIONS-MISSING-OR-INVALID":
+    status: draft
+    hash: "8157e6fd16a1"
+    steps: ["bb2b51ae15b6", "92f6aa806819"]
+  "REAL-BFF-ADMIN-API-AUTHCONTROLLER-LOGIN-INVALID-CREDENTIALS":
+    status: draft
+    hash: "d75b8bcca98c"
+    steps: ["748ffcfc9bb0", "d3884950d895"]
+  "REAL-BFF-ADMIN-API-AUTHCONTROLLER-LOGOUT-MISSING-OR-INVALID-COOKI":
+    status: draft
+    hash: "e9e56f2b97f2"
+    steps: ["81dc9b77b84a", "a72d9baf9729"]
+  "REAL-BFF-ADMIN-API-AUTHCONTROLLER-LOGOUT-ROLE-MODEL-UNRESOLVED":
+    status: needs_clarification
+    hash: "df3de91ae510"
+    steps: ["f6aa7429f774", "560e5e66de2a"]
+  "REAL-BFF-ADMIN-API-COMPONENTTYPESCONTROLLER-GETTYPES-OPERATION-AC":
+    status: draft
+    hash: "4b53a0cccb5c"
+    steps: ["dde4e1de4013", "f3755df38593"]
+  "REAL-BFF-ADMIN-API-CONTENTCONTROLLER-CREATEITEM-OPERATION-ACCESS":
+    status: draft
+    hash: "c530f70faf2f"
+    steps: ["662f215864b6", "3e27f6adfa30"]
+  "REAL-BFF-ADMIN-API-CONTENTCONTROLLER-CREATEITEM-ROLE-MODEL-UNRESO":
+    status: needs_clarification
+    hash: "352b468d286e"
+    steps: ["0958733f8531", "8f34c916a385"]
+  "REAL-BFF-ADMIN-API-CONTENTCONTROLLER-GETITEMS-OPERATION-ACCESS-PO":
+    status: needs_clarification
+    hash: "e32e3b6d18ea"
+    steps: ["b5ff3da9098d", "ec4499223b90"]
+  "REAL-BFF-ADMIN-API-CONTENTCONTROLLER-GETSOURCES-OPERATION-ACCESS":
+    status: draft
+    hash: "2968fe7e9f0f"
+    steps: ["155c13c09acd", "97c7f87af669"]
+  "REAL-BFF-ADMIN-API-CONTENTCONTROLLER-REMOVEITEM-OPERATION-ACCESS":
+    status: draft
+    hash: "d0252149c9e7"
+    steps: ["556cb07ff7fb", "24df6ba24c3d"]
+  "REAL-BFF-ADMIN-API-CONTENTCONTROLLER-REMOVEITEM-ROLE-MODEL-UNRESO":
+    status: needs_clarification
+    hash: "594770632ee4"
+    steps: ["471915fc5162", "2888d92dbac2"]
+  "REAL-BFF-ADMIN-API-CONTENTCONTROLLER-UPDATEITEM-OPERATION-ACCESS":
+    status: draft
+    hash: "2440188d5ad8"
+    steps: ["05dcca2a5ba3", "bd4505cc5727"]
+  "REAL-BFF-ADMIN-API-CONTENTCONTROLLER-UPDATEITEM-ROLE-MODEL-UNRESO":
+    status: needs_clarification
+    hash: "2ecb9e45d73c"
+    steps: ["afde786751f2", "ab3db25a15a8"]
+  "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-ARCHIVE-OPERATION-ACCESS-POL":
+    status: needs_clarification
+    hash: "34ac43e3d81d"
+    steps: ["cc30d963c5e2", "fe94b8582704"]
+  "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-ARCHIVE-ROLE-MODEL-UNRESOLVE":
+    status: needs_clarification
+    hash: "a44d52c28b16"
+    steps: ["81b388068282", "636d36b0255c"]
+  "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-GETCURRENTVERSIONS-OPERATION":
+    status: draft
+    hash: "c39c017094a7"
+    steps: ["aad1d01e46c9", "92b1c9efea77"]
+  "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-GETLANGUAGES-OPERATION-ACCES":
+    status: draft
+    hash: "10033dff005b"
+    steps: ["154f38621fbc", "53b7c11804a9"]
+  "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-GETNODES-OPERATION-ACCESS-PO":
+    status: needs_clarification
+    hash: "4a57fa1d00a9"
+    steps: ["04e50a10de8a", "e41b6a55a8e3"]
+  "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-GETSCREEN-OPERATION-ACCESS-P":
+    status: draft
+    hash: "38773ca0f7ae"
+    steps: ["b054f102ad78", "47fe184a51ae"]
+  "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-GETSCREENS-OPERATION-ACCESS":
+    status: draft
+    hash: "2590c9ef0151"
+    steps: ["5c6a253b3d32", "43d190efbac1"]
+  "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-GETVERSIONS-OPERATION-ACCESS":
+    status: draft
+    hash: "6aed6b3a486e"
+    steps: ["a5889d4791b1", "7da137e0f321"]
+  "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-PUBLISH-OPERATION-ACCESS-POL":
+    status: needs_clarification
+    hash: "7482defc71df"
+    steps: ["a707da0be7d1", "0dcdee285d73"]
+  "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-PUBLISH-ROLE-MODEL-UNRESOLVE":
+    status: needs_clarification
+    hash: "32435e59797f"
+    steps: ["a4c2309b8be8", "edf41e1da42d"]
+  "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-SAVETRANSLATION-OPERATION-AC":
+    status: draft
+    hash: "0a907c1cb6e8"
+    steps: ["135db9551892", "61174e433ae0"]
+  "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-SAVETRANSLATION-ROLE-MODEL-U":
+    status: draft
+    hash: "d78836086a4d"
+    steps: ["897775beca05", "f4bed71cb266"]
+  "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-TOGGLELANGUAGE-OPERATION-ACC":
+    status: draft
+    hash: "03aca9db3e05"
+    steps: ["6a6804956402", "0f206e723f13"]
+  "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-TOGGLELANGUAGE-ROLE-MODEL-UN":
+    status: draft
+    hash: "b6d2965d7037"
+    steps: ["a739fa6c1e03", "b049b6f10e86"]
+  "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-UPDATECOMPONENT-OPERATION-AC":
+    status: draft
+    hash: "ee3b1b3cc9be"
+    steps: ["9318083ea2fa", "739d13a1bb90"]
+  "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-UPDATECOMPONENT-ROLE-MODEL-U":
+    status: draft
+    hash: "df46967b55f6"
+    steps: ["956687607c0f", "09b7df7e3a39"]
+  "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-VALIDATE-OPERATION-ACCESS-PO":
+    status: needs_clarification
+    hash: "f9c8249c22f3"
+    steps: ["406bd6270c2f", "884c3cc0de12"]
+  "REAL-BFF-ADMIN-API-LAYOUTSCONTROLLER-VALIDATE-ROLE-MODEL-UNRESOLV":
+    status: needs_clarification
+    hash: "8b29962041cc"
+    steps: ["afef348e6f45", "c6e7f9ed1ddc"]
+  "REAL-MOBILE-CLIENT-API-ACCEPTDOCUMENTS-CROSS-PRINCIPAL-OR-STALE-R":
+    status: draft
+    hash: "a9925a885b0c"
+    steps: ["03d7da949681", "e8c04d2f6860"]
+  "REAL-MOBILE-CLIENT-API-ACCEPTDOCUMENTS-GUEST-VS-AUTHENTICATED":
+    status: draft
+    hash: "07ddf0dbc7a5"
+    steps: ["f7f6fc0527fc", "e8c04d2f6860"]
+  "REAL-MOBILE-CLIENT-API-GETDOCUMENTSHISTORY-GUEST-VS-AUTHENTICATED":
+    status: draft
+    hash: "560c7a1a0ff5"
+    steps: ["51920d31668f", "ed477cbce068"]
+  "REAL-MOBILE-CLIENT-API-GETUNSIGNEDDOCUMENTS-GUEST-VS-AUTHENTICATE":
+    status: draft
+    hash: "1ebfc47fb938"
+    steps: ["cdc54aaea52f", "9e1d4632d251"]
+  "REAL-MOBILE-CLIENT-API-LOGOUT-MISSING-EXPIRED-OR-REFRESH-TOKEN":
+    status: draft
+    hash: "54fea1bb2891"
+    steps: ["4b8ceb5de899", "b9f2e577de1c"]
+  "REAL-MOBILE-CLIENT-API-ONSTART-ANONYMOUS-VS-API-KEY":
+    status: needs_clarification
+    hash: "386f2252b158"
+    steps: ["6ed321a15152", "8b5716c9b29f"]
+  "REAL-MOBILE-CLIENT-API-REFRESH-EXPIRED-OR-INVALID-REFRESH-TOKEN":
+    status: draft
+    hash: "b468944c9aa4"
+    steps: ["d65e58e818d2", "cf68b048cdf9"]
+  "REAL-MOBILE-CLIENT-API-SENDCODE-INVALID-API-KEY":
+    status: draft
+    hash: "6a505adf5b8b"
+    steps: ["0a0e07550a40", "521acb98064e"]
+  "REAL-MOBILE-CLIENT-API-VERIFYCODE-INVALID-API-KEY":
+    status: draft
+    hash: "b45a27791b33"
+    steps: ["b0186d8c0db5", "95b94c75842d"]
+  "REQ-CONTRACT-CONTRADICTS-SPEC":
+    status: approved
+    hash: "7c48e3086422"
+    steps: ["116faa8657ea", "1e2750574164"]
+  "REQ-CONTRACT-SELF-CONSISTENCY":
+    status: approved
+    hash: "343ec6f40bd0"
+    steps: ["83a0b167bdab", "f15b777a17e3", "4dce4c4510b9"]
+  "REQ-CROSS-CLIENT-CONSISTENCY":
+    status: approved
+    hash: "501c7ef30ec4"
+    steps: ["28eeb82e1f2e", "aac9b515ce73", "96227f8a99d9", "dd40ad1fdd20", "e97c527e7c57", "5c3ac8f54faf", "f13cb378499c", "8fbe955b99c5", "c175b620913d", "1969dfe5afc4", "58e2639d809a", "58092801d0d8"]
+  "REQ-SPEC-NOT-IN-CONTRACT":
+    status: approved
+    hash: "d112cdd94638"
+    steps: ["93eb6746df42", "edddffb2d861"]
+  "REQ-UNSPECIFIED-BEHAVIOR-PROBE":
+    status: approved
+    hash: "472c8bdfe276"
+    steps: ["086161c6258d", "e917341ee039"]
+  "RES-ALLOCATED-VALUE-RELEASE":
+    status: approved
+    hash: "fcd84bf8c708"
+    steps: ["ef1bce0324bb", "03dad238db57"]
+  "RES-ARCHIVE-RESTORE":
+    status: approved
+    hash: "565ef0f43fb2"
+    steps: ["684e89fd47d9"]
+  "RES-BULK-LIMITS":
+    status: approved
+    hash: "4803e1b51358"
+    steps: ["48af3baa7485", "5d272ec872f5", "7b1371fab7f1", "28c260b05a43", "86782c6323bb"]
+  "RES-BULK-SINGLE-VALIDATION-PARITY":
+    status: approved
+    hash: "33d46578e128"
+    steps: ["552e232b02a8"]
+  "RES-CACHE-EXPLICIT-INVALIDATION":
+    status: approved
+    hash: "adb6a9693d9b"
+    steps: ["04089cffb5d8", "ac7c2a76bea5", "3bc26dd14960"]
+  "RES-CACHE-KEY-COMPLETENESS":
+    status: approved
+    hash: "b113e3c01e21"
+    steps: ["031532dc1a62", "898b457c4fef", "2541e0edf6b0", "5deae0d8b119", "7f2e2b34dc51"]
+  "RES-CREATE-RESPONSE-MATCHES-READ":
+    status: approved
+    hash: "00204ca07637"
+    steps: ["8e0882b7c1d1", "8a54ea5989b8", "9906ad7276e9", "6ee45c6f044c", "36371f203d16", "a72980583680", "1a1826e26f92"]
+  "RES-CRUD-CYCLE":
+    status: approved
+    hash: "96d82a4312b4"
+    steps: ["ae015953d6cf"]
+  "RES-DB-OBJECT-NAMES":
+    status: approved
+    hash: "d6ae63215e3d"
+    steps: ["ffb0f9fe8c74", "2f86d87d98bc", "313ce9b9527e"]
+  "RES-DELETE-WITH-DEPENDENTS":
+    status: approved
+    hash: "68ddcc6246bf"
+    steps: ["f644ed2fc184", "cf00ae49a0f5", "0cfe87fecbbd", "8585bc2f17c3", "4ee055e0a4ac", "8256136875fa"]
+  "RES-DRAFT-PUBLISH-FIDELITY":
+    status: approved
+    hash: "626b0a2afd82"
+    steps: ["06f4cf06bb98", "8b029ab190fe", "91950ac910d4", "35ddd4797e63", "2c6f7307b8e9", "9673c1b7f45a"]
+  "RES-EXPORT-IMPORT-ROUNDTRIP":
+    status: approved
+    hash: "0fdfba33f099"
+    steps: ["a399de94e143", "6dd0a5739857", "85243445238c", "f1f981e67462", "a1befc7cdfe4", "a41b92d7750a", "28b5f6732b22", "a9e3504a37b6", "6fa5cc67f2c1", "7fb1d6d0829c"]
+  "RES-IMMUTABLE-FIELDS":
+    status: approved
+    hash: "50e6467f6711"
+    steps: ["4a240ce758dc", "0bfef15809d1", "af350c07335f"]
+  "RES-LARGE-RELATION-SET":
+    status: approved
+    hash: "0bef33674d98"
+    steps: ["435e38973683", "01d6a696e304"]
+  "RES-LIST-REFLECTS-CHANGES":
+    status: approved
+    hash: "7b4301c04f0e"
+    steps: ["800dbc5f55c8", "a15d29af6b93"]
+  "RES-READ-AFTER-WRITE":
+    status: approved
+    hash: "9fb4b881248f"
+    steps: ["88f3efc91401", "143aeb8d01cb", "91b30997cc02", "0f9b60df33b9"]
+  "RES-REFERENCE-DATA-COMPLETE":
+    status: approved
+    hash: "6d05f0e762f1"
+    steps: ["7a40ef3198ab"]
+  "RES-REFERENTIAL-INTEGRITY":
+    status: approved
+    hash: "fc7ec2398194"
+    steps: ["946f44eff0f4", "6519e25ccab5", "70c3511f11ca", "82764f6dcd8a", "927e8b5f06a0", "742ac8a45ebb", "484652dadf5d", "6e3c5e03e604", "d3582006a27d", "157529726ca9", "6abe1d6befd9", "fc44d8b6b4a9"]
+  "RES-RELATION-CONNECT-DISCONNECT-CONFLICT":
+    status: approved
+    hash: "7a46fb7e7ffe"
+    steps: ["bf27177d06bd"]
+  "RES-RELATION-NULL-TARGET-ROWS":
+    status: approved
+    hash: "c43096dee026"
+    steps: ["a471c2857891"]
+  "RES-RELATION-ORDER-STABLE":
+    status: approved
+    hash: "645ced64d40d"
+    steps: ["f3c16ece2670", "c78699fedf88"]
+  "RES-RELATIONS-SHARED-JUNCTION-ISOLATION":
+    status: approved
+    hash: "8e99b57d1357"
+    steps: ["6593aaef3c5a", "7fa624dc01c4"]
+  "RES-SERVER-GENERATED-FIELDS":
+    status: approved
+    hash: "b7442d2a5d90"
+    steps: ["6ded01334207", "734bb52fe03e", "4e0d6584b44f", "a9a16895ee4e"]
+  "RES-SOFT-DELETE-VISIBILITY":
+    status: approved
+    hash: "48f1342857a0"
+    steps: ["8a0c6e8954db", "1aed136764f2", "aec5e17216ad"]
+  "RES-SYSTEM-OBJECT-PROTECTED":
+    status: approved
+    hash: "ec1ca6f7ac23"
+    steps: ["4401ca1cb4cd", "2bc306047c18", "11547e2ca41d", "e6a2168edfe5"]
+  "RES-TIMESTAMPS":
+    status: approved
+    hash: "7dbc72baafba"
+    steps: ["a07a7cc0350f", "d8b19233cebb"]
+  "RES-TYPED-PATH-LOOKUP":
+    status: approved
+    hash: "a021edc80904"
+    steps: ["e9474f789df8"]
+  "RES-UNIQUENESS-NORMALIZATION":
+    status: approved
+    hash: "21e51249ff20"
+    steps: ["072b37069e12"]
+  "RES-UPDATE-MISSING":
+    status: approved
+    hash: "84da7a6e26d7"
+    steps: ["a252482865f9"]
+  "RES-VALUE-ROUNDTRIP-EXACT":
+    status: approved
+    hash: "4b8e8e7f058a"
+    steps: ["3a6179bd6663"]
+  "RESIL-BROKER-DOWN":
+    status: approved
+    hash: "4fbdab04ab79"
+    steps: ["7d65d3e69405"]
+  "RESIL-CIRCUIT-BREAKER":
+    status: approved
+    hash: "3186c0a91fc1"
+    steps: ["6790694a2bd9", "ad6e411d9962", "a4155d1e0e29"]
+  "RESIL-DEPENDENCY-DOWN":
+    status: approved
+    hash: "bd32b9df8e69"
+    steps: ["e8665c517ed2", "f44afcfa5b81", "3c2773f9bd81", "6d886f077e63", "3fa1b3564e3c", "0115aafeab00", "120297414cc6", "d0947bc6795b", "536c99db2059", "02292e9efdc2", "2597165dc104", "4ce5951afd37"]
+  "RESIL-DEPENDENCY-TLS-RECOVERY":
+    status: approved
+    hash: "d284c340c682"
+    steps: ["37c330b9c9cf", "b6a0c34fa0f0"]
+  "RESIL-ENCRYPTION-KEY-ROTATION":
+    status: approved
+    hash: "b2eb03283538"
+    steps: ["dcc314a23625", "bdfeb96180b4"]
+  "RESIL-GRACEFUL-SHUTDOWN":
+    status: approved
+    hash: "45f0c49db2d4"
+    steps: ["a8a1e9c8c48f", "1fe4c71ac8f3", "1bbfc7c0a242", "3176e6c328bc", "a845c80c39b5", "f27fc63193cc"]
+  "RESIL-PARTIAL-DEGRADATION":
+    status: approved
+    hash: "57bc827109a7"
+    steps: ["be572d6a8d59", "d8149671eb31", "bdb698a1c653"]
+  "RESIL-TLS-CERT-RELOAD":
+    status: approved
+    hash: "b5a12aa391c2"
+    steps: ["c38917918f52"]
+  "RESIL-TOKENS-SURVIVE-RESTART":
+    status: approved
+    hash: "2e7985f48226"
+    steps: ["b7b357b0ef61"]
+  "RESOURCE-CREATE-READ":
+    status: approved
+    hash: "49ed45870ffc"
+    steps: ["7ca3d280c596", "bd10a83b0264", "b18e5df30126", "0f61112616d3"]
+  "RESOURCE-READ-MISSING":
+    status: approved
+    hash: "0c551bd67140"
+    steps: ["87d4e273a52c"]
+  "REST-204-NO-BODY":
+    status: approved
+    hash: "e9915564a7d7"
+    steps: ["f2e298564d66"]
+  "REST-ACCEPT-NEGOTIATION":
+    status: approved
+    hash: "49d808394835"
+    steps: ["f2e298564d66", "507fea7da7e8", "223b6d1831d2", "0a403d75d5a7", "88a2910c617b", "8cfde19a999a", "332b95d9b7f5"]
+  "REST-ALIASED-EMBED-FILTER-INDEPENDENCE":
+    status: approved
+    hash: "c48cf4a89173"
+    steps: ["6b78b4482064"]
+  "REST-API-VERSION-COMPATIBILITY":
+    status: approved
+    hash: "54a86ae10ad6"
+    steps: ["f2e298564d66", "afc6d4e41acc"]
+  "REST-ASYNC-202":
+    status: approved
+    hash: "743d3333b3a7"
+    steps: ["f2e298564d66", "25e4c9b73c82"]
+  "REST-AUTH-ERROR-NO-LEAK":
+    status: approved
+    hash: "1cc79f78503a"
+    steps: ["f2e298564d66"]
+  "REST-BATCH-PARTIAL-FAILURE":
+    status: approved
+    hash: "533071294b4e"
+    steps: ["f2e298564d66"]
+  "REST-CACHE-CONDITIONAL-GET":
+    status: approved
+    hash: "f372e4b5889d"
+    steps: ["f2e298564d66", "3ac6a63b54e7", "2770169a2775", "450ca3055383"]
+  "REST-CONCURRENT-UPDATE":
+    status: approved
+    hash: "a4679c047eed"
+    steps: ["f2e298564d66"]
+  "REST-CONTENT-TYPE-JSON":
+    status: approved
+    hash: "3aab462c605f"
+    steps: ["f2e298564d66", "72333b80d874", "67661ac3f7e5", "b2d2473af3d3"]
+  "REST-CORRELATION-ID":
+    status: approved
+    hash: "aacf1fb1b7ed"
+    steps: ["f2e298564d66"]
+  "REST-CORS-POLICY":
+    status: approved
+    hash: "58c6b712f318"
+    steps: ["f2e298564d66", "b580d15e183a", "749fd1fc4703"]
+  "REST-CUSTOM-MEDIA-TYPE-EMPTY-RESULT":
+    status: approved
+    hash: "eaa1b6a5b4c5"
+    steps: ["db7ac52e9924"]
+  "REST-DATE-TIME-TZ":
+    status: approved
+    hash: "e271595a365f"
+    steps: ["f2e298564d66", "0892db31223d", "2ed1a18271cb", "811e7801a5b6", "3da0b0771a6a"]
+  "REST-DECIMAL-PRECISION":
+    status: approved
+    hash: "6d45859c765d"
+    steps: ["f2e298564d66", "f1dcf5009598"]
+  "REST-DELETE-REPEAT":
+    status: approved
+    hash: "9e6b54b46d91"
+    steps: ["f2e298564d66"]
+  "REST-DUPLICATE-UNIQUE-KEY":
+    status: approved
+    hash: "5d623e4968e7"
+    steps: ["f2e298564d66", "77c219347ffd", "3de0ea5719d8", "4db2f8d7f06c", "2efe43bef8a6", "f18c84c2c389"]
+  "REST-EMPTY-VALUES":
+    status: approved
+    hash: "5bc06baf5837"
+    steps: ["f2e298564d66", "6429cbe68c67", "be75f083a1c4", "e80038cd6b4e", "703972377e43", "f1f02782c17b", "414810f4c6c2"]
+  "REST-ENUM-VALUES":
+    status: approved
+    hash: "77a025538ca2"
+    steps: ["f2e298564d66", "f380914fc45b", "838ad63e3e73"]
+  "REST-ERROR-RETRY-AFTER":
+    status: approved
+    hash: "db4c61aac673"
+    steps: ["f2e298564d66"]
+  "REST-ERROR-SCHEMA":
+    status: approved
+    hash: "54420b1ccaa2"
+    steps: ["f2e298564d66", "f619d659da90", "6524679691a4", "3ecb2657e4b7", "bece6296c109", "6b7640109ce4"]
+  "REST-ERROR-STATUS-BODY":
+    status: approved
+    hash: "4b8f61b6d18e"
+    steps: ["f2e298564d66", "d495f7c2e551", "28943b0e4792", "a185ccff5932", "a29036ff3971", "5563e6a17708"]
+  "REST-ETAG-IF-MATCH":
+    status: approved
+    hash: "3b38132be5b0"
+    steps: ["f2e298564d66"]
+  "REST-FILTER-EQUIVALENT-FORMS":
+    status: approved
+    hash: "768b8c98cafb"
+    steps: ["c423a8f267c3", "16f619a5a7c9", "983d4e0a3352", "7dbf003c23ef", "52dffdf28704", "af3803d9e5cf"]
+  "REST-FILTER-INVALID":
+    status: approved
+    hash: "5b0695f6a4ab"
+    steps: ["f2e298564d66", "b3d8a5be0fe5"]
+  "REST-FILTER-NAME-COLLISION":
+    status: approved
+    hash: "51aafe100b91"
+    steps: ["2531f8ddd460"]
+  "REST-FILTER-OPERATION-PARITY":
+    status: approved
+    hash: "7a477315a200"
+    steps: ["5f05205ae862", "7412087e5e14"]
+  "REST-FILTER-OPERATOR-TYPE-MATRIX":
+    status: approved
+    hash: "fac855d2470c"
+    steps: ["e829a171d6b1", "bdf637b77dbd", "f6e6434cd9a1", "6abcc70260d7", "655552f946d6", "66ef04aed982", "a21ef3e63c5d"]
+  "REST-FILTER-RELATION-NO-DUPLICATES":
+    status: approved
+    hash: "3adbe76842c2"
+    steps: ["69c64581ad49", "9f98126ce84a"]
+  "REST-FILTER-SORT-COMPOSITION":
+    status: approved
+    hash: "3d3fddce2a45"
+    steps: ["971f691a7b69", "0a07946276d2", "f3f3f58f0ed0"]
+  "REST-FILTER-SORT-PAGINATION":
+    status: approved
+    hash: "2d37e7655695"
+    steps: ["f2e298564d66", "3819693dbab6", "4bd8ba3efbeb", "4c48efe8eaaf"]
+  "REST-FILTER-UNSELECTED-FIELD":
+    status: approved
+    hash: "a165e40b319d"
+    steps: ["12fc52152652"]
+  "REST-HEAD-GET-CONSISTENCY":
+    status: approved
+    hash: "b59f30f51ae1"
+    steps: ["28e03ecc74eb"]
+  "REST-IDEMPOTENCY-KEY":
+    status: approved
+    hash: "7350cdaf1979"
+    steps: ["f2e298564d66"]
+  "REST-IDEMPOTENCY-RETRY":
+    status: approved
+    hash: "278f4ff2fc68"
+    steps: ["3d1eed69752d"]
+  "REST-JSON-DUPLICATE-KEYS":
+    status: approved
+    hash: "3adf8179e99c"
+    steps: ["f2e298564d66", "9cfa8802cac7"]
+  "REST-MASS-ASSIGNMENT":
+    status: approved
+    hash: "5e918c3a2cf5"
+    steps: ["f2e298564d66", "463b4a9ea104", "89b433f0025e", "02e0d136fd21", "7b047cdcaefc", "e72d3141fc0d", "ad2c7564f38b", "ded20a29784e", "5fff7a2cac78", "26decd90913d", "35658c8a2d00", "47aea78cecc5", "98c2a5d27d0e", "7cce9d56a623", "f6a61f217ff6", "2d1d0dfe2dce", "a872aa460812"]
+  "REST-METHOD-NOT-ALLOWED":
+    status: approved
+    hash: "f5e72311c2a0"
+    steps: ["ae4fa0d81eec", "6130c05703ae"]
+  "REST-NEGOTIATED-FORMAT-CONFORMANCE":
+    status: approved
+    hash: "6bb0be5e8f47"
+    steps: ["21a57dcde94d"]
+  "REST-NULL-VS-OMITTED":
+    status: approved
+    hash: "b466bfcfe335"
+    steps: ["f2e298564d66", "c093e89b1f3a", "5688fe8660e8", "0d6ddcdad452", "c7ab4392e0e3"]
+  "REST-NUMERIC-BOUNDARIES":
+    status: approved
+    hash: "e138730f7073"
+    steps: ["f2e298564d66", "d3939cb6cdb0", "da107d936f8c", "542d7d7bb8a6", "917bb3b106cd", "06c0d9ca19a3", "0f8330826701", "b441f3359bf9"]
+  "REST-OBJECT-LEVEL-AUTHZ":
+    status: approved
+    hash: "e330beaf1abe"
+    steps: ["f2e298564d66", "0ce9be87ee6a", "1758c2fe14bf"]
+  "REST-OPEN-REDIRECT":
+    status: approved
+    hash: "4e0a6c698b69"
+    steps: ["f2e298564d66", "040d2e0fb46e", "30a874592fa6", "4b5bc646b1e1", "caba09aaae07", "146131c73c36", "5154b82c114f", "a17a0f5baa9b", "69d6b38199f9", "f782abccea28", "32d6f6d65864", "fabca8c3840e", "752438afc361"]
+  "REST-OPTIONAL-EMPTY-VALUE":
+    status: approved
+    hash: "1222c3563254"
+    steps: ["f2e298564d66", "6d76b57b1069"]
+  "REST-PAGINATION-BOUNDARIES":
+    status: approved
+    hash: "59882782a2a4"
+    steps: ["b3e412282f8b"]
+  "REST-PAGINATION-LIMITS":
+    status: approved
+    hash: "8a6af5fd76f8"
+    steps: ["f2e298564d66", "7731e195fb03", "77678aff15ef", "92c63c0cbd2c", "4d47a9171df0"]
+  "REST-PAGINATION-STABLE-ORDER":
+    status: approved
+    hash: "dd7dc9337f96"
+    steps: ["f2e298564d66", "c37e3feda6ca"]
+  "REST-PATCH-PARTIAL-UPDATE":
+    status: approved
+    hash: "d48d76efa42d"
+    steps: ["f2e298564d66", "6639d962db5f", "ef952a137a27", "dd9c06bf5eb0", "3841009d0d42"]
+  "REST-PATH-PARAM-ENCODING":
+    status: approved
+    hash: "1e22088be246"
+    steps: ["f2e298564d66", "2ce6c241d317"]
+  "REST-POST-LOCATION":
+    status: approved
+    hash: "df572807259f"
+    steps: ["f2e298564d66", "eec0b2b0e890"]
+  "REST-PUT-REPLACEMENT":
+    status: approved
+    hash: "260b6a914117"
+    steps: ["f2e298564d66", "fcdf76c8c192"]
+  "REST-QUERY-ENCODING":
+    status: approved
+    hash: "4786b18143e1"
+    steps: ["f2e298564d66"]
+  "REST-RATE-LIMIT":
+    status: approved
+    hash: "0a19b1d43f2c"
+    steps: ["f2e298564d66", "7e1259841bb7", "448cfabe4ac0", "6a083224e57f"]
+  "REST-READONLY-WRITEONLY":
+    status: approved
+    hash: "a706453edf12"
+    steps: ["f2e298564d66", "e7c68d7566e6", "92117f9e521c", "ae4d5c53e46a", "fae61832cbe5"]
+  "REST-REQUEST-SIZE-LIMIT":
+    status: approved
+    hash: "4090466194e7"
+    steps: ["f2e298564d66", "ea7ab48c143b", "efdd713fd9ca", "867120590203", "be65151d4c32", "fd0bf7949549", "96a1167d6c53", "27506acc2221"]
+  "REST-REQUIRED-PARAM-MISSING":
+    status: approved
+    hash: "459ef9432950"
+    steps: ["f2e298564d66", "ec511e1bac4b", "795e5bccf045", "27724c7eafd0", "f2f50526e4b0"]
+  "REST-RETRY-TRANSIENT-ERROR":
+    status: approved
+    hash: "6dac1388bd52"
+    steps: ["f2e298564d66"]
+  "REST-SECURITY-HEADERS":
+    status: approved
+    hash: "14376b2d0bd3"
+    steps: ["f2e298564d66", "22cc68bb32ce", "953989b87636", "467d1669d93f", "1aa9d5642363"]
+  "REST-SENSITIVE-CACHE-CONTROL":
+    status: approved
+    hash: "73246286fd28"
+    steps: ["f2e298564d66", "249052dd8253", "3bd1818b06d1"]
+  "REST-SENSITIVE-DATA":
+    status: approved
+    hash: "ee8fecd87384"
+    steps: ["f2e298564d66", "64ab7677dc9c", "ac2db2632aeb"]
+  "REST-SORT-INVALID-FIELD":
+    status: approved
+    hash: "dd99f228941a"
+    steps: ["f2e298564d66", "e821126aee6f", "faaae4a8933e", "27c4285e449f", "5992563e70dd"]
+  "REST-SSRF-URL-FETCH":
+    status: approved
+    hash: "ebaa75253ce2"
+    steps: ["f2e298564d66", "72e48ac21849", "715826e484bf", "e7b5dd16cee7", "09a68e8d4294", "fabb5def6e93", "cbe180d296f1", "a028bb953444", "47588bb86ab6", "b0e38b169782", "d41396f89ed9", "6142d0389cea", "27f1ccfcb818", "59bb8a40d238", "d46d34f74283", "5faf48365576", "819e1c965112", "abb7e0f584d6", "8a05fc05dbdf", "183f328b8c48"]
+  "REST-STATE-TRANSITIONS":
+    status: approved
+    hash: "33bc31be8f94"
+    steps: ["f2e298564d66"]
+  "REST-STATUS-CODE-CONTRACT":
+    status: approved
+    hash: "c438ace02ece"
+    steps: ["f2e298564d66", "d7d63a1b8319", "b5a04626e856"]
+  "REST-STRING-LENGTH-BOUNDARIES":
+    status: approved
+    hash: "0285f4df8d30"
+    steps: ["f2e298564d66", "6c100a653e58", "085f79dd3b51", "8e5f1221396a", "f2a607d3251e", "ffebe34f038c"]
+  "REST-TIMEOUT-BUDGET":
+    status: approved
+    hash: "f691e0bf106f"
+    steps: ["f2e298564d66"]
+  "REST-TYPE-MISMATCH":
+    status: approved
+    hash: "1b24551f7085"
+    steps: ["f2e298564d66", "9f16cd8a4d60", "d53975a78563", "2ff8db7b1fd1"]
+  "REST-UNICODE-NORMALIZATION":
+    status: approved
+    hash: "be2f2b25ce39"
+    steps: ["f2e298564d66"]
+  "REST-UNKNOWN-FIELDS":
+    status: approved
+    hash: "fbb492e25bff"
+    steps: ["f2e298564d66", "792862ce32b1", "e855c328213b", "3b589d8c36b2"]
+  "REST-UNSUPPORTED-CONTENT-TYPE":
+    status: approved
+    hash: "4dc7db410aea"
+    steps: ["9a54e04d99e6", "e1434419e700", "90d012fcc45d"]
+  "REST-VALIDATION-ATOMICITY":
+    status: approved
+    hash: "dd09a86575b5"
+    steps: ["f2e298564d66", "2145370b1213"]
+  "SEC-ALT-REPRESENTATION-ACCESS":
+    status: approved
+    hash: "7360a9bfe9ee"
+    steps: ["bd7a8baa570f", "98cf8d7ee70f", "48df21a0080e"]
+  "SEC-AUTHN-MALFORMED":
+    status: approved
+    hash: "1d999f2271f0"
+    steps: ["fb52c9fd179d", "84a7449ddb27", "ff26c85e59fd", "1b0a7a53538b", "dc9213efe983", "3eeafcd4b8b0", "4e1a70a0f3cd", "14735d929cb6", "e05b89557a11", "eafad0b99725", "c6db26014845", "7976c86c74f0"]
+  "SEC-AUTHN-MISSING":
+    status: approved
+    hash: "3636116a005e"
+    steps: ["08ff83f9340a", "bc34de9e3a39", "8e9ca7886dd7", "ab30a0e04fc0", "1d1ece9eea66", "eff20d5e127c", "18a4d3feae7e", "7bb9e48f75c9", "ac012cc52a88"]
+  "SEC-AUTHN-SCHEMES-SUPPORTED":
+    status: approved
+    hash: "bee804685fad"
+    steps: ["a7a8ff55f229", "24b96cc2d8e6", "6ce6ab24864a", "ea571ead4198", "91d23891f5db"]
+  "SEC-AUTHZ-ASYNC-JOB":
+    status: approved
+    hash: "75e9bfeec584"
+    steps: ["38da0d6e6a90", "31322e26a114"]
+  "SEC-AUTHZ-CACHE-ISOLATION":
+    status: approved
+    hash: "a29b16c8db4c"
+    steps: ["b4d4b59c56dd", "9940544d4723", "fa4f67048e8a", "327d464b0b99", "68fd2637fb39"]
+  "SEC-AUTHZ-DYNAMIC-VARIABLES":
+    status: approved
+    hash: "b67efb2f7404"
+    steps: ["309686cfd742", "3ff8f88a43d2"]
+  "SEC-AUTHZ-ERROR-LEAK":
+    status: approved
+    hash: "b2dfcd85a9b7"
+    steps: ["9bceebe69c67", "4f5819d57de8", "1518b23c1252", "e9edbb06e83e"]
+  "SEC-AUTHZ-EXPLICIT-OVER-INHERITED":
+    status: approved
+    hash: "3a7926d5dca5"
+    steps: ["9304819c0dee", "89ad786db133"]
+  "SEC-AUTHZ-FUNCTION":
+    status: approved
+    hash: "7ecdc09c37f8"
+    steps: ["2a4291e8e697", "2af030e50d83", "23beea48450f", "20425e419c91", "e96eeb4a8c0b", "462125efd22f", "270d79644313", "68c83c06dbfa", "8ef5dc0e4670", "db7fb0b9597b", "7c3f8bbc2292", "42691ddb1bc2", "6fdfb6144d90", "dfce1e43ac16", "bab75bdeb808", "3704838e3d0d", "eb7290b1f4c9", "ccf7d42956f3", "ffdcc3f37056", "6c5279b69dc5", "465ddcb7536d", "d9439702ed59", "0c1480be9468", "d6a18ebd36fa", "cbb0c1209b9e"]
+  "SEC-AUTHZ-LIST-CHECK-CONSISTENCY":
+    status: approved
+    hash: "875b627a5261"
+    steps: ["4dbb264f9dc2"]
+  "SEC-AUTHZ-METHOD-MATRIX":
+    status: approved
+    hash: "986df9a327de"
+    steps: ["74c2ba25ad3c", "12d77ad74cd3", "201468558d3b", "eaf62c7c6bb3", "8edceec945ea", "aea5e4f71cf7", "9f17c040c3fd", "3318916d80a7", "d64cda24d175", "dab836615bfe", "a94d472196ee", "de63f99db56d", "8671cd3fcecc", "9673e9999456"]
+  "SEC-AUTHZ-PATH-RULE-PRECEDENCE":
+    status: approved
+    hash: "9391893d9b9a"
+    steps: ["af85163288de", "64107467fc6b"]
+  "SEC-AUTHZ-RECREATED-IDENTITY":
+    status: approved
+    hash: "4b2b3543f075"
+    steps: ["da3f7c3cf790", "37c3f4092ed7"]
+  "SEC-AUTHZ-REVOKE-ROLE":
+    status: approved
+    hash: "9185f1d8238f"
+    steps: ["89f78aef579a", "aa37e8268185", "6de5781c506a", "497dd484c9df", "02922855319f"]
+  "SEC-AUTHZ-ROLE-POSITIVE-MATRIX":
+    status: approved
+    hash: "50667478dd07"
+    steps: ["3ae4eb5747e9", "426c1e7de5c2", "ab1b6abf1366", "f9cfe7f5bebb", "40b619fc793f", "476e1b105cf1", "39ec8158b5ef", "a811b077e33e", "69b47021d574", "30028ecebc81", "b3db0e3b6ed1", "f74213358ea8", "b5e04d870f64"]
+  "SEC-AUTHZ-RULE-READ-WRITE-PARITY":
+    status: approved
+    hash: "aa50d1c1d58a"
+    steps: ["7d657663232a", "943ae5afddc6"]
+  "SEC-BOLA-BULK":
+    status: approved
+    hash: "d51a73502947"
+    steps: ["84e7580241a2", "de40d01d7609", "d14d86206419"]
+  "SEC-CHECK-ORDER":
+    status: approved
+    hash: "9c2cbf51456b"
+    steps: ["730235230cf2", "ec5a23d9c021"]
+  "SEC-CLONE-FIELD-PERMISSIONS":
+    status: approved
+    hash: "a5b42ef03707"
+    steps: ["ffa013a15450", "356b737ce4ac", "67322450409a"]
+  "SEC-CONFUSED-DEPUTY":
+    status: approved
+    hash: "c17553364259"
+    steps: ["2a1bce89f700", "c4cc72d9da89", "c845bd7e3523", "db28eaa200fe", "9c63e9806916"]
+  "SEC-DISABLED-FEATURE-ENFORCED":
+    status: approved
+    hash: "e4e2d32a719f"
+    steps: ["260792000599", "a418ccda1463", "d0cc3cfe464c"]
+  "SEC-FAIL-CLOSED-INPUT":
+    status: approved
+    hash: "f96c86e5ddda"
+    steps: ["fe34f64d2061", "20f0ebd7c076", "4e0660bedbce", "9407b413d190", "e0cb9b227c03", "f9d02cf2b274", "1d4af4ca27fd", "06bd11c80d14", "f55e31c91032", "a4116ca43437", "d4619fc0208a", "57d7cb92570b", "f809b5997264", "9438591a4b01", "360bb10db291"]
+  "SEC-HORIZONTAL-ESCALATION":
+    status: approved
+    hash: "85dccd484ca8"
+    steps: ["bc2d33fc1f0f"]
+  "SEC-IDENTITY-PROOF-OF-POSSESSION":
+    status: approved
+    hash: "a8c72946b2b6"
+    steps: ["16a28507f5f0", "672b5b1e6a05", "360b0afb6fbc", "263a94c1b0be", "db4260baf80e", "f629beb33575"]
+  "SEC-INTERNAL-CONTROL-PARAMS":
+    status: approved
+    hash: "f11a5e123f06"
+    steps: ["bffb81c6bf36", "46a24913d2e0", "5ac8e9ea943c", "3260dd1471d9"]
+  "SEC-OPAQUE-ID-INTEGRITY":
+    status: approved
+    hash: "1051f0a36b7c"
+    steps: ["e0e359b04cc5", "5b4cf27f43af"]
+  "SEC-OWNERSHIP-DELETE":
+    status: approved
+    hash: "0cfe6deb290e"
+    steps: ["2064c9855620", "cc0fe83b6a12", "63b7d087f9e9", "5a62271e0053", "13aa145019ca"]
+  "SEC-OWNERSHIP-EXPORT":
+    status: approved
+    hash: "5c1d32051fcb"
+    steps: ["d4f5a4b5de72"]
+  "SEC-OWNERSHIP-READ":
+    status: approved
+    hash: "94b193154213"
+    steps: ["dbd5cb822232", "f3391b03c29e", "2a971c27d3a9", "70fd0f6cd190", "45ccc59cb902", "d9dbce5ec4d8", "eef8ddc5795f", "c341d6835d0d", "7f848098cd6b", "2489d1327c70"]
+  "SEC-OWNERSHIP-REFERENCE-INDIRECT":
+    status: approved
+    hash: "a198a891a649"
+    steps: ["b8463fad48b5", "4f970da6e41f", "153b91bc3728", "eeada6771a5e", "5156494c6132", "222a7edc8b89", "6a590bf26c39", "8aaa782c209f", "ec49c5225a6b", "e3832ae640b2", "94b7b8a8f73c", "b16218628322", "9c7b729c73e9", "bbf09d505fd5", "fcdc5371a8ec", "052f18d08bdb", "d1e10d6588f5", "e5e1386e37bb", "01f55011adb3", "d27512e4f773", "01927de5377e", "c237cfc80406", "0847eff71fb7", "636234d6008b", "864439d23b1c"]
+  "SEC-OWNERSHIP-UPDATE":
+    status: approved
+    hash: "94b7ea313c5b"
+    steps: ["2f524bfba824", "fdfcda15912a", "dac195d1e050", "3e0d8e3470f7", "4fd7e3de6101", "eabac8c6c612", "2b454133335f", "0a224b8bced8", "15acc3729635", "5880081727dc", "9e564f460ee6"]
+  "SEC-POLICY-TEMPLATE-USER-DATA":
+    status: approved
+    hash: "9f7caaef7b7f"
+    steps: ["200a8a65cc64", "8a39af445286"]
+  "SEC-PRINCIPAL-TYPE-CONFUSION":
+    status: approved
+    hash: "61c5330d412a"
+    steps: ["9d9ae957dcb4"]
+  "SEC-READONLY-MODE-ENFORCED":
+    status: approved
+    hash: "41e514867941"
+    steps: ["d3d35d541bea", "88bda72eb7db", "dded30f987e6", "f8c64991eb05"]
+  "SEC-ROLE-ADMIN-SELF-TARGET":
+    status: approved
+    hash: "32e8eed81509"
+    steps: ["a965521c393d"]
+  "SEC-ROLE-BULK-ADMIN":
+    status: approved
+    hash: "951c73b7ada0"
+    steps: ["d5b3b40450a5", "c5b3d4f4ee9a"]
+  "SEC-ROLE-IDENTITY-NOT-NAME":
+    status: approved
+    hash: "acd6ed674442"
+    steps: ["b21f794e2197", "a1b9c9be5b9c"]
+  "SEC-ROLE-LOW-TO-HIGH":
+    status: approved
+    hash: "111bbc8d594a"
+    steps: ["1f08c51bfebc", "6b62bda61f73", "5b94930a1b03", "e56ab0b5c176", "255a81feb613", "158d53bfbac8", "89af39444faf"]
+  "SEC-ROLE-MASS-ASSIGN":
+    status: approved
+    hash: "04f73cf52d41"
+    steps: ["e384ba88dcba", "c2d1ed310a1c"]
+  "SEC-ROLE-SELF-ASSIGN":
+    status: approved
+    hash: "9f7edbb473ac"
+    steps: ["542eca999abd", "7d2eec3771df", "d6f5722afc02", "768a43879c02", "0fb3f5e02d91", "b50e77785cd6"]
+  "SEC-SCOPE-EXTRA-UNTRUSTED":
+    status: approved
+    hash: "170e4d161af6"
+    steps: ["689b67c067b4", "467320e0c7a4", "9ec68fd1d1a6", "53df062ee060", "a05b79f13c7c"]
+  "SEC-SCOPE-MISSING":
+    status: approved
+    hash: "d40df357c1f1"
+    steps: ["c9141a441ae7", "6988ae0af861", "c56553c390bb", "ba0dfce05929", "fdb988d018cb", "c3a917ecb68d", "80171ccb82aa"]
+  "SEC-TENANT-CREATE":
+    status: approved
+    hash: "22ecd6a1a940"
+    steps: ["00b53918d728", "9e1c5cf93887", "7a205ac18226"]
+  "SEC-TENANT-HEADER-SPOOF":
+    status: approved
+    hash: "fa7107ebc1d5"
+    steps: ["63ad96aa7a39", "24f3cdd00f4a", "f7597ed17f25"]
+  "SEC-TENANT-READ":
+    status: approved
+    hash: "4de92f610288"
+    steps: ["090e3746293f", "b1b71e785a76", "fdf9312c2e40", "7c72c8855e3e", "5e771890b2e3", "336e61f3192f", "687f8c7a96dd"]
+  "SEC-TENANT-SEARCH":
+    status: approved
+    hash: "204d3e64e968"
+    steps: ["4f0d75545524", "76b9fd836836", "6f992e2adbf1", "541a154eebe6", "00598bf0b66e", "7d4fdf9bc5da", "e3cccee639cc"]
+  "SEC-TENANT-WRITE":
+    status: approved
+    hash: "e72f7d872897"
+    steps: ["4d2541f25803", "e02aaf875a03", "1274de1f2ff0", "c901424386ac", "98bb8e75190a"]
+  "SEC-TOKEN-AUDIENCE":
+    status: approved
+    hash: "872b7fe15760"
+    steps: ["a5ba19d31b18", "825ca5e2a687", "a04c416be11e", "60c2d558e110", "b77ea2e88dc9"]
+  "SEC-TOKEN-EXPIRED":
+    status: approved
+    hash: "d7eca319a515"
+    steps: ["95d366308f8e", "89ee9cfb69b3", "634733120660"]
+  "SEC-TOKEN-ISSUER":
+    status: approved
+    hash: "b473778de148"
+    steps: ["5e80d6d2dbbb", "fb20a8b97df9", "caa266bf8ff2"]
+  "SEC-TOKEN-REFRESH-REPLAY":
+    status: approved
+    hash: "62ecb6830671"
+    steps: ["491f3d6bac36"]
+  "SEC-TOKEN-REVOKED":
+    status: approved
+    hash: "dcb82dd2d075"
+    steps: ["eef0e9e2af68", "e072d1c4120f", "a1e0ef4ab203", "fe5167cedebd"]
+  "SEC-TOKEN-SIGNATURE":
+    status: approved
+    hash: "3024135aca8f"
+    steps: ["605cc029c7f0", "fb86f05e7458", "e58413cb68f8", "73dcee8ea6de", "01214f4b986e"]
+  "SEC-VERTICAL-ESCALATION":
+    status: approved
+    hash: "9b7de33c6887"
+    steps: ["797e9e38e240", "864fdba39ab1", "8a6a73205bd3"]
+  "SECURITY-AUTH-REQUIRED":
+    status: approved
+    hash: "f3f32fcbb5ec"
+    steps: ["ed80455bbf93", "320991363575"]
+  "SECURITY-AUTHZ-CROSS-USER":
+    status: approved
+    hash: "b696bf76e1d0"
+    steps: ["367892ff9ddb"]
+  "UI-ACTIONS-WORK-ONCE":
+    status: approved
+    hash: "a04017d8f0dd"
+    steps: ["4bcec18e35ce", "20691ab9902e", "3f7f2182b3ba", "28494581e710", "ee107b7586cc"]
+  "UI-AUTH-FLOWS":
+    status: approved
+    hash: "4d8eee404390"
+    steps: ["236a29e39be4", "d772db94206e", "e1440d6f2308", "014a1dfc4adc", "ce965471a2e3", "9010cfda4c58", "eb5afac72081"]
+  "UI-CHANGE-HISTORY":
+    status: approved
+    hash: "903621f6da26"
+    steps: ["cc60e9f0046f"]
+  "UI-CLIENT-BASE-PATH-URLS":
+    status: approved
+    hash: "77ea1e673e99"
+    steps: ["af1cf7226544", "ca53446db5e0"]
+  "UI-CLIENT-CODE-NO-SECRETS":
+    status: approved
+    hash: "eba24d7ab86d"
+    steps: ["0726d9bfa87d", "f320bf3f0040", "7852eceb017a", "3c0628471a9f"]
+  "UI-CLIENT-REQUEST-HYGIENE":
+    status: approved
+    hash: "ba78490c4a6c"
+    steps: ["b7e5a34f7e6b", "347e1bcdfda6", "dc6f49e160c5", "b80439811ed0"]
+  "UI-CONDITIONAL-FORMATTING":
+    status: approved
+    hash: "b0a71c14a340"
+    steps: ["2666c5afafe5"]
+  "UI-CONFIRM-DESTRUCTIVE":
+    status: approved
+    hash: "b1ef64d5c6cf"
+    steps: ["625a6312bee3", "9629af3bc96a"]
+  "UI-DISABLED-AND-READONLY":
+    status: approved
+    hash: "939610d850ff"
+    steps: ["b5fb8d65f3ef", "1bc0d9bdf2f2", "f05b5af61607", "0f1623b6859d", "7d1551a501c6", "c5901383df6c", "82c84005ee35", "17d971605d55", "a85a29c9a69c"]
+  "UI-DOCUMENTS-OPEN":
+    status: approved
+    hash: "1454e7868e00"
+    steps: ["93d6bff912e9"]
+  "UI-DROPDOWN-VALUES":
+    status: approved
+    hash: "b595e96e6754"
+    steps: ["191a7d1e65eb", "d4e6ece1a005", "a20e4ba67012", "87b383a31e13", "8564e753f2d0", "6443240a543c", "38fca0c7f1c0"]
+  "UI-ERROR-DISPLAY":
+    status: approved
+    hash: "9078e6c86b87"
+    steps: ["73b1aa1fc5cf", "e7a5e2f52d84", "0eef6b33a0cd", "d5fad4a194b4"]
+  "UI-FAILURE-ROBUSTNESS":
+    status: approved
+    hash: "f51f38c03b61"
+    steps: ["98881b0a510d", "ab9328140bea", "76d5643d10d3"]
+  "UI-FIELD-LABELS-MATCH-FORM":
+    status: approved
+    hash: "3df9a7b43ada"
+    steps: ["3f6a99b7c273"]
+  "UI-FORM-REQUIRED-AND-HINTS":
+    status: approved
+    hash: "a34b1d244cda"
+    steps: ["56ed05df898f", "68faae319ee8", "6e3796b61b77", "dbd1499d8656", "ed3501cb17ae"]
+  "UI-FORM-STATE":
+    status: approved
+    hash: "e8081a409686"
+    steps: ["fe858d48b4f1", "6da3b7c7656d", "3b7e6cf4ce00", "b10575699d51", "34db02c341e8", "b8d49acddd6f"]
+  "UI-INPUT-VALUES":
+    status: approved
+    hash: "ae144fd9932c"
+    steps: ["3aef55a8db8e", "f9427021ea1f", "a8458dc55dc2", "bdc1a09355ba", "a2331370bcc2", "e591f853c45b", "4750d2e3b50e"]
+  "UI-KEYBOARD-ACCESS":
+    status: approved
+    hash: "6e72616f1720"
+    steps: ["6afa8149adb4", "32553711aaaf", "b55ba9de3c4e"]
+  "UI-LAYOUT-OVERFLOW":
+    status: approved
+    hash: "2573bc28b3cf"
+    steps: ["5b3df376b119", "391609462ca6"]
+  "UI-LEGAL-PAGES":
+    status: approved
+    hash: "127f0c0ba340"
+    steps: ["9ade286d6590"]
+  "UI-LIST-COUNTERS-CONSISTENCY":
+    status: approved
+    hash: "d6214bcb287b"
+    steps: ["65c9a3ebf1de"]
+  "UI-LIST-FILTER-STATE":
+    status: approved
+    hash: "273de8062403"
+    steps: ["7fdea06c7151", "e41e636746ad", "3cd181921aab"]
+  "UI-LIST-FILTER-VALUES":
+    status: approved
+    hash: "c3a95bfc8030"
+    steps: ["857ce8789e5f", "19684a443021", "40d2b2f7c1e6"]
+  "UI-LIST-SORT":
+    status: approved
+    hash: "33332994b059"
+    steps: ["8ec0dc071ccf"]
+  "UI-NAVIGATION":
+    status: approved
+    hash: "eca301cd821f"
+    steps: ["b8d0d1e1dfe2", "044f5d7973f1", "1914c3f388b4", "28a0d62c161e", "43313b8cc1f9"]
+  "UI-NETWORK-RESILIENCE":
+    status: approved
+    hash: "ec3adeb4b6b0"
+    steps: ["4b674c305d42", "ba2be9d67fef"]
+  "UI-NO-BROKEN-RESOURCES":
+    status: approved
+    hash: "1a338040ec7d"
+    steps: ["07e124ff96ec", "94b94038ddea"]
+  "UI-PLATFORM-COMPATIBILITY":
+    status: approved
+    hash: "7a0b050ad049"
+    steps: ["f455067eac5a", "65b1e1376090", "5f8285e3fbe5"]
+  "UI-PLATFORM-SECURITY":
+    status: approved
+    hash: "678822e2028b"
+    steps: ["8e82cc8b2aec", "39be409ca91b"]
+  "UI-RELATED-RECORDS":
+    status: approved
+    hash: "5ba683fdd0c3"
+    steps: ["dccbfa0ee409", "358298af9177", "0fbd5a58ee43"]
+  "UI-RESPONSIVE-LAYOUT":
+    status: approved
+    hash: "e22a6c7e0c47"
+    steps: ["2372046c1d41", "aa393fd8bcf1"]
+  "UI-RICH-EDITOR":
+    status: approved
+    hash: "45000358ded1"
+    steps: ["2d12d82e86fc", "f41b2426fb4a"]
+  "UI-SAFE-RENDERING":
+    status: approved
+    hash: "a677a16b8188"
+    steps: ["fa5fe30aacbe", "0353632122c0", "17b8eed35e98", "19f0f4c8185f"]
+  "UI-SECRET-FIELDS":
+    status: approved
+    hash: "512251858fe3"
+    steps: ["1d3cd7b29623", "e3ecb69652c6"]
+  "UI-SESSION-EXPIRY":
+    status: approved
+    hash: "6432427373f4"
+    steps: ["6e82a72c01a1", "d0ba57aa3f3f", "40eaa65e74d5", "b1351113182d"]
+  "UI-STATE-CHANGE-METHODS":
+    status: approved
+    hash: "b2ec6251240d"
+    steps: ["8f0fcefe77c8"]
+  "UI-TEXTS-CORRECT":
+    status: approved
+    hash: "b15894a981f3"
+    steps: ["be9bcdfc9e4a", "46704a369562", "ec922d74e3af"]
+  "UI-USABILITY":
+    status: approved
+    hash: "eac2b7698343"
+    steps: ["3b58bb64f536", "34ee0220ea98", "c95f89aec045"]
+  "UI-VISUAL-CONSISTENCY":
+    status: approved
+    hash: "4688506f54a6"
+    steps: ["3aa042b04e52", "4946565d7f51", "b297b67b3700"]
+  "VAL-ALL-ERRORS-REPORTED":
+    status: approved
+    hash: "264e21c50b62"
+    steps: ["a024119efe03", "0d062c5cc3de"]
+  "VAL-ARRAY-ITEMS-BOUNDARIES":
+    status: approved
+    hash: "a6d2badf73f6"
+    steps: ["dc931c3db98d", "9da5050b4e30", "eae0aaff7596", "f217472c95ef"]
+  "VAL-BODY-ENCODING":
+    status: approved
+    hash: "818358d752b4"
+    steps: ["72ac0e593d2d"]
+  "VAL-BOOLEAN-COERCION":
+    status: approved
+    hash: "ef3fb3185005"
+    steps: ["bb8043919124"]
+  "VAL-CASE-SENSITIVITY":
+    status: approved
+    hash: "6677c8a7986b"
+    steps: ["8cff696a16ee", "aa486b541f90", "b49b1f968aaa", "3606830c7b12", "ef1bc4d3b220", "28f45bd1c43e", "084c4795fc6e", "277f73713295", "680b89c60c1d"]
+  "VAL-DEEP-NESTING":
+    status: approved
+    hash: "dcbf17232d9b"
+    steps: ["3cfee2b6b81d", "daf323d64efd", "4b9717bf9748", "e56504c81bc3", "1c3f95717935", "52e5d961450c", "36ca14d98364"]
+  "VAL-DEFAULT-VALUES":
+    status: approved
+    hash: "e7d88434bf5d"
+    steps: ["aec8282935bd", "6acd08d66d02", "536b78be7ca8", "243311bf57fd", "ab814c3aa719", "d2abab2f042b", "6f11df6a82a7", "c6012419ad4b", "23dd490638c6", "5f7c704c849b", "adcedff13f12", "fca9a06c5392"]
+  "VAL-DEFERRED-FAILURE":
+    status: approved
+    hash: "9390e6ea8d79"
+    steps: ["d2bb1a379308", "d45e3eaa648d", "9b8345cb29fd", "aaed25c496bd", "0335e65344c0", "7e73e2de5835", "ce020467efb6", "5b8b700c4c3c", "94c66328dc0a", "f49d8ebf9d4c", "4f1d4a414833", "0c37518870c7", "e30d8d21774f"]
+  "VAL-DEPENDENT-FIELDS":
+    status: approved
+    hash: "f0d630675d6a"
+    steps: ["7368bc2ec227", "611e5b034e3f", "e26421536428", "f4dc709a844c"]
+  "VAL-DYNAMIC-VARIABLES-TYPE":
+    status: approved
+    hash: "d9dc0e361fcf"
+    steps: ["cf2aacac0d64"]
+  "VAL-JSON-TOP-LEVEL-TYPE":
+    status: approved
+    hash: "f3ce30cefde5"
+    steps: ["ba931981a1cc", "9bca56f1ca47"]
+  "VAL-LARGE-COLLECTION-PAYLOAD":
+    status: approved
+    hash: "2038b7fbd718"
+    steps: ["adda578e3c29", "5bde3a3cf56f", "85f278df146a", "e0d206da03ef", "d3601a29a27d"]
+  "VAL-MALFORMED-JSON":
+    status: approved
+    hash: "6606dda23e73"
+    steps: ["4052cc1abae5", "cf111dbcf0bb", "441e8a64d41e", "19cbf11e9d21"]
+  "VAL-MONEY-AMOUNT":
+    status: approved
+    hash: "760f17be6b65"
+    steps: ["2a14d58b61ab", "700c48173074"]
+  "VAL-NESTED-OBJECT-ERRORS":
+    status: approved
+    hash: "986e0509d825"
+    steps: ["59242feadb98", "54b63a8f90f2", "4595eea22312"]
+  "VAL-NUMBER-REPRESENTATION":
+    status: approved
+    hash: "797c15cecab3"
+    steps: ["9d0e26afca92", "756629be4a7e"]
+  "VAL-OPTIONAL-FIELDS-COMBINATIONS":
+    status: approved
+    hash: "69c24f99571e"
+    steps: ["64cae0c318a3"]
+  "VAL-PATH-ID-FORMAT":
+    status: approved
+    hash: "71bbcb23db81"
+    steps: ["2d35e909abce"]
+  "VAL-QUERY-ARRAY-FORMAT":
+    status: approved
+    hash: "b7c6a61b9b3c"
+    steps: ["93429d25c980", "6af8f928325a", "155633c7f9a0", "bee5551d0361", "f2c5a68dcdcf", "82705b77a4b9"]
+  "VAL-QUERY-PARAM-POLLUTION":
+    status: approved
+    hash: "93b0fc791263"
+    steps: ["0a973d2c7a79", "70bad2dd4b2b"]
+  "VAL-RANGE-ORDER":
+    status: approved
+    hash: "d6acacf2e958"
+    steps: ["8b1539b837e8"]
+  "VAL-REGEX-PATTERN":
+    status: approved
+    hash: "8443322ba7eb"
+    steps: ["cf41c2f4733a", "1feefa110874"]
+  "VAL-REQUIRED-HEADERS":
+    status: approved
+    hash: "4d54d52c3cb8"
+    steps: ["e9c03e026089"]
+  "VAL-SPECIAL-CHARACTERS":
+    status: approved
+    hash: "a7f9b5d85ea0"
+    steps: ["27babe532b5a", "d5ebca9ddcd8", "59fb33b6cbfd", "9cab45184c89", "b7b67a038110", "3cccbd04ff92"]
+  "VAL-STRING-FORMAT":
+    status: approved
+    hash: "c57d362cfce3"
+    steps: ["0befd3553f0f", "a46bf4526a81", "f187ad60ca1a", "0a5ab0eb1afb", "5c0d8ca6278f", "f689a8910f83"]
+  "VAL-TIGHTENED-RULES-STORED-DATA":
+    status: approved
+    hash: "729ed5291032"
+    steps: ["283fc3bdd1b7", "3bd8807a39ed"]
+  "VAL-UPLOADED-SCHEMA-FORMATS":
+    status: approved
+    hash: "9d9487dc915a"
+    steps: ["19a7ce1b0b66"]
+  "VAL-WHITESPACE-HANDLING":
+    status: approved
+    hash: "933a7b271330"
+    steps: ["aa0ef86245f5", "3413c227ed6c"]
+  "WS-HANDSHAKE-AUTH":
+    status: approved
+    hash: "e157c5ff52ee"
+    steps: ["a67209e85bc7", "f7aa45d76ece"]
+  "WS-MALFORMED-MESSAGE":
+    status: approved
+    hash: "baa34c04e4c3"
+    steps: ["aed13f30fc63", "e049ea3d63cb", "86d05b1efc85"]
+  "WS-MESSAGE-LIMITS":
+    status: approved
+    hash: "c78654869578"
+    steps: ["376afe491784", "886195dd7a49", "d1e1f15b332b", "86e7143bd74c", "5d528660572e"]
+  "WS-MULTIPLE-ENDPOINTS-INDEPENDENT":
+    status: approved
+    hash: "99450f0f452f"
+    steps: ["eecfaf197ce7"]
+  "WS-ORIGIN-CHECK":
+    status: approved
+    hash: "e2bc13786406"
+    steps: ["ab734e00c522", "044be0f5ce49"]
+  "WS-RECONNECT-RESUME":
+    status: approved
+    hash: "6c215849062a"
+    steps: ["072fa36580a8"]
+  "WS-SLOW-CONSUMER-NO-SILENT-LOSS":
+    status: approved
+    hash: "86917f70dae7"
+    steps: ["7a531c34f115", "c12b4352f79a"]
+  "WS-SUBSCRIPTION-AUTHZ":
+    status: approved
+    hash: "d23bf1654b07"
+    steps: ["95310ab2441a", "5b51ec8db747", "50ef50e6baad", "d9d394209095"]
+  "WS-SUBSCRIPTION-EVENTS-DELIVERED":
+    status: approved
+    hash: "1fc66d97947f"
+    steps: ["efd5c7dcac65", "e49cb098acba"]
+  "WS-TOKEN-EXPIRY":
+    status: approved
+    hash: "ae2cd346fcd1"
+    steps: ["96dde9441594", "eef2c72489ea"]

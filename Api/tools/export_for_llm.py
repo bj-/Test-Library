@@ -71,17 +71,36 @@ def write_zip(name, entries):
     return out
 
 
+def manifest_bytes(ids=None):
+    """Манифест выгрузки (ADR 0016): только записи архива, без закрытых; ids=None - вся библиотека."""
+    sys.path.insert(0, str(Path(__file__).parent))
+    from library_manifest import build_manifest, closed_ids, load_checks, render
+    pairs, _ = load_checks()
+    closed = closed_ids(pairs)
+    if ids is None:
+        m = build_manifest(exclude=closed, scope="full", pairs=pairs)
+    else:
+        m = build_manifest(include=set(ids) - closed, scope="partial", pairs=pairs)
+    return render(m).encode("utf-8")
+
+
 def export_library():
-    write_zip("test-library", [(p.relative_to(GIT_ROOT).as_posix(), p) for p in tracked(LIB) if p.is_file()])
+    arc_manifest = "Test-Library/Api/manifest.yaml"
+    entries = [(p.relative_to(GIT_ROOT).as_posix(), p) for p in tracked(LIB) if p.is_file()]
+    entries = [e for e in entries if e[0] != arc_manifest] + [(arc_manifest, manifest_bytes())]
+    write_zip("test-library", entries)
 
 
 def export_records(ids):
+    sys.path.insert(0, str(Path(__file__).parent))
+    from security_groups import RESTRICTED, load_index
+    sg_closed = {i for i, g in load_index().items() if g == RESTRICTED}
     want, found, skipped = set(ids), [], set()
     for f in sorted((LIB / "Api" / "checks").rglob("*.yaml")):
         d = yaml.safe_load(f.read_text(encoding="utf-8")) or {}
         for r in (d.get("checks") if isinstance(d, dict) else d) or []:
             if isinstance(r, dict) and r.get("id") in want:
-                if (r.get("automation") or {}).get("ai_generation", {}).get("restricted"):
+                if r["id"] in sg_closed or (r.get("automation") or {}).get("ai_generation", {}).get("restricted"):
                     print(f"{r['id']}: ai_generation.restricted - не выгружается (ADR 0008)")
                     skipped.add(r["id"])
                     continue
@@ -92,7 +111,7 @@ def export_records(ids):
     text = BLOCK.sub(HIDDEN, yaml.safe_dump({"checks": found}, allow_unicode=True, sort_keys=False, width=1000))
     extra = ["Test-Library/Process/test-data.md", "Test-Library/Api/test-data/README.md",
              "Test-Library/Api/schema/check.schema.json", "Test-Library/Api/taxonomy/test-data-index.yaml"]
-    write_zip("records", [("records.yaml", text.encode("utf-8"))] + [(x, GIT_ROOT / x) for x in extra if (GIT_ROOT / x).exists()])
+    write_zip("records", [("records.yaml", text.encode("utf-8")), ("manifest.yaml", manifest_bytes([r["id"] for r in found]))] + [(x, GIT_ROOT / x) for x in extra if (GIT_ROOT / x).exists()])
 
 
 def export_task(task):
@@ -107,7 +126,12 @@ def export_task(task):
             print(f"нет файла из заголовка задания: {f}")
             continue
         entries += [(p.relative_to(GIT_ROOT).as_posix(), p) for p in files_under(src)]
-    write_zip(task.stem, entries)
+    ids = set()                       # записи, чьи файлы попали в архив: манифест только по ним
+    for arc, src in entries:
+        if "/Api/checks/" in f"/{arc}" and arc.endswith(".yaml") and isinstance(src, Path) and not closed(arc):
+            d = yaml.safe_load(content(src)) or {}
+            ids |= {r["id"] for r in (d.get("checks") if isinstance(d, dict) else []) or [] if isinstance(r, dict) and r.get("id")}
+    write_zip(task.stem, entries + [("manifest.yaml", manifest_bytes(ids))])
 
 
 def main():
