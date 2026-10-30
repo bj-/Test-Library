@@ -72,8 +72,14 @@ checks:
   - A guaranteed-absent identifier can be generated.
   steps:
   - action: Request a resource that does not exist.
+  - action: 'Повторить для четырёх случаев: id никогда не существовал, удалён, чужой, принадлежит ресурсу
+      другого типа - на методах чтения, изменения, удаления и во вложенных путях
+      (/parents/{нет}/children)'
+    notes: inbox №507
   expected:
   - A documented error is returned without leaking internal details.
+  - Код одинаков на всех методах и вложенных путях; чужой id неотличим от несуществующего, если политика не
+    предусматривает 403.
   applicability:
     when:
     - API supports lookup by resource identifier.

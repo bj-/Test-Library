@@ -135,6 +135,12 @@ checks:
     notes: 'Real-world bug: RWB-0045 (directus/directus#25871)'
   - action: 'Вызвать нереализованную операцию — 501, а не 200 с success: true'
     notes: inbox №33
+  - action: 'Проверить ответ 200 с признаком ошибки в теле (success: false) - код не скрывает отказ, состояние
+      соответствует ответу'
+    notes: inbox №520
+  - action: Оборвать ожидание ответа по тайм-ауту клиента на изменяющей операции - клиент может узнать итог
+      операции
+    notes: inbox №520
   expected:
   - '2xx — только когда изменение фактически применено: последующее чтение подтверждает новое состояние.'
   - При 5xx состояние не изменено или ошибка явно сообщает о частичном выполнении.
@@ -156,3 +162,47 @@ checks:
   references:
   - RFC 9110 §15.6
   - 'Real-world bug: RWB-0045'
+- id: ERR-VALIDATION-NO-LEAK
+  status: draft
+  title: Ошибки валидации полезны и не раскрывают внутренние детали
+  category: errors
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  - websocket
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - error-handling
+  - security
+  - hardening
+  - regression
+  - nightly
+  preconditions:
+  - Операция принимает данные клиента.
+  steps:
+  - action: Передать некорректные данные - ответ 4xx указывает путь к полю и правило
+    notes: inbox №525
+  - action: Отправить неверное значение в поле пароля или токена - значение не возвращается эхом в сообщении
+    notes: inbox №525
+  - action: Вызвать ошибки типов, ограничений и разбора JSON - в тексте нет имён колонок и таблиц, классов и
+      DTO, внутренних путей и стека
+    notes: inbox №525
+  expected:
+  - Ответ объясняет проблему клиенту и не содержит деталей реализации, секретов и чувствительных данных.
+  applicability:
+    when:
+    - Есть валидация входных данных.
+    skip_when:
+    - Операция не принимает данных.
+  automation:
+    level: full
+    deterministic: true
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - OWASP API Security Top 10
+  - inbox №525

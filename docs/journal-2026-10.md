@@ -122,3 +122,4 @@
 | 2026-10-30 | Claude/demopolish | ADR 0017: нижний документ приоритетнее только при согласии заказчика, без документа - пометка со слов; CL-G-001 в BFF отклонено как общее правило |
 | 2026-10-30 | Claude / bj | Разбор inbox №460-480 (ListBoxer, TES-20): 12 идей стали шагами, 12 новых записей draft, новый файл checks/ui/desktop.yaml |
 | 2026-10-30 | Claude Opus 5.5 / bj | Разбор inbox №481-495 (TES-20): 8 идей стали шагами (FILE-DOWNLOAD-AUTHZ, UI-MOBILE-PERMISSIONS-BY-OS, UI-NETWORK-RESILIENCE, UI-TEXTS-CORRECT, UI-PLATFORM-COMPATIBILITY, UI-NAVIGATION, UI-LAYOUT-OVERFLOW), 6 новых записей draft, №495 покрыто INJ-TEMPLATE-SSTI |
+| 2026-10-30 | Claude/demopolish | Разбор inbox №496-533 (BFT, TES-20): 26 идей стали шагами, 9 новых записей draft, 3 правила генерации в docs/ideas.md; inbox разобран полностью |

@@ -33,6 +33,9 @@ checks:
     notes: 'Real-world bug: RWB-0122 (strapi/strapi#25178)'
   - action: Передать null в каждом поле — допустимость совпадает с ограничением хранения, без 500 от NOT NULL
     notes: inbox №77
+  - action: Матрица форм значения (отсутствует, null, пустая строка, пустой массив, пустой объект) на создание,
+      PUT и PATCH со сверкой чтением; для merge-patch по RFC 7396 null удаляет, отсутствие сохраняет
+    notes: inbox №505
   expected:
   - каждый вариант соответствует правилам required/nullable/type
   applicability:

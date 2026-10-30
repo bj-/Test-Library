@@ -2,18 +2,18 @@
 
 Файл генерируется `python tools/build_catalog.py .` — не редактируйте вручную.
 
-Всего проверок: **666** — approved: 583, draft: 67, needs_clarification: 16.
-Протоколы: db: 33, generic: 133, graphql: 230, grpc: 151, rest: 425, ui-desktop: 39, ui-mobile: 43, ui-web: 42, websocket: 65.
+Всего проверок: **675** — approved: 583, draft: 76, needs_clarification: 16.
+Протоколы: db: 33, generic: 133, graphql: 237, grpc: 157, rest: 434, ui-desktop: 39, ui-mobile: 43, ui-web: 42, websocket: 66.
 
 | Категория | Описание | Проверок |
 |---|---|---:|
 | [contract](#contract) | API contract and schema conformance | 31 |
-| [resources](#resources) | Resource lifecycle and state transitions | 35 |
+| [resources](#resources) | Resource lifecycle and state transitions | 40 |
 | [security](#security) | Authentication, authorization, and data isolation | 233 |
 | [validation](#validation) | Input validation and normalization | 43 |
-| [http-semantics](#http-semantics) | HTTP methods, headers, and status semantics | 27 |
-| [errors](#errors) | Error response shape and consistency | 4 |
-| [pagination](#pagination) | Pagination, filtering, and sorting | 23 |
+| [http-semantics](#http-semantics) | HTTP methods, headers, and status semantics | 29 |
+| [errors](#errors) | Error response shape and consistency | 5 |
+| [pagination](#pagination) | Pagination, filtering, and sorting | 24 |
 | [idempotency](#idempotency) | Idempotent behavior and retry safety | 1 |
 | [grpc-contract](#grpc-contract) | Protobuf and RPC contract conformance | 17 |
 | [grpc-errors](#grpc-errors) | gRPC status and error details | 16 |
@@ -76,10 +76,12 @@ Resource lifecycle and state transitions
 
 | ID | Проверка | P | Статус | Протоколы | Профили |
 |---|---|---|---|---|---|
+| `RES-BULK-FILTER-NOT-WIDENED` | Неизвестный фильтр не расширяет массовую операцию на все записи | P1 | draft | rest, grpc, graphql |  |
 | `RES-CRUD-CYCLE` | Полный жизненный цикл ресурса: создание, чтение, изменение, удаление | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `RES-DELETE-WITH-DEPENDENTS` | Удаление ресурса с зависимыми объектами выполняется по правилам каскада | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `RES-IMMUTABLE-FIELDS` | Неизменяемые поля нельзя изменить после создания | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `RES-REFERENTIAL-INTEGRITY` | Ссылка на несуществующий или чужой связанный ресурс отклоняется | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
+| `RES-RELATION-TARGET-ACTUAL` | Связь указывает именно на заданную сущность, а не только имеет верный формат | P1 | draft | rest, grpc, graphql |  |
 | `RES-SERVER-GENERATED-FIELDS` | Клиент не может задать серверные поля (id, createdAt, status, version) | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `RESOURCE-CREATE-READ` | Created resource can be read back | P1 | approved | rest, graphql, generic | Smoke, PR, CI, Regression, Nightly, Release |
 | `RESOURCE-READ-MISSING` | Reading a missing resource returns a documented error | P1 | approved | rest, graphql, generic | CI, Regression, Nightly, Release |
@@ -94,8 +96,11 @@ Resource lifecycle and state transitions
 | `RES-DB-OBJECT-NAMES` | API по схеме БД работает с объектами в любом регистре, со спецсимволами и зарезервированными именами | P2 | approved | generic | CI, Regression, Nightly |
 | `RES-DRAFT-PUBLISH-FIDELITY` | Публикация черновика переносит все изменения и не ломает связи других объектов | P2 | approved | rest, graphql | CI, Regression, Nightly |
 | `RES-LIST-REFLECTS-CHANGES` | Списки и счётчики отражают создание, изменение и удаление | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
+| `RES-NOOP-UPDATE` | Изменение без изменений не даёт побочных эффектов | P2 | draft | rest, grpc, graphql |  |
 | `RES-READ-AFTER-WRITE` | Чтение после записи соответствует модели согласованности | P2 | approved | rest, grpc, graphql | Regression, Nightly |
+| `RES-REFERENCE-VALUE-APPLICABLE` | Значение справочника действует и применимо к операции | P2 | draft | rest, grpc, graphql |  |
 | `RES-RELATIONS-SHARED-JUNCTION-ISOLATION` | Связи через общую связующую таблицу возвращают каждая только свои данные | P2 | approved | rest, graphql | CI, Regression, Nightly |
+| `RES-SEARCH-INDEX-CONSISTENCY` | Поисковый индекс согласован с источником данных | P2 | draft | rest, grpc, graphql |  |
 | `RES-SOFT-DELETE-VISIBILITY` | Мягко удалённые ресурсы не видны в обычных операциях | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `RES-SYSTEM-OBJECT-PROTECTED` | Встроенные системные объекты защищены от удаления и изменения при любой конфигурации | P2 | approved | rest | CI, Regression, Nightly |
 | `RES-TIMESTAMPS` | Метки времени создания и изменения ведут себя корректно | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
@@ -374,7 +379,7 @@ Input validation and normalization
 | `VAL-MALFORMED-JSON` | Синтаксически некорректный JSON отклоняется | P1 | approved | rest, graphql | CI, Regression, Nightly, Release |
 | `VAL-MONEY-AMOUNT` | Денежные суммы: знак, точность и валюта валидируются | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `VAL-NUMBER-REPRESENTATION` | Альтернативные записи чисел обрабатываются по контракту | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
-| `VAL-PATH-ID-FORMAT` | Неверный формат идентификатора в пути не вызывает 5xx | P1 | approved | rest | CI, Regression, Nightly, Release |
+| `VAL-PATH-ID-FORMAT` | Неверный формат идентификатора не вызывает 5xx | P1 | approved | rest | CI, Regression, Nightly, Release |
 | `VAL-RANGE-ORDER` | Начало диапазона не может быть позже конца | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `VAL-RULES-ALL-INPUT-PATHS` | Запрет на поле нельзя обойти другим методом, полем или пакетной загрузкой | P1 | draft | rest, grpc, graphql |  |
 | `VAL-SPECIAL-CHARACTERS` | Спецсимволы, emoji и управляющие символы сохраняются или отклоняются корректно | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
@@ -408,6 +413,7 @@ HTTP methods, headers, and status semantics
 
 | ID | Проверка | P | Статус | Протоколы | Профили |
 |---|---|---|---|---|---|
+| `HTTP-EMPTY-ID-NOT-COLLECTION` | Пустой идентификатор не превращает операцию над ресурсом в операцию над коллекцией | P1 | draft | rest |  |
 | `HTTP-BODY-WITHOUT-CONTENT-TYPE` | Тело без Content-Type обрабатывается предсказуемо | P2 | approved | rest | CI, Regression, Nightly |
 | `HTTP-DIRECT-PROXY-PARITY` | Поведение приложения не зависит от прокси перед ним | P2 | draft | rest |  |
 | `HTTP-HEADER-SIZE-LIMIT` | Слишком большие заголовки отклоняются контролируемо | P2 | approved | rest | CI, Regression, Nightly |
@@ -417,6 +423,7 @@ HTTP methods, headers, and status semantics
 | `HTTP-UNKNOWN-ROUTE` | Неизвестный маршрут возвращает 404, а не 5xx или 200 | P2 | approved | rest | CI, Regression, Nightly |
 | `REST-HEAD-GET-CONSISTENCY` | HEAD response is consistent with GET | P2 | approved | rest | CI, Regression, Nightly |
 | `REST-METHOD-NOT-ALLOWED` | Unsupported HTTP method is rejected | P2 | approved | rest | CI, Regression, Nightly |
+| `REST-READ-NO-SIDE-EFFECTS` | Чтение не меняет состояние ресурса | P2 | draft | rest |  |
 | `HTTP-ABSOLUTE-URL-BASE-PATH` | Абсолютные URL, которые формирует сервер, учитывают публичный адрес и базовый путь | P3 | approved | rest | Regression, Nightly |
 | `HTTP-ACCEPT-LANGUAGE` | Язык сообщений определяется Accept-Language с fallback | P3 | approved | rest, graphql | Regression, Nightly |
 | `HTTP-BODY-ON-GET-DELETE` | Тело в GET/DELETE игнорируется или отклоняется по контракту | P3 | approved | rest | Regression, Nightly |
@@ -443,6 +450,7 @@ Error response shape and consistency
 | ID | Проверка | P | Статус | Протоколы | Профили |
 |---|---|---|---|---|---|
 | `ERR-INTERNAL-ERROR-SHAPE` | Внутренняя ошибка сервера возвращается в общей модели без утечек | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
+| `ERR-VALIDATION-NO-LEAK` | Ошибки валидации полезны и не раскрывают внутренние детали | P1 | draft | rest, grpc, graphql, websocket |  |
 | `ERR-STABLE-ERROR-CODES` | Машиночитаемые коды ошибок стабильны и задокументированы | P2 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly |
 | `ERR-STATUS-MATCHES-EFFECT` | Код ответа соответствует фактическому результату операции | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `REST-CORRELATION-ID` | Correlation ID | P3 | approved | rest | Regression, Nightly |
@@ -468,6 +476,7 @@ Pagination, filtering, and sorting
 | `REST-FILTER-INVALID` | Невалидный фильтр | P2 | approved | rest | CI, Regression, Nightly |
 | `REST-FILTER-OPERATION-PARITY` | Один фильтр даёт согласованный результат в списке, агрегации и вложенной выборке | P2 | approved | rest, graphql | CI, Regression, Nightly |
 | `REST-FILTER-OPERATOR-TYPE-MATRIX` | Каждый оператор фильтра работает для каждого допустимого типа поля и возвращает ровно подходящие записи | P2 | approved | rest, graphql | CI, Regression, Nightly |
+| `REST-FILTER-RANGE-BOUNDARIES` | Границы фильтра по диапазону включаются по контракту и одинаково | P2 | draft | rest, graphql |  |
 | `REST-FILTER-RELATION-NO-DUPLICATES` | Фильтр по полю связанной коллекции возвращает каждую запись один раз | P2 | approved | rest, graphql | CI, Regression, Nightly |
 | `REST-FILTER-SORT-COMPOSITION` | Filtering and sorting compose correctly | P2 | approved | rest, graphql | CI, Regression, Nightly |
 | `REST-FILTER-UNSELECTED-FIELD` | Фильтр по полю, не входящему в выбор полей, работает | P2 | approved | rest, graphql | CI, Regression, Nightly |

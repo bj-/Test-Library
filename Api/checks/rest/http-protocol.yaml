@@ -1092,3 +1092,42 @@ checks:
     likelihood: medium
   references:
   - inbox №365
+- id: HTTP-EMPTY-ID-NOT-COLLECTION
+  status: draft
+  title: Пустой идентификатор не превращает операцию над ресурсом в операцию над коллекцией
+  category: http-semantics
+  protocols:
+  - rest
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - data-integrity
+  - rest
+  - regression
+  - nightly
+  preconditions:
+  - 'Только на своих данных прогона: при дефекте запрос затронет коллекцию.'
+  steps:
+  - action: Отправить DELETE /items/, PUT /items/, PATCH /items/%20 и запрос с незаполненной переменной пути -
+      отказ 404 или 405, а не действие над всеми записями и не создание
+    notes: inbox №531
+  - action: 'Проверить маршрутизацию при ignoreTrailingSlash: запрос не попадает на обработчик коллекции'
+    notes: inbox №531
+  - action: Прочитать контрольные записи прогона - целы
+    notes: inbox №531
+  expected:
+  - Операция над ресурсом без идентификатора отклоняется; коллекция не меняется.
+  applicability:
+    when:
+    - Есть операции над ресурсом по идентификатору в пути.
+    skip_when:
+    - Идентификаторов в пути нет.
+  automation:
+    level: full
+    deterministic: true
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - inbox №531

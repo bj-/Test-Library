@@ -20,6 +20,11 @@ checks:
   - Endpoint is paginated and dataset size is known.
   steps:
   - action: Check minimum, default, maximum, and over-limit page sizes.
+  - action: Сравнить нумерацию страниц (с 0 или с 1) на всех операциях - единообразна
+    notes: inbox №516
+  - action: При числе записей, кратном размеру страницы, нет лишней пустой страницы; объединение всех страниц
+      равно выборке одним запросом с большим размером
+    notes: inbox №516
   expected:
   - Values are accepted, clamped, or rejected as documented.
   - No gaps or duplicates occur across pages when dataset is unchanged.
@@ -61,6 +66,12 @@ checks:
     notes: 'Real-world bug: RWB-0118 (strapi/strapi#26746)'
   - action: Сортировка на уровне раскрываемой связи вместе с сортировкой верхнего уровня
     notes: 'Real-world bug: RWB-0118 (strapi/strapi#26359)'
+  - action: 'Выполнить каждый фильтр отдельно и вместе: при И результат вложен в пересечение отдельных
+      результатов, при ИЛИ содержит их объединение; порядок параметров не влияет'
+    notes: inbox №515
+  - action: Разные значения одного параметра и разные параметры объединяются каждый по своему правилу; условия с
+      заведомо пустым пересечением дают пустой результат
+    notes: inbox №515
   expected:
   - Every returned item satisfies all filters.
   - Ordering matches requested field and direction.
@@ -114,6 +125,10 @@ checks:
     notes: 'Real-world bug: RWB-0001 (PostgREST/postgrest#2800)'
   - action: Для каждого значения enum и boolean проверить непустой результат при наличии данных; значение вне enum — 400
     notes: inbox №31
+  - action: Создать контрольные записи с маркером прогона (минимум две подходящие и одна нет, значение на
+      границе условия) - в результате все подходящие и ни одной лишней; пустой или полный ответ без
+      контрольных записей ничего не доказывает
+    notes: inbox №514
   expected:
   - Допустимый оператор принимается (2xx) для типа и всех его подтипов.
   - Результат совпадает с эталонным отбором; нет молчаливого пустого ответа.
@@ -392,3 +407,42 @@ checks:
   references:
   - Смежная — REST-FILTER-OPERATOR-TYPE-MATRIX
   - 'Real-world bug: RWB-0329'
+- id: REST-FILTER-RANGE-BOUNDARIES
+  status: draft
+  title: Границы фильтра по диапазону включаются по контракту и одинаково
+  category: pagination
+  protocols:
+  - rest
+  - graphql
+  kind: boundary
+  priority: P2
+  tags:
+  - boundary
+  - filtering
+  - regression
+  - nightly
+  preconditions:
+  - Есть фильтр по диапазону чисел или дат; записи точно на границах созданы в прогоне.
+  steps:
+  - action: Запросить from/to и min/max с записями точно на обеих границах - включение или исключение по
+      контракту, одинаковое на всех операциях
+    notes: inbox №532
+  - action: Задать to датой без времени - захвачен весь день; граница суток - в часовом поясе из требований
+    notes: inbox №532
+  - action: Задать from равным to
+    notes: inbox №532
+  expected:
+  - Граничные записи обрабатываются по контракту, а где он молчит - единообразно; расхождение - находка.
+  applicability:
+    when:
+    - Есть фильтр по диапазону.
+    skip_when:
+    - Фильтров по диапазону нет.
+  automation:
+    level: full
+    deterministic: true
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - inbox №532

@@ -1,10 +1,10 @@
 # Манифест библиотеки (ADR 0016): версия, хеши записей и шагов. Собирается `python tools/library_manifest.py --write`
 # (и build_catalog.py), вручную не править.
-version: "2026.10.30-f373d2"
-library_hash: "f373d25f33a1"
+version: "2026.10.30-179a5f"
+library_hash: "179a5f99aba1"
 scope: full
 omitted: 0
-records_total: 666
+records_total: 675
 records:
   "ASYNC-DEAD-LETTER":
     status: approved
@@ -424,8 +424,8 @@ records:
     steps: ["37fb6b98708b"]
   "BIZ-SIDE-EFFECTS-ONCE":
     status: approved
-    hash: "ae3cf784c46e"
-    steps: ["78f421baa2aa", "60f434bf9a0b", "79ee66e7bad3", "6ac40407f19f"]
+    hash: "8050434b91e4"
+    steps: ["78f421baa2aa", "60f434bf9a0b", "79ee66e7bad3", "6ac40407f19f", "9a3745480777", "845ab52c7e43"]
   "BIZ-TIME-WINDOW":
     status: approved
     hash: "aab955881332"
@@ -484,12 +484,12 @@ records:
     steps: ["495520816f2a", "bf065d02983f"]
   "CONC-DOUBLE-SUBMIT":
     status: approved
-    hash: "93962c730123"
-    steps: ["f680a0326218"]
+    hash: "01a073888404"
+    steps: ["f680a0326218", "c2af495c53aa"]
   "CONC-LOST-UPDATE":
     status: approved
-    hash: "0c36e5959c07"
-    steps: ["486e0018d9fb"]
+    hash: "b7ed365c8e6d"
+    steps: ["486e0018d9fb", "1feb5d74d73e", "5e005c911076"]
   "CONC-PARALLEL-CREATE-UNIQUE":
     status: approved
     hash: "849078d7259b"
@@ -672,8 +672,12 @@ records:
     steps: ["3f4e32bc762b", "2d03b7086770", "e40e2b466b75", "f5d64c3d3008"]
   "ERR-STATUS-MATCHES-EFFECT":
     status: approved
-    hash: "d69b5d3c13be"
-    steps: ["c70f3a9987ff", "1e02d977dbee", "e45c046bbd5c", "2a2f772f600e"]
+    hash: "64cf069aae1d"
+    steps: ["c70f3a9987ff", "1e02d977dbee", "e45c046bbd5c", "2a2f772f600e", "1de3a673873d", "64001a5b2661"]
+  "ERR-VALIDATION-NO-LEAK":
+    status: draft
+    hash: "23ae45c9bd88"
+    steps: ["c5f3fbefe899", "56de94e3a0bb", "101a68a01174"]
   "FILE-ABORTED-UPLOAD-CLEANUP":
     status: approved
     hash: "37402110d361"
@@ -1058,6 +1062,10 @@ records:
     status: draft
     hash: "12a13280dc91"
     steps: ["26392539882f", "600699c1ddae"]
+  "HTTP-EMPTY-ID-NOT-COLLECTION":
+    status: draft
+    hash: "94073be9308c"
+    steps: ["3e93e645b7a7", "52aa771cb0fe", "0c8d017b48a7"]
   "HTTP-HEADER-REPEATED-LINES-ACCEPTED":
     status: approved
     hash: "a0f9151968f3"
@@ -1308,8 +1316,8 @@ records:
     steps: ["fae4f50ec82a"]
   "PAGE-TOTAL-COUNT":
     status: approved
-    hash: "f1d493e7519c"
-    steps: ["d4637b01b354", "71c0b782e214", "87cfdec90270", "12e8350ceb48", "4afd8f9a17b4"]
+    hash: "d04955bab45f"
+    steps: ["d4637b01b354", "71c0b782e214", "87cfdec90270", "12e8350ceb48", "4afd8f9a17b4", "28c2e1a733e1", "2d079db1cd40"]
   "PERF-DEEP-PAGINATION":
     status: approved
     hash: "04c89ec289ea"
@@ -1590,6 +1598,10 @@ records:
     status: approved
     hash: "565ef0f43fb2"
     steps: ["684e89fd47d9"]
+  "RES-BULK-FILTER-NOT-WIDENED":
+    status: draft
+    hash: "397bcc2c35e4"
+    steps: ["1d0d129c20b2", "cb66afc302b4"]
   "RES-BULK-LIMITS":
     status: approved
     hash: "4803e1b51358"
@@ -1612,8 +1624,8 @@ records:
     steps: ["8e0882b7c1d1", "8a54ea5989b8", "9906ad7276e9", "6ee45c6f044c", "36371f203d16", "a72980583680", "1a1826e26f92"]
   "RES-CRUD-CYCLE":
     status: approved
-    hash: "96d82a4312b4"
-    steps: ["ae015953d6cf"]
+    hash: "5612c370c89b"
+    steps: ["ae015953d6cf", "1e9188a2804c", "64ec79508198"]
   "RES-DB-OBJECT-NAMES":
     status: approved
     hash: "d6ae63215e3d"
@@ -1640,8 +1652,12 @@ records:
     steps: ["435e38973683", "01d6a696e304"]
   "RES-LIST-REFLECTS-CHANGES":
     status: approved
-    hash: "7b4301c04f0e"
-    steps: ["800dbc5f55c8", "a15d29af6b93"]
+    hash: "922fa232a514"
+    steps: ["800dbc5f55c8", "a15d29af6b93", "78b14d553a80", "527b826c92de"]
+  "RES-NOOP-UPDATE":
+    status: draft
+    hash: "e2bf2639aa90"
+    steps: ["a3b074d8c73a", "d6de84a74df8", "1e91a9e4acb8"]
   "RES-READ-AFTER-WRITE":
     status: approved
     hash: "9fb4b881248f"
@@ -1650,10 +1666,14 @@ records:
     status: approved
     hash: "c0484ad06f4c"
     steps: ["7a40ef3198ab", "44375b78353e"]
+  "RES-REFERENCE-VALUE-APPLICABLE":
+    status: draft
+    hash: "6f4656792538"
+    steps: ["5b40bb79a956", "5e9a5f9e73d7", "a4898694bed3", "cf489870201a"]
   "RES-REFERENTIAL-INTEGRITY":
     status: approved
-    hash: "fc7ec2398194"
-    steps: ["946f44eff0f4", "6519e25ccab5", "70c3511f11ca", "82764f6dcd8a", "927e8b5f06a0", "742ac8a45ebb", "484652dadf5d", "6e3c5e03e604", "d3582006a27d", "157529726ca9", "6abe1d6befd9", "fc44d8b6b4a9"]
+    hash: "9deb1dd03f7e"
+    steps: ["946f44eff0f4", "6519e25ccab5", "70c3511f11ca", "82764f6dcd8a", "927e8b5f06a0", "742ac8a45ebb", "484652dadf5d", "6e3c5e03e604", "d3582006a27d", "157529726ca9", "6abe1d6befd9", "fc44d8b6b4a9", "98c2080cf9e9", "2acba9af369d"]
   "RES-RELATION-CONNECT-DISCONNECT-CONFLICT":
     status: approved
     hash: "7a46fb7e7ffe"
@@ -1666,10 +1686,18 @@ records:
     status: approved
     hash: "645ced64d40d"
     steps: ["f3c16ece2670", "c78699fedf88"]
+  "RES-RELATION-TARGET-ACTUAL":
+    status: draft
+    hash: "6a37fec1b88a"
+    steps: ["8af95819a885", "098e8cdab8e8", "1014b09642f9", "3c88d088e31d"]
   "RES-RELATIONS-SHARED-JUNCTION-ISOLATION":
     status: approved
     hash: "8e99b57d1357"
     steps: ["6593aaef3c5a", "7fa624dc01c4"]
+  "RES-SEARCH-INDEX-CONSISTENCY":
+    status: draft
+    hash: "39dd8a114a13"
+    steps: ["d497cfdaa5ec", "ae93dea2b73c", "1c80922030b6", "b34cc2a1b347"]
   "RES-SERVER-GENERATED-FIELDS":
     status: approved
     hash: "b7442d2a5d90"
@@ -1700,8 +1728,8 @@ records:
     steps: ["a252482865f9"]
   "RES-VALUE-ROUNDTRIP-EXACT":
     status: approved
-    hash: "4b8e8e7f058a"
-    steps: ["3a6179bd6663"]
+    hash: "de5484257a48"
+    steps: ["3a6179bd6663", "a380dbc33a35"]
   "RESIL-BROKER-DOWN":
     status: approved
     hash: "4fbdab04ab79"
@@ -1712,8 +1740,8 @@ records:
     steps: ["6790694a2bd9", "ad6e411d9962", "a4155d1e0e29"]
   "RESIL-DEPENDENCY-DOWN":
     status: approved
-    hash: "bd32b9df8e69"
-    steps: ["e8665c517ed2", "f44afcfa5b81", "3c2773f9bd81", "6d886f077e63", "3fa1b3564e3c", "0115aafeab00", "120297414cc6", "d0947bc6795b", "536c99db2059", "02292e9efdc2", "2597165dc104", "4ce5951afd37"]
+    hash: "8f5f2e159b3c"
+    steps: ["e8665c517ed2", "f44afcfa5b81", "3c2773f9bd81", "6d886f077e63", "3fa1b3564e3c", "0115aafeab00", "120297414cc6", "d0947bc6795b", "536c99db2059", "02292e9efdc2", "2597165dc104", "4ce5951afd37", "595f4d729122", "60aac1ad4cc8"]
   "RESIL-DEPENDENCY-TLS-RECOVERY":
     status: approved
     hash: "d284c340c682"
@@ -1744,8 +1772,8 @@ records:
     steps: ["7ca3d280c596", "bd10a83b0264", "b18e5df30126", "0f61112616d3"]
   "RESOURCE-READ-MISSING":
     status: approved
-    hash: "0c551bd67140"
-    steps: ["87d4e273a52c"]
+    hash: "4fd6ede21e01"
+    steps: ["87d4e273a52c", "d0df02c4362a"]
   "REST-204-NO-BODY":
     status: approved
     hash: "e9915564a7d7"
@@ -1808,8 +1836,8 @@ records:
     steps: ["f2e298564d66", "f1dcf5009598"]
   "REST-DELETE-REPEAT":
     status: approved
-    hash: "9e6b54b46d91"
-    steps: ["f2e298564d66"]
+    hash: "9718b0cd140b"
+    steps: ["f2e298564d66", "f13c9474e116", "293b90c65b12", "63113e908d7d"]
   "REST-DUPLICATE-UNIQUE-KEY":
     status: approved
     hash: "5d623e4968e7"
@@ -1820,8 +1848,8 @@ records:
     steps: ["f2e298564d66", "6429cbe68c67", "be75f083a1c4", "e80038cd6b4e", "703972377e43", "f1f02782c17b", "414810f4c6c2"]
   "REST-ENUM-VALUES":
     status: approved
-    hash: "77a025538ca2"
-    steps: ["f2e298564d66", "f380914fc45b", "838ad63e3e73"]
+    hash: "8389b4537112"
+    steps: ["f2e298564d66", "f380914fc45b", "838ad63e3e73", "8a29de28c86c"]
   "REST-ERROR-RETRY-AFTER":
     status: approved
     hash: "db4c61aac673"
@@ -1844,8 +1872,8 @@ records:
     steps: ["c423a8f267c3", "16f619a5a7c9", "983d4e0a3352", "7dbf003c23ef", "52dffdf28704", "af3803d9e5cf"]
   "REST-FILTER-INVALID":
     status: approved
-    hash: "5b0695f6a4ab"
-    steps: ["f2e298564d66", "b3d8a5be0fe5"]
+    hash: "a42a897000ba"
+    steps: ["f2e298564d66", "b3d8a5be0fe5", "49a36422f6f7"]
   "REST-FILTER-NAME-COLLISION":
     status: approved
     hash: "51aafe100b91"
@@ -1856,16 +1884,20 @@ records:
     steps: ["5f05205ae862", "7412087e5e14"]
   "REST-FILTER-OPERATOR-TYPE-MATRIX":
     status: approved
-    hash: "fac855d2470c"
-    steps: ["e829a171d6b1", "bdf637b77dbd", "f6e6434cd9a1", "6abcc70260d7", "655552f946d6", "66ef04aed982", "a21ef3e63c5d"]
+    hash: "53d6ea7b420c"
+    steps: ["e829a171d6b1", "bdf637b77dbd", "f6e6434cd9a1", "6abcc70260d7", "655552f946d6", "66ef04aed982", "a21ef3e63c5d", "08787bb5c872"]
+  "REST-FILTER-RANGE-BOUNDARIES":
+    status: draft
+    hash: "2742a420e170"
+    steps: ["97f3696d8d97", "2271376de420", "dfa93c0ce516"]
   "REST-FILTER-RELATION-NO-DUPLICATES":
     status: approved
     hash: "3adbe76842c2"
     steps: ["69c64581ad49", "9f98126ce84a"]
   "REST-FILTER-SORT-COMPOSITION":
     status: approved
-    hash: "3d3fddce2a45"
-    steps: ["971f691a7b69", "0a07946276d2", "f3f3f58f0ed0"]
+    hash: "1506a08e89a6"
+    steps: ["971f691a7b69", "0a07946276d2", "f3f3f58f0ed0", "f7be930716b2", "7f166b437153"]
   "REST-FILTER-SORT-PAGINATION":
     status: approved
     hash: "2d37e7655695"
@@ -1904,12 +1936,12 @@ records:
     steps: ["21a57dcde94d"]
   "REST-NULL-VS-OMITTED":
     status: approved
-    hash: "b466bfcfe335"
-    steps: ["f2e298564d66", "c093e89b1f3a", "5688fe8660e8", "0d6ddcdad452", "c7ab4392e0e3"]
+    hash: "a2ae165df92e"
+    steps: ["f2e298564d66", "c093e89b1f3a", "5688fe8660e8", "0d6ddcdad452", "c7ab4392e0e3", "9f7a95a600d0"]
   "REST-NUMERIC-BOUNDARIES":
     status: approved
-    hash: "6cb5dbce6c86"
-    steps: ["f2e298564d66", "d3939cb6cdb0", "da107d936f8c", "542d7d7bb8a6", "917bb3b106cd", "06c0d9ca19a3", "0f8330826701", "b441f3359bf9", "777fc0dad054"]
+    hash: "1a91a1e891aa"
+    steps: ["f2e298564d66", "d3939cb6cdb0", "da107d936f8c", "542d7d7bb8a6", "917bb3b106cd", "06c0d9ca19a3", "0f8330826701", "b441f3359bf9", "777fc0dad054", "dfb7f9df07ca", "2772ad1735a3", "22105a777768"]
   "REST-OBJECT-LEVEL-AUTHZ":
     status: approved
     hash: "e330beaf1abe"
@@ -1924,8 +1956,8 @@ records:
     steps: ["f2e298564d66", "6d76b57b1069"]
   "REST-PAGINATION-BOUNDARIES":
     status: approved
-    hash: "59882782a2a4"
-    steps: ["b3e412282f8b"]
+    hash: "866b454e0807"
+    steps: ["b3e412282f8b", "47e3846e514b", "51fd34286000"]
   "REST-PAGINATION-LIMITS":
     status: approved
     hash: "8a6af5fd76f8"
@@ -1936,8 +1968,8 @@ records:
     steps: ["f2e298564d66", "c37e3feda6ca"]
   "REST-PATCH-PARTIAL-UPDATE":
     status: approved
-    hash: "d48d76efa42d"
-    steps: ["f2e298564d66", "6639d962db5f", "ef952a137a27", "dd9c06bf5eb0", "3841009d0d42"]
+    hash: "f543cd926975"
+    steps: ["f2e298564d66", "6639d962db5f", "ef952a137a27", "dd9c06bf5eb0", "3841009d0d42", "f1a24f52669d", "601d015c0d59"]
   "REST-PATH-PARAM-ENCODING":
     status: approved
     hash: "1e22088be246"
@@ -1958,6 +1990,10 @@ records:
     status: approved
     hash: "0a19b1d43f2c"
     steps: ["f2e298564d66", "7e1259841bb7", "448cfabe4ac0", "6a083224e57f"]
+  "REST-READ-NO-SIDE-EFFECTS":
+    status: draft
+    hash: "56e67b912ba7"
+    steps: ["9e34263271a1", "10b955f13824"]
   "REST-READONLY-WRITEONLY":
     status: approved
     hash: "a706453edf12"
@@ -1996,16 +2032,16 @@ records:
     steps: ["f2e298564d66", "72e48ac21849", "715826e484bf", "e7b5dd16cee7", "09a68e8d4294", "fabb5def6e93", "cbe180d296f1", "a028bb953444", "47588bb86ab6", "b0e38b169782", "d41396f89ed9", "6142d0389cea", "27f1ccfcb818", "59bb8a40d238", "d46d34f74283", "5faf48365576", "819e1c965112", "abb7e0f584d6", "8a05fc05dbdf", "183f328b8c48"]
   "REST-STATE-TRANSITIONS":
     status: approved
-    hash: "33bc31be8f94"
-    steps: ["f2e298564d66"]
+    hash: "096a7807ef81"
+    steps: ["f2e298564d66", "825c1a3c5f0a", "ef1477a3d89d", "1676f194a31f"]
   "REST-STATUS-CODE-CONTRACT":
     status: approved
     hash: "c438ace02ece"
     steps: ["f2e298564d66", "d7d63a1b8319", "b5a04626e856"]
   "REST-STRING-LENGTH-BOUNDARIES":
     status: approved
-    hash: "0285f4df8d30"
-    steps: ["f2e298564d66", "6c100a653e58", "085f79dd3b51", "8e5f1221396a", "f2a607d3251e", "ffebe34f038c"]
+    hash: "02792feba942"
+    steps: ["f2e298564d66", "6c100a653e58", "085f79dd3b51", "8e5f1221396a", "f2a607d3251e", "ffebe34f038c", "5cd047cbf861", "e1306171a86b"]
   "REST-TIMEOUT-BUDGET":
     status: approved
     hash: "f691e0bf106f"
@@ -2020,16 +2056,16 @@ records:
     steps: ["f2e298564d66"]
   "REST-UNKNOWN-FIELDS":
     status: approved
-    hash: "fbb492e25bff"
-    steps: ["f2e298564d66", "792862ce32b1", "e855c328213b", "3b589d8c36b2"]
+    hash: "fcd237170607"
+    steps: ["f2e298564d66", "792862ce32b1", "e855c328213b", "3b589d8c36b2", "542f64f8d228", "989645d75999"]
   "REST-UNSUPPORTED-CONTENT-TYPE":
     status: approved
     hash: "4dc7db410aea"
     steps: ["9a54e04d99e6", "e1434419e700", "90d012fcc45d"]
   "REST-VALIDATION-ATOMICITY":
     status: approved
-    hash: "dd09a86575b5"
-    steps: ["f2e298564d66", "2145370b1213"]
+    hash: "0896fe26a1d0"
+    steps: ["f2e298564d66", "2145370b1213", "0bc630503069", "1cdbf35a4d93"]
   "SEC-ALT-REPRESENTATION-ACCESS":
     status: approved
     hash: "7360a9bfe9ee"
@@ -2548,8 +2584,8 @@ records:
     steps: ["d2bb1a379308", "d45e3eaa648d", "9b8345cb29fd", "aaed25c496bd", "0335e65344c0", "7e73e2de5835", "ce020467efb6", "5b8b700c4c3c", "94c66328dc0a", "f49d8ebf9d4c", "4f1d4a414833", "0c37518870c7", "e30d8d21774f"]
   "VAL-DEPENDENT-FIELDS":
     status: approved
-    hash: "f0d630675d6a"
-    steps: ["7368bc2ec227", "611e5b034e3f", "e26421536428", "f4dc709a844c"]
+    hash: "69e657da131d"
+    steps: ["7368bc2ec227", "611e5b034e3f", "e26421536428", "f4dc709a844c", "021530f7c79d", "b230b7d6242c", "2ffbf70b5d6d", "d7f3762239e9"]
   "VAL-DYNAMIC-VARIABLES-TYPE":
     status: approved
     hash: "d9dc0e361fcf"
@@ -2584,8 +2620,8 @@ records:
     steps: ["64cae0c318a3"]
   "VAL-PATH-ID-FORMAT":
     status: approved
-    hash: "71bbcb23db81"
-    steps: ["2d35e909abce"]
+    hash: "6f70a50feb98"
+    steps: ["2d35e909abce", "5a04f6ffc814", "80e09d10047a"]
   "VAL-QUERY-ARRAY-FORMAT":
     status: approved
     hash: "b7c6a61b9b3c"
