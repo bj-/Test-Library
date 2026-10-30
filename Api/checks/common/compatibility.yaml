@@ -345,3 +345,37 @@ checks:
   references:
   - Смежная — CONC-LOST-UPDATE
   - 'Real-world bug: RWB-0221'
+- id: COMPAT-BUILD-IMAGE-STARTS
+  status: draft
+  title: Собранный образ запускается до публикации
+  description: Плавающий базовый тег меняет зависимости бинаря без изменений в репозитории; пайплайн, который только собирает
+    образ, этого не заметит.
+  category: compatibility
+  protocols:
+  - generic
+  kind: compatibility
+  priority: P1
+  tags:
+  - compatibility
+  - reliability
+  preconditions:
+  - Сервис поставляется образами, есть доступ к образам или шагам пайплайна.
+  steps:
+  - action: Запустить каждый образ пайплайна до публикации - процесс стартует (версия или команда по умолчанию).
+  - action: Проверить, что приложение из образа отвечает на health.
+  - action: Выполнить у разового образа (миграции) безопасную команду (--help, show) и проверить, что он запускается.
+  expected:
+  - Каждый образ запускается и выполняет своё назначение; образ, падающий при старте, не публикуется.
+  applicability:
+    when:
+    - Сервис поставляется образами контейнеров.
+    skip_when:
+    - Нет доступа к образам и пайплайну.
+  automation:
+    level: partial
+    deterministic: true
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - inbox №346

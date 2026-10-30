@@ -796,3 +796,40 @@ checks:
   references:
   - Смежные — ASYNC-EVENT-ORDERING, CONC-*
   - 'Real-world bug: RWB-0349'
+- id: BIZ-ECHOED-VALUE-VERIFIED
+  status: draft
+  title: Значение из выдачи, возвращаемое клиентом, проверяется сервером
+  description: Если клиент передаёт обратно хеш, ETag, версию или подпись, полученные в выдаче, а сервер их не сверяет, поле
+    декоративное, и клиент «принимает» не то, что видел.
+  category: business-logic
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - negative
+  - business-logic
+  - data-integrity
+  preconditions:
+  - Операция принимает значение, ранее выданное сервером (хеш документа, ETag, версия, подпись).
+  steps:
+  - action: Отправить произвольное значение, значение другой версии или перевода, пустое значение, значение в другом регистре.
+  - action: Отправить верное значение и проверить успех.
+  expected:
+  - Неверное значение отклоняется по контракту (409 или 422), верное принимается.
+  applicability:
+    when:
+    - Есть операция с возвратом выданного значения.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - inbox №362
+  - Смежные - REST-ETAG-IF-MATCH

@@ -1,10 +1,10 @@
 # Манифест библиотеки (ADR 0016): версия, хеши записей и шагов. Собирается `python tools/library_manifest.py --write`
 # (и build_catalog.py), вручную не править.
-version: "2026.10.30-a452f8"
-library_hash: "a452f8d9590a"
+version: "2026.10.30-443620"
+library_hash: "443620925104"
 scope: full
 omitted: 0
-records_total: 631
+records_total: 637
 records:
   "ASYNC-DEAD-LETTER":
     status: approved
@@ -370,6 +370,10 @@ records:
     status: approved
     hash: "95d0819bc8c5"
     steps: ["3a1e25b61365"]
+  "BIZ-ECHOED-VALUE-VERIFIED":
+    status: draft
+    hash: "4678049be168"
+    steps: ["abd29bbc8fcf", "d8d86a72e879"]
   "BIZ-EMAIL-LINK-CROSS-SESSION":
     status: approved
     hash: "b1b703461ec2"
@@ -430,6 +434,10 @@ records:
     status: approved
     hash: "41eaf9546c42"
     steps: ["6bc59190aa6c", "19a7f03fb0b0", "e0ffbe5f50d3", "124b02905495"]
+  "COMPAT-BUILD-IMAGE-STARTS":
+    status: draft
+    hash: "8c22683ff4bd"
+    steps: ["a149c23eaefe", "abac452fa7f5", "68f2278a00b5"]
   "COMPAT-DEFAULT-VERSION":
     status: approved
     hash: "ef4a55639222"
@@ -496,8 +504,8 @@ records:
     steps: ["efd810e7f5c9"]
   "CONTRACT-PUBLISHED-SCHEMA-VALID":
     status: approved
-    hash: "ffc0d8672261"
-    steps: ["97eca93c8624", "72243ee18b40", "7c7e1c216cd5"]
+    hash: "8019a71c2f92"
+    steps: ["97eca93c8624", "72243ee18b40", "7c7e1c216cd5", "da7446991b58"]
   "CONTRACT-REQUIRED-FIELDS":
     status: approved
     hash: "a187a33a933e"
@@ -924,8 +932,8 @@ records:
     steps: ["1327f4a400b7"]
   "HARD-CLIENT-IP-TRUSTED-PROXIES":
     status: approved
-    hash: "f8794ca439fa"
-    steps: ["e3d87dfed6ce", "b976413877c9", "dc9799bbeba5"]
+    hash: "98a96a578b63"
+    steps: ["e3d87dfed6ce", "b976413877c9", "dc9799bbeba5", "24c875ef82ea"]
   "HARD-DEBUG-ENDPOINTS":
     status: approved
     hash: "7d7fe960ff72"
@@ -934,6 +942,10 @@ records:
     status: approved
     hash: "bab4e8b185cd"
     steps: ["10dd74917fde", "75e33b135b54"]
+  "HARD-DEPLOY-CONFIG-BASELINE":
+    status: draft
+    hash: "ebbafc1be1e8"
+    steps: ["0c5d27474bd1", "92daf8059172", "df1e55e8a48e", "920a53c0ddf8", "9e710b02479a", "2e472f46ec26"]
   "HARD-ENVIRONMENT-ISOLATION":
     status: approved
     hash: "b89d1f41c31f"
@@ -992,8 +1004,8 @@ records:
     steps: ["c68a9baed18e", "1ea2ad3222a0", "02c294f50f92", "3a159fadebce", "9fba190d502a", "f5316b3289ef", "cc72d86498ad", "c42b9c8bd7f1", "16eee9f8c804", "408aa833d077", "9927f5317b50", "b544e2b56ddc", "0df9f3051214", "52b98f43ea12"]
   "HARD-TLS-ONLY":
     status: approved
-    hash: "608bedbcbe9f"
-    steps: ["57a238500a28"]
+    hash: "e1d4548e83a4"
+    steps: ["57a238500a28", "6138392654f2"]
   "HARD-UNSAFE-API-CONSUMPTION":
     status: approved
     hash: "a6df602a7eec"
@@ -1012,12 +1024,12 @@ records:
     steps: ["3cd00b143e06", "452c3e8d5a19", "5c0892ac596c"]
   "HTTP-ACCEPT-LANGUAGE":
     status: approved
-    hash: "dcee6544ddc9"
-    steps: ["f9919ad93850", "db946915479f", "6cda8ed73f52", "52bd6721e7a0"]
+    hash: "a645fc8a1139"
+    steps: ["f9919ad93850", "db946915479f", "6cda8ed73f52", "52bd6721e7a0", "c6c99dd3b980"]
   "HTTP-BODY-ON-GET-DELETE":
     status: approved
-    hash: "538df2f7364b"
-    steps: ["2d5e83c23460", "bdd9019b6c15"]
+    hash: "f15e143ad36f"
+    steps: ["2d5e83c23460", "bdd9019b6c15", "b2c83aca36c2"]
   "HTTP-BODY-WITHOUT-CONTENT-TYPE":
     status: approved
     hash: "be37073f59e8"
@@ -1030,6 +1042,10 @@ records:
     status: approved
     hash: "adc7bc199d55"
     steps: ["5e2701a103f5", "968b72c30244", "a3ee07efd687"]
+  "HTTP-DIRECT-PROXY-PARITY":
+    status: draft
+    hash: "12a13280dc91"
+    steps: ["26392539882f", "600699c1ddae"]
   "HTTP-HEADER-REPEATED-LINES-ACCEPTED":
     status: approved
     hash: "a0f9151968f3"
@@ -1076,12 +1092,16 @@ records:
     steps: ["f210d7b7df20"]
   "HTTP-TRAILING-SLASH-CASE":
     status: approved
-    hash: "f42dc2490b1c"
-    steps: ["0f2a8dc00bc2", "24ed6689258d", "5a6f698d2e3b", "9a7182d6d22d"]
+    hash: "6c4e78492d6d"
+    steps: ["0f2a8dc00bc2", "24ed6689258d", "5a6f698d2e3b", "9a7182d6d22d", "f332908609cd"]
   "HTTP-UNKNOWN-ROUTE":
     status: approved
     hash: "436de5e6db9d"
     steps: ["efc11ab808ec", "a7a3ebce7d18", "e53e57c9b938", "87ffab931110", "a17d586d4bee"]
+  "HTTP-UNRELATED-HEADERS-IGNORED":
+    status: draft
+    hash: "dfbf237ce574"
+    steps: ["e18a01832322", "2a0a81375d5f"]
   "HTTP-URL-LENGTH-LIMIT":
     status: approved
     hash: "a351cf515c37"
@@ -1526,22 +1546,26 @@ records:
     status: draft
     hash: "b45a27791b33"
     steps: ["b0186d8c0db5", "95b94c75842d"]
+  "REQ-ACCEPTANCE-PLAN-REVIEW":
+    status: draft
+    hash: "565c5805f981"
+    steps: ["10ab4cab5652", "76d4e350c165", "4d0e7f1936f7"]
   "REQ-CONTRACT-CONTRADICTS-SPEC":
     status: approved
     hash: "7c48e3086422"
     steps: ["116faa8657ea", "1e2750574164"]
   "REQ-CONTRACT-SELF-CONSISTENCY":
     status: approved
-    hash: "343ec6f40bd0"
-    steps: ["83a0b167bdab", "f15b777a17e3", "4dce4c4510b9"]
+    hash: "31fb57d98377"
+    steps: ["83a0b167bdab", "f15b777a17e3", "4dce4c4510b9", "3868730884a6", "58c4c4d9ac45"]
   "REQ-CROSS-CLIENT-CONSISTENCY":
     status: approved
     hash: "501c7ef30ec4"
     steps: ["28eeb82e1f2e", "aac9b515ce73", "96227f8a99d9", "dd40ad1fdd20", "e97c527e7c57", "5c3ac8f54faf", "f13cb378499c", "8fbe955b99c5", "c175b620913d", "1969dfe5afc4", "58e2639d809a", "58092801d0d8"]
   "REQ-SPEC-NOT-IN-CONTRACT":
     status: approved
-    hash: "d112cdd94638"
-    steps: ["93eb6746df42", "edddffb2d861"]
+    hash: "3a93983e7b55"
+    steps: ["93eb6746df42", "edddffb2d861", "c85704a3f897"]
   "REQ-UNSPECIFIED-BEHAVIOR-PROBE":
     status: approved
     hash: "472c8bdfe276"
@@ -1752,8 +1776,8 @@ records:
     steps: ["f2e298564d66", "72333b80d874", "67661ac3f7e5", "b2d2473af3d3"]
   "REST-CORRELATION-ID":
     status: approved
-    hash: "aacf1fb1b7ed"
-    steps: ["f2e298564d66"]
+    hash: "c41df08e705b"
+    steps: ["f2e298564d66", "7be74c2c0b46", "093402d8e044", "aeac9b517f39"]
   "REST-CORS-POLICY":
     status: approved
     hash: "58c6b712f318"
@@ -2468,8 +2492,8 @@ records:
     steps: ["cf41c2f4733a", "1feefa110874"]
   "VAL-REQUIRED-HEADERS":
     status: approved
-    hash: "4d54d52c3cb8"
-    steps: ["e9c03e026089"]
+    hash: "afaac4078bd4"
+    steps: ["e9c03e026089", "a57d66b8efc6", "ec2356650261"]
   "VAL-SPECIAL-CHARACTERS":
     status: approved
     hash: "a7f9b5d85ea0"

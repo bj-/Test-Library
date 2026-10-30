@@ -117,3 +117,4 @@
 | 2026-10-30 | Claude / bj | ADR 0016: версия библиотеки в данных (manifest.yaml), база подбора и library_diff.py без git, манифест в выгрузках |
 | 2026-10-30 | Claude / bj | Порядок догенерации (ADR 0016): library_diff.py - новые шаги в diff, новые записи в compact, needed, sync; Process/collections.md п. 4, CLAUDE.md |
 | 2026-10-30 | Claude / bj | Удалённая запись библиотеки при валидном тесте - пересмотр удаления, идея в inbox; apply removed (collections.md п. 4) |
+| 2026-10-30 | Claude Opus 5.5 / bj | Разбор inbox №345-365: шаги к записям, 6 новых draft (HARD-DEPLOY-CONFIG-BASELINE, COMPAT-BUILD-IMAGE-STARTS, HTTP-DIRECT-PROXY-PARITY, HTTP-UNRELATED-HEADERS-IGNORED, BIZ-ECHOED-VALUE-VERIFIED, REQ-ACCEPTANCE-PLAN-REVIEW), №357-358 в docs/ideas.md; №366-421 помечены по ADR 0012 |

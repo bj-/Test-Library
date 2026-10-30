@@ -113,6 +113,8 @@ checks:
   - action: Повторить изменяющую операцию по URL с завершающим «?» без параметров и сравнить побочные эффекты с вызовом без
       него
     notes: 'Real-world bug: RWB-0197 (strapi/strapi#25724)'
+  - action: 'Повторить слеши в каждой позиции пути (//api/auth/login, ///api/auth/login, /api//auth/login, /api/auth//login, /api/auth/login//) на каждом стенде, включая PROD: тот же код и тело или единообразный редирект 301/308, без 404; ответ не отражает путь из запроса'
+    notes: 'inbox №350; нормализацию может давать или ломать прокси - это и проверка конфигурации стенда'
   expected:
   - Поведение одинаково для всех ручек API (либо вариация ведёт на ту же ручку, либо везде 404).
   - Вариации пути не обходят авторизацию или правила шлюза.
@@ -334,6 +336,8 @@ checks:
   - action: Отправить параметр выбора языка с неподдерживаемым значением и проверить, что cookie языка не установлена и не
       изменена
     notes: 'Real-world bug: RWB-0324 (keycloak/keycloak#53999)'
+  - action: 'Если регион и язык выбираются независимо, отправить теги с языком системы и регионом из перечня в любом сочетании (en-ru, ru-us) и проверить, что регион определяется по региональной части тега, язык - по языковой; отказ только для региона вне перечня'
+    notes: 'inbox №359'
   expected:
   - Используется запрошенный язык или задокументированный fallback.
   - Коды ошибок не зависят от языка.
@@ -441,6 +445,8 @@ checks:
   - action: 'Отправить GET, DELETE и HEAD с Content-Type: application/json и пустым телом — запрос принимается, заголовок
       не делает его невалидным'
     notes: inbox №3
+  - action: 'Вызвать операцию без requestBody (POST/PUT-действие) с Content-Type: application/json и Content-Length: 0 и проверить, что ответ тот же, что без заголовка, а не 400'
+    notes: 'inbox №361; заголовок на каждый POST ставят OkHttp/Retrofit, Alamofire, axios с общими заголовками'
   expected:
   - Тело не меняет семантику запроса, если контракт этого не описывает.
   applicability:
@@ -1013,3 +1019,73 @@ checks:
   references:
   - RFC 9110 §15.4
   - inbox №56
+- id: HTTP-DIRECT-PROXY-PARITY
+  status: draft
+  title: Поведение приложения не зависит от прокси перед ним
+  description: Прокси может маскировать дефект приложения или сам менять поведение; на другом стенде или после смены ingress
+    расхождение проявится.
+  category: http-semantics
+  protocols:
+  - rest
+  kind: compatibility
+  priority: P2
+  tags:
+  - compatibility
+  - hardening
+  preconditions:
+  - Есть стенд без прокси или прямой доступ к приложению, кроме входа через ingress.
+  steps:
+  - action: Прогнать один набор запросов (нестандартные пути, заголовки, кодировки, размеры) напрямую на приложение и через ingress
+      стенда и сравнить ответы.
+  - action: Вызвать через ingress ручку с обязательным заголовком с подчёркиванием в имени (installation_id) и проверить, что
+      заголовок дошёл до приложения.
+    notes: inbox №354; nginx по умолчанию отбрасывает такие заголовки (underscores_in_headers off); проверка конфигурации
+      стенда, раз на стенд, включая PROD
+  expected:
+  - Ответы совпадают; расхождение - находка на приложение или на конфигурацию прокси.
+  applicability:
+    when:
+    - Перед приложением стоит прокси или ingress.
+    skip_when:
+    - Нет прямого доступа к приложению ни на одном стенде.
+  automation:
+    level: partial
+    deterministic: true
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - inbox №351
+- id: HTTP-UNRELATED-HEADERS-IGNORED
+  status: draft
+  title: Посторонние и мусорные заголовки не меняют результат
+  category: http-semantics
+  protocols:
+  - rest
+  kind: boundary
+  priority: P3
+  tags:
+  - boundary
+  - hardening
+  preconditions:
+  - Есть ручка с обязательными заголовками.
+  steps:
+  - action: Отправить неизвестный заголовок, пустое значение у необязательного заголовка и длинное значение постороннего заголовка
+      в пределах лимита.
+  - action: Отправить заголовки, похожие на служебные (X-Api-Key, Api_Key, X-Installation-Id), без настоящего обязательного
+      и вместе с ним.
+  expected:
+  - Результат тот же, что без посторонних заголовков, без 5xx; похожие заголовки не подменяют обязательные.
+  applicability:
+    when:
+    - Есть HTTP API.
+    skip_when:
+    - Нет.
+  automation:
+    level: full
+    deterministic: true
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - inbox №365
