@@ -115,3 +115,4 @@
 | 2026-10-29 | Claude Opus 5.5 / demopolish | [ADR 0015](decisions/0015-split-runs-and-triage-model.md) - раздельные прогоны (обычные, безопасность, sg-restricted, разрушающие) и выбор модели для разбора сравнением (`compare-triage`); `Process/running-tests.md`, `Process/security-groups.md` |
 | 2026-10-30 | Claude Opus 5.5 / demopolish | Журнал и закрытые пункты вынесены из STATUS.md (AI-Memory/tools/status_tool.py); inbox.md разделён: разобранные идеи в processed.md (tools/inbox_split.py), draftcheck читает оба файла |
 | 2026-10-30 | Claude / bj | ADR 0016: версия библиотеки в данных (manifest.yaml), база подбора и library_diff.py без git, манифест в выгрузках |
+| 2026-10-30 | Claude / bj | Порядок догенерации (ADR 0016): library_diff.py - новые шаги в diff, новые записи в compact, needed, sync; Process/collections.md п. 4, CLAUDE.md |

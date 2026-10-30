@@ -1,10 +1,12 @@
 """База подбора проектов и сравнение с библиотекой (ADR 0016), без git.
 
     python tools/library_diff.py init <каталог-проекта-тестов> <модуль>   # docs/modules/<модуль>/library-baseline.yaml
-    python tools/library_diff.py diff <baseline> [--library PATH]       # новые, изменённые, ставшие approved, удалённые, pending
-    python tools/library_diff.py compact <baseline> --track functional|security   # pending: id, title, category, tags, protocols, applicability
+    python tools/library_diff.py diff <baseline> [--library PATH]       # новые, изменённые (с текстом новых шагов), ставшие approved, удалённые, pending
+    python tools/library_diff.py compact <baseline> --track functional|security   # без решения (pending и новые): id, title, category, tags, protocols, applicability
+    python tools/library_diff.py needed <baseline> [--track T] [--group G]   # записи needed: что осталось сгенерировать
     python tools/library_diff.py full ID,ID                             # полный текст записей (закрытые отказывает)
     python tools/library_diff.py apply <baseline> <decisions.yaml>      # {ID: {decision, reason}}
+    python tools/library_diff.py sync <каталог-проекта-тестов> <модуль>   # после генерации: needed с тестами -> applied (вызывает генератор)
 
 База: module, library_version, selected_at, records: {ID: {decision, track, status, hash, steps, reason}}.
 decision: applied | needed (применима, тестов нет; reason обязателен) | not_applicable (reason обязателен) | human (sg-restricted и ai_generation.restricted, не перезаписывается) | pending.
@@ -122,11 +124,29 @@ def count(records: dict):
     print("track: " + ", ".join(f"{k} {v}" for k, v in sorted(Counter(e["track"] for e in records.values()).items())))
 
 
+def open_checks() -> dict:
+    """Открытые записи этой библиотеки по ID: для текста новых шагов; закрытых здесь нет."""
+    pairs, _ = load_checks()
+    closed = closed_ids(pairs)
+    return {c["id"]: c for _, c in pairs if c["id"] not in closed}
+
+
+def change_details(check, old_steps: list) -> list:
+    """Что показать об изменённой записи: новые шаги; пусто - текст недоступен (закрытая запись или только манифест)."""
+    if not check:
+        return []
+    added = [s for h, s in zip(step_hashes(check), check.get("steps") or []) if h not in old_steps]
+    if not added:
+        return [f"    шаги те же: изменены expected, preconditions или applicability - library_diff.py full {check['id']}"]
+    return ["    + " + (s if isinstance(s, str) else json.dumps(s, ensure_ascii=False)) for s in added]
+
+
 def cmd_diff(baseline: Path, library=None):
     base = load_baseline(baseline)
     man = library_manifest(library)
     lib, recs = man["records"], base["records"]
     partial = man.get("scope") == "partial"
+    checks = open_checks() if library is None else {}
     new = sorted(i for i in lib if i not in recs)
     changed, approved = [], []
     for i, e in sorted(recs.items()):
@@ -135,7 +155,7 @@ def cmd_diff(baseline: Path, library=None):
             continue
         if c["hash"] != e["hash"]:
             add, rem = len(set(c["steps"]) - set(e["steps"])), len(set(e["steps"]) - set(c["steps"]))
-            changed.append(f"{i} [{e['decision']}] шагов: +{add} -{rem}")
+            changed.append("\n  ".join([f"{i} [{e['decision']}] шагов: +{add} -{rem}", *change_details(checks.get(i), e["steps"])]))
         if e["status"] != "approved" and c["status"] == "approved":
             approved.append(i)
     missing = sorted(i for i in recs if i not in lib)
@@ -154,20 +174,58 @@ def cmd_diff(baseline: Path, library=None):
 
 
 def cmd_compact(baseline: Path, track: str):
-    base = load_baseline(baseline)
-    wanted = {i for i, e in base["records"].items() if e["decision"] == "pending" and e["status"] == "approved" and e["track"] == track}
+    recs = load_baseline(baseline)["records"]
     pairs, _ = load_checks()
-    closed = closed_ids(pairs)
+    closed, sec = closed_ids(pairs), security_track()
     n = 0
     for _, c in pairs:
         i = c["id"]
-        if i not in wanted or i in closed:
+        e = recs.get(i) or {"decision": "pending", "track": "security" if i in sec else "functional"}   # новая запись библиотеки
+        if e["decision"] != "pending" or e["track"] != track or c.get("status") != "approved" or i in closed:
             continue
         app = c.get("applicability") or {}
         print(f"{i} | {c.get('title', '')} | {c.get('category')} | tags: {', '.join(map(str, c.get('tags') or []))} | "
               f"protocols: {', '.join(c.get('protocols') or [])}\n  when: {app.get('when')} | skip_when: {app.get('skip_when')}")
         n += 1
     print(f"pending {track}: {n}", file=sys.stderr)
+
+
+def cmd_needed(baseline: Path, track=None, group=None):
+    from collections import Counter
+    from security_groups import compute
+    index, _, _ = compute()
+    if group and group not in index:
+        sys.exit(f"нет группы {group}: {', '.join(sorted(index))}")
+    group_of = {i: g for g, ids in index.items() for i in ids}
+    rows = [(i, e["track"], group_of.get(i, "-"), e.get("reason", "")) for i, e in sorted(load_baseline(baseline)["records"].items())
+            if e["decision"] == "needed" and track in (None, e["track"]) and group in (None, group_of.get(i))]
+    for row in rows:
+        print(" | ".join(row))
+    print(f"needed: {len(rows)}; по группам: " + ", ".join(f"{g} {n}" for g, n in sorted(Counter(r[2] for r in rows).items())))
+
+
+def cmd_sync(project: Path, module: str):
+    """После генерации: needed, по которым появились тесты, -> applied. Версию подбора не меняет: новые решения не приняты."""
+    baseline = project / "docs" / "modules" / module / "library-baseline.yaml"
+    if not baseline.exists():
+        print(f"база подбора: нет {baseline} - первый подбор: library_diff.py init")
+        return
+    base = load_baseline(baseline)
+    recs = base["records"]
+    tested = applied_ids(project / "postman" / "collections" / module, set(recs))
+    moved = sorted(i for i, e in recs.items() if e["decision"] == "needed" and i in tested)
+    for i in moved:
+        recs[i]["decision"] = "applied"
+        recs[i].pop("reason", None)
+    if moved:
+        dump_baseline(baseline, base)
+    lost = sorted(i for i, e in recs.items() if e["decision"] == "applied" and i not in tested)
+    current = library_manifest()["version"]
+    print(f"база подбора: needed -> applied {len(moved)}, needed осталось {sum(e['decision'] == 'needed' for e in recs.values())}")
+    if lost:
+        print(f"ВНИМАНИЕ: applied без тестов в коллекции ({len(lost)}): " + ", ".join(lost))
+    if base["library_version"] != current:
+        print(f"ВНИМАНИЕ: база подбора {base['library_version']} отстаёт от библиотеки {current} - library_diff.py diff")
 
 
 def cmd_full(ids):
@@ -241,6 +299,13 @@ def main():
     p = sub.add_parser("compact")
     p.add_argument("baseline", type=Path)
     p.add_argument("--track", choices=("functional", "security"), required=True)
+    p = sub.add_parser("needed")
+    p.add_argument("baseline", type=Path)
+    p.add_argument("--track", choices=("functional", "security"))
+    p.add_argument("--group")
+    p = sub.add_parser("sync")
+    p.add_argument("project", type=Path)
+    p.add_argument("module")
     p = sub.add_parser("full")
     p.add_argument("ids")
     p = sub.add_parser("apply")
@@ -253,6 +318,10 @@ def main():
         cmd_diff(a.baseline, a.library)
     elif a.cmd == "compact":
         cmd_compact(a.baseline, a.track)
+    elif a.cmd == "needed":
+        cmd_needed(a.baseline, a.track, a.group)
+    elif a.cmd == "sync":
+        cmd_sync(a.project, a.module)
     elif a.cmd == "full":
         return cmd_full(a.ids)
     else:
