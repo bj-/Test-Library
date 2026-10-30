@@ -1,10 +1,10 @@
 # Манифест библиотеки (ADR 0016): версия, хеши записей и шагов. Собирается `python tools/library_manifest.py --write`
 # (и build_catalog.py), вручную не править.
-version: "2026.10.30-443620"
-library_hash: "443620925104"
+version: "2026.10.30-9dc291"
+library_hash: "9dc291f64058"
 scope: full
 omitted: 0
-records_total: 637
+records_total: 648
 records:
   "ASYNC-DEAD-LETTER":
     status: approved
@@ -60,8 +60,8 @@ records:
     steps: ["194471a68b27"]
   "ASYNC-WEBHOOK-SIGNATURE":
     status: approved
-    hash: "073a2cad05f6"
-    steps: ["5a9c12ec7712", "d7699733f152", "61f667175092", "89ce90832476"]
+    hash: "7c96ca1a3be0"
+    steps: ["5a9c12ec7712", "d7699733f152", "61f667175092", "89ce90832476", "e8f8c699d59d"]
   "ASYNC-WEBHOOK-URL-SSRF":
     status: approved
     hash: "b97f3f8a000f"
@@ -240,8 +240,8 @@ records:
     steps: ["586a97ccad0a", "0aae2857e9e1", "37b0fcffcd6d", "397371296741"]
   "AUTH-OTP-SEND-LIMIT":
     status: approved
-    hash: "b14ea88b34ea"
-    steps: ["58a0aa994197", "6a59f1bcfd1b"]
+    hash: "db0131393bba"
+    steps: ["58a0aa994197", "6a59f1bcfd1b", "ba51b0762fe8"]
   "AUTH-PASSWORD-CHANGE-REQUIRES-CURRENT":
     status: approved
     hash: "dc64b85027bc"
@@ -396,8 +396,12 @@ records:
     steps: ["6ac76465945d"]
   "BIZ-LIMITS-QUOTAS":
     status: approved
-    hash: "53d429c5a5b4"
-    steps: ["f11e41d9a312", "7dd5f95b9a87", "19795729448d", "4e3369cd63bc"]
+    hash: "d498885d46c6"
+    steps: ["f11e41d9a312", "7dd5f95b9a87", "19795729448d", "4e3369cd63bc", "c898b1f479e0"]
+  "BIZ-MESSAGE-TEMPLATE-COVERAGE":
+    status: draft
+    hash: "dcabcb7f5c17"
+    steps: ["82347c649f9a", "11a475f0b74b"]
   "BIZ-NEGATIVE-QUANTITY":
     status: approved
     hash: "b632c38d292e"
@@ -420,8 +424,8 @@ records:
     steps: ["78f421baa2aa", "60f434bf9a0b", "79ee66e7bad3", "6ac40407f19f"]
   "BIZ-TIME-WINDOW":
     status: approved
-    hash: "a709b882b723"
-    steps: ["898ad774d669"]
+    hash: "aab955881332"
+    steps: ["898ad774d669", "2f72de5317f4"]
   "BIZ-WORKFLOW-STEP-SKIP":
     status: approved
     hash: "59eeac0f3dbb"
@@ -458,6 +462,10 @@ records:
     status: approved
     hash: "b09721657d15"
     steps: ["c79994dce993"]
+  "COMPAT-SHARED-SCHEMA-SERVICES":
+    status: draft
+    hash: "c25bef4a13d8"
+    steps: ["5a91f4a924fe"]
   "COMPAT-UPGRADE-STORED-DATA-STABLE":
     status: approved
     hash: "146c6640ab7a"
@@ -600,8 +608,8 @@ records:
     steps: ["f466271acf1e", "e8c338430916"]
   "DB-MIGRATION-STATE-TRACKED":
     status: approved
-    hash: "aa7807fcde91"
-    steps: ["2c4122932ee1", "899d99ed46c5", "158e08a571e7", "3667df5d126b"]
+    hash: "449afe584044"
+    steps: ["2c4122932ee1", "899d99ed46c5", "158e08a571e7", "3667df5d126b", "6f3bf97fb611"]
   "DB-MIN-VERSION-COMPATIBILITY":
     status: approved
     hash: "e7955c5cf5bf"
@@ -1024,8 +1032,8 @@ records:
     steps: ["3cd00b143e06", "452c3e8d5a19", "5c0892ac596c"]
   "HTTP-ACCEPT-LANGUAGE":
     status: approved
-    hash: "a645fc8a1139"
-    steps: ["f9919ad93850", "db946915479f", "6cda8ed73f52", "52bd6721e7a0", "c6c99dd3b980"]
+    hash: "286c6600bb68"
+    steps: ["f9919ad93850", "db946915479f", "6cda8ed73f52", "52bd6721e7a0", "c6c99dd3b980", "9017f4b7fecc"]
   "HTTP-BODY-ON-GET-DELETE":
     status: approved
     hash: "f15e143ad36f"
@@ -1332,8 +1340,8 @@ records:
     steps: ["398d6f2b1654"]
   "PRIV-CONSENT-ENFORCEMENT":
     status: approved
-    hash: "cf181113e7df"
-    steps: ["4bb8bd0c4df2"]
+    hash: "867e8615b246"
+    steps: ["4bb8bd0c4df2", "ac6d1f5528cf", "79482fbd48eb", "118091a5f601"]
   "PRIV-DATA-MASKING":
     status: approved
     hash: "487d9d3b430a"
@@ -1552,16 +1560,16 @@ records:
     steps: ["10ab4cab5652", "76d4e350c165", "4d0e7f1936f7"]
   "REQ-CONTRACT-CONTRADICTS-SPEC":
     status: approved
-    hash: "7c48e3086422"
-    steps: ["116faa8657ea", "1e2750574164"]
+    hash: "03195a48f0b9"
+    steps: ["116faa8657ea", "1e2750574164", "988f7a4d1bdf"]
   "REQ-CONTRACT-SELF-CONSISTENCY":
     status: approved
     hash: "31fb57d98377"
     steps: ["83a0b167bdab", "f15b777a17e3", "4dce4c4510b9", "3868730884a6", "58c4c4d9ac45"]
   "REQ-CROSS-CLIENT-CONSISTENCY":
     status: approved
-    hash: "501c7ef30ec4"
-    steps: ["28eeb82e1f2e", "aac9b515ce73", "96227f8a99d9", "dd40ad1fdd20", "e97c527e7c57", "5c3ac8f54faf", "f13cb378499c", "8fbe955b99c5", "c175b620913d", "1969dfe5afc4", "58e2639d809a", "58092801d0d8"]
+    hash: "b8ef0289abb9"
+    steps: ["28eeb82e1f2e", "aac9b515ce73", "96227f8a99d9", "dd40ad1fdd20", "e97c527e7c57", "5c3ac8f54faf", "f13cb378499c", "8fbe955b99c5", "c175b620913d", "1969dfe5afc4", "58e2639d809a", "58092801d0d8", "0a717fadc875"]
   "REQ-SPEC-NOT-IN-CONTRACT":
     status: approved
     hash: "3a93983e7b55"
@@ -1608,8 +1616,8 @@ records:
     steps: ["ffb0f9fe8c74", "2f86d87d98bc", "313ce9b9527e"]
   "RES-DELETE-WITH-DEPENDENTS":
     status: approved
-    hash: "68ddcc6246bf"
-    steps: ["f644ed2fc184", "cf00ae49a0f5", "0cfe87fecbbd", "8585bc2f17c3", "4ee055e0a4ac", "8256136875fa"]
+    hash: "77e67da33ea3"
+    steps: ["f644ed2fc184", "cf00ae49a0f5", "0cfe87fecbbd", "8585bc2f17c3", "4ee055e0a4ac", "8256136875fa", "2585bd46e47b"]
   "RES-DRAFT-PUBLISH-FIDELITY":
     status: approved
     hash: "626b0a2afd82"
@@ -1636,8 +1644,8 @@ records:
     steps: ["88f3efc91401", "143aeb8d01cb", "91b30997cc02", "0f9b60df33b9"]
   "RES-REFERENCE-DATA-COMPLETE":
     status: approved
-    hash: "6d05f0e762f1"
-    steps: ["7a40ef3198ab"]
+    hash: "c0484ad06f4c"
+    steps: ["7a40ef3198ab", "44375b78353e"]
   "RES-REFERENTIAL-INTEGRITY":
     status: approved
     hash: "fc7ec2398194"
@@ -2116,8 +2124,8 @@ records:
     steps: ["bc2d33fc1f0f"]
   "SEC-IDENTITY-PROOF-OF-POSSESSION":
     status: approved
-    hash: "a8c72946b2b6"
-    steps: ["16a28507f5f0", "672b5b1e6a05", "360b0afb6fbc", "263a94c1b0be", "db4260baf80e", "f629beb33575"]
+    hash: "379c350a5781"
+    steps: ["16a28507f5f0", "672b5b1e6a05", "360b0afb6fbc", "263a94c1b0be", "db4260baf80e", "f629beb33575", "f01ca61a828c"]
   "SEC-INTERNAL-CONTROL-PARAMS":
     status: approved
     hash: "f11a5e123f06"
@@ -2294,6 +2302,10 @@ records:
     status: approved
     hash: "9078e6c86b87"
     steps: ["73b1aa1fc5cf", "e7a5e2f52d84", "0eef6b33a0cd", "d5fad4a194b4"]
+  "UI-EXPORT-VALUE-TYPES":
+    status: draft
+    hash: "1f2ee3beadaa"
+    steps: ["6ba5548bf6ca", "25253829df31"]
   "UI-FAILURE-ROBUSTNESS":
     status: approved
     hash: "f51f38c03b61"
@@ -2324,8 +2336,8 @@ records:
     steps: ["5b3df376b119", "391609462ca6"]
   "UI-LEGAL-PAGES":
     status: approved
-    hash: "127f0c0ba340"
-    steps: ["9ade286d6590"]
+    hash: "1435585fa84e"
+    steps: ["9ade286d6590", "c507ca9386f9"]
   "UI-LIST-COUNTERS-CONSISTENCY":
     status: approved
     hash: "d6214bcb287b"
@@ -2342,6 +2354,38 @@ records:
     status: approved
     hash: "33332994b059"
     steps: ["8ec0dc071ccf"]
+  "UI-MOBILE-BACKGROUND-WORK":
+    status: draft
+    hash: "91c7a1992c73"
+    steps: ["3caca15a99f6", "e878f9cd2c64", "c548d8d1d331"]
+  "UI-MOBILE-LOCAL-AUTH-FALLBACK":
+    status: draft
+    hash: "4acb391c423d"
+    steps: ["a9c8852e5228"]
+  "UI-MOBILE-LOCAL-CHANNEL-FALLBACK":
+    status: draft
+    hash: "678bc5b860a9"
+    steps: ["d5fb5d99a775"]
+  "UI-MOBILE-PAIRING-BY-RADIO":
+    status: draft
+    hash: "9fdbee3b8ebb"
+    steps: ["9458a9d64d8b", "7f760677fe96", "92526b6cfc21", "e15241974089", "67b010899cfa", "c8da633f6cc8"]
+  "UI-MOBILE-PERMISSIONS-BY-OS":
+    status: draft
+    hash: "42f5b75b9898"
+    steps: ["ea91f476c6e0", "8166c714a987"]
+  "UI-MOBILE-PUSH-NO-GMS":
+    status: draft
+    hash: "ce75663b8d99"
+    steps: ["bb5c1b6f1fdd"]
+  "UI-MOBILE-TABLET-NO-SIM":
+    status: draft
+    hash: "e9cb63f76310"
+    steps: ["ff9befe822f4", "d217a3287cf8", "54574872346a"]
+  "UI-MOBILE-WIFI-PROVISIONING":
+    status: draft
+    hash: "b069f74affae"
+    steps: ["1ed1265246b0", "b7fc1d54e0bc", "a9e125a8a062", "b42de038dbfe"]
   "UI-NAVIGATION":
     status: approved
     hash: "eca301cd821f"
@@ -2392,8 +2436,8 @@ records:
     steps: ["8f0fcefe77c8"]
   "UI-TEXTS-CORRECT":
     status: approved
-    hash: "b15894a981f3"
-    steps: ["be9bcdfc9e4a", "46704a369562", "ec922d74e3af"]
+    hash: "5b99728e93bf"
+    steps: ["be9bcdfc9e4a", "46704a369562", "ec922d74e3af", "b1c44d46a80c"]
   "UI-USABILITY":
     status: approved
     hash: "eac2b7698343"

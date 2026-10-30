@@ -379,3 +379,34 @@ checks:
     likelihood: medium
   references:
   - inbox №346
+- id: COMPAT-SHARED-SCHEMA-SERVICES
+  status: draft
+  title: После изменения схемы все сервисы ветки работают с общими таблицами
+  category: compatibility
+  protocols:
+  - generic
+  kind: compatibility
+  priority: P1
+  tags:
+  - compatibility
+  - smoke
+  preconditions:
+  - Несколько сервисов читают общие таблицы БД; есть стенд ветки.
+  steps:
+  - action: После развёртывания ветки вызвать у каждого сервиса, а не только изменённого, операции, читающие общие таблицы
+    notes: inbox №457
+  expected:
+  - Все сервисы отвечают без ошибок схемы; сервис, читающий удалённый объект, - находка.
+  applicability:
+    when:
+    - Схема БД общая для нескольких сервисов.
+    skip_when:
+    - У каждого сервиса своя БД.
+  automation:
+    level: partial
+    deterministic: true
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - Смежная — DB-MIGRATION-STATE-TRACKED

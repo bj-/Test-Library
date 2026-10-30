@@ -1,0 +1,298 @@
+checks:
+- id: UI-MOBILE-WIFI-PROVISIONING
+  status: draft
+  title: Подключение устройства к Wi-Fi проходит при разных сетях телефона и роутера
+  category: ui
+  protocols:
+  - ui-mobile
+  kind: compatibility
+  priority: P1
+  tags:
+  - ui
+  - compatibility
+  preconditions:
+  - Есть мобильное приложение, парк телефонов и подключаемые устройства.
+  - Есть роутер с настройкой диапазонов и режимов безопасности.
+  steps:
+  - action: Телефон в 5 ГГц, устройство только 2,4 ГГц, общий SSID с band steering и раздельные SSID - приложение доводит
+      подключение до конца или объясняет, что сделать
+    notes: inbox №422
+  - action: Телефон, который не видит 5 ГГц, в общей сети 2,4 + 5 ГГц - подключение через точку доступа устройства и возврат
+      в домашнюю сеть проходят
+    notes: inbox №439
+  - action: Подключение через точку доступа устройства (SoftAP) - ОС уходит с сети без интернета на домашнюю (Android),
+      запрашивает подключение (iOS), процесс не рвётся
+    notes: inbox №423
+  - action: Роутер WPA3, переходный WPA2/3, Wi-Fi 6, устройство умеет только WPA2 - понятная ошибка, а не зависание
+    notes: inbox №429
+  expected:
+  - Подключение завершается на всех сочетаниях сетей или приложение объясняет причину и что сделать; зависаний и молчаливых
+    отказов нет.
+  applicability:
+    when:
+    - Устройство подключается к Wi-Fi через приложение.
+    skip_when:
+    - Приложение не работает с физическими устройствами.
+  automation:
+    level: manual
+    deterministic: false
+  risk:
+    impact: high
+    likelihood: high
+  references:
+  - ADR 0006 (проверки UI)
+- id: UI-MOBILE-PAIRING-BY-RADIO
+  status: draft
+  title: Мастер сопряжения выбирает путь по возможностям устройства и телефона
+  category: ui
+  protocols:
+  - ui-mobile
+  kind: compatibility
+  priority: P1
+  tags:
+  - ui
+  - compatibility
+  preconditions:
+  - Есть мобильное приложение, парк телефонов и подключаемые устройства.
+  - Есть устройства разных поколений и каналов связи, телефоны с разными версиями Bluetooth.
+  steps:
+  - action: Устройство без Bluetooth - мастер не застревает на поиске по BLE и сам предлагает подключение через точку доступа
+      устройства
+    notes: inbox №434
+  - action: Устройство только с BLE, без Wi-Fi - мастер не просит сеть Wi-Fi; понятное поведение вне радиуса BT и при
+      удалённом доступе (через хаб, телефон или «недоступно удалённо»)
+    notes: inbox №438
+  - action: Один тип устройства на старой и новой прошивке в одном доме - путь сопряжения определяется по устройству, оба
+      управляются, после миграции прошивки повторное сопряжение не создаёт дубль
+    notes: inbox №435
+  - action: Сопряжение по BLE с устройствами разных поколений (4.2, 5.0) на Android и iOS - обнаружение, MTU, повторное
+      подключение
+    notes: inbox №436
+  - action: Сопряжение с телефона на Bluetooth 4.2 с устройствами BLE 4.2 и 5.0 - приложение не опирается на возможности BLE
+      5 без проверки
+    notes: inbox №440
+  - action: Устройство с LE Extended Advertising или 2M PHY на телефоне без их поддержки - приложение сообщает об этом или
+      предлагает другой способ
+    notes: inbox №431
+  expected:
+  - Мастер предлагает путь, доступный этой паре устройств; на неподдерживаемой паре - понятное сообщение; дублей устройств
+    нет.
+  applicability:
+    when:
+    - Есть сопряжение устройств через приложение.
+    skip_when:
+    - Приложение не работает с физическими устройствами.
+  automation:
+    level: manual
+    deterministic: false
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - ADR 0006 (проверки UI)
+- id: UI-MOBILE-PERMISSIONS-BY-OS
+  status: draft
+  title: Разрешения запрашиваются по версии ОС, отказ объяснён, выдача работает без перезапуска
+  category: ui
+  protocols:
+  - ui-mobile
+  kind: compatibility
+  priority: P1
+  tags:
+  - ui
+  - compatibility
+  preconditions:
+  - Есть мобильное приложение и телефоны с разными версиями ОС.
+  steps:
+  - action: Проверить набор разрешений по уровням - Android до 11 (выключенная геолокация даёт пустой BLE-скан), 12+
+      (BLUETOOTH_SCAN, BLUETOOTH_CONNECT), 13+ (NEARBY_WIFI_DEVICES, POST_NOTIFICATIONS), iOS (Bluetooth, «Локальная сеть»)
+    notes: inbox №424
+  - action: Отказать в каждом разрешении - понятное сообщение и путь в настройки; выдать разрешение в настройках и вернуться
+      - работает без перезапуска приложения
+    notes: inbox №424
+  expected:
+  - На каждой версии ОС запрашиваются нужные разрешения; отказ объяснён и обратим без перезапуска.
+  applicability:
+    when:
+    - Приложение использует разрешения ОС.
+    skip_when:
+    - Только web-клиент.
+  automation:
+    level: manual
+    deterministic: false
+  risk:
+    impact: medium
+    likelihood: high
+  references:
+  - ADR 0006 (проверки UI)
+- id: UI-MOBILE-PUSH-NO-GMS
+  status: draft
+  title: Push работает на Android без сервисов Google
+  category: ui
+  protocols:
+  - ui-mobile
+  kind: compatibility
+  priority: P2
+  tags:
+  - ui
+  - compatibility
+  preconditions:
+  - Есть телефон без сервисов Google и подключённый альтернативный провайдер push (Huawei Push Kit).
+  steps:
+  - action: Проверить доставку, открытие нужного экрана по нажатию и обновление токена
+    notes: inbox №425
+  expected:
+  - Push доставляется, нажатие открывает нужный экран, обновлённый токен регистрируется на сервере.
+  applicability:
+    when:
+    - Заявлена поддержка устройств без сервисов Google.
+    skip_when:
+    - Такие устройства не поддерживаются.
+  automation:
+    level: manual
+    deterministic: false
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - ADR 0006 (проверки UI)
+- id: UI-MOBILE-LOCAL-AUTH-FALLBACK
+  status: draft
+  title: Локальная аутентификация учитывает класс биометрии и предлагает альтернативу
+  category: ui
+  protocols:
+  - ui-mobile
+  kind: negative
+  priority: P2
+  tags:
+  - ui
+  - negative
+  preconditions:
+  - Есть телефоны с биометрией разных классов и без неё.
+  steps:
+  - action: На Android только разблокировка лицом не класса Strong или нет биометрии - приложение не считает её доступной и
+      предлагает альтернативу
+    notes: inbox №426
+  expected:
+  - Биометрия слабого класса не принимается за доступную; пользователь не заблокирован, альтернативный вход работает.
+  applicability:
+    when:
+    - Есть вход по биометрии.
+    skip_when:
+    - Биометрия не используется.
+  automation:
+    level: manual
+    deterministic: false
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - ADR 0006 (проверки UI)
+- id: UI-MOBILE-BACKGROUND-WORK
+  status: draft
+  title: Прямое управление и долгие операции переживают фон, блокировку и энергосбережение
+  category: ui
+  protocols:
+  - ui-mobile
+  kind: reliability
+  priority: P1
+  tags:
+  - ui
+  - compatibility
+  preconditions:
+  - Есть мобильное приложение, парк телефонов и подключаемые устройства.
+  - Есть телефоны производителей с агрессивным энергосбережением (MIUI/HyperOS, EMUI, One UI).
+  steps:
+  - action: Свернуть приложение, заблокировать экран, дать энергосбережению убить процесс - сценарии без интернета
+      выполняются или пользователь предупреждён
+    notes: inbox №427
+  - action: Сравнить между версиями оболочки производителя работу в фоне и после блокировки экрана - локальные уведомления,
+      обновление состояния устройств, с автозапуском и без, в режиме экономии батареи
+    notes: inbox №441
+  - action: Во время долгой операции по LAN (обновление прошивки устройства) сменить сеть, заблокировать экран и свернуть
+      приложение - устройство не выходит из строя, статус в приложении верный
+    notes: inbox №432
+  expected:
+  - Фоновые сценарии выполняются или пользователь предупреждён заранее; долгая операция завершается или откатывается, статус
+    верный.
+  applicability:
+    when:
+    - Приложение работает в фоне или управляет устройством напрямую.
+    skip_when:
+    - Только сценарии на активном экране.
+  automation:
+    level: manual
+    deterministic: false
+  risk:
+    impact: high
+    likelihood: high
+  references:
+  - ADR 0006 (проверки UI)
+- id: UI-MOBILE-LOCAL-CHANNEL-FALLBACK
+  status: draft
+  title: Недоступность локальной сети не ломает управление устройством
+  category: ui
+  protocols:
+  - ui-mobile
+  kind: reliability
+  priority: P2
+  tags:
+  - ui
+  - compatibility
+  preconditions:
+  - Есть мобильное приложение, парк телефонов и подключаемые устройства.
+  - Есть сеть с изоляцией клиентов или гостевая сеть.
+  steps:
+  - action: В сети с изоляцией клиентов или гостевой сети mDNS и локальное управление недоступны - приложение переходит на
+      облачный канал, локальные уведомления не теряются молча
+    notes: inbox №428
+  expected:
+  - Управление продолжается через облачный канал или недоступность объяснена; события не теряются молча.
+  applicability:
+    when:
+    - Есть гибридное управление - локальное и облачное.
+    skip_when:
+    - Только облачное управление.
+  automation:
+    level: manual
+    deterministic: false
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - ADR 0006 (проверки UI)
+- id: UI-MOBILE-TABLET-NO-SIM
+  status: draft
+  title: Планшет без SIM проходит вход и мастера и управляет удалённо по Wi-Fi
+  category: ui
+  protocols:
+  - ui-mobile
+  kind: compatibility
+  priority: P3
+  tags:
+  - ui
+  - compatibility
+  preconditions:
+  - Есть планшет без SIM и второе устройство с номером учётки.
+  steps:
+  - action: Войти по коду из SMS, который пришёл на другое устройство - автозаполнения нет, ручной ввод работает
+    notes: inbox №430
+  - action: Проверить удалённое управление только по Wi-Fi
+    notes: inbox №430
+  - action: Повернуть планшет во время мастера сопряжения - текущий шаг сохраняется
+    notes: inbox №430
+  expected:
+  - Вход без автозаполнения проходит, удалённое управление работает по Wi-Fi, поворот не сбрасывает мастер.
+  applicability:
+    when:
+    - Заявлена поддержка планшетов.
+    skip_when:
+    - Только телефоны.
+  automation:
+    level: manual
+    deterministic: false
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - ADR 0006 (проверки UI)

@@ -375,3 +375,38 @@ checks:
   - Чек-лист guru99 (пер. О. Алифановой)
   - Серверная сторона — PAGE-SORT-FIELD-TYPE-MATRIX, REST-FILTER-OPERATOR-TYPE-MATRIX
   - ADR 0006 (проверки UI)
+- id: UI-EXPORT-VALUE-TYPES
+  status: draft
+  title: Выгрузка в CSV/XLSX сохраняет тип значений в табличном редакторе и сходится с детализацией
+  category: ui
+  protocols:
+  - ui-web
+  - ui-desktop
+  kind: contract
+  priority: P2
+  tags:
+  - ui
+  preconditions:
+  - Есть выгрузка статистики или отчёта в CSV/XLSX.
+  steps:
+  - action: Выгрузить значения вида 26.5.2, 18.5, 8.1.0 и открыть в Excel с русской локалью - версия остаётся строкой, а не
+      становится датой или числом (в XLSX тип ячейки «текст», в CSV способ, который Excel не переразбирает)
+    notes: inbox №433
+  - action: Сравнить сумму по основным версиям с детализацией
+    notes: inbox №433
+  expected:
+  - Значения в редакторе совпадают с выгруженными; суммы сходятся.
+  applicability:
+    when:
+    - Есть выгрузка в CSV или XLSX.
+    skip_when:
+    - Выгрузки нет.
+  automation:
+    level: partial
+    deterministic: true
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - ADR 0006 (проверки UI)
+  - Смежная — INJ-CSV-FORMULA

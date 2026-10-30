@@ -2,8 +2,8 @@
 
 Файл генерируется `python tools/build_catalog.py .` — не редактируйте вручную.
 
-Всего проверок: **637** — approved: 583, draft: 38, needs_clarification: 16.
-Протоколы: db: 33, generic: 130, graphql: 229, grpc: 150, rest: 424, ui-desktop: 27, ui-mobile: 28, ui-web: 38, websocket: 65.
+Всего проверок: **648** — approved: 583, draft: 49, needs_clarification: 16.
+Протоколы: db: 33, generic: 132, graphql: 229, grpc: 150, rest: 424, ui-desktop: 28, ui-mobile: 36, ui-web: 39, websocket: 65.
 
 | Категория | Описание | Проверок |
 |---|---|---:|
@@ -18,18 +18,18 @@
 | [grpc-contract](#grpc-contract) | Protobuf and RPC contract conformance | 17 |
 | [grpc-errors](#grpc-errors) | gRPC status and error details | 16 |
 | [resilience](#resilience) | Timeouts, retries, dependency failures | 11 |
-| [business-logic](#business-logic) | Domain rules, workflows, limits, and money | 20 |
+| [business-logic](#business-logic) | Domain rules, workflows, limits, and money | 21 |
 | [concurrency](#concurrency) | Parallel requests, races, and lost updates | 8 |
 | [observability](#observability) | Logs, audit trail, tracing, and health endpoints | 12 |
 | [performance](#performance) | Latency, throughput, load, and resource usage | 8 |
-| [compatibility](#compatibility) | Versioning, backward compatibility, and contract drift | 9 |
+| [compatibility](#compatibility) | Versioning, backward compatibility, and contract drift | 10 |
 | [files](#files) | File upload, download, and binary content | 17 |
 | [async](#async) | Webhooks, events, background jobs, and messaging | 15 |
 | [graphql](#graphql) | GraphQL-specific query, schema, and abuse controls | 14 |
 | [websocket](#websocket) | WebSocket connection, message, and subscription behavior | 10 |
 | [privacy](#privacy) | Personal data handling, masking, consent, and erasure | 6 |
 | [requirements](#requirements) | Requirement transfer errors - spec vs contract vs implementation, unspecified behavior | 6 |
-| [ui](#ui) | User interface - forms, navigation, state, data and error display, client settings, localization and RTL | 39 |
+| [ui](#ui) | User interface - forms, navigation, state, data and error display, client settings, localization and RTL | 48 |
 | [db](#db) | Database - schema and constraints, migrations, indexes and query plans, stored logic, data integrity, application queries | 33 |
 
 ## contract
@@ -571,6 +571,7 @@ Domain rules, workflows, limits, and money
 | `BIZ-FLAG-EFFECT-MATRIX` | Каждый флаг сущности влияет на поведение так, как описано | P2 | approved | generic | CI, Regression, Nightly |
 | `BIZ-HIERARCHY-CYCLES` | Ссылка на себя и циклы в иерархии запрещены | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `BIZ-IMPOSSIBLE-STEP-NOT-ASSIGNED` | Невыполнимый обязательный шаг не назначается и не блокирует законную операцию | P2 | approved | generic | CI, Regression, Nightly |
+| `BIZ-MESSAGE-TEMPLATE-COVERAGE` | Шаблоны сообщений есть для каждого региона и языка и укладываются в лимит длины | P2 | draft | generic |  |
 | `BIZ-RULES-DETERMINISTIC` | Итог нескольких правил над одним значением детерминирован | P2 | approved | generic | CI, Regression, Nightly |
 | `BIZ-SIDE-EFFECTS-ONCE` | Побочные эффекты (письма, push, события) выполняются ровно один раз | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `BIZ-TIME-WINDOW` | Операции вне разрешённого временного окна отклоняются | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
@@ -635,6 +636,7 @@ Versioning, backward compatibility, and contract drift
 | `COMPAT-ADDITIVE-CHANGE` | Добавление полей не ломает существующих клиентов | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
 | `COMPAT-BUILD-IMAGE-STARTS` | Собранный образ запускается до публикации | P1 | draft | generic |  |
 | `COMPAT-IMPLEMENTATION-MATCHES-CONTRACT` | Реализация соответствует опубликованному контракту | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
+| `COMPAT-SHARED-SCHEMA-SERVICES` | После изменения схемы все сервисы ветки работают с общими таблицами | P1 | draft | generic |  |
 | `COMPAT-DEFAULT-VERSION` | Запрос без указания версии обслуживается задокументированной версией | P2 | approved | rest, graphql | CI, Regression, Nightly |
 | `COMPAT-ENUM-EXTENSION` | Добавление значения enum не ломает клиентов | P2 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly |
 | `COMPAT-UPGRADE-STORED-DATA-STABLE` | Обновление сервера не меняет сохранённые объекты и не запускает побочных действий | P2 | approved | generic | CI, Regression, Nightly |
@@ -759,6 +761,10 @@ User interface - forms, navigation, state, data and error display, client settin
 |---|---|---|---|---|---|
 | `UI-AUTH-FLOWS` | Интерфейсные потоки входа и восстановления нельзя обойти и перенаправить наружу | P1 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly, Release |
 | `UI-CLIENT-CODE-NO-SECRETS` | Клиентский код и страницы не раскрывают секретов и лишних данных | P1 | approved | ui-web | CI, Regression, Nightly, Release |
+| `UI-MOBILE-BACKGROUND-WORK` | Прямое управление и долгие операции переживают фон, блокировку и энергосбережение | P1 | draft | ui-mobile |  |
+| `UI-MOBILE-PAIRING-BY-RADIO` | Мастер сопряжения выбирает путь по возможностям устройства и телефона | P1 | draft | ui-mobile |  |
+| `UI-MOBILE-PERMISSIONS-BY-OS` | Разрешения запрашиваются по версии ОС, отказ объяснён, выдача работает без перезапуска | P1 | draft | ui-mobile |  |
+| `UI-MOBILE-WIFI-PROVISIONING` | Подключение устройства к Wi-Fi проходит при разных сетях телефона и роутера | P1 | draft | ui-mobile |  |
 | `UI-PLATFORM-SECURITY` | Настольный и мобильный клиенты не открывают недоверенный код и экраны входа другим приложениям | P1 | approved | ui-desktop, ui-mobile | CI, Regression, Nightly, Release |
 | `UI-SAFE-RENDERING` | Данные отображаются экранированными и не роняют интерфейс | P1 | approved | ui-web | CI, Regression, Nightly, Release |
 | `UI-ACTIONS-WORK-ONCE` | Каждое действие выполняется ровно один раз и меняет ровно своё | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
@@ -770,6 +776,7 @@ User interface - forms, navigation, state, data and error display, client settin
 | `UI-DOCUMENTS-OPEN` | Загруженные документы открываются и скачиваются в каждом поддерживаемом формате | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-DROPDOWN-VALUES` | Выпадающие списки показывают полные, разрешённые и упорядоченные значения | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-ERROR-DISPLAY` | Ошибки сервера при сохранении показываются понятным сообщением | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
+| `UI-EXPORT-VALUE-TYPES` | Выгрузка в CSV/XLSX сохраняет тип значений в табличном редакторе и сходится с детализацией | P2 | draft | ui-web, ui-desktop |  |
 | `UI-FAILURE-ROBUSTNESS` | Клиент не падает при сбое и неполных данных | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-FORM-REQUIRED-AND-HINTS` | Обязательные поля помечены и проверяются, подсказки объясняют формат | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-FORM-STATE` | Форма сохраняет и сбрасывает состояние ожидаемо | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
@@ -778,6 +785,9 @@ User interface - forms, navigation, state, data and error display, client settin
 | `UI-LIST-FILTER-STATE` | Фильтры снимаются и не переносятся между списками | P2 | approved | ui-web | CI, Regression, Nightly |
 | `UI-LIST-FILTER-VALUES` | Фильтры принимают и показывают значения своего типа | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-LIST-SORT` | Сортировка списков работает и сохраняется | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
+| `UI-MOBILE-LOCAL-AUTH-FALLBACK` | Локальная аутентификация учитывает класс биометрии и предлагает альтернативу | P2 | draft | ui-mobile |  |
+| `UI-MOBILE-LOCAL-CHANNEL-FALLBACK` | Недоступность локальной сети не ломает управление устройством | P2 | draft | ui-mobile |  |
+| `UI-MOBILE-PUSH-NO-GMS` | Push работает на Android без сервисов Google | P2 | draft | ui-mobile |  |
 | `UI-NETWORK-RESILIENCE` | Клиент работает при потере сети и без доступа в интернет | P2 | approved | ui-web, ui-mobile | CI, Regression, Nightly |
 | `UI-PLATFORM-COMPATIBILITY` | Интерфейс одинаково работает в поддерживаемых браузерах, ОС и режимах | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-RESPONSIVE-LAYOUT` | Интерфейс работает на всех поддерживаемых размерах экрана | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
@@ -789,6 +799,7 @@ User interface - forms, navigation, state, data and error display, client settin
 | `UI-LAYOUT-OVERFLOW` | Длинные тексты и раскрывающиеся элементы не выходят за границы и не перекрываются | P3 | approved | ui-web, ui-desktop, ui-mobile | Regression, Nightly |
 | `UI-LEGAL-PAGES` | Условия использования и FAQ доступны там, где нужны | P3 | approved | ui-web, ui-desktop, ui-mobile | Regression, Nightly |
 | `UI-LIST-COUNTERS-CONSISTENCY` | Счётчики элементов совпадают с фактическим числом записей | P3 | approved | ui-web | Regression, Nightly |
+| `UI-MOBILE-TABLET-NO-SIM` | Планшет без SIM проходит вход и мастера и управляет удалённо по Wi-Fi | P3 | draft | ui-mobile |  |
 | `UI-NAVIGATION` | Навигация последовательна: путь на главную, заголовки, рабочие пункты меню | P3 | approved | ui-web, ui-desktop, ui-mobile | Regression, Nightly |
 | `UI-NO-BROKEN-RESOURCES` | Ссылки, картинки и ресурсы страниц загружаются | P3 | approved | ui-web | Regression, Nightly |
 | `UI-RELATED-RECORDS` | Связанные записи редактируются во вложенной форме так же, как отдельно | P3 | approved | ui-web | Regression, Nightly |
