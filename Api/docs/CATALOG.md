@@ -2,15 +2,15 @@
 
 Файл генерируется `python tools/build_catalog.py .` — не редактируйте вручную.
 
-Всего проверок: **648** — approved: 583, draft: 49, needs_clarification: 16.
-Протоколы: db: 33, generic: 132, graphql: 229, grpc: 150, rest: 424, ui-desktop: 28, ui-mobile: 36, ui-web: 39, websocket: 65.
+Всего проверок: **660** — approved: 583, draft: 61, needs_clarification: 16.
+Протоколы: db: 33, generic: 133, graphql: 230, grpc: 151, rest: 425, ui-desktop: 38, ui-mobile: 37, ui-web: 41, websocket: 65.
 
 | Категория | Описание | Проверок |
 |---|---|---:|
 | [contract](#contract) | API contract and schema conformance | 31 |
 | [resources](#resources) | Resource lifecycle and state transitions | 35 |
 | [security](#security) | Authentication, authorization, and data isolation | 233 |
-| [validation](#validation) | Input validation and normalization | 42 |
+| [validation](#validation) | Input validation and normalization | 43 |
 | [http-semantics](#http-semantics) | HTTP methods, headers, and status semantics | 27 |
 | [errors](#errors) | Error response shape and consistency | 4 |
 | [pagination](#pagination) | Pagination, filtering, and sorting | 23 |
@@ -18,7 +18,7 @@
 | [grpc-contract](#grpc-contract) | Protobuf and RPC contract conformance | 17 |
 | [grpc-errors](#grpc-errors) | gRPC status and error details | 16 |
 | [resilience](#resilience) | Timeouts, retries, dependency failures | 11 |
-| [business-logic](#business-logic) | Domain rules, workflows, limits, and money | 21 |
+| [business-logic](#business-logic) | Domain rules, workflows, limits, and money | 22 |
 | [concurrency](#concurrency) | Parallel requests, races, and lost updates | 8 |
 | [observability](#observability) | Logs, audit trail, tracing, and health endpoints | 12 |
 | [performance](#performance) | Latency, throughput, load, and resource usage | 8 |
@@ -29,7 +29,7 @@
 | [websocket](#websocket) | WebSocket connection, message, and subscription behavior | 10 |
 | [privacy](#privacy) | Personal data handling, masking, consent, and erasure | 6 |
 | [requirements](#requirements) | Requirement transfer errors - spec vs contract vs implementation, unspecified behavior | 6 |
-| [ui](#ui) | User interface - forms, navigation, state, data and error display, client settings, localization and RTL | 48 |
+| [ui](#ui) | User interface - forms, navigation, state, data and error display, client settings, localization and RTL | 58 |
 | [db](#db) | Database - schema and constraints, migrations, indexes and query plans, stored logic, data integrity, application queries | 33 |
 
 ## contract
@@ -376,6 +376,7 @@ Input validation and normalization
 | `VAL-NUMBER-REPRESENTATION` | Альтернативные записи чисел обрабатываются по контракту | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `VAL-PATH-ID-FORMAT` | Неверный формат идентификатора в пути не вызывает 5xx | P1 | approved | rest | CI, Regression, Nightly, Release |
 | `VAL-RANGE-ORDER` | Начало диапазона не может быть позже конца | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
+| `VAL-RULES-ALL-INPUT-PATHS` | Запрет на поле нельзя обойти другим методом, полем или пакетной загрузкой | P1 | draft | rest, grpc, graphql |  |
 | `VAL-SPECIAL-CHARACTERS` | Спецсимволы, emoji и управляющие символы сохраняются или отклоняются корректно | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `VAL-STRING-FORMAT` | Форматы строк (email, uuid, uri, date, phone) проверяются | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `REST-EMPTY-VALUES` | Пустые объект, массив и строка | P2 | approved | rest | CI, Regression, Nightly |
@@ -563,6 +564,7 @@ Domain rules, workflows, limits, and money
 | `BIZ-LIMITS-QUOTAS` | Лимиты и квоты соблюдаются на границе и не обходятся параллельно | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `BIZ-ONE-TIME-BENEFIT-REUSE` | Одноразовые промокоды, бонусы и приглашения нельзя использовать повторно | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `BIZ-ROUNDING` | Округление денежных величин корректно и не накапливает ошибку | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
+| `BIZ-ADJACENT-RANGES-PARTITION` | Соседние диапазоны не пересекаются и не оставляют дыр на границах | P2 | draft | generic |  |
 | `BIZ-CONFIG-SCOPE-PRECEDENCE` | Настройка более узкого уровня имеет приоритет над глобальной | P2 | approved | generic | CI, Regression, Nightly |
 | `BIZ-CURRENCY-MISMATCH` | Смешение валют в операции обрабатывается явно | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `BIZ-DIVISION-BY-ZERO` | Входы с нулём в знаменателе не дают 500 и нечисловых значений | P2 | approved | generic | CI, Regression, Nightly |
@@ -761,6 +763,8 @@ User interface - forms, navigation, state, data and error display, client settin
 |---|---|---|---|---|---|
 | `UI-AUTH-FLOWS` | Интерфейсные потоки входа и восстановления нельзя обойти и перенаправить наружу | P1 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly, Release |
 | `UI-CLIENT-CODE-NO-SECRETS` | Клиентский код и страницы не раскрывают секретов и лишних данных | P1 | approved | ui-web | CI, Regression, Nightly, Release |
+| `UI-DESKTOP-UNSAVED-EXIT` | Выход и сохранение не теряют данные без запроса | P1 | draft | ui-desktop |  |
+| `UI-FILE-OPEN-SAVE-ROUNDTRIP` | Сохранение и открытие файла не теряют данные, чужой файл даёт сообщение | P1 | draft | ui-web, ui-desktop |  |
 | `UI-MOBILE-BACKGROUND-WORK` | Прямое управление и долгие операции переживают фон, блокировку и энергосбережение | P1 | draft | ui-mobile |  |
 | `UI-MOBILE-PAIRING-BY-RADIO` | Мастер сопряжения выбирает путь по возможностям устройства и телефона | P1 | draft | ui-mobile |  |
 | `UI-MOBILE-PERMISSIONS-BY-OS` | Разрешения запрашиваются по версии ОС, отказ объяснён, выдача работает без перезапуска | P1 | draft | ui-mobile |  |
@@ -772,6 +776,11 @@ User interface - forms, navigation, state, data and error display, client settin
 | `UI-CLIENT-REQUEST-HYGIENE` | Клиент не шлёт лишних, дублирующих и бесконечных запросов | P2 | approved | ui-web | CI, Nightly |
 | `UI-CONDITIONAL-FORMATTING` | Условное оформление работает для всех операторов сравнения | P2 | approved | ui-web | CI, Regression, Nightly |
 | `UI-CONFIRM-DESTRUCTIVE` | Удаление и изменение подтверждаются, отмена ничего не меняет | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
+| `UI-DESKTOP-INSTALL-RESULT` | После установки есть ярлыки, запись о программе и ассоциации файлов | P2 | draft | ui-desktop |  |
+| `UI-DESKTOP-INSTALL-WIZARD` | Мастер установки предсказуем на каждом шаге, отмена откатывает установку | P2 | draft | ui-desktop |  |
+| `UI-DESKTOP-MENU-COMMANDS` | Каждый пункт меню и показанное сочетание клавиш выполняют свою команду | P2 | draft | ui-desktop |  |
+| `UI-DESKTOP-REINSTALL` | Повторная установка поверх существующей не ломает программу и не плодит записи | P2 | draft | ui-desktop |  |
+| `UI-DESKTOP-UNINSTALL-CLEAN` | Удаление не оставляет следов, кроме данных пользователя по описанному правилу | P2 | draft | ui-desktop |  |
 | `UI-DISABLED-AND-READONLY` | Недоступные и доступные только для чтения элементы видны и не выполняют действий | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-DOCUMENTS-OPEN` | Загруженные документы открываются и скачиваются в каждом поддерживаемом формате | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-DROPDOWN-VALUES` | Выпадающие списки показывают полные, разрешённые и упорядоченные значения | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
@@ -794,7 +803,10 @@ User interface - forms, navigation, state, data and error display, client settin
 | `UI-SECRET-FIELDS` | Поля паролей и секретов не раскрывают и не теряют значение | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-SESSION-EXPIRY` | Истечение и потеря сессии обрабатываются в интерфейсе понятно | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-STATE-CHANGE-METHODS` | Изменения состояния отправляются небезопасными методами, а не GET | P2 | approved | ui-web | CI, Nightly |
+| `UI-UNDO-REDO-VISIBLE-STATE` | Отмена и повтор согласованы с тем, что видит пользователь | P2 | draft | ui-web, ui-desktop, ui-mobile |  |
 | `UI-CHANGE-HISTORY` | История изменений показывает каждое изменение с автором | P3 | approved | ui-web, ui-desktop, ui-mobile | Regression, Nightly |
+| `UI-DESKTOP-HELP-ABOUT` | Справка, подсказки «Что это?» и окно «О программе» верны и согласованы | P3 | draft | ui-desktop |  |
+| `UI-DESKTOP-WINDOW-BEHAVIOR` | Окно ведёт себя по стандартам ОС | P3 | draft | ui-desktop |  |
 | `UI-FIELD-LABELS-MATCH-FORM` | Подписи и подсказки полей соответствуют назначению формы | P3 | approved | ui-web, ui-desktop, ui-mobile | Regression, Nightly |
 | `UI-LAYOUT-OVERFLOW` | Длинные тексты и раскрывающиеся элементы не выходят за границы и не перекрываются | P3 | approved | ui-web, ui-desktop, ui-mobile | Regression, Nightly |
 | `UI-LEGAL-PAGES` | Условия использования и FAQ доступны там, где нужны | P3 | approved | ui-web, ui-desktop, ui-mobile | Regression, Nightly |

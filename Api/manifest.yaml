@@ -1,10 +1,10 @@
 # Манифест библиотеки (ADR 0016): версия, хеши записей и шагов. Собирается `python tools/library_manifest.py --write`
 # (и build_catalog.py), вручную не править.
-version: "2026.10.30-d69693"
-library_hash: "d69693fa328c"
+version: "2026.10.30-95bf14"
+library_hash: "95bf1477db95"
 scope: full
 omitted: 0
-records_total: 648
+records_total: 660
 records:
   "ASYNC-DEAD-LETTER":
     status: approved
@@ -346,6 +346,10 @@ records:
     status: approved
     hash: "04926c23ced3"
     steps: ["5a91d4be7412"]
+  "BIZ-ADJACENT-RANGES-PARTITION":
+    status: draft
+    hash: "c50899056561"
+    steps: ["d53ee04830d2", "73b457bf80dd"]
   "BIZ-AMBIGUOUS-ADDRESS":
     status: approved
     hash: "2cae9223bd18"
@@ -1624,8 +1628,8 @@ records:
     steps: ["06f4cf06bb98", "8b029ab190fe", "91950ac910d4", "35ddd4797e63", "2c6f7307b8e9", "9673c1b7f45a"]
   "RES-EXPORT-IMPORT-ROUNDTRIP":
     status: approved
-    hash: "0fdfba33f099"
-    steps: ["a399de94e143", "6dd0a5739857", "85243445238c", "f1f981e67462", "a1befc7cdfe4", "a41b92d7750a", "28b5f6732b22", "a9e3504a37b6", "6fa5cc67f2c1", "7fb1d6d0829c"]
+    hash: "c6bc418c2f27"
+    steps: ["a399de94e143", "6dd0a5739857", "85243445238c", "f1f981e67462", "a1befc7cdfe4", "a41b92d7750a", "28b5f6732b22", "a9e3504a37b6", "6fa5cc67f2c1", "7fb1d6d0829c", "b7207f0b8cd4"]
   "RES-IMMUTABLE-FIELDS":
     status: approved
     hash: "50e6467f6711"
@@ -1904,8 +1908,8 @@ records:
     steps: ["f2e298564d66", "c093e89b1f3a", "5688fe8660e8", "0d6ddcdad452", "c7ab4392e0e3"]
   "REST-NUMERIC-BOUNDARIES":
     status: approved
-    hash: "e138730f7073"
-    steps: ["f2e298564d66", "d3939cb6cdb0", "da107d936f8c", "542d7d7bb8a6", "917bb3b106cd", "06c0d9ca19a3", "0f8330826701", "b441f3359bf9"]
+    hash: "6cb5dbce6c86"
+    steps: ["f2e298564d66", "d3939cb6cdb0", "da107d936f8c", "542d7d7bb8a6", "917bb3b106cd", "06c0d9ca19a3", "0f8330826701", "b441f3359bf9", "777fc0dad054"]
   "REST-OBJECT-LEVEL-AUTHZ":
     status: approved
     hash: "e330beaf1abe"
@@ -2286,18 +2290,50 @@ records:
     status: approved
     hash: "b1ef64d5c6cf"
     steps: ["625a6312bee3", "9629af3bc96a"]
+  "UI-DESKTOP-HELP-ABOUT":
+    status: draft
+    hash: "7b825f1de607"
+    steps: ["57d2e63d497d", "63386fbaa85f", "7aa4629bcabe", "550d97364614"]
+  "UI-DESKTOP-INSTALL-RESULT":
+    status: draft
+    hash: "7e5c37953a82"
+    steps: ["919cb0b073c5", "d2500c70f377", "3078f614a06f"]
+  "UI-DESKTOP-INSTALL-WIZARD":
+    status: draft
+    hash: "2e4cdabdd325"
+    steps: ["def122e83d50", "c260de51c168", "96a29d1cfce5", "42ef8d0cca5a"]
+  "UI-DESKTOP-MENU-COMMANDS":
+    status: draft
+    hash: "56f5e4710789"
+    steps: ["42fea9fc9a75", "17bdf528805a", "d97d1c5c3668", "6b85d8184e6c"]
+  "UI-DESKTOP-REINSTALL":
+    status: draft
+    hash: "dfb01ad0061f"
+    steps: ["0edc66a788b0", "d2925cd869be", "a7b88ef2f21d", "b2ad24b510eb"]
+  "UI-DESKTOP-UNINSTALL-CLEAN":
+    status: draft
+    hash: "a5f54a7b9648"
+    steps: ["d82184145b2b", "99e0bdd768d3", "2e8eb310195c"]
+  "UI-DESKTOP-UNSAVED-EXIT":
+    status: draft
+    hash: "9689483b5351"
+    steps: ["76a629f1f1f1", "8fde25acd4ba", "8bc3e506d49a"]
+  "UI-DESKTOP-WINDOW-BEHAVIOR":
+    status: draft
+    hash: "15c457a3ea00"
+    steps: ["b628b78d0a3a", "234e86929fbc", "f977d11de8a0"]
   "UI-DISABLED-AND-READONLY":
     status: approved
-    hash: "939610d850ff"
-    steps: ["b5fb8d65f3ef", "1bc0d9bdf2f2", "f05b5af61607", "0f1623b6859d", "7d1551a501c6", "c5901383df6c", "82c84005ee35", "17d971605d55", "a85a29c9a69c"]
+    hash: "e1ef3c064bfc"
+    steps: ["b5fb8d65f3ef", "1bc0d9bdf2f2", "f05b5af61607", "0f1623b6859d", "7d1551a501c6", "c5901383df6c", "82c84005ee35", "17d971605d55", "a85a29c9a69c", "668e8d5be5b4"]
   "UI-DOCUMENTS-OPEN":
     status: approved
     hash: "1454e7868e00"
     steps: ["93d6bff912e9"]
   "UI-DROPDOWN-VALUES":
     status: approved
-    hash: "b595e96e6754"
-    steps: ["191a7d1e65eb", "d4e6ece1a005", "a20e4ba67012", "87b383a31e13", "8564e753f2d0", "6443240a543c", "38fca0c7f1c0"]
+    hash: "fdc15b95ea6a"
+    steps: ["191a7d1e65eb", "d4e6ece1a005", "a20e4ba67012", "87b383a31e13", "8564e753f2d0", "6443240a543c", "38fca0c7f1c0", "0355dc61811e"]
   "UI-ERROR-DISPLAY":
     status: approved
     hash: "9078e6c86b87"
@@ -2314,22 +2350,26 @@ records:
     status: approved
     hash: "3df9a7b43ada"
     steps: ["3f6a99b7c273"]
+  "UI-FILE-OPEN-SAVE-ROUNDTRIP":
+    status: draft
+    hash: "b9b3b83b80b2"
+    steps: ["e9e524e68368", "530ee4ee703a", "1512f7556a1f", "6ab9b1c8398f"]
   "UI-FORM-REQUIRED-AND-HINTS":
     status: approved
     hash: "a34b1d244cda"
     steps: ["56ed05df898f", "68faae319ee8", "6e3796b61b77", "dbd1499d8656", "ed3501cb17ae"]
   "UI-FORM-STATE":
     status: approved
-    hash: "e8081a409686"
-    steps: ["fe858d48b4f1", "6da3b7c7656d", "3b7e6cf4ce00", "b10575699d51", "34db02c341e8", "b8d49acddd6f"]
+    hash: "7c523acacff1"
+    steps: ["fe858d48b4f1", "6da3b7c7656d", "3b7e6cf4ce00", "b10575699d51", "34db02c341e8", "b8d49acddd6f", "5de42eaa9be9"]
   "UI-INPUT-VALUES":
     status: approved
-    hash: "ae144fd9932c"
-    steps: ["3aef55a8db8e", "f9427021ea1f", "a8458dc55dc2", "bdc1a09355ba", "a2331370bcc2", "e591f853c45b", "4750d2e3b50e"]
+    hash: "17bc40066555"
+    steps: ["3aef55a8db8e", "f9427021ea1f", "a8458dc55dc2", "bdc1a09355ba", "a2331370bcc2", "e591f853c45b", "4750d2e3b50e", "9b164515563d", "65cd533f9a63"]
   "UI-KEYBOARD-ACCESS":
     status: approved
-    hash: "6e72616f1720"
-    steps: ["6afa8149adb4", "32553711aaaf", "b55ba9de3c4e"]
+    hash: "ee34b4ed103b"
+    steps: ["6afa8149adb4", "32553711aaaf", "b55ba9de3c4e", "9166325aa7b2"]
   "UI-LAYOUT-OVERFLOW":
     status: approved
     hash: "2573bc28b3cf"
@@ -2348,12 +2388,12 @@ records:
     steps: ["7fdea06c7151", "e41e636746ad", "3cd181921aab"]
   "UI-LIST-FILTER-VALUES":
     status: approved
-    hash: "c3a95bfc8030"
-    steps: ["857ce8789e5f", "19684a443021", "40d2b2f7c1e6"]
+    hash: "4e122f673ff5"
+    steps: ["857ce8789e5f", "19684a443021", "40d2b2f7c1e6", "f6c82615eb1e"]
   "UI-LIST-SORT":
     status: approved
-    hash: "33332994b059"
-    steps: ["8ec0dc071ccf"]
+    hash: "04853db0323b"
+    steps: ["8ec0dc071ccf", "6d4398b58e39"]
   "UI-MOBILE-BACKGROUND-WORK":
     status: draft
     hash: "91c7a1992c73"
@@ -2388,8 +2428,8 @@ records:
     steps: ["1ed1265246b0", "b7fc1d54e0bc", "a9e125a8a062", "b42de038dbfe"]
   "UI-NAVIGATION":
     status: approved
-    hash: "eca301cd821f"
-    steps: ["b8d0d1e1dfe2", "044f5d7973f1", "1914c3f388b4", "28a0d62c161e", "43313b8cc1f9"]
+    hash: "2345907f9f60"
+    steps: ["b8d0d1e1dfe2", "044f5d7973f1", "1914c3f388b4", "28a0d62c161e", "43313b8cc1f9", "d7e2fd2cf6cc"]
   "UI-NETWORK-RESILIENCE":
     status: approved
     hash: "ec3adeb4b6b0"
@@ -2436,12 +2476,16 @@ records:
     steps: ["8f0fcefe77c8"]
   "UI-TEXTS-CORRECT":
     status: approved
-    hash: "5b99728e93bf"
-    steps: ["be9bcdfc9e4a", "46704a369562", "ec922d74e3af", "b1c44d46a80c"]
+    hash: "8c5251cb0cea"
+    steps: ["be9bcdfc9e4a", "46704a369562", "ec922d74e3af", "b1c44d46a80c", "69eaaa051a64"]
+  "UI-UNDO-REDO-VISIBLE-STATE":
+    status: draft
+    hash: "ebe517bb7e93"
+    steps: ["99a30db1c3e6", "5a4585cd8de5", "86ffd205d96c"]
   "UI-USABILITY":
     status: approved
-    hash: "eac2b7698343"
-    steps: ["3b58bb64f536", "34ee0220ea98", "c95f89aec045"]
+    hash: "da61be55b73d"
+    steps: ["3b58bb64f536", "34ee0220ea98", "c95f89aec045", "69a5c076c155"]
   "UI-VISUAL-CONSISTENCY":
     status: approved
     hash: "4688506f54a6"
@@ -2538,6 +2582,10 @@ records:
     status: approved
     hash: "afaac4078bd4"
     steps: ["e9c03e026089", "a57d66b8efc6", "ec2356650261"]
+  "VAL-RULES-ALL-INPUT-PATHS":
+    status: draft
+    hash: "4359e18703f7"
+    steps: ["d3814ad04ca9", "3a3db7d338e9"]
   "VAL-SPECIAL-CHARACTERS":
     status: approved
     hash: "a7f9b5d85ea0"

@@ -120,3 +120,4 @@
 | 2026-10-30 | Claude Opus 5.5 / bj | Разбор inbox №345-365: шаги к записям, 6 новых draft (HARD-DEPLOY-CONFIG-BASELINE, COMPAT-BUILD-IMAGE-STARTS, HTTP-DIRECT-PROXY-PARITY, HTTP-UNRELATED-HEADERS-IGNORED, BIZ-ECHOED-VALUE-VERIFIED, REQ-ACCEPTANCE-PLAN-REVIEW), №357-358 в docs/ideas.md; №366-421 помечены по ADR 0012 |
 | 2026-10-30 | Claude/demopolish | TES-20: разбор inbox №422-459: 16 шагов к записям, 11 новых записей draft (UI mobile, выгрузка, шаблоны сообщений, общая схема БД), в processed.md перенесено 38 строк |
 | 2026-10-30 | Claude/demopolish | ADR 0017: нижний документ приоритетнее только при согласии заказчика, без документа - пометка со слов; CL-G-001 в BFF отклонено как общее правило |
+| 2026-10-30 | Claude / bj | Разбор inbox №460-480 (ListBoxer, TES-20): 12 идей стали шагами, 12 новых записей draft, новый файл checks/ui/desktop.yaml |

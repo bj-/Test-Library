@@ -1316,3 +1316,39 @@ checks:
   references:
   - Смежные — REST-OPTIONAL-EMPTY-VALUE, VAL-DEFAULT-VALUES
   - inbox №50
+- id: VAL-RULES-ALL-INPUT-PATHS
+  status: draft
+  title: Запрет на поле нельзя обойти другим методом, полем или пакетной загрузкой
+  category: validation
+  protocols:
+  - rest
+  - grpc
+  - graphql
+  kind: negative
+  priority: P1
+  tags:
+  - validation
+  - negative
+  preconditions:
+  - Одно поле можно записать несколькими путями (создание, изменение, пакет, импорт).
+  steps:
+  - action: Составить список путей записи поля - создание, полное и частичное изменение, пакетная операция, импорт,
+      синоним поля
+    notes: inbox №477
+  - action: Отправить запрещённое значение каждым путём - отказ одинаков на всех
+    notes: inbox №477
+  expected:
+  - Правила поля одинаковы на всех путях записи; запрещённое значение не сохраняется ни одним из них.
+  applicability:
+    when:
+    - Поле записывается более чем одним путём.
+    skip_when:
+    - Путь записи единственный.
+  automation:
+    level: partial
+    deterministic: true
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - Смежная - VAL-TIGHTENED-RULES-STORED-DATA

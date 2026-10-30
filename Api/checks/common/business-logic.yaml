@@ -874,3 +874,35 @@ checks:
     likelihood: medium
   references:
   - 3GPP TS 23.038 (кодировки SMS)
+- id: BIZ-ADJACENT-RANGES-PARTITION
+  status: draft
+  title: Соседние диапазоны не пересекаются и не оставляют дыр на границах
+  category: business-logic
+  protocols:
+  - generic
+  kind: boundary
+  priority: P2
+  tags:
+  - boundary
+  preconditions:
+  - Значения распределяются по набору диапазонов (фильтр, тариф, скидка, зона).
+  steps:
+  - action: Проверить набор диапазонов - соседние не пересекаются (…-300 и 300-9999) и между ними нет дыр
+    notes: inbox №476
+  - action: Подать значения на границах и рядом - каждое попадает ровно в один диапазон
+    notes: inbox №476
+  expected:
+  - Каждое допустимое значение попадает ровно в один диапазон.
+  applicability:
+    when:
+    - Есть набор смежных диапазонов.
+    skip_when:
+    - Диапазонов нет.
+  automation:
+    level: partial
+    deterministic: true
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - Анализ граничных значений и классов эквивалентности

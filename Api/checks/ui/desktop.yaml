@@ -1,0 +1,288 @@
+checks:
+- id: UI-DESKTOP-INSTALL-WIZARD
+  status: draft
+  title: Мастер установки предсказуем на каждом шаге, отмена откатывает установку
+  category: ui
+  protocols:
+  - ui-desktop
+  kind: contract
+  priority: P2
+  tags:
+  - ui
+  preconditions:
+  - Есть настольное приложение с установщиком и чистая машина или снимок ВМ.
+  steps:
+  - action: Пройти мастер вперёд и назад - на каждом шаге есть «Назад» и одинаково названная отмена
+    notes: inbox №462
+  - action: Сравнить расположение кнопок соседних шагов - кнопка выхода не стоит на месте «Далее» или «ОК» (случайное
+      нажатие)
+    notes: inbox №462
+  - action: Проверить порядок шагов - выбор опций идёт до копирования файлов
+    notes: inbox №462
+  - action: Отменить установку на каждом шаге - тип сообщения верный (предупреждение, а не ошибка), файлы и записи
+      откатываются
+    notes: inbox №462
+  expected:
+  - Мастер проходится в обе стороны, кнопки единообразны; отмена с верным сообщением и полным откатом.
+  applicability:
+    when:
+    - Есть мастер установки.
+    skip_when:
+    - Приложение ставится без мастера (портативное, магазин).
+  automation:
+    level: manual
+    deterministic: true
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - ADR 0006 (проверки UI)
+- id: UI-DESKTOP-INSTALL-RESULT
+  status: draft
+  title: После установки есть ярлыки, запись о программе и ассоциации файлов
+  category: ui
+  protocols:
+  - ui-desktop
+  kind: contract
+  priority: P2
+  tags:
+  - ui
+  preconditions:
+  - Есть настольное приложение с установщиком и чистая машина или снимок ВМ.
+  steps:
+  - action: Установить и проверить ярлыки на рабочем столе и в меню по выбранным опциям
+    notes: inbox №463
+  - action: Проверить запись в «Программы и компоненты» - иконка, издатель, версия, размер
+    notes: inbox №463
+  - action: Открыть файл своего расширения двойным щелчком - открывается программой, она есть в «Открыть с помощью»
+    notes: inbox №463
+  expected:
+  - Ярлыки, сведения о программе и ассоциации файлов соответствуют выбранным опциям и версии.
+  applicability:
+    when:
+    - Приложение устанавливается в ОС.
+    skip_when:
+    - Приложение портативное.
+  automation:
+    level: partial
+    deterministic: true
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - ADR 0006 (проверки UI)
+- id: UI-DESKTOP-REINSTALL
+  status: draft
+  title: Повторная установка поверх существующей не ломает программу и не плодит записи
+  category: ui
+  protocols:
+  - ui-desktop
+  kind: compatibility
+  priority: P2
+  tags:
+  - ui
+  - compatibility
+  preconditions:
+  - Есть настольное приложение с установщиком и чистая машина или снимок ВМ.
+  steps:
+  - action: Запустить установщик той же версии при установленной программе - предупреждение «уже установлена» или
+      восстановление
+    notes: inbox №464
+  - action: Поставить новую версию поверх старой - предложено обновление, настройки и данные сохранены
+    notes: inbox №464
+  - action: Вызвать конфликт версий файла - показаны обе версии, есть «Да для всех»
+    notes: inbox №464
+  - action: После установки проверить «Программы и компоненты» - одна запись, версия актуальна
+    notes: inbox №464
+  expected:
+  - Повторная установка распознаётся; данные сохранены; вторая запись о программе не появляется.
+  applicability:
+    when:
+    - Приложение устанавливается в ОС.
+    skip_when:
+    - Приложение портативное.
+  automation:
+    level: partial
+    deterministic: true
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - ADR 0006 (проверки UI)
+- id: UI-DESKTOP-UNINSTALL-CLEAN
+  status: draft
+  title: Удаление не оставляет следов, кроме данных пользователя по описанному правилу
+  category: ui
+  protocols:
+  - ui-desktop
+  kind: contract
+  priority: P2
+  tags:
+  - ui
+  preconditions:
+  - Есть настольное приложение с установщиком и чистая машина или снимок ВМ.
+  steps:
+  - action: Удалить программу и сравнить файловую систему, реестр и ярлыки со снимком до установки - лишних файлов и
+      папок нет
+    notes: inbox №465
+  - action: Проверить данные пользователя - сохранены или удалены по описанному правилу
+    notes: inbox №465
+  - action: Вызвать диалог общих файлов - без дублирующих кнопок, выбор исполняется
+    notes: inbox №465
+  expected:
+  - После удаления нет файлов, папок и записей программы; данные пользователя - по описанному правилу.
+  applicability:
+    when:
+    - Приложение устанавливается в ОС.
+    skip_when:
+    - Приложение портативное.
+  automation:
+    level: partial
+    deterministic: true
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - ADR 0006 (проверки UI)
+- id: UI-DESKTOP-WINDOW-BEHAVIOR
+  status: draft
+  title: Окно ведёт себя по стандартам ОС
+  category: ui
+  protocols:
+  - ui-desktop
+  kind: contract
+  priority: P3
+  tags:
+  - ui
+  preconditions:
+  - Есть настольное приложение.
+  steps:
+  - action: Проверить кнопки окна - «Свернуть» есть, щелчок по значку в панели задач сворачивает и разворачивает
+    notes: inbox №466
+  - action: Запустить программу повторно - однооконная по ТЗ активирует открытый экземпляр, а не запускает второй
+    notes: inbox №466
+  - action: Открыть справку и вспомогательные окна - не висят поверх всех окон
+    notes: inbox №466
+  expected:
+  - Окно управляется как стандартное окно ОС; повторный запуск следует ТЗ.
+  applicability:
+    when:
+    - Есть оконный интерфейс.
+    skip_when:
+    - Нет оконного интерфейса (служба, консоль).
+  automation:
+    level: partial
+    deterministic: true
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - ADR 0006 (проверки UI)
+- id: UI-DESKTOP-MENU-COMMANDS
+  status: draft
+  title: Каждый пункт меню и показанное сочетание клавиш выполняют свою команду
+  category: ui
+  protocols:
+  - ui-desktop
+  kind: contract
+  priority: P2
+  tags:
+  - ui
+  preconditions:
+  - Есть настольное приложение.
+  steps:
+  - action: Вызвать каждый пункт меню (Cut, Copy, Paste и т.п.) в подходящем состоянии - команда выполняется
+    notes: inbox №467
+  - action: Нажать каждое сочетание, показанное в меню, - работает как пункт меню
+    notes: inbox №467
+  - action: Сверить с ТЗ стандартные команды (New, Save, Redo, удаление одной записи) - отсутствие ожидаемой команды
+      проговорено, иначе находка
+    notes: inbox №467
+  - action: Прочитать пункты меню - без опечаток
+    notes: inbox №467
+  expected:
+  - Пункты и сочетания исполняют команды; отсутствие стандартных команд согласовано с ТЗ.
+  applicability:
+    when:
+    - Есть меню.
+    skip_when:
+    - Меню нет.
+  automation:
+    level: partial
+    deterministic: true
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - ADR 0006 (проверки UI)
+  - Смежная - UI-KEYBOARD-ACCESS
+- id: UI-DESKTOP-HELP-ABOUT
+  status: draft
+  title: Справка, подсказки «Что это?» и окно «О программе» верны и согласованы
+  category: ui
+  protocols:
+  - ui-desktop
+  kind: contract
+  priority: P3
+  tags:
+  - ui
+  preconditions:
+  - Есть настольное приложение со справкой.
+  steps:
+  - action: Вызвать «Что это?» у каждого элемента - подсказка своя, а не от соседнего
+    notes: inbox №468
+  - action: Искать в справке название программы - находится; из раздела можно перейти к поиску
+    notes: inbox №468
+  - action: Сравнить версию в «О программе», справке и свойствах файла - совпадает, формат с точками
+    notes: inbox №468
+  - action: Сравнить иконки окна «О программе» - одинаковые
+    notes: inbox №468
+  expected:
+  - Подсказки относятся к своим элементам, поиск работает, версия и иконки едины.
+  applicability:
+    when:
+    - Есть справка или окно «О программе».
+    skip_when:
+    - Справки нет.
+  automation:
+    level: manual
+    deterministic: true
+  risk:
+    impact: low
+    likelihood: medium
+  references:
+  - ADR 0006 (проверки UI)
+- id: UI-DESKTOP-UNSAVED-EXIT
+  status: draft
+  title: Выход и сохранение не теряют данные без запроса
+  category: ui
+  protocols:
+  - ui-desktop
+  kind: contract
+  priority: P1
+  tags:
+  - ui
+  preconditions:
+  - Есть настольное приложение, работающее с документом или файлом.
+  steps:
+  - action: Изменить документ и выйти через меню, крестиком и Alt+F4 - везде запрос сохранения
+    notes: inbox №470
+  - action: Нажать «Отмена» в запросе - выход отменён, программа и изменения на месте
+    notes: inbox №470
+  - action: «Сохранить как» под именем существующего файла - запрос перезаписи
+    notes: inbox №470
+  expected:
+  - Несохранённые изменения не теряются ни одним путём выхода; отмена отменяет выход; перезапись подтверждается.
+  applicability:
+    when:
+    - Программа редактирует файлы или документы.
+    skip_when:
+    - Нет сохраняемого пользователем состояния.
+  automation:
+    level: partial
+    deterministic: true
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - ADR 0006 (проверки UI)
