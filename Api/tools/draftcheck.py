@@ -26,6 +26,7 @@ from library import iter_checks, setup_console  # noqa: E402
 OUT = Path("ideas/draftcheck")
 README = Path("README.md")
 INBOX = Path("ideas/inbox.md")
+PROCESSED = Path("ideas/processed.md")
 SPLIT = re.compile(r"(?<!\\)\|")
 FIELDS = ("id", "title", "category", "protocols", "kind", "priority", "preconditions", "steps", "expected",
           "applicability", "automation", "references")
@@ -68,7 +69,7 @@ def principles() -> str:
 
 def inbox_ideas() -> dict[int, str]:
     out = {}
-    for line in INBOX.read_text(encoding="utf-8").split("\n"):
+    for line in (INBOX.read_text(encoding="utf-8") + PROCESSED.read_text(encoding="utf-8")).split("\n"):
         if re.match(r"^\| \d+ ", line):
             c = [x.strip() for x in SPLIT.split(line)]
             out[int(c[1])] = c[3]
