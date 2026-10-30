@@ -51,6 +51,7 @@ tag_groups:
   - audit
   - privacy
   - hardening
+  - stand-config
   - requirements
   quality:
   - performance

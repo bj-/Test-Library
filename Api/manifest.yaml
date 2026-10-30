@@ -1,10 +1,10 @@
 # Манифест библиотеки (ADR 0016): версия, хеши записей и шагов. Собирается `python tools/library_manifest.py --write`
 # (и build_catalog.py), вручную не править.
-version: "2026.10.30-179a5f"
-library_hash: "179a5f99aba1"
+version: "2026.10.30-d4ebf8"
+library_hash: "d4ebf8755192"
 scope: full
 omitted: 0
-records_total: 675
+records_total: 689
 records:
   "ASYNC-DEAD-LETTER":
     status: approved
@@ -347,9 +347,9 @@ records:
     hash: "04926c23ced3"
     steps: ["5a91d4be7412"]
   "BIZ-ADJACENT-RANGES-PARTITION":
-    status: draft
-    hash: "c50899056561"
-    steps: ["d53ee04830d2", "73b457bf80dd"]
+    status: approved
+    hash: "eddd5aef63c8"
+    steps: ["8bbfda75a870", "73b457bf80dd"]
   "BIZ-AMBIGUOUS-ADDRESS":
     status: approved
     hash: "2cae9223bd18"
@@ -375,9 +375,9 @@ records:
     hash: "95d0819bc8c5"
     steps: ["3a1e25b61365"]
   "BIZ-ECHOED-VALUE-VERIFIED":
-    status: draft
-    hash: "4678049be168"
-    steps: ["abd29bbc8fcf", "d8d86a72e879"]
+    status: approved
+    hash: "983c53c36e56"
+    steps: ["607d48675231", "d8d86a72e879"]
   "BIZ-EMAIL-LINK-CROSS-SESSION":
     status: approved
     hash: "b1b703461ec2"
@@ -403,9 +403,9 @@ records:
     hash: "d498885d46c6"
     steps: ["f11e41d9a312", "7dd5f95b9a87", "19795729448d", "4e3369cd63bc", "c898b1f479e0"]
   "BIZ-MESSAGE-TEMPLATE-COVERAGE":
-    status: draft
-    hash: "dcabcb7f5c17"
-    steps: ["82347c649f9a", "11a475f0b74b"]
+    status: approved
+    hash: "babf2cf73bef"
+    steps: ["ef4bf6782f10"]
   "BIZ-NEGATIVE-QUANTITY":
     status: approved
     hash: "b632c38d292e"
@@ -426,6 +426,10 @@ records:
     status: approved
     hash: "8050434b91e4"
     steps: ["78f421baa2aa", "60f434bf9a0b", "79ee66e7bad3", "6ac40407f19f", "9a3745480777", "845ab52c7e43"]
+  "BIZ-SMS-TEMPLATE-LENGTH":
+    status: approved
+    hash: "74309369fe7a"
+    steps: ["5deb5547b0c1"]
   "BIZ-TIME-WINDOW":
     status: approved
     hash: "aab955881332"
@@ -443,9 +447,9 @@ records:
     hash: "41eaf9546c42"
     steps: ["6bc59190aa6c", "19a7f03fb0b0", "e0ffbe5f50d3", "124b02905495"]
   "COMPAT-BUILD-IMAGE-STARTS":
-    status: draft
-    hash: "8c22683ff4bd"
-    steps: ["a149c23eaefe", "abac452fa7f5", "68f2278a00b5"]
+    status: approved
+    hash: "6f30446b5238"
+    steps: ["a9bbcdfa22a8", "7ab8f20f7b3c", "68f2278a00b5"]
   "COMPAT-DEFAULT-VERSION":
     status: approved
     hash: "ef4a55639222"
@@ -467,9 +471,9 @@ records:
     hash: "b09721657d15"
     steps: ["c79994dce993"]
   "COMPAT-SHARED-SCHEMA-SERVICES":
-    status: draft
-    hash: "c25bef4a13d8"
-    steps: ["5a91f4a924fe"]
+    status: approved
+    hash: "d82aab2323f1"
+    steps: ["5a91f4a924fe", "e5714421f931"]
   "COMPAT-UPGRADE-STORED-DATA-STABLE":
     status: approved
     hash: "146c6640ab7a"
@@ -675,9 +679,9 @@ records:
     hash: "64cf069aae1d"
     steps: ["c70f3a9987ff", "1e02d977dbee", "e45c046bbd5c", "2a2f772f600e", "1de3a673873d", "64001a5b2661"]
   "ERR-VALIDATION-NO-LEAK":
-    status: draft
-    hash: "23ae45c9bd88"
-    steps: ["c5f3fbefe899", "56de94e3a0bb", "101a68a01174"]
+    status: approved
+    hash: "33a9e8a74064"
+    steps: ["d49109e5f5d4", "56de94e3a0bb", "101a68a01174"]
   "FILE-ABORTED-UPLOAD-CLEANUP":
     status: approved
     hash: "37402110d361"
@@ -934,6 +938,10 @@ records:
     status: approved
     hash: "80a78a7097f2"
     steps: ["1adba36670a3"]
+  "HARD-AUTH-LIMITS-CONFIGURED":
+    status: approved
+    hash: "c6ca6b83d34e"
+    steps: ["584d601b3caa"]
   "HARD-BACKUP-RESTORE-PROTECTED":
     status: approved
     hash: "c09d4506cdb9"
@@ -952,16 +960,12 @@ records:
     steps: ["e3d87dfed6ce", "b976413877c9", "dc9799bbeba5", "24c875ef82ea"]
   "HARD-DEBUG-ENDPOINTS":
     status: approved
-    hash: "7d7fe960ff72"
-    steps: ["c390d4565dd1", "d7e3ff9ff4af", "413aa5a489ff", "e49da853a62c", "3250e6f5c7dd", "4298a3827d60", "22fe5277c147", "71c89effaaae", "350367960d64"]
+    hash: "7297ae986896"
+    steps: ["c390d4565dd1", "d7e3ff9ff4af", "413aa5a489ff", "e49da853a62c", "3250e6f5c7dd", "4298a3827d60", "22fe5277c147", "71c89effaaae", "350367960d64", "4a6eabf4168b"]
   "HARD-DENYLIST-EVERY-ENTRY":
     status: approved
     hash: "bab4e8b185cd"
     steps: ["10dd74917fde", "75e33b135b54"]
-  "HARD-DEPLOY-CONFIG-BASELINE":
-    status: draft
-    hash: "ebbafc1be1e8"
-    steps: ["0c5d27474bd1", "92daf8059172", "df1e55e8a48e", "920a53c0ddf8", "9e710b02479a", "2e472f46ec26"]
   "HARD-ENVIRONMENT-ISOLATION":
     status: approved
     hash: "b89d1f41c31f"
@@ -982,6 +986,14 @@ records:
     status: approved
     hash: "d4c0e3a8533c"
     steps: ["f1ef4791d835", "cf549c7e52b5", "421651f5867c"]
+  "HARD-INFRA-NOT-EXPOSED":
+    status: approved
+    hash: "2d85633356f9"
+    steps: ["6ab9efecb296"]
+  "HARD-INFRA-SECRETS-NOT-DEFAULT":
+    status: approved
+    hash: "8dc71264363a"
+    steps: ["ec123285d182"]
   "HARD-IP-ALLOWLIST":
     status: approved
     hash: "120ffc53d3ac"
@@ -990,6 +1002,10 @@ records:
     status: approved
     hash: "39487d065109"
     steps: ["52d9820c571d", "e1958621343f"]
+  "HARD-NO-TEST-DATA-ON-STAND":
+    status: approved
+    hash: "bd960b244679"
+    steps: ["87b52f747270"]
   "HARD-NOT-IMPLEMENTED-INERT":
     status: approved
     hash: "3ee61cf31f9e"
@@ -998,6 +1014,10 @@ records:
     status: approved
     hash: "3e448088638d"
     steps: ["aa4b29b5f8dd"]
+  "HARD-PUBLIC-BUCKET-SCOPE":
+    status: approved
+    hash: "31ffc3198c03"
+    steps: ["9ed380d41e47"]
   "HARD-ROUTE-SHARED-BACKEND-ISOLATION":
     status: approved
     hash: "a941e356c450"
@@ -1059,11 +1079,11 @@ records:
     hash: "adc7bc199d55"
     steps: ["5e2701a103f5", "968b72c30244", "a3ee07efd687"]
   "HTTP-DIRECT-PROXY-PARITY":
-    status: draft
-    hash: "12a13280dc91"
-    steps: ["26392539882f", "600699c1ddae"]
+    status: approved
+    hash: "210ae790446f"
+    steps: ["26392539882f"]
   "HTTP-EMPTY-ID-NOT-COLLECTION":
-    status: draft
+    status: approved
     hash: "94073be9308c"
     steps: ["3e93e645b7a7", "52aa771cb0fe", "0c8d017b48a7"]
   "HTTP-HEADER-REPEATED-LINES-ACCEPTED":
@@ -1114,14 +1134,18 @@ records:
     status: approved
     hash: "6c4e78492d6d"
     steps: ["0f2a8dc00bc2", "24ed6689258d", "5a6f698d2e3b", "9a7182d6d22d", "f332908609cd"]
+  "HTTP-UNDERSCORE-HEADERS-PROXIED":
+    status: approved
+    hash: "3975df27201b"
+    steps: ["860d6f2b33bb"]
   "HTTP-UNKNOWN-ROUTE":
     status: approved
     hash: "436de5e6db9d"
     steps: ["efc11ab808ec", "a7a3ebce7d18", "e53e57c9b938", "87ffab931110", "a17d586d4bee"]
   "HTTP-UNRELATED-HEADERS-IGNORED":
-    status: draft
-    hash: "dfbf237ce574"
-    steps: ["e18a01832322", "2a0a81375d5f"]
+    status: approved
+    hash: "c22da6af7857"
+    steps: ["e18a01832322", "7b2c4cde3760"]
   "HTTP-URL-LENGTH-LIMIT":
     status: approved
     hash: "a351cf515c37"
@@ -1567,9 +1591,9 @@ records:
     hash: "b45a27791b33"
     steps: ["b0186d8c0db5", "95b94c75842d"]
   "REQ-ACCEPTANCE-PLAN-REVIEW":
-    status: draft
-    hash: "565c5805f981"
-    steps: ["10ab4cab5652", "76d4e350c165", "4d0e7f1936f7"]
+    status: approved
+    hash: "68d4d640d641"
+    steps: ["10ab4cab5652", "76d4e350c165", "88272e072e31"]
   "REQ-CONTRACT-CONTRADICTS-SPEC":
     status: approved
     hash: "0ceed32aae87"
@@ -1599,7 +1623,7 @@ records:
     hash: "565ef0f43fb2"
     steps: ["684e89fd47d9"]
   "RES-BULK-FILTER-NOT-WIDENED":
-    status: draft
+    status: approved
     hash: "397bcc2c35e4"
     steps: ["1d0d129c20b2", "cb66afc302b4"]
   "RES-BULK-LIMITS":
@@ -1655,8 +1679,8 @@ records:
     hash: "922fa232a514"
     steps: ["800dbc5f55c8", "a15d29af6b93", "78b14d553a80", "527b826c92de"]
   "RES-NOOP-UPDATE":
-    status: draft
-    hash: "e2bf2639aa90"
+    status: approved
+    hash: "5774d5f976a6"
     steps: ["a3b074d8c73a", "d6de84a74df8", "1e91a9e4acb8"]
   "RES-READ-AFTER-WRITE":
     status: approved
@@ -1667,9 +1691,9 @@ records:
     hash: "c0484ad06f4c"
     steps: ["7a40ef3198ab", "44375b78353e"]
   "RES-REFERENCE-VALUE-APPLICABLE":
-    status: draft
-    hash: "6f4656792538"
-    steps: ["5b40bb79a956", "5e9a5f9e73d7", "a4898694bed3", "cf489870201a"]
+    status: approved
+    hash: "731f8c698121"
+    steps: ["5b40bb79a956", "5e9a5f9e73d7", "a4898694bed3", "cf489870201a", "6e99c09963bf"]
   "RES-REFERENTIAL-INTEGRITY":
     status: approved
     hash: "9deb1dd03f7e"
@@ -1687,7 +1711,7 @@ records:
     hash: "645ced64d40d"
     steps: ["f3c16ece2670", "c78699fedf88"]
   "RES-RELATION-TARGET-ACTUAL":
-    status: draft
+    status: approved
     hash: "6a37fec1b88a"
     steps: ["8af95819a885", "098e8cdab8e8", "1014b09642f9", "3c88d088e31d"]
   "RES-RELATIONS-SHARED-JUNCTION-ISOLATION":
@@ -1695,8 +1719,8 @@ records:
     hash: "8e99b57d1357"
     steps: ["6593aaef3c5a", "7fa624dc01c4"]
   "RES-SEARCH-INDEX-CONSISTENCY":
-    status: draft
-    hash: "39dd8a114a13"
+    status: approved
+    hash: "e73d2b301c6f"
     steps: ["d497cfdaa5ec", "ae93dea2b73c", "1c80922030b6", "b34cc2a1b347"]
   "RES-SERVER-GENERATED-FIELDS":
     status: approved
@@ -1887,9 +1911,9 @@ records:
     hash: "53d6ea7b420c"
     steps: ["e829a171d6b1", "bdf637b77dbd", "f6e6434cd9a1", "6abcc70260d7", "655552f946d6", "66ef04aed982", "a21ef3e63c5d", "08787bb5c872"]
   "REST-FILTER-RANGE-BOUNDARIES":
-    status: draft
-    hash: "2742a420e170"
-    steps: ["97f3696d8d97", "2271376de420", "dfa93c0ce516"]
+    status: approved
+    hash: "c630744e8824"
+    steps: ["97f3696d8d97", "3ebd01ff3acc", "dfa93c0ce516"]
   "REST-FILTER-RELATION-NO-DUPLICATES":
     status: approved
     hash: "3adbe76842c2"
@@ -1991,9 +2015,9 @@ records:
     hash: "0a19b1d43f2c"
     steps: ["f2e298564d66", "7e1259841bb7", "448cfabe4ac0", "6a083224e57f"]
   "REST-READ-NO-SIDE-EFFECTS":
-    status: draft
-    hash: "56e67b912ba7"
-    steps: ["9e34263271a1", "10b955f13824"]
+    status: approved
+    hash: "96dbe30d4877"
+    steps: ["9e34263271a1", "1424726dcd10"]
   "REST-READONLY-WRITEONLY":
     status: approved
     hash: "a706453edf12"
@@ -2327,35 +2351,35 @@ records:
     hash: "b1ef64d5c6cf"
     steps: ["625a6312bee3", "9629af3bc96a"]
   "UI-DESKTOP-HELP-ABOUT":
-    status: draft
-    hash: "7b825f1de607"
-    steps: ["57d2e63d497d", "63386fbaa85f", "7aa4629bcabe", "550d97364614"]
+    status: approved
+    hash: "97dee37f1080"
+    steps: ["57d2e63d497d", "63386fbaa85f", "eb22308bdf7f", "550d97364614"]
   "UI-DESKTOP-INSTALL-RESULT":
-    status: draft
-    hash: "7e5c37953a82"
-    steps: ["919cb0b073c5", "d2500c70f377", "3078f614a06f"]
+    status: approved
+    hash: "f5a3234f8e1a"
+    steps: ["919cb0b073c5", "fc345f216ab4", "77a83a839baf"]
   "UI-DESKTOP-INSTALL-WIZARD":
-    status: draft
-    hash: "2e4cdabdd325"
-    steps: ["def122e83d50", "c260de51c168", "96a29d1cfce5", "42ef8d0cca5a"]
+    status: approved
+    hash: "a0b40f122ed9"
+    steps: ["381def0f83b4", "c260de51c168", "96a29d1cfce5", "78a2d37e5edc"]
   "UI-DESKTOP-MENU-COMMANDS":
-    status: draft
+    status: approved
     hash: "56f5e4710789"
     steps: ["42fea9fc9a75", "17bdf528805a", "d97d1c5c3668", "6b85d8184e6c"]
   "UI-DESKTOP-REINSTALL":
-    status: draft
-    hash: "dfb01ad0061f"
-    steps: ["0edc66a788b0", "d2925cd869be", "a7b88ef2f21d", "b2ad24b510eb"]
+    status: approved
+    hash: "a955739b163d"
+    steps: ["0edc66a788b0", "d2925cd869be", "857b30f6bf2e", "b2ad24b510eb"]
   "UI-DESKTOP-UNINSTALL-CLEAN":
-    status: draft
-    hash: "a5f54a7b9648"
-    steps: ["d82184145b2b", "99e0bdd768d3", "2e8eb310195c"]
+    status: approved
+    hash: "6efb04497501"
+    steps: ["335e23ae05db", "99e0bdd768d3", "9c662ef33d59"]
   "UI-DESKTOP-UNSAVED-EXIT":
-    status: draft
-    hash: "9689483b5351"
-    steps: ["76a629f1f1f1", "8fde25acd4ba", "8bc3e506d49a"]
+    status: approved
+    hash: "6bb90bf62ad8"
+    steps: ["76a629f1f1f1", "8fde25acd4ba", "492a22f3f041", "8bc3e506d49a"]
   "UI-DESKTOP-WINDOW-BEHAVIOR":
-    status: draft
+    status: approved
     hash: "15c457a3ea00"
     steps: ["b628b78d0a3a", "234e86929fbc", "f977d11de8a0"]
   "UI-DISABLED-AND-READONLY":
@@ -2374,10 +2398,14 @@ records:
     status: approved
     hash: "9078e6c86b87"
     steps: ["73b1aa1fc5cf", "e7a5e2f52d84", "0eef6b33a0cd", "d5fad4a194b4"]
+  "UI-EXPORT-TOTALS-MATCH-DETAILS":
+    status: approved
+    hash: "a350ca8ed5a8"
+    steps: ["32dd67eef62f"]
   "UI-EXPORT-VALUE-TYPES":
-    status: draft
-    hash: "1f2ee3beadaa"
-    steps: ["6ba5548bf6ca", "25253829df31"]
+    status: approved
+    hash: "1ca914a670c1"
+    steps: ["6ba5548bf6ca"]
   "UI-FAILURE-ROBUSTNESS":
     status: approved
     hash: "f51f38c03b61"
@@ -2386,10 +2414,14 @@ records:
     status: approved
     hash: "3df9a7b43ada"
     steps: ["3f6a99b7c273"]
+  "UI-FILE-OPEN-INVALID":
+    status: approved
+    hash: "9a0b54c96afb"
+    steps: ["1512f7556a1f"]
   "UI-FILE-OPEN-SAVE-ROUNDTRIP":
-    status: draft
-    hash: "b9b3b83b80b2"
-    steps: ["e9e524e68368", "530ee4ee703a", "1512f7556a1f", "6ab9b1c8398f"]
+    status: approved
+    hash: "1c6d28e8f071"
+    steps: ["e9e524e68368", "530ee4ee703a", "6ab9b1c8398f"]
   "UI-FORM-REQUIRED-AND-HINTS":
     status: approved
     hash: "a34b1d244cda"
@@ -2431,57 +2463,81 @@ records:
     hash: "04853db0323b"
     steps: ["8ec0dc071ccf", "6d4398b58e39"]
   "UI-MOBILE-ACCESSIBILITY-LABELS":
-    status: draft
-    hash: "b9c4b8f562ec"
-    steps: ["3ea09caede95", "d6e0d85bf548"]
+    status: approved
+    hash: "3c837ae875a3"
+    steps: ["ee446065be6d", "d6e0d85bf548"]
   "UI-MOBILE-APP-UPDATE":
-    status: draft
-    hash: "c5e53af8c09a"
-    steps: ["adbf932a4d71", "8ba89647a1ef"]
+    status: approved
+    hash: "305d80bd0466"
+    steps: ["d7fb2cc92e6d"]
   "UI-MOBILE-BACKGROUND-WORK":
-    status: draft
-    hash: "91c7a1992c73"
-    steps: ["3caca15a99f6", "e878f9cd2c64", "c548d8d1d331"]
+    status: approved
+    hash: "42b23cb0d334"
+    steps: ["3caca15a99f6", "3e564f58589e"]
+  "UI-MOBILE-BLE-GENERATIONS":
+    status: approved
+    hash: "b4d9bb8b207c"
+    steps: ["e15241974089", "67b010899cfa", "c8da633f6cc8"]
   "UI-MOBILE-DEEP-LINKS":
-    status: draft
-    hash: "f7cb79e6c42a"
-    steps: ["d51194cb57c2", "836cb22beea4", "f68d5aa88796"]
+    status: approved
+    hash: "4b30616c07e6"
+    steps: ["d51194cb57c2", "836cb22beea4", "f68d5aa88796", "973f42e396ef"]
+  "UI-MOBILE-FORCED-UPDATE":
+    status: approved
+    hash: "29e8f463a6e3"
+    steps: ["ff2753cc527f"]
   "UI-MOBILE-LOCAL-AUTH-FALLBACK":
-    status: draft
-    hash: "4acb391c423d"
-    steps: ["a9c8852e5228"]
+    status: approved
+    hash: "5d273a77f23f"
+    steps: ["a9c8852e5228", "ecdb1bfab10c"]
   "UI-MOBILE-LOCAL-CHANNEL-FALLBACK":
-    status: draft
-    hash: "678bc5b860a9"
-    steps: ["d5fb5d99a775"]
+    status: approved
+    hash: "6bf8f6cbb25c"
+    steps: ["d5fb5d99a775", "8dc2908e9605"]
+  "UI-MOBILE-LONG-OPERATION-INTERRUPTED":
+    status: approved
+    hash: "edafba729d82"
+    steps: ["59d052208b5d", "eee681a9616b", "b1d97bd9ea01"]
   "UI-MOBILE-PAIRING-BY-RADIO":
-    status: draft
-    hash: "9fdbee3b8ebb"
-    steps: ["9458a9d64d8b", "7f760677fe96", "92526b6cfc21", "e15241974089", "67b010899cfa", "c8da633f6cc8"]
+    status: approved
+    hash: "1d309b5484fb"
+    steps: ["33165415f333", "7f760677fe96", "92526b6cfc21"]
+  "UI-MOBILE-PERMISSION-DENIAL":
+    status: approved
+    hash: "35727903a519"
+    steps: ["0eeb488a9c39", "49cb4c13913e", "6e1f1a40857e", "9822bfd7206f"]
   "UI-MOBILE-PERMISSIONS-BY-OS":
-    status: draft
-    hash: "8f372702bbb9"
-    steps: ["ea91f476c6e0", "8166c714a987", "49cb4c13913e", "6e1f1a40857e", "9822bfd7206f"]
+    status: approved
+    hash: "07e9c801959b"
+    steps: ["1c8e2bac32a3"]
   "UI-MOBILE-PUSH-NO-GMS":
-    status: draft
-    hash: "ce75663b8d99"
-    steps: ["bb5c1b6f1fdd"]
+    status: approved
+    hash: "d26b1c672c53"
+    steps: ["6ab5586ffa07", "badfb06e77b9", "7041bf952dbb"]
   "UI-MOBILE-RUNTIME-METRICS":
-    status: draft
-    hash: "47a1a657e902"
-    steps: ["81c440965d86", "22307520d315"]
+    status: approved
+    hash: "d3d8f64f8855"
+    steps: ["81c440965d86", "c51f7c1df5b7", "bfb2a59d4eab"]
   "UI-MOBILE-STATE-SURVIVES-LIFECYCLE":
-    status: draft
-    hash: "2de8c35174d7"
-    steps: ["fe8f3f0aa647", "9bece29dcc46", "4e1b40a462af", "3c13457e63fd"]
+    status: approved
+    hash: "b4de8a2ee416"
+    steps: ["fe8f3f0aa647", "235b31969808", "b251a6dd0876", "6ca5aba25b1d"]
   "UI-MOBILE-TABLET-NO-SIM":
-    status: draft
-    hash: "e9cb63f76310"
-    steps: ["ff9befe822f4", "d217a3287cf8", "54574872346a"]
+    status: approved
+    hash: "bcbd57cbbc52"
+    steps: ["a153633a9ce5", "d217a3287cf8"]
   "UI-MOBILE-WIFI-PROVISIONING":
-    status: draft
-    hash: "b069f74affae"
-    steps: ["1ed1265246b0", "b7fc1d54e0bc", "a9e125a8a062", "b42de038dbfe"]
+    status: approved
+    hash: "cecb38b673f5"
+    steps: ["1ed1265246b0", "b7fc1d54e0bc"]
+  "UI-MOBILE-WIFI-SECURITY-MODES":
+    status: approved
+    hash: "0eed818b90a9"
+    steps: ["faa6dd5a8151"]
+  "UI-MOBILE-WIFI-SOFTAP":
+    status: approved
+    hash: "a14afe4a9cc8"
+    steps: ["a9e125a8a062"]
   "UI-NAVIGATION":
     status: approved
     hash: "36c268d9e362"
@@ -2531,16 +2587,16 @@ records:
     hash: "b2ec6251240d"
     steps: ["8f0fcefe77c8"]
   "UI-TEXTS-BY-LOCALIZATION-KEYS":
-    status: draft
-    hash: "bc63194b44aa"
-    steps: ["f1fad35427bf", "944313095b69"]
+    status: approved
+    hash: "cd85675b5c25"
+    steps: ["5fa342666693", "944313095b69"]
   "UI-TEXTS-CORRECT":
     status: approved
     hash: "a26c7989b571"
     steps: ["be9bcdfc9e4a", "46704a369562", "ec922d74e3af", "b1c44d46a80c", "69eaaa051a64", "62fd23776c7d"]
   "UI-UNDO-REDO-VISIBLE-STATE":
-    status: draft
-    hash: "ebe517bb7e93"
+    status: approved
+    hash: "12db82a4c11f"
     steps: ["99a30db1c3e6", "5a4585cd8de5", "86ffd205d96c"]
   "UI-USABILITY":
     status: approved
@@ -2643,9 +2699,9 @@ records:
     hash: "afaac4078bd4"
     steps: ["e9c03e026089", "a57d66b8efc6", "ec2356650261"]
   "VAL-RULES-ALL-INPUT-PATHS":
-    status: draft
-    hash: "4359e18703f7"
-    steps: ["d3814ad04ca9", "3a3db7d338e9"]
+    status: approved
+    hash: "c6fe75d124b5"
+    steps: ["d3814ad04ca9", "54610b2793ce"]
   "VAL-SPECIAL-CHARACTERS":
     status: approved
     hash: "a7f9b5d85ea0"

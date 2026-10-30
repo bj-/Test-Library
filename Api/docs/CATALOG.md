@@ -2,23 +2,23 @@
 
 Файл генерируется `python tools/build_catalog.py .` — не редактируйте вручную.
 
-Всего проверок: **675** — approved: 583, draft: 76, needs_clarification: 16.
-Протоколы: db: 33, generic: 133, graphql: 237, grpc: 157, rest: 434, ui-desktop: 39, ui-mobile: 43, ui-web: 42, websocket: 66.
+Всего проверок: **689** — approved: 641, draft: 32, needs_clarification: 16.
+Протоколы: db: 33, generic: 137, graphql: 238, grpc: 158, rest: 436, ui-desktop: 41, ui-mobile: 49, ui-web: 44, websocket: 66.
 
 | Категория | Описание | Проверок |
 |---|---|---:|
 | [contract](#contract) | API contract and schema conformance | 31 |
 | [resources](#resources) | Resource lifecycle and state transitions | 40 |
-| [security](#security) | Authentication, authorization, and data isolation | 233 |
+| [security](#security) | Authentication, authorization, and data isolation | 237 |
 | [validation](#validation) | Input validation and normalization | 43 |
-| [http-semantics](#http-semantics) | HTTP methods, headers, and status semantics | 29 |
+| [http-semantics](#http-semantics) | HTTP methods, headers, and status semantics | 30 |
 | [errors](#errors) | Error response shape and consistency | 5 |
 | [pagination](#pagination) | Pagination, filtering, and sorting | 24 |
 | [idempotency](#idempotency) | Idempotent behavior and retry safety | 1 |
 | [grpc-contract](#grpc-contract) | Protobuf and RPC contract conformance | 17 |
 | [grpc-errors](#grpc-errors) | gRPC status and error details | 16 |
 | [resilience](#resilience) | Timeouts, retries, dependency failures | 11 |
-| [business-logic](#business-logic) | Domain rules, workflows, limits, and money | 22 |
+| [business-logic](#business-logic) | Domain rules, workflows, limits, and money | 23 |
 | [concurrency](#concurrency) | Parallel requests, races, and lost updates | 8 |
 | [observability](#observability) | Logs, audit trail, tracing, and health endpoints | 12 |
 | [performance](#performance) | Latency, throughput, load, and resource usage | 8 |
@@ -29,7 +29,7 @@
 | [websocket](#websocket) | WebSocket connection, message, and subscription behavior | 10 |
 | [privacy](#privacy) | Personal data handling, masking, consent, and erasure | 6 |
 | [requirements](#requirements) | Requirement transfer errors - spec vs contract vs implementation, unspecified behavior | 6 |
-| [ui](#ui) | User interface - forms, navigation, state, data and error display, client settings, localization and RTL | 64 |
+| [ui](#ui) | User interface - forms, navigation, state, data and error display, client settings, localization and RTL | 72 |
 | [db](#db) | Database - schema and constraints, migrations, indexes and query plans, stored logic, data integrity, application queries | 33 |
 
 ## contract
@@ -76,12 +76,12 @@ Resource lifecycle and state transitions
 
 | ID | Проверка | P | Статус | Протоколы | Профили |
 |---|---|---|---|---|---|
-| `RES-BULK-FILTER-NOT-WIDENED` | Неизвестный фильтр не расширяет массовую операцию на все записи | P1 | draft | rest, grpc, graphql |  |
+| `RES-BULK-FILTER-NOT-WIDENED` | Неизвестный фильтр не расширяет массовую операцию на все записи | P1 | approved | rest, grpc, graphql |  |
 | `RES-CRUD-CYCLE` | Полный жизненный цикл ресурса: создание, чтение, изменение, удаление | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `RES-DELETE-WITH-DEPENDENTS` | Удаление ресурса с зависимыми объектами выполняется по правилам каскада | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `RES-IMMUTABLE-FIELDS` | Неизменяемые поля нельзя изменить после создания | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `RES-REFERENTIAL-INTEGRITY` | Ссылка на несуществующий или чужой связанный ресурс отклоняется | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
-| `RES-RELATION-TARGET-ACTUAL` | Связь указывает именно на заданную сущность, а не только имеет верный формат | P1 | draft | rest, grpc, graphql |  |
+| `RES-RELATION-TARGET-ACTUAL` | Связь указывает именно на заданную сущность, а не только имеет верный формат | P1 | approved | rest, grpc, graphql |  |
 | `RES-SERVER-GENERATED-FIELDS` | Клиент не может задать серверные поля (id, createdAt, status, version) | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `RESOURCE-CREATE-READ` | Created resource can be read back | P1 | approved | rest, graphql, generic | Smoke, PR, CI, Regression, Nightly, Release |
 | `RESOURCE-READ-MISSING` | Reading a missing resource returns a documented error | P1 | approved | rest, graphql, generic | CI, Regression, Nightly, Release |
@@ -96,11 +96,11 @@ Resource lifecycle and state transitions
 | `RES-DB-OBJECT-NAMES` | API по схеме БД работает с объектами в любом регистре, со спецсимволами и зарезервированными именами | P2 | approved | generic | CI, Regression, Nightly |
 | `RES-DRAFT-PUBLISH-FIDELITY` | Публикация черновика переносит все изменения и не ломает связи других объектов | P2 | approved | rest, graphql | CI, Regression, Nightly |
 | `RES-LIST-REFLECTS-CHANGES` | Списки и счётчики отражают создание, изменение и удаление | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
-| `RES-NOOP-UPDATE` | Изменение без изменений не даёт побочных эффектов | P2 | draft | rest, grpc, graphql |  |
+| `RES-NOOP-UPDATE` | Изменение без изменений не даёт побочных эффектов | P2 | approved | rest, grpc, graphql |  |
 | `RES-READ-AFTER-WRITE` | Чтение после записи соответствует модели согласованности | P2 | approved | rest, grpc, graphql | Regression, Nightly |
-| `RES-REFERENCE-VALUE-APPLICABLE` | Значение справочника действует и применимо к операции | P2 | draft | rest, grpc, graphql |  |
+| `RES-REFERENCE-VALUE-APPLICABLE` | Значение справочника действует и применимо к операции | P2 | approved | rest, grpc, graphql |  |
 | `RES-RELATIONS-SHARED-JUNCTION-ISOLATION` | Связи через общую связующую таблицу возвращают каждая только свои данные | P2 | approved | rest, graphql | CI, Regression, Nightly |
-| `RES-SEARCH-INDEX-CONSISTENCY` | Поисковый индекс согласован с источником данных | P2 | draft | rest, grpc, graphql |  |
+| `RES-SEARCH-INDEX-CONSISTENCY` | Поисковый индекс согласован с источником данных | P2 | approved | rest, grpc, graphql |  |
 | `RES-SOFT-DELETE-VISIBILITY` | Мягко удалённые ресурсы не видны в обычных операциях | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `RES-SYSTEM-OBJECT-PROTECTED` | Встроенные системные объекты защищены от удаления и изменения при любой конфигурации | P2 | approved | rest | CI, Regression, Nightly |
 | `RES-TIMESTAMPS` | Метки времени создания и изменения ведут себя корректно | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
@@ -198,13 +198,15 @@ Authentication, authorization, and data isolation
 | `AUTH-USER-ENUMERATION` | Ответы входа, регистрации и восстановления не раскрывают существование аккаунта | P1 | approved | rest, graphql | Regression, Nightly |
 | `HARD-BACKUP-RESTORE-PROTECTED` | Восстановление из резервной копии не обходит защиту записи | P1 | approved | generic | CI, Regression, Nightly, Release |
 | `HARD-DEBUG-ENDPOINTS` | Отладочные и служебные эндпоинты недоступны извне | P1 | approved | rest, graphql | CI, Regression, Nightly, Release |
-| `HARD-DEPLOY-CONFIG-BASELINE` | Конфигурация развёрнутого стенда безопасна - проверка один раз на стенд, включая PROD | P1 | draft | generic |  |
 | `HARD-ENVIRONMENT-ISOLATION` | Тестовый стенд не обращается к ресурсам production | P1 | approved | generic | CI, Regression, Nightly, Release |
 | `HARD-EXCESSIVE-DATA-EXPOSURE` | Ответы не содержат внутренних полей сверх контракта | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
 | `HARD-EXPENSIVE-OPERATION-LIMITS` | Дорогие операции ограничены по ресурсам | P1 | approved | rest, grpc, graphql, websocket | Regression, Nightly |
 | `HARD-HOST-HEADER` | Подмена Host и X-Forwarded-Host не влияет на ссылки и маршрутизацию | P1 | approved | rest, graphql | CI, Regression, Nightly, Release |
+| `HARD-INFRA-NOT-EXPOSED` | Сервисы инфраструктуры недоступны снаружи | P1 | approved | generic |  |
+| `HARD-INFRA-SECRETS-NOT-DEFAULT` | Секреты и учётки инфраструктуры не равны значениям из примеров конфигурации | P1 | approved | generic |  |
 | `HARD-METHOD-OVERRIDE` | Заголовки переопределения метода не обходят авторизацию | P1 | approved | rest | CI, Regression, Nightly, Release |
 | `HARD-OUTBOUND-CREDENTIALS-SCOPE` | Учётные данные своего сайта не уходят в исходящие запросы к другим хостам | P1 | approved | generic | CI, Regression, Nightly, Release |
+| `HARD-PUBLIC-BUCKET-SCOPE` | Публичный бакет открыт на чтение только по нужному префиксу | P1 | approved | generic |  |
 | `HARD-SETUP-ENDPOINTS-PROTECTED` | Эндпоинты первоначальной настройки не позволяют захватить экземпляр | P1 | approved | generic | CI, Regression, Nightly, Release |
 | `HARD-SHADOW-API-VERSIONS` | Старые версии API и недокументированные маршруты не обходят защиту | P1 | approved | rest, graphql | CI, Regression, Nightly, Release |
 | `HARD-TLS-ONLY` | API доступен только по TLS с актуальными настройками | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
@@ -315,12 +317,14 @@ Authentication, authorization, and data isolation
 | `AUTH-TOKEN-IN-URL` | Учётные данные не передаются и не принимаются в URL | P2 | approved | rest, graphql | CI, Regression, Nightly |
 | `AUTH-TOKEN-INTROSPECTION` | Интроспекция токена возвращает актуальное состояние и те же claims, что в токене | P2 | approved | rest | CI, Regression, Nightly |
 | `AUTH-TOKEN-SENDER-CONSTRAINED` | Обмен и обновление токена сохраняют привязку к отправителю (DPoP, mTLS) | P2 | approved | rest | CI, Regression, Nightly |
+| `HARD-AUTH-LIMITS-CONFIGURED` | Лимиты входа и сроки сессии на стенде заданы по ТЗ | P2 | approved | generic |  |
 | `HARD-BUSINESS-FLOW-AUTOMATION` | Чувствительные бизнес-потоки защищены от автоматизированного злоупотребления | P2 | approved | rest, grpc, graphql, websocket | Regression, Nightly |
 | `HARD-CACHE-POISONING` | Неключевые заголовки не отравляют общий кэш | P2 | approved | rest, graphql | Regression, Nightly |
 | `HARD-CLIENT-IP-TRUSTED-PROXIES` | IP клиента определяется по цепочке доверенных прокси одинаково на всех маршрутах | P2 | approved | rest | CI, Regression, Nightly |
 | `HARD-DENYLIST-EVERY-ENTRY` | Каждый элемент списка запрещённых значений отклоняется | P2 | approved | generic | CI, Regression, Nightly |
 | `HARD-ID-PREDICTABILITY` | Предсказуемые идентификаторы не позволяют собрать данные перебором | P2 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly |
 | `HARD-IP-ALLOWLIST` | Ограничение доступа по адресам и подсетям работает на границах для IPv4 и IPv6 | P2 | approved | generic | CI, Regression, Nightly |
+| `HARD-NO-TEST-DATA-ON-STAND` | На стенде нет тестовых учёток и данных, если его вид этого не допускает | P2 | approved | generic |  |
 | `HARD-NOT-IMPLEMENTED-INERT` | Операция, помеченная в контракте как нереализованная, не выполняется | P2 | approved | rest, graphql, grpc | CI, Regression, Nightly |
 | `HARD-ROUTE-SHARED-BACKEND-ISOLATION` | Маршруты шлюза к одному бэкенду применяют каждый свои фильтры | P2 | approved | generic | CI, Regression, Nightly |
 | `HARD-SENSITIVE-DATA-IN-URL` | Персональные данные и секреты не передаются в URL | P2 | approved | rest | CI, Regression, Nightly |
@@ -381,7 +385,7 @@ Input validation and normalization
 | `VAL-NUMBER-REPRESENTATION` | Альтернативные записи чисел обрабатываются по контракту | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `VAL-PATH-ID-FORMAT` | Неверный формат идентификатора не вызывает 5xx | P1 | approved | rest | CI, Regression, Nightly, Release |
 | `VAL-RANGE-ORDER` | Начало диапазона не может быть позже конца | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
-| `VAL-RULES-ALL-INPUT-PATHS` | Запрет на поле нельзя обойти другим методом, полем или пакетной загрузкой | P1 | draft | rest, grpc, graphql |  |
+| `VAL-RULES-ALL-INPUT-PATHS` | Запрет на поле нельзя обойти другим методом, полем или пакетной загрузкой | P1 | approved | rest, grpc, graphql |  |
 | `VAL-SPECIAL-CHARACTERS` | Спецсимволы, emoji и управляющие символы сохраняются или отклоняются корректно | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `VAL-STRING-FORMAT` | Форматы строк (email, uuid, uri, date, phone) проверяются | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `REST-EMPTY-VALUES` | Пустые объект, массив и строка | P2 | approved | rest | CI, Regression, Nightly |
@@ -413,17 +417,18 @@ HTTP methods, headers, and status semantics
 
 | ID | Проверка | P | Статус | Протоколы | Профили |
 |---|---|---|---|---|---|
-| `HTTP-EMPTY-ID-NOT-COLLECTION` | Пустой идентификатор не превращает операцию над ресурсом в операцию над коллекцией | P1 | draft | rest |  |
+| `HTTP-EMPTY-ID-NOT-COLLECTION` | Пустой идентификатор не превращает операцию над ресурсом в операцию над коллекцией | P1 | approved | rest |  |
 | `HTTP-BODY-WITHOUT-CONTENT-TYPE` | Тело без Content-Type обрабатывается предсказуемо | P2 | approved | rest | CI, Regression, Nightly |
-| `HTTP-DIRECT-PROXY-PARITY` | Поведение приложения не зависит от прокси перед ним | P2 | draft | rest |  |
+| `HTTP-DIRECT-PROXY-PARITY` | Поведение приложения не зависит от прокси перед ним | P2 | approved | rest |  |
 | `HTTP-HEADER-SIZE-LIMIT` | Слишком большие заголовки отклоняются контролируемо | P2 | approved | rest | CI, Regression, Nightly |
 | `HTTP-PATH-PREFIX-SEGMENT-BOUNDARY` | Правило по префиксу пути соблюдает границу сегмента | P2 | approved | rest | CI, Regression, Nightly |
 | `HTTP-REQUEST-SMUGGLING` | Противоречивые Content-Length и Transfer-Encoding не приводят к request smuggling | P2 | approved | rest | Regression, Nightly |
 | `HTTP-RESPONSE-FRAMING-HEADERS` | Ответ не содержит одновременно Content-Length и Transfer-Encoding | P2 | approved | rest | CI, Regression, Nightly |
+| `HTTP-UNDERSCORE-HEADERS-PROXIED` | Заголовки с подчёркиванием в имени проходят через прокси контура | P2 | approved | rest |  |
 | `HTTP-UNKNOWN-ROUTE` | Неизвестный маршрут возвращает 404, а не 5xx или 200 | P2 | approved | rest | CI, Regression, Nightly |
 | `REST-HEAD-GET-CONSISTENCY` | HEAD response is consistent with GET | P2 | approved | rest | CI, Regression, Nightly |
 | `REST-METHOD-NOT-ALLOWED` | Unsupported HTTP method is rejected | P2 | approved | rest | CI, Regression, Nightly |
-| `REST-READ-NO-SIDE-EFFECTS` | Чтение не меняет состояние ресурса | P2 | draft | rest |  |
+| `REST-READ-NO-SIDE-EFFECTS` | Чтение не меняет состояние ресурса | P2 | approved | rest |  |
 | `HTTP-ABSOLUTE-URL-BASE-PATH` | Абсолютные URL, которые формирует сервер, учитывают публичный адрес и базовый путь | P3 | approved | rest | Regression, Nightly |
 | `HTTP-ACCEPT-LANGUAGE` | Язык сообщений определяется Accept-Language с fallback | P3 | approved | rest, graphql | Regression, Nightly |
 | `HTTP-BODY-ON-GET-DELETE` | Тело в GET/DELETE игнорируется или отклоняется по контракту | P3 | approved | rest | Regression, Nightly |
@@ -437,7 +442,7 @@ HTTP methods, headers, and status semantics
 | `HTTP-RESPONSE-MODE-HEADER-PARITY` | Настроенные заголовки ответа присутствуют во всех режимах обработки ответа | P3 | approved | rest | Regression, Nightly |
 | `HTTP-ROUTE-PROTOCOL-CONDITION` | Условие маршрута для одного протокола не блокирует маршрут по другому разрешённому протоколу | P3 | approved | rest, grpc | Regression, Nightly |
 | `HTTP-TRAILING-SLASH-CASE` | Вариации пути (слэш в конце, регистр, двойной слэш) обрабатываются единообразно | P3 | approved | rest | Regression, Nightly |
-| `HTTP-UNRELATED-HEADERS-IGNORED` | Посторонние и мусорные заголовки не меняют результат | P3 | draft | rest |  |
+| `HTTP-UNRELATED-HEADERS-IGNORED` | Посторонние и мусорные заголовки не меняют результат | P3 | approved | rest |  |
 | `HTTP-URL-LENGTH-LIMIT` | Очень длинный URL отклоняется контролируемо | P3 | approved | rest | Regression, Nightly |
 | `HTTP-VARY-HEADER` | Кэшируемые ответы содержат корректный Vary | P3 | approved | rest | Regression, Nightly |
 | `HTTP-VERSION-PARITY` | Запросы по HTTP/2 и с предложением Upgrade h2c обслуживаются так же, как по HTTP/1.1 | P3 | approved | rest | Regression, Nightly |
@@ -450,7 +455,7 @@ Error response shape and consistency
 | ID | Проверка | P | Статус | Протоколы | Профили |
 |---|---|---|---|---|---|
 | `ERR-INTERNAL-ERROR-SHAPE` | Внутренняя ошибка сервера возвращается в общей модели без утечек | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
-| `ERR-VALIDATION-NO-LEAK` | Ошибки валидации полезны и не раскрывают внутренние детали | P1 | draft | rest, grpc, graphql, websocket |  |
+| `ERR-VALIDATION-NO-LEAK` | Ошибки валидации не раскрывают внутренние детали | P1 | approved | rest, grpc, graphql, websocket |  |
 | `ERR-STABLE-ERROR-CODES` | Машиночитаемые коды ошибок стабильны и задокументированы | P2 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly |
 | `ERR-STATUS-MATCHES-EFFECT` | Код ответа соответствует фактическому результату операции | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `REST-CORRELATION-ID` | Correlation ID | P3 | approved | rest | Regression, Nightly |
@@ -476,7 +481,7 @@ Pagination, filtering, and sorting
 | `REST-FILTER-INVALID` | Невалидный фильтр | P2 | approved | rest | CI, Regression, Nightly |
 | `REST-FILTER-OPERATION-PARITY` | Один фильтр даёт согласованный результат в списке, агрегации и вложенной выборке | P2 | approved | rest, graphql | CI, Regression, Nightly |
 | `REST-FILTER-OPERATOR-TYPE-MATRIX` | Каждый оператор фильтра работает для каждого допустимого типа поля и возвращает ровно подходящие записи | P2 | approved | rest, graphql | CI, Regression, Nightly |
-| `REST-FILTER-RANGE-BOUNDARIES` | Границы фильтра по диапазону включаются по контракту и одинаково | P2 | draft | rest, graphql |  |
+| `REST-FILTER-RANGE-BOUNDARIES` | Границы фильтра по диапазону включаются по контракту и одинаково | P2 | approved | rest, graphql |  |
 | `REST-FILTER-RELATION-NO-DUPLICATES` | Фильтр по полю связанной коллекции возвращает каждую запись один раз | P2 | approved | rest, graphql | CI, Regression, Nightly |
 | `REST-FILTER-SORT-COMPOSITION` | Filtering and sorting compose correctly | P2 | approved | rest, graphql | CI, Regression, Nightly |
 | `REST-FILTER-UNSELECTED-FIELD` | Фильтр по полю, не входящему в выбор полей, работает | P2 | approved | rest, graphql | CI, Regression, Nightly |
@@ -569,11 +574,11 @@ Domain rules, workflows, limits, and money
 | `BIZ-DOUBLE-SPEND` | Параллельные списания не приводят к двойной трате | P0 | approved | rest, grpc, graphql | Regression, Nightly |
 | `BIZ-NEGATIVE-QUANTITY` | Отрицательные и нулевые количества и суммы не дают выгоды | P0 | approved | rest, grpc, graphql | PR, CI, Regression, Nightly, Release |
 | `BIZ-WORKFLOW-STEP-SKIP` | Нельзя пропустить обязательный шаг бизнес-процесса | P0 | approved | rest, grpc, graphql | PR, CI, Regression, Nightly, Release |
-| `BIZ-ECHOED-VALUE-VERIFIED` | Значение из выдачи, возвращаемое клиентом, проверяется сервером | P1 | draft | rest, grpc, graphql |  |
+| `BIZ-ECHOED-VALUE-VERIFIED` | Значение из выдачи, возвращаемое клиентом, проверяется сервером | P1 | approved | rest, grpc, graphql |  |
 | `BIZ-LIMITS-QUOTAS` | Лимиты и квоты соблюдаются на границе и не обходятся параллельно | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `BIZ-ONE-TIME-BENEFIT-REUSE` | Одноразовые промокоды, бонусы и приглашения нельзя использовать повторно | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
 | `BIZ-ROUNDING` | Округление денежных величин корректно и не накапливает ошибку | P1 | approved | rest, grpc, graphql | CI, Regression, Nightly, Release |
-| `BIZ-ADJACENT-RANGES-PARTITION` | Соседние диапазоны не пересекаются и не оставляют дыр на границах | P2 | draft | generic |  |
+| `BIZ-ADJACENT-RANGES-PARTITION` | Соседние диапазоны не пересекаются и не оставляют дыр на границах | P2 | approved | generic |  |
 | `BIZ-CONFIG-SCOPE-PRECEDENCE` | Настройка более узкого уровня имеет приоритет над глобальной | P2 | approved | generic | CI, Regression, Nightly |
 | `BIZ-CURRENCY-MISMATCH` | Смешение валют в операции обрабатывается явно | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `BIZ-DIVISION-BY-ZERO` | Входы с нулём в знаменателе не дают 500 и нечисловых значений | P2 | approved | generic | CI, Regression, Nightly |
@@ -582,9 +587,10 @@ Domain rules, workflows, limits, and money
 | `BIZ-FLAG-EFFECT-MATRIX` | Каждый флаг сущности влияет на поведение так, как описано | P2 | approved | generic | CI, Regression, Nightly |
 | `BIZ-HIERARCHY-CYCLES` | Ссылка на себя и циклы в иерархии запрещены | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `BIZ-IMPOSSIBLE-STEP-NOT-ASSIGNED` | Невыполнимый обязательный шаг не назначается и не блокирует законную операцию | P2 | approved | generic | CI, Regression, Nightly |
-| `BIZ-MESSAGE-TEMPLATE-COVERAGE` | Шаблоны сообщений есть для каждого региона и языка и укладываются в лимит длины | P2 | draft | generic |  |
+| `BIZ-MESSAGE-TEMPLATE-COVERAGE` | Для каждого региона и языка есть шаблон сообщения | P2 | approved | rest, grpc, graphql |  |
 | `BIZ-RULES-DETERMINISTIC` | Итог нескольких правил над одним значением детерминирован | P2 | approved | generic | CI, Regression, Nightly |
 | `BIZ-SIDE-EFFECTS-ONCE` | Побочные эффекты (письма, push, события) выполняются ровно один раз | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
+| `BIZ-SMS-TEMPLATE-LENGTH` | Шаблон SMS укладывается в лимит сегментов после подстановки переменных | P2 | approved | generic |  |
 | `BIZ-TIME-WINDOW` | Операции вне разрешённого временного окна отклоняются | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `BIZ-AMBIGUOUS-ADDRESS` | Неоднозначный почтовый адрес не выбирается молча по первому совпадению | P3 | approved | generic | Regression, Nightly |
 
@@ -645,9 +651,9 @@ Versioning, backward compatibility, and contract drift
 |---|---|---|---|---|---|
 | `COMPAT-BREAKING-CHANGE-DIFF` | Изменения контракта проверяются на обратную несовместимость | P0 | approved | rest, grpc, graphql, websocket | PR, CI, Regression, Nightly, Release |
 | `COMPAT-ADDITIVE-CHANGE` | Добавление полей не ломает существующих клиентов | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
-| `COMPAT-BUILD-IMAGE-STARTS` | Собранный образ запускается до публикации | P1 | draft | generic |  |
+| `COMPAT-BUILD-IMAGE-STARTS` | Собранный образ запускается до публикации | P1 | approved | generic |  |
 | `COMPAT-IMPLEMENTATION-MATCHES-CONTRACT` | Реализация соответствует опубликованному контракту | P1 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly, Release |
-| `COMPAT-SHARED-SCHEMA-SERVICES` | После изменения схемы все сервисы ветки работают с общими таблицами | P1 | draft | generic |  |
+| `COMPAT-SHARED-SCHEMA-SERVICES` | После изменения схемы все сервисы ветки работают с общими таблицами | P1 | approved | generic |  |
 | `COMPAT-DEFAULT-VERSION` | Запрос без указания версии обслуживается задокументированной версией | P2 | approved | rest, graphql | CI, Regression, Nightly |
 | `COMPAT-ENUM-EXTENSION` | Добавление значения enum не ломает клиентов | P2 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly |
 | `COMPAT-UPGRADE-STORED-DATA-STABLE` | Обновление сервера не меняет сохранённые объекты и не запускает побочных действий | P2 | approved | generic | CI, Regression, Nightly |
@@ -759,7 +765,7 @@ Requirement transfer errors - spec vs contract vs implementation, unspecified be
 |---|---|---|---|---|---|
 | `REQ-CONTRACT-CONTRADICTS-SPEC` | Поведение по контракту не противоречит ТЗ | P1 | approved | generic | CI, Regression, Nightly, Release |
 | `REQ-SPEC-NOT-IN-CONTRACT` | Требование ТЗ не потеряно по пути в контракт и реализацию | P1 | approved | generic | CI, Regression, Nightly, Release |
-| `REQ-ACCEPTANCE-PLAN-REVIEW` | ПМИ соответствует ЧТЗ по порядку шагов, покрытию и редакции | P2 | draft | generic |  |
+| `REQ-ACCEPTANCE-PLAN-REVIEW` | ПМИ соответствует ЧТЗ по порядку шагов, покрытию и редакции | P2 | approved | generic |  |
 | `REQ-CONTRACT-SELF-CONSISTENCY` | Контракт не противоречит сам себе и своей прежней версии | P2 | approved | rest, grpc, graphql | CI, Regression, Nightly |
 | `REQ-CROSS-CLIENT-CONSISTENCY` | Одно правило продукта одинаково в API разных клиентов | P2 | approved | generic | CI, Regression, Nightly |
 | `REQ-UNSPECIFIED-BEHAVIOR-PROBE` | Неописанное поведение выясняется тестом и сравнивается со стандартом и здравым смыслом | P2 | approved | rest, grpc, graphql, websocket | CI, Regression, Nightly |
@@ -772,14 +778,20 @@ User interface - forms, navigation, state, data and error display, client settin
 |---|---|---|---|---|---|
 | `UI-AUTH-FLOWS` | Интерфейсные потоки входа и восстановления нельзя обойти и перенаправить наружу | P1 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly, Release |
 | `UI-CLIENT-CODE-NO-SECRETS` | Клиентский код и страницы не раскрывают секретов и лишних данных | P1 | approved | ui-web | CI, Regression, Nightly, Release |
-| `UI-DESKTOP-UNSAVED-EXIT` | Выход и сохранение не теряют данные без запроса | P1 | draft | ui-desktop |  |
-| `UI-FILE-OPEN-SAVE-ROUNDTRIP` | Сохранение и открытие файла не теряют данные, чужой файл даёт сообщение | P1 | draft | ui-web, ui-desktop |  |
-| `UI-MOBILE-APP-UPDATE` | Обновление поверх предыдущей версии сохраняет вход, настройки и данные | P1 | draft | ui-mobile |  |
-| `UI-MOBILE-BACKGROUND-WORK` | Прямое управление и долгие операции переживают фон, блокировку и энергосбережение | P1 | draft | ui-mobile |  |
-| `UI-MOBILE-PAIRING-BY-RADIO` | Мастер сопряжения выбирает путь по возможностям устройства и телефона | P1 | draft | ui-mobile |  |
-| `UI-MOBILE-PERMISSIONS-BY-OS` | Разрешения запрашиваются по версии ОС, отказ объяснён, выдача работает без перезапуска | P1 | draft | ui-mobile |  |
-| `UI-MOBILE-STATE-SURVIVES-LIFECYCLE` | Состояние экрана переживает фон, убийство процесса и поворот | P1 | draft | ui-mobile |  |
-| `UI-MOBILE-WIFI-PROVISIONING` | Подключение устройства к Wi-Fi проходит при разных сетях телефона и роутера | P1 | draft | ui-mobile |  |
+| `UI-DESKTOP-UNSAVED-EXIT` | Выход и сохранение не теряют данные без запроса | P1 | approved | ui-desktop |  |
+| `UI-FILE-OPEN-SAVE-ROUNDTRIP` | Сохранение и открытие файла не теряют данные | P1 | approved | ui-web, ui-desktop |  |
+| `UI-MOBILE-APP-UPDATE` | Обновление поверх предыдущей версии сохраняет вход, настройки и данные | P1 | approved | ui-mobile |  |
+| `UI-MOBILE-BACKGROUND-WORK` | Прямое управление переживает фон, блокировку и энергосбережение | P1 | approved | ui-mobile |  |
+| `UI-MOBILE-BLE-GENERATIONS` | Сопряжение по BLE работает между поколениями телефона и устройства | P1 | approved | ui-mobile |  |
+| `UI-MOBILE-FORCED-UPDATE` | Неподдерживаемая версия приложения ведёт к обновлению | P1 | approved | ui-mobile |  |
+| `UI-MOBILE-LONG-OPERATION-INTERRUPTED` | Прерванная долгая операция не выводит устройство из строя | P1 | approved | ui-mobile |  |
+| `UI-MOBILE-PAIRING-BY-RADIO` | Мастер сопряжения выбирает путь по возможностям устройства | P1 | approved | ui-mobile |  |
+| `UI-MOBILE-PERMISSION-DENIAL` | Отказ в разрешении объяснён, обратим и не роняет приложение | P1 | approved | ui-mobile |  |
+| `UI-MOBILE-PERMISSIONS-BY-OS` | Разрешения запрашиваются по версии ОС и targetSdk сборки | P1 | approved | ui-mobile |  |
+| `UI-MOBILE-STATE-SURVIVES-LIFECYCLE` | Состояние экрана переживает фон, убийство процесса и поворот | P1 | approved | ui-mobile |  |
+| `UI-MOBILE-WIFI-PROVISIONING` | Подключение устройства к Wi-Fi проходит при разных диапазонах телефона и роутера | P1 | approved | ui-mobile |  |
+| `UI-MOBILE-WIFI-SECURITY-MODES` | Режим безопасности роутера не приводит к зависанию подключения устройства | P1 | approved | ui-mobile |  |
+| `UI-MOBILE-WIFI-SOFTAP` | Подключение через точку доступа устройства не рвётся при смене сети ОС | P1 | approved | ui-mobile |  |
 | `UI-PLATFORM-SECURITY` | Настольный и мобильный клиенты не открывают недоверенный код и экраны входа другим приложениям | P1 | approved | ui-desktop, ui-mobile | CI, Regression, Nightly, Release |
 | `UI-SAFE-RENDERING` | Данные отображаются экранированными и не роняют интерфейс | P1 | approved | ui-web | CI, Regression, Nightly, Release |
 | `UI-ACTIONS-WORK-ONCE` | Каждое действие выполняется ровно один раз и меняет ровно своё | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
@@ -787,17 +799,19 @@ User interface - forms, navigation, state, data and error display, client settin
 | `UI-CLIENT-REQUEST-HYGIENE` | Клиент не шлёт лишних, дублирующих и бесконечных запросов | P2 | approved | ui-web | CI, Nightly |
 | `UI-CONDITIONAL-FORMATTING` | Условное оформление работает для всех операторов сравнения | P2 | approved | ui-web | CI, Regression, Nightly |
 | `UI-CONFIRM-DESTRUCTIVE` | Удаление и изменение подтверждаются, отмена ничего не меняет | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
-| `UI-DESKTOP-INSTALL-RESULT` | После установки есть ярлыки, запись о программе и ассоциации файлов | P2 | draft | ui-desktop |  |
-| `UI-DESKTOP-INSTALL-WIZARD` | Мастер установки предсказуем на каждом шаге, отмена откатывает установку | P2 | draft | ui-desktop |  |
-| `UI-DESKTOP-MENU-COMMANDS` | Каждый пункт меню и показанное сочетание клавиш выполняют свою команду | P2 | draft | ui-desktop |  |
-| `UI-DESKTOP-REINSTALL` | Повторная установка поверх существующей не ломает программу и не плодит записи | P2 | draft | ui-desktop |  |
-| `UI-DESKTOP-UNINSTALL-CLEAN` | Удаление не оставляет следов, кроме данных пользователя по описанному правилу | P2 | draft | ui-desktop |  |
+| `UI-DESKTOP-INSTALL-RESULT` | После установки есть ярлыки, запись о программе и ассоциации файлов | P2 | approved | ui-desktop |  |
+| `UI-DESKTOP-INSTALL-WIZARD` | Мастер установки предсказуем на каждом шаге, отмена откатывает установку | P2 | approved | ui-desktop |  |
+| `UI-DESKTOP-MENU-COMMANDS` | Каждый пункт меню и показанное сочетание клавиш выполняют свою команду | P2 | approved | ui-desktop |  |
+| `UI-DESKTOP-REINSTALL` | Повторная установка поверх существующей не ломает программу и не плодит записи | P2 | approved | ui-desktop |  |
+| `UI-DESKTOP-UNINSTALL-CLEAN` | Удаление не оставляет следов, кроме данных пользователя по описанному правилу | P2 | approved | ui-desktop |  |
 | `UI-DISABLED-AND-READONLY` | Недоступные и доступные только для чтения элементы видны и не выполняют действий | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-DOCUMENTS-OPEN` | Загруженные документы открываются и скачиваются в каждом поддерживаемом формате | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-DROPDOWN-VALUES` | Выпадающие списки показывают полные, разрешённые и упорядоченные значения | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-ERROR-DISPLAY` | Ошибки сервера при сохранении показываются понятным сообщением | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
-| `UI-EXPORT-VALUE-TYPES` | Выгрузка в CSV/XLSX сохраняет тип значений в табличном редакторе и сходится с детализацией | P2 | draft | ui-web, ui-desktop |  |
+| `UI-EXPORT-TOTALS-MATCH-DETAILS` | Итоги в выгрузке сходятся с детализацией | P2 | approved | ui-web, ui-desktop |  |
+| `UI-EXPORT-VALUE-TYPES` | Выгрузка в CSV/XLSX сохраняет тип значений в табличном редакторе | P2 | approved | ui-web, ui-desktop |  |
 | `UI-FAILURE-ROBUSTNESS` | Клиент не падает при сбое и неполных данных | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
+| `UI-FILE-OPEN-INVALID` | Чужой или повреждённый файл даёт сообщение о формате | P2 | approved | ui-web, ui-desktop |  |
 | `UI-FORM-REQUIRED-AND-HINTS` | Обязательные поля помечены и проверяются, подсказки объясняют формат | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-FORM-STATE` | Форма сохраняет и сбрасывает состояние ожидаемо | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-INPUT-VALUES` | Поля ввода принимают, показывают и сохраняют значения по своему типу | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
@@ -805,28 +819,28 @@ User interface - forms, navigation, state, data and error display, client settin
 | `UI-LIST-FILTER-STATE` | Фильтры снимаются и не переносятся между списками | P2 | approved | ui-web | CI, Regression, Nightly |
 | `UI-LIST-FILTER-VALUES` | Фильтры принимают и показывают значения своего типа | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-LIST-SORT` | Сортировка списков работает и сохраняется | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
-| `UI-MOBILE-ACCESSIBILITY-LABELS` | У интерактивных элементов есть различимые подписи доступности | P2 | draft | ui-mobile |  |
-| `UI-MOBILE-DEEP-LINKS` | Глубокие ссылки открывают нужный экран и не открывают чужое | P2 | draft | ui-mobile |  |
-| `UI-MOBILE-LOCAL-AUTH-FALLBACK` | Локальная аутентификация учитывает класс биометрии и предлагает альтернативу | P2 | draft | ui-mobile |  |
-| `UI-MOBILE-LOCAL-CHANNEL-FALLBACK` | Недоступность локальной сети не ломает управление устройством | P2 | draft | ui-mobile |  |
-| `UI-MOBILE-PUSH-NO-GMS` | Push работает на Android без сервисов Google | P2 | draft | ui-mobile |  |
-| `UI-MOBILE-RUNTIME-METRICS` | Метрики запуска, памяти и падений снимаются в каждом UI-прогоне | P2 | draft | ui-mobile |  |
+| `UI-MOBILE-ACCESSIBILITY-LABELS` | У интерактивных элементов есть различимые подписи доступности | P2 | approved | ui-mobile |  |
+| `UI-MOBILE-DEEP-LINKS` | Глубокие ссылки открывают нужный экран и не открывают чужое | P2 | approved | ui-mobile |  |
+| `UI-MOBILE-LOCAL-AUTH-FALLBACK` | Локальная аутентификация учитывает класс биометрии и предлагает альтернативу | P2 | approved | ui-mobile |  |
+| `UI-MOBILE-LOCAL-CHANNEL-FALLBACK` | Недоступность локальной сети не ломает управление устройством | P2 | approved | ui-mobile |  |
+| `UI-MOBILE-PUSH-NO-GMS` | Push работает на Android без сервисов Google | P2 | approved | ui-mobile |  |
+| `UI-MOBILE-RUNTIME-METRICS` | В UI-прогоне нет скрытых падений и ANR, запуск и память в пределах бюджета | P2 | approved | ui-mobile |  |
 | `UI-NETWORK-RESILIENCE` | Клиент работает при потере сети и без доступа в интернет | P2 | approved | ui-web, ui-mobile | CI, Regression, Nightly |
 | `UI-PLATFORM-COMPATIBILITY` | Интерфейс одинаково работает в поддерживаемых браузерах, ОС и режимах | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-RESPONSIVE-LAYOUT` | Интерфейс работает на всех поддерживаемых размерах экрана | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-SECRET-FIELDS` | Поля паролей и секретов не раскрывают и не теряют значение | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-SESSION-EXPIRY` | Истечение и потеря сессии обрабатываются в интерфейсе понятно | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-STATE-CHANGE-METHODS` | Изменения состояния отправляются небезопасными методами, а не GET | P2 | approved | ui-web | CI, Nightly |
-| `UI-TEXTS-BY-LOCALIZATION-KEYS` | Тексты экрана совпадают с файлом локализации по ключу на каждом языке | P2 | draft | ui-web, ui-desktop, ui-mobile |  |
-| `UI-UNDO-REDO-VISIBLE-STATE` | Отмена и повтор согласованы с тем, что видит пользователь | P2 | draft | ui-web, ui-desktop, ui-mobile |  |
+| `UI-TEXTS-BY-LOCALIZATION-KEYS` | Тексты экрана совпадают с файлом локализации по ключу на каждом языке | P2 | approved | ui-web, ui-desktop, ui-mobile |  |
+| `UI-UNDO-REDO-VISIBLE-STATE` | Отмена и повтор согласованы с тем, что видит пользователь | P2 | approved | ui-web, ui-desktop, ui-mobile |  |
 | `UI-CHANGE-HISTORY` | История изменений показывает каждое изменение с автором | P3 | approved | ui-web, ui-desktop, ui-mobile | Regression, Nightly |
-| `UI-DESKTOP-HELP-ABOUT` | Справка, подсказки «Что это?» и окно «О программе» верны и согласованы | P3 | draft | ui-desktop |  |
-| `UI-DESKTOP-WINDOW-BEHAVIOR` | Окно ведёт себя по стандартам ОС | P3 | draft | ui-desktop |  |
+| `UI-DESKTOP-HELP-ABOUT` | Справка, подсказки «Что это?» и окно «О программе» верны и согласованы | P3 | approved | ui-desktop |  |
+| `UI-DESKTOP-WINDOW-BEHAVIOR` | Окно ведёт себя по стандартам ОС | P3 | approved | ui-desktop |  |
 | `UI-FIELD-LABELS-MATCH-FORM` | Подписи и подсказки полей соответствуют назначению формы | P3 | approved | ui-web, ui-desktop, ui-mobile | Regression, Nightly |
 | `UI-LAYOUT-OVERFLOW` | Длинные тексты и раскрывающиеся элементы не выходят за границы и не перекрываются | P3 | approved | ui-web, ui-desktop, ui-mobile | Regression, Nightly |
 | `UI-LEGAL-PAGES` | Условия использования и FAQ доступны там, где нужны | P3 | approved | ui-web, ui-desktop, ui-mobile | Regression, Nightly |
 | `UI-LIST-COUNTERS-CONSISTENCY` | Счётчики элементов совпадают с фактическим числом записей | P3 | approved | ui-web | Regression, Nightly |
-| `UI-MOBILE-TABLET-NO-SIM` | Планшет без SIM проходит вход и мастера и управляет удалённо по Wi-Fi | P3 | draft | ui-mobile |  |
+| `UI-MOBILE-TABLET-NO-SIM` | Планшет без SIM проходит вход и управляет удалённо по Wi-Fi | P3 | approved | ui-mobile |  |
 | `UI-NAVIGATION` | Навигация последовательна: путь на главную, заголовки, рабочие пункты меню | P3 | approved | ui-web, ui-desktop, ui-mobile | Regression, Nightly |
 | `UI-NO-BROKEN-RESOURCES` | Ссылки, картинки и ресурсы страниц загружаются | P3 | approved | ui-web | Regression, Nightly |
 | `UI-RELATED-RECORDS` | Связанные записи редактируются во вложенной форме так же, как отдельно | P3 | approved | ui-web | Regression, Nightly |

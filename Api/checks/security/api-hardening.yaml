@@ -88,6 +88,8 @@ checks:
   - action: Запустить сервер с настройками по умолчанию и проверить, что экспериментальные (preview) функции и их эндпоинты
       недоступны
     notes: 'Real-world bug: RWB-0075 (keycloak/keycloak#44132)'
+  - action: Проверить, что отладочные логи выключены в PROD (NODE_ENV и аналоги).
+    notes: inbox №348; проверка конфигурации стенда, раз на стенд, включая PROD
   expected:
   - Служебные эндпоинты закрыты или требуют аутентификации в соответствии с политикой окружения.
   applicability:
@@ -1606,11 +1608,9 @@ checks:
   - OWASP API9:2023 (Improper Inventory Management)
   - Смежные — HARD-SHADOW-API-VERSIONS, ERR-STATUS-MATCHES-EFFECT
   - inbox №142
-- id: HARD-DEPLOY-CONFIG-BASELINE
-  status: draft
-  title: Конфигурация развёрнутого стенда безопасна - проверка один раз на стенд, включая PROD
-  description: DevOps мог забыть или неверно задать настройку. Набор запускается после развёртывания или смены конфигурации,
-    а не в каждом прогоне.
+- id: HARD-INFRA-SECRETS-NOT-DEFAULT
+  status: approved
+  title: Секреты и учётки инфраструктуры не равны значениям из примеров конфигурации
   category: security
   protocols:
   - generic
@@ -1620,25 +1620,21 @@ checks:
   - security
   - hardening
   - transport-security
+  - stand-config
   preconditions:
-  - Стенд развёрнут или изменена его конфигурация; известен вид стенда (тестовый, stage, PROD).
+  - 'Проверка конфигурации стенда: раз на стенд после развёртывания или смены конфигурации, включая PROD.'
+  - Нужны права на чтение конфигурации или сканирование снаружи; на PROD проверки согласуются заранее.
   steps:
-  - action: Проверить на входе TLS и HSTS; X-Forwarded-* принимаются только от своего прокси.
-  - action: Проверить, что секреты и учётки инфраструктуры - не значения по умолчанию из примеров конфигурации (change-me, minioadmin,
-      secret).
-    notes: на PROD вход с такими учётками - только с разрешения
-  - action: Проверить, что документация API и отладочные логи выключены в PROD (NODE_ENV и аналоги).
-  - action: Проверить, что сервисы инфраструктуры (БД, Redis, S3, консоли) недоступны снаружи.
-  - action: Проверить, что публичный бакет открыт на чтение только по нужному префиксу.
-  - action: Проверить, что лимиты входа и сроки сессии заданы по ТЗ, а не по умолчанию, и что на стенде нет тестовых учёток и
-      данных, если вид стенда этого не допускает.
+  - action: Сверить секреты и учётки инфраструктуры с примерами конфигурации (change-me, minioadmin, secret)
+      - значения не совпадают
+    notes: inbox №348; сверка по конфигурации, вход с такими учётками на PROD - только с разрешения
   expected:
-  - Каждая настройка соответствует требованиям к этому виду стенда; расхождение - находка, даже если приложение работает.
+  - Значений по умолчанию нет; совпадение - находка, даже если приложение работает.
   applicability:
     when:
     - Есть развёрнутый стенд.
     skip_when:
-    - Нет.
+    - 'Стенда нет: только локальный запуск разработчика.'
   automation:
     level: partial
     deterministic: true
@@ -1647,4 +1643,145 @@ checks:
     likelihood: medium
   references:
   - inbox №348
-  - Смежные - HARD-TLS-ONLY, HARD-DEBUG-ENDPOINTS, HARD-ENVIRONMENT-ISOLATION
+  - Смежные - HARD-TLS-ONLY, HARD-DEBUG-ENDPOINTS, HARD-CLIENT-IP-TRUSTED-PROXIES (тоже раз на стенд)
+- id: HARD-INFRA-NOT-EXPOSED
+  status: approved
+  title: Сервисы инфраструктуры недоступны снаружи
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - hardening
+  - transport-security
+  - stand-config
+  preconditions:
+  - 'Проверка конфигурации стенда: раз на стенд после развёртывания или смены конфигурации, включая PROD.'
+  - Нужны права на чтение конфигурации или сканирование снаружи; на PROD проверки согласуются заранее.
+  steps:
+  - action: Проверить извне контура доступность БД, Redis, S3 и консолей управления - соединение не устанавливается
+    notes: inbox №348
+  expected:
+  - Сервисы инфраструктуры доступны только изнутри контура.
+  applicability:
+    when:
+    - Есть развёрнутый стенд с сервисами инфраструктуры.
+    skip_when:
+    - Инфраструктура полностью управляется провайдером без сетевого входа.
+  automation:
+    level: partial
+    deterministic: true
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - inbox №348
+  - Смежные - HARD-TLS-ONLY, HARD-DEBUG-ENDPOINTS, HARD-CLIENT-IP-TRUSTED-PROXIES (тоже раз на стенд)
+- id: HARD-PUBLIC-BUCKET-SCOPE
+  status: approved
+  title: Публичный бакет открыт на чтение только по нужному префиксу
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P1
+  tags:
+  - security
+  - hardening
+  - transport-security
+  - stand-config
+  preconditions:
+  - 'Проверка конфигурации стенда: раз на стенд после развёртывания или смены конфигурации, включая PROD.'
+  - Нужны права на чтение конфигурации или сканирование снаружи; на PROD проверки согласуются заранее.
+  steps:
+  - action: Запросить без учётных данных объекты вне публичного префикса и список объектов бакета - отказ
+    notes: inbox №348
+  expected:
+  - Анонимно читается только нужный префикс, список и запись недоступны.
+  applicability:
+    when:
+    - Есть публичный бакет.
+    skip_when:
+    - Публичных бакетов нет.
+  automation:
+    level: partial
+    deterministic: true
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - inbox №348
+  - Смежные - HARD-TLS-ONLY, HARD-DEBUG-ENDPOINTS, HARD-CLIENT-IP-TRUSTED-PROXIES (тоже раз на стенд)
+- id: HARD-AUTH-LIMITS-CONFIGURED
+  status: approved
+  title: Лимиты входа и сроки сессии на стенде заданы по ТЗ
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - hardening
+  - transport-security
+  - stand-config
+  preconditions:
+  - 'Проверка конфигурации стенда: раз на стенд после развёртывания или смены конфигурации, включая PROD.'
+  - Нужны права на чтение конфигурации или сканирование снаружи; на PROD проверки согласуются заранее.
+  steps:
+  - action: Сверить лимиты входа и сроки сессии в конфигурации стенда с ТЗ - значения по ТЗ, а не по умолчанию
+    notes: inbox №348
+  expected:
+  - Значения соответствуют требованиям к этому виду стенда; расхождение - находка.
+  applicability:
+    when:
+    - Есть вход и сессии.
+    skip_when:
+    - Входа нет.
+  automation:
+    level: partial
+    deterministic: true
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - inbox №348
+  - Смежные - HARD-TLS-ONLY, HARD-DEBUG-ENDPOINTS, HARD-CLIENT-IP-TRUSTED-PROXIES (тоже раз на стенд)
+- id: HARD-NO-TEST-DATA-ON-STAND
+  status: approved
+  title: На стенде нет тестовых учёток и данных, если его вид этого не допускает
+  category: security
+  protocols:
+  - generic
+  kind: security
+  priority: P2
+  tags:
+  - security
+  - hardening
+  - transport-security
+  - stand-config
+  preconditions:
+  - 'Проверка конфигурации стенда: раз на стенд после развёртывания или смены конфигурации, включая PROD.'
+  - Нужны права на чтение конфигурации или сканирование снаружи; на PROD проверки согласуются заранее.
+  steps:
+  - action: Проверить на стенде наличие тестовых учёток и данных по правилу для его вида (тестовый, stage,
+      PROD)
+    notes: inbox №348
+  expected:
+  - На виде стенда, где это запрещено, тестовых учёток и данных нет.
+  applicability:
+    when:
+    - Есть правило для вида стенда; для PROD действует всегда.
+    skip_when:
+    - Тестовый стенд, где такие данные разрешены.
+  automation:
+    level: partial
+    deterministic: true
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - inbox №348
+  - Смежные - HARD-TLS-ONLY, HARD-DEBUG-ENDPOINTS, HARD-CLIENT-IP-TRUSTED-PROXIES (тоже раз на стенд)

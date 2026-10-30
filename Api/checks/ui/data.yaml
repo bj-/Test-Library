@@ -385,8 +385,8 @@ checks:
   - Серверная сторона — PAGE-SORT-FIELD-TYPE-MATRIX, REST-FILTER-OPERATOR-TYPE-MATRIX
   - ADR 0006 (проверки UI)
 - id: UI-EXPORT-VALUE-TYPES
-  status: draft
-  title: Выгрузка в CSV/XLSX сохраняет тип значений в табличном редакторе и сходится с детализацией
+  status: approved
+  title: Выгрузка в CSV/XLSX сохраняет тип значений в табличном редакторе
   category: ui
   protocols:
   - ui-web
@@ -398,13 +398,12 @@ checks:
   preconditions:
   - Есть выгрузка статистики или отчёта в CSV/XLSX.
   steps:
-  - action: Выгрузить значения вида 26.5.2, 18.5, 8.1.0 и открыть в Excel с русской локалью - версия остаётся строкой, а не
-      становится датой или числом (в XLSX тип ячейки «текст», в CSV способ, который Excel не переразбирает)
-    notes: inbox №433
-  - action: Сравнить сумму по основным версиям с детализацией
+  - action: Выгрузить значения вида 26.5.2, 18.5, 8.1.0 и открыть в Excel с русской локалью - версия остаётся
+      строкой, а не становится датой или числом (в XLSX тип ячейки «текст», в CSV способ, который Excel
+      не переразбирает)
     notes: inbox №433
   expected:
-  - Значения в редакторе совпадают с выгруженными; суммы сходятся.
+  - Значения в редакторе совпадают с выгруженными.
   applicability:
     when:
     - Есть выгрузка в CSV или XLSX.
@@ -419,9 +418,41 @@ checks:
   references:
   - ADR 0006 (проверки UI)
   - Смежная — INJ-CSV-FORMULA
+- id: UI-EXPORT-TOTALS-MATCH-DETAILS
+  status: approved
+  title: Итоги в выгрузке сходятся с детализацией
+  category: ui
+  protocols:
+  - ui-web
+  - ui-desktop
+  kind: contract
+  priority: P2
+  tags:
+  - ui
+  preconditions:
+  - Есть выгрузка статистики или отчёта в CSV/XLSX.
+  steps:
+  - action: Сравнить суммы по группам (например, по основным версиям) с детализацией
+    notes: inbox №433
+  expected:
+  - Суммы по группам равны сумме строк детализации.
+  applicability:
+    when:
+    - Есть выгрузка в CSV или XLSX.
+    skip_when:
+    - Выгрузки нет.
+  automation:
+    level: partial
+    deterministic: true
+  risk:
+    impact: medium
+    likelihood: medium
+  references:
+  - ADR 0006 (проверки UI)
+  - Смежная - UI-LIST-COUNTERS-CONSISTENCY (счётчики на экране)
 - id: UI-FILE-OPEN-SAVE-ROUNDTRIP
-  status: draft
-  title: Сохранение и открытие файла не теряют данные, чужой файл даёт сообщение
+  status: approved
+  title: Сохранение и открытие файла не теряют данные
   category: ui
   protocols:
   - ui-web
@@ -437,12 +468,10 @@ checks:
     notes: inbox №472
   - action: Открыть файл при разных текущих фильтрах - открывается полностью, фильтр не теряет записи
     notes: inbox №472
-  - action: Открыть чужой и повреждённый файл - сообщение о формате, не тишина и не падение
-    notes: inbox №472
   - action: 'Сохранить с расширением и без - расширение по правилу: своё дописывается, не теряется'
     notes: inbox №472
   expected:
-  - Сохранённое открывается без потерь; ошибка формата сообщается; расширение по правилу.
+  - Сохранённое открывается без потерь; расширение по правилу.
   applicability:
     when:
     - Есть сохранение и открытие файла.
@@ -457,8 +486,39 @@ checks:
   references:
   - ADR 0006 (проверки UI)
   - Смежная - RES-EXPORT-IMPORT-ROUNDTRIP
+- id: UI-FILE-OPEN-INVALID
+  status: approved
+  title: Чужой или повреждённый файл даёт сообщение о формате
+  category: ui
+  protocols:
+  - ui-web
+  - ui-desktop
+  kind: negative
+  priority: P2
+  tags:
+  - ui
+  preconditions:
+  - Клиент открывает файлы своего формата.
+  steps:
+  - action: Открыть чужой и повреждённый файл - сообщение о формате, не тишина и не падение
+    notes: inbox №472
+  expected:
+  - Ошибка формата сообщается, приложение работает, открытые данные не потеряны.
+  applicability:
+    when:
+    - Есть открытие файла.
+    skip_when:
+    - Работы с файлами нет.
+  automation:
+    level: partial
+    deterministic: true
+  risk:
+    impact: high
+    likelihood: medium
+  references:
+  - ADR 0006 (проверки UI)
 - id: UI-UNDO-REDO-VISIBLE-STATE
-  status: draft
+  status: approved
   title: Отмена и повтор согласованы с тем, что видит пользователь
   category: ui
   protocols:
@@ -472,15 +532,17 @@ checks:
   preconditions:
   - В клиенте есть Undo и фильтр списка.
   steps:
-  - action: Удалить запись при активном фильтре и отменить - запись возвращается, результат виден или описанное правило
-      сбрасывает фильтр
+  - action: Удалить запись при активном фильтре и отменить - запись возвращается, результат виден или
+      описанное правило сбрасывает фильтр
     notes: inbox №479
-  - action: Выполнить Undo для записи вне текущего фильтра - действие не меняет скрытое незаметно для пользователя
+  - action: Выполнить Undo для записи вне текущего фильтра - действие не меняет скрытое незаметно для
+      пользователя
     notes: inbox №479
   - action: Выполнить Redo после Undo - состояние как до отмены
     notes: inbox №479
   expected:
-  - Undo и Redo восстанавливают состояние, результат виден или поведение описано правилом.
+  - После Undo запись видна в текущем фильтре или фильтр сброшен по описанному правилу; Redo возвращает
+    состояние до отмены; действие над скрытой записью не проходит незаметно.
   applicability:
     when:
     - Есть отмена действий.

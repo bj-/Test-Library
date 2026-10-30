@@ -21,14 +21,16 @@ from pathlib import Path
 import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from export_for_llm import BLOCK, HIDDEN  # noqa: E402
 from library import iter_checks, setup_console  # noqa: E402
+from library_manifest import closed_ids  # noqa: E402
 
 OUT = Path("ideas/draftcheck")
 README = Path("README.md")
 INBOX = Path("ideas/inbox.md")
 PROCESSED = Path("ideas/processed.md")
 SPLIT = re.compile(r"(?<!\\)\|")
-FIELDS = ("id", "title", "category", "protocols", "kind", "priority", "preconditions", "steps", "expected",
+FIELDS = ("id", "title", "description", "category", "protocols", "kind", "priority", "preconditions", "steps", "expected",
           "applicability", "automation", "references")
 LAYERS = {"api": lambda c: not c["id"].startswith(("DB-", "UI-")),
           "db": lambda c: c["id"].startswith("DB-"),
@@ -82,7 +84,7 @@ def refs_of(check: dict) -> list[int]:
                   {int(n) for m in re.findall(r"inbox (№\d+(?:, №\d+)*)", text) for n in re.findall(r"\d+", m)})
 
 
-def build(name: str, checks: list[dict]) -> str:
+def build(name: str, checks: list[dict], closed: set[str]) -> str:
     ideas = inbox_ideas()
     out = ["# Перекрёстная проверка черновых записей библиотеки", "",
            f"Пакет `{name}`, записей: {len(checks)}. Записи и разбор входящих идей сделала модель Claude Opus 5.5.",
@@ -97,7 +99,7 @@ def build(name: str, checks: list[dict]) -> str:
             out += ["Исходные идеи (inbox):", ""] + [f"- №{i}: {ideas.get(i, '—')}" for i in src] + [""]
     own = {c["id"] for c in checks}
     index = sorted((c["id"], c.get("category", ""), c.get("title", "")) for _, c in iter_checks(Path("."), [])
-                   if not c["id"].startswith("REAL-") and c["id"] not in own)
+                   if not c["id"].startswith("REAL-") and c["id"] not in own and c["id"] not in closed)
     out += ["## Индекс библиотеки", "",
             f"Остальные записи ({len(index)}): ID | категория | заголовок. Записи этого пакета в индекс не входят.", "",
             "```text"]
@@ -114,9 +116,10 @@ def main() -> int:
     ap.add_argument("--name", help="имя пакета; по умолчанию inbox-<layer>")
     args = ap.parse_args()
     allc = [c for _, c in iter_checks(Path("."), [])]
+    closed = closed_ids()                # пакет уходит во внешнюю LLM: закрытых записей нет ни в нём, ни в индексе
     if args.layer:
         checks = [c for c in allc if c.get("status") == "draft" and not c["id"].startswith("REAL-")
-                  and LAYERS[args.layer](c) and refs_of(c)]
+                  and LAYERS[args.layer](c) and refs_of(c) and c["id"] not in closed]
         name = args.name or f"inbox-{args.layer}"
     else:
         ids = [i.strip() for i in args.ids.split(",") if i.strip()]
@@ -124,10 +127,13 @@ def main() -> int:
         missing = [i for i in ids if i not in by]
         if missing:
             raise SystemExit("ОШИБКА: нет записей " + ", ".join(missing))
+        hidden = [i for i in ids if i in closed]
+        if hidden:
+            raise SystemExit("ОШИБКА: закрытые записи не выгружаются: " + ", ".join(hidden))
         checks = [by[i] for i in ids]
         name = args.name or "custom"
     OUT.mkdir(parents=True, exist_ok=True)
-    text = build(name, checks)
+    text = BLOCK.sub(HIDDEN, build(name, checks, closed))
     path = OUT / f"{name}.md"
     path.write_text(text, encoding="utf-8")
     print(f"{path}: записей {len(checks)}, символов {len(text)}")

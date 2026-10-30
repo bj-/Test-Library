@@ -108,7 +108,7 @@ checks:
   - Nightly
   - Release
 - id: REST-READ-NO-SIDE-EFFECTS
-  status: draft
+  status: approved
   title: Чтение не меняет состояние ресурса
   category: http-semantics
   protocols:
@@ -122,21 +122,22 @@ checks:
   - regression
   - nightly
   preconditions:
-  - Есть операции чтения.
+  - Есть операции чтения. Нет способа сравнить состояние - запросить, это пробел наблюдаемости, а не неприменимость.
   steps:
   - action: Снять снимок ресурса, выполнить серию GET и HEAD, снять снимок снова - бизнес-поля, updatedAt,
       версия и ETag те же
     notes: inbox №529
-  - action: Повторить для чтения с параметрами include и expand и для поиска через POST
+  - action: Повторить для чтения с параметрами include и expand и для поиска через POST, если он описан
+      как чтение
     notes: inbox №529
   expected:
-  - Чтение безопасно по RFC 9110 §9.2.1; исключения (счётчик просмотров, последний вход) - только описанные в
-    требованиях.
+  - Чтение безопасно по RFC 9110 §9.2.1; исключения (счётчик просмотров, последний вход) - только описанные
+    в требованиях.
   applicability:
     when:
     - Есть операции чтения.
     skip_when:
-    - Нет способа сравнить состояние.
+    - Операций чтения нет.
   automation:
     level: full
     deterministic: true
