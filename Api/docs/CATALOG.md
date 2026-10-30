@@ -2,8 +2,8 @@
 
 Файл генерируется `python tools/build_catalog.py .` — не редактируйте вручную.
 
-Всего проверок: **660** — approved: 583, draft: 61, needs_clarification: 16.
-Протоколы: db: 33, generic: 133, graphql: 230, grpc: 151, rest: 425, ui-desktop: 38, ui-mobile: 37, ui-web: 41, websocket: 65.
+Всего проверок: **666** — approved: 583, draft: 67, needs_clarification: 16.
+Протоколы: db: 33, generic: 133, graphql: 230, grpc: 151, rest: 425, ui-desktop: 39, ui-mobile: 43, ui-web: 42, websocket: 65.
 
 | Категория | Описание | Проверок |
 |---|---|---:|
@@ -29,7 +29,7 @@
 | [websocket](#websocket) | WebSocket connection, message, and subscription behavior | 10 |
 | [privacy](#privacy) | Personal data handling, masking, consent, and erasure | 6 |
 | [requirements](#requirements) | Requirement transfer errors - spec vs contract vs implementation, unspecified behavior | 6 |
-| [ui](#ui) | User interface - forms, navigation, state, data and error display, client settings, localization and RTL | 58 |
+| [ui](#ui) | User interface - forms, navigation, state, data and error display, client settings, localization and RTL | 64 |
 | [db](#db) | Database - schema and constraints, migrations, indexes and query plans, stored logic, data integrity, application queries | 33 |
 
 ## contract
@@ -765,9 +765,11 @@ User interface - forms, navigation, state, data and error display, client settin
 | `UI-CLIENT-CODE-NO-SECRETS` | Клиентский код и страницы не раскрывают секретов и лишних данных | P1 | approved | ui-web | CI, Regression, Nightly, Release |
 | `UI-DESKTOP-UNSAVED-EXIT` | Выход и сохранение не теряют данные без запроса | P1 | draft | ui-desktop |  |
 | `UI-FILE-OPEN-SAVE-ROUNDTRIP` | Сохранение и открытие файла не теряют данные, чужой файл даёт сообщение | P1 | draft | ui-web, ui-desktop |  |
+| `UI-MOBILE-APP-UPDATE` | Обновление поверх предыдущей версии сохраняет вход, настройки и данные | P1 | draft | ui-mobile |  |
 | `UI-MOBILE-BACKGROUND-WORK` | Прямое управление и долгие операции переживают фон, блокировку и энергосбережение | P1 | draft | ui-mobile |  |
 | `UI-MOBILE-PAIRING-BY-RADIO` | Мастер сопряжения выбирает путь по возможностям устройства и телефона | P1 | draft | ui-mobile |  |
 | `UI-MOBILE-PERMISSIONS-BY-OS` | Разрешения запрашиваются по версии ОС, отказ объяснён, выдача работает без перезапуска | P1 | draft | ui-mobile |  |
+| `UI-MOBILE-STATE-SURVIVES-LIFECYCLE` | Состояние экрана переживает фон, убийство процесса и поворот | P1 | draft | ui-mobile |  |
 | `UI-MOBILE-WIFI-PROVISIONING` | Подключение устройства к Wi-Fi проходит при разных сетях телефона и роутера | P1 | draft | ui-mobile |  |
 | `UI-PLATFORM-SECURITY` | Настольный и мобильный клиенты не открывают недоверенный код и экраны входа другим приложениям | P1 | approved | ui-desktop, ui-mobile | CI, Regression, Nightly, Release |
 | `UI-SAFE-RENDERING` | Данные отображаются экранированными и не роняют интерфейс | P1 | approved | ui-web | CI, Regression, Nightly, Release |
@@ -794,15 +796,19 @@ User interface - forms, navigation, state, data and error display, client settin
 | `UI-LIST-FILTER-STATE` | Фильтры снимаются и не переносятся между списками | P2 | approved | ui-web | CI, Regression, Nightly |
 | `UI-LIST-FILTER-VALUES` | Фильтры принимают и показывают значения своего типа | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-LIST-SORT` | Сортировка списков работает и сохраняется | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
+| `UI-MOBILE-ACCESSIBILITY-LABELS` | У интерактивных элементов есть различимые подписи доступности | P2 | draft | ui-mobile |  |
+| `UI-MOBILE-DEEP-LINKS` | Глубокие ссылки открывают нужный экран и не открывают чужое | P2 | draft | ui-mobile |  |
 | `UI-MOBILE-LOCAL-AUTH-FALLBACK` | Локальная аутентификация учитывает класс биометрии и предлагает альтернативу | P2 | draft | ui-mobile |  |
 | `UI-MOBILE-LOCAL-CHANNEL-FALLBACK` | Недоступность локальной сети не ломает управление устройством | P2 | draft | ui-mobile |  |
 | `UI-MOBILE-PUSH-NO-GMS` | Push работает на Android без сервисов Google | P2 | draft | ui-mobile |  |
+| `UI-MOBILE-RUNTIME-METRICS` | Метрики запуска, памяти и падений снимаются в каждом UI-прогоне | P2 | draft | ui-mobile |  |
 | `UI-NETWORK-RESILIENCE` | Клиент работает при потере сети и без доступа в интернет | P2 | approved | ui-web, ui-mobile | CI, Regression, Nightly |
 | `UI-PLATFORM-COMPATIBILITY` | Интерфейс одинаково работает в поддерживаемых браузерах, ОС и режимах | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-RESPONSIVE-LAYOUT` | Интерфейс работает на всех поддерживаемых размерах экрана | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-SECRET-FIELDS` | Поля паролей и секретов не раскрывают и не теряют значение | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-SESSION-EXPIRY` | Истечение и потеря сессии обрабатываются в интерфейсе понятно | P2 | approved | ui-web, ui-desktop, ui-mobile | CI, Regression, Nightly |
 | `UI-STATE-CHANGE-METHODS` | Изменения состояния отправляются небезопасными методами, а не GET | P2 | approved | ui-web | CI, Nightly |
+| `UI-TEXTS-BY-LOCALIZATION-KEYS` | Тексты экрана совпадают с файлом локализации по ключу на каждом языке | P2 | draft | ui-web, ui-desktop, ui-mobile |  |
 | `UI-UNDO-REDO-VISIBLE-STATE` | Отмена и повтор согласованы с тем, что видит пользователь | P2 | draft | ui-web, ui-desktop, ui-mobile |  |
 | `UI-CHANGE-HISTORY` | История изменений показывает каждое изменение с автором | P3 | approved | ui-web, ui-desktop, ui-mobile | Regression, Nightly |
 | `UI-DESKTOP-HELP-ABOUT` | Справка, подсказки «Что это?» и окно «О программе» верны и согласованы | P3 | draft | ui-desktop |  |

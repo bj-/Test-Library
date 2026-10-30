@@ -1,10 +1,10 @@
 # Манифест библиотеки (ADR 0016): версия, хеши записей и шагов. Собирается `python tools/library_manifest.py --write`
 # (и build_catalog.py), вручную не править.
-version: "2026.10.30-95bf14"
-library_hash: "95bf1477db95"
+version: "2026.10.30-f373d2"
+library_hash: "f373d25f33a1"
 scope: full
 omitted: 0
-records_total: 660
+records_total: 666
 records:
   "ASYNC-DEAD-LETTER":
     status: approved
@@ -684,8 +684,8 @@ records:
     steps: ["628a204b80c6", "6b15950408eb", "e1ad2631c2bc", "0b83bee7804d", "17514501b856", "f4466b771fb8", "3c170ce47c83", "4e0bbca461c3", "ca9952c86e7c", "b71c1f85b957", "632158692543", "d59eb56ab538", "df5ac0a8d478", "353ab5234f31"]
   "FILE-DOWNLOAD-AUTHZ":
     status: approved
-    hash: "881658189769"
-    steps: ["2c73dfac67dc", "7182b4037a9c", "fe4dd8b30f91", "26cb9f8c4778", "0ae791a614f6", "77726739d16a", "6ce3d8844ad8", "7ecf90fabd96", "0a9a2d7fcdfe", "4e72e1b63a59", "fb0eb1796bc3", "a4102144cb5b", "4c60f02124bc"]
+    hash: "e8cb148a27cf"
+    steps: ["2c73dfac67dc", "7182b4037a9c", "fe4dd8b30f91", "26cb9f8c4778", "0ae791a614f6", "77726739d16a", "6ce3d8844ad8", "7ecf90fabd96", "0a9a2d7fcdfe", "4e72e1b63a59", "fb0eb1796bc3", "a4102144cb5b", "4c60f02124bc", "890ce01098df"]
   "FILE-DOWNLOAD-HEADERS":
     status: approved
     hash: "5cfda5821292"
@@ -2372,8 +2372,8 @@ records:
     steps: ["6afa8149adb4", "32553711aaaf", "b55ba9de3c4e", "9166325aa7b2"]
   "UI-LAYOUT-OVERFLOW":
     status: approved
-    hash: "2573bc28b3cf"
-    steps: ["5b3df376b119", "391609462ca6"]
+    hash: "4c01a683b12b"
+    steps: ["5b3df376b119", "391609462ca6", "8118fb5436bf"]
   "UI-LEGAL-PAGES":
     status: approved
     hash: "1435585fa84e"
@@ -2394,10 +2394,22 @@ records:
     status: approved
     hash: "04853db0323b"
     steps: ["8ec0dc071ccf", "6d4398b58e39"]
+  "UI-MOBILE-ACCESSIBILITY-LABELS":
+    status: draft
+    hash: "b9c4b8f562ec"
+    steps: ["3ea09caede95", "d6e0d85bf548"]
+  "UI-MOBILE-APP-UPDATE":
+    status: draft
+    hash: "c5e53af8c09a"
+    steps: ["adbf932a4d71", "8ba89647a1ef"]
   "UI-MOBILE-BACKGROUND-WORK":
     status: draft
     hash: "91c7a1992c73"
     steps: ["3caca15a99f6", "e878f9cd2c64", "c548d8d1d331"]
+  "UI-MOBILE-DEEP-LINKS":
+    status: draft
+    hash: "f7cb79e6c42a"
+    steps: ["d51194cb57c2", "836cb22beea4", "f68d5aa88796"]
   "UI-MOBILE-LOCAL-AUTH-FALLBACK":
     status: draft
     hash: "4acb391c423d"
@@ -2412,12 +2424,20 @@ records:
     steps: ["9458a9d64d8b", "7f760677fe96", "92526b6cfc21", "e15241974089", "67b010899cfa", "c8da633f6cc8"]
   "UI-MOBILE-PERMISSIONS-BY-OS":
     status: draft
-    hash: "42f5b75b9898"
-    steps: ["ea91f476c6e0", "8166c714a987"]
+    hash: "8f372702bbb9"
+    steps: ["ea91f476c6e0", "8166c714a987", "49cb4c13913e", "6e1f1a40857e", "9822bfd7206f"]
   "UI-MOBILE-PUSH-NO-GMS":
     status: draft
     hash: "ce75663b8d99"
     steps: ["bb5c1b6f1fdd"]
+  "UI-MOBILE-RUNTIME-METRICS":
+    status: draft
+    hash: "47a1a657e902"
+    steps: ["81c440965d86", "22307520d315"]
+  "UI-MOBILE-STATE-SURVIVES-LIFECYCLE":
+    status: draft
+    hash: "2de8c35174d7"
+    steps: ["fe8f3f0aa647", "9bece29dcc46", "4e1b40a462af", "3c13457e63fd"]
   "UI-MOBILE-TABLET-NO-SIM":
     status: draft
     hash: "e9cb63f76310"
@@ -2428,20 +2448,20 @@ records:
     steps: ["1ed1265246b0", "b7fc1d54e0bc", "a9e125a8a062", "b42de038dbfe"]
   "UI-NAVIGATION":
     status: approved
-    hash: "2345907f9f60"
-    steps: ["b8d0d1e1dfe2", "044f5d7973f1", "1914c3f388b4", "28a0d62c161e", "43313b8cc1f9", "d7e2fd2cf6cc"]
+    hash: "36c268d9e362"
+    steps: ["b8d0d1e1dfe2", "044f5d7973f1", "1914c3f388b4", "28a0d62c161e", "43313b8cc1f9", "d7e2fd2cf6cc", "d82673348bcc"]
   "UI-NETWORK-RESILIENCE":
     status: approved
-    hash: "ec3adeb4b6b0"
-    steps: ["4b674c305d42", "ba2be9d67fef"]
+    hash: "8201853fb94a"
+    steps: ["4b674c305d42", "ba2be9d67fef", "b6ee66ce1dd7"]
   "UI-NO-BROKEN-RESOURCES":
     status: approved
     hash: "1a338040ec7d"
     steps: ["07e124ff96ec", "94b94038ddea"]
   "UI-PLATFORM-COMPATIBILITY":
     status: approved
-    hash: "7a0b050ad049"
-    steps: ["f455067eac5a", "65b1e1376090", "5f8285e3fbe5"]
+    hash: "d3dd4a84cbea"
+    steps: ["f455067eac5a", "65b1e1376090", "5f8285e3fbe5", "c0716ddf0058"]
   "UI-PLATFORM-SECURITY":
     status: approved
     hash: "678822e2028b"
@@ -2474,10 +2494,14 @@ records:
     status: approved
     hash: "b2ec6251240d"
     steps: ["8f0fcefe77c8"]
+  "UI-TEXTS-BY-LOCALIZATION-KEYS":
+    status: draft
+    hash: "bc63194b44aa"
+    steps: ["f1fad35427bf", "944313095b69"]
   "UI-TEXTS-CORRECT":
     status: approved
-    hash: "8c5251cb0cea"
-    steps: ["be9bcdfc9e4a", "46704a369562", "ec922d74e3af", "b1c44d46a80c", "69eaaa051a64"]
+    hash: "a26c7989b571"
+    steps: ["be9bcdfc9e4a", "46704a369562", "ec922d74e3af", "b1c44d46a80c", "69eaaa051a64", "62fd23776c7d"]
   "UI-UNDO-REDO-VISIBLE-STATE":
     status: draft
     hash: "ebe517bb7e93"
