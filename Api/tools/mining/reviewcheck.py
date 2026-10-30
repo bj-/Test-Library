@@ -7,7 +7,7 @@ Usage (from Api/):
   reviewcheck.py --batch strapi,ghsa-nuget     one pack for several small batches (ideas numbered through)
 
 Writes ideas/mined/<batch>.reviewcheck.md: the task, the library principles, every cluster of `new` patterns with
-the source text of its bugs, and the index of all library records (to spot duplicates). The model does the same
+the source text of its bugs, and the index of open library records (to spot duplicates). The model does the same
 review as the human (decision, ID, file, overlap); its answer is saved next to it (<batch>.reviewcheck.answer-N.md)
 and compared with the human decisions in <batch>.review.yaml.
 """
@@ -22,10 +22,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from cluster import MINED, iter_checks, load_results, load_sources, load_yaml  # noqa: E402
 from library import setup_console  # noqa: E402
+from library_manifest import closed_ids  # noqa: E402
 
 README = Path("README.md")
 MODEL = "Claude Opus 5.5 (`claude-opus-5-5`)"
 BODY_LIMIT = 2500
+ID_TOKEN = re.compile(r"[A-Z0-9][A-Za-z0-9_-]*")
+CLOSED = "[закрытая запись]"
 
 TASK = """## Задание для модели
 
@@ -117,11 +120,13 @@ def build(batches: list[str], blind: bool) -> tuple[str, int]:
            f"{'Партии' if len(batches) > 1 else 'Партия'} {names}, идей: {n}; вариант пакета — {mode}.",
            "Этот файл целиком отдаётся другой LLM. Ответ модели вставить в чат внутренней сессии.", "",
            TASK, "Принципы библиотеки (из README):", "", principles(), "", ANSWER] + body
-    index = sorted((c["id"], c.get("category", ""), c.get("title", "")) for _, c in iter_checks(Path("."), []))
-    out += ["## Индекс библиотеки", "", f"Все записи ({len(index)}): ID | категория | заголовок.", "", "```text"]
+    closed = closed_ids()                # пакет уходит во внешнюю LLM: закрытых записей нет ни в индексе, ни в заметках
+    index = sorted((c["id"], c.get("category", ""), c.get("title", "")) for _, c in iter_checks(Path("."), [])
+                   if c["id"] not in closed)
+    out += ["## Индекс библиотеки", "", f"Записи ({len(index)}): ID | категория | заголовок.", "", "```text"]
     out += [" | ".join(row) for row in index]
     out += ["```"]
-    return "\n".join(out) + "\n", n
+    return ID_TOKEN.sub(lambda m: CLOSED if m[0] in closed else m[0], "\n".join(out) + "\n"), n
 
 
 def main() -> int:

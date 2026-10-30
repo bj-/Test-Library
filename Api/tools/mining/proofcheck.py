@@ -23,10 +23,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from cluster import MINED, iter_checks, load_results, load_sources  # noqa: E402
 from library import setup_console  # noqa: E402
+from library_manifest import closed_ids  # noqa: E402
 
 PROMPT = Path("mining/prompts/triage_abstract.md")
 MODEL = "Claude Opus 5.5 (`claude-opus-5-5`)"
 BODY_LIMIT = 2000
+ID_TOKEN = re.compile(r"[A-Z0-9][A-Za-z0-9_-]*")
+CLOSED = "[закрытая запись]"
 FIELDS = ("id", "title", "preconditions", "steps", "expected", "applicability")
 
 TASK = """## Задание для модели
@@ -65,6 +68,10 @@ def build(batch: str, ids: list[str]) -> tuple[str, int]:
     missing = [i for i in ids if i not in checks]
     if missing:
         raise SystemExit("ОШИБКА: нет записей " + ", ".join(missing))
+    closed = closed_ids()                # пакет уходит во внешнюю LLM: закрытых записей нет ни в нём, ни в заметках
+    hidden = [i for i in ids if i in closed]
+    if hidden:
+        raise SystemExit("ОШИБКА: закрытые записи не выгружаются: " + ", ".join(hidden))
     out = ["# Перекрёстная проверка пруфов выгрузки багов", "",
            f"Партия `{batch}`, записей: {len(ids)}. Сопоставление сделала модель {MODEL}.",
            "Этот файл целиком отдаётся другой LLM. Ответ модели вставить в чат внутренней сессии.", "",
@@ -87,7 +94,7 @@ def build(batch: str, ids: list[str]) -> tuple[str, int]:
                     f"- **Решение модели:** `{m['type']}`", f"- **Заметка:** {m.get('note') or '—'}",
                     f"- **Вариант (новый шаг):** {m.get('variant') or '—'}",
                     f"- **Паттерн бага:** {r['pattern']['title']}", "", "Первоисточник:", "", "````text", body, "````", ""]
-    return "\n".join(out) + "\n", n
+    return ID_TOKEN.sub(lambda m: CLOSED if m[0] in closed else m[0], "\n".join(out) + "\n"), n
 
 
 def main() -> int:
