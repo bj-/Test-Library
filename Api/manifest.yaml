@@ -1,7 +1,7 @@
 # Манифест библиотеки (ADR 0016): версия, хеши записей и шагов. Собирается `python tools/library_manifest.py --write`
 # (и build_catalog.py), вручную не править.
-version: "2026.10.30-9dc291"
-library_hash: "9dc291f64058"
+version: "2026.10.30-d69693"
+library_hash: "d69693fa328c"
 scope: full
 omitted: 0
 records_total: 648
@@ -1560,7 +1560,7 @@ records:
     steps: ["10ab4cab5652", "76d4e350c165", "4d0e7f1936f7"]
   "REQ-CONTRACT-CONTRADICTS-SPEC":
     status: approved
-    hash: "03195a48f0b9"
+    hash: "0ceed32aae87"
     steps: ["116faa8657ea", "1e2750574164", "988f7a4d1bdf"]
   "REQ-CONTRACT-SELF-CONSISTENCY":
     status: approved
