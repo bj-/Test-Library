@@ -4,6 +4,10 @@
 этапе; сессия видит только свою группу. Изоляция ADR 0008 (закрытые подробности) и ADR 0009 (тестовые значения по
 ссылке `TD-…`) действует как прежде.
 
+**Проба ADR [0018](../docs/decisions/0018-sonnet-security-generation-trial.md) (bj 2026-11-02):** генерация на
+`executors.child.generation_model` (`claude-sonnet-5-5`) идёт партиями по 6-12 записей, партия может смешивать группы;
+`sg-restricted` - как прежде. Остальное в этом файле действует; итог пробы решает, снять ли деление совсем.
+
 ## Группы
 
 Список и правила - `Api/taxonomy/security-groups.yaml`, состав - `python Api/tools/security_groups.py stats`.
