@@ -66,8 +66,29 @@ Claude работает с одним источником. План, списо
 
 1. **Кластеризация (Claude).** `new`-паттерны склеиваются в идеи в `ideas/mined/<batch>.review.yaml`: ключ,
    баги, идея, предложение `accept` (ID и файл новой записи) или `reject` (причина).
+   **Семейства** (ADR 0012, п. 4): `python tools/mining/cluster.py --batch <batch> --families` — список ключей
+   `family` из триажа с багами и их `match` (в т. ч. `extends`/`covered`). Семейство, которое проверяется одной
+   матрицей, — один кластер с `variants:` вместо нескольких похожих записей:
+
+   ```yaml
+   - key: config-change-propagation
+     decision: accept
+     check_id: …
+     file: checks/…
+     families: [config-change-propagation, config-reload-state]   # ключи триажа; синонимы сводит Claude
+     bugs: [Kong/kong#7378, Kong/kong#9090, Kong/kong#6813]       # new и extends/covered
+     idea: …
+     variants:                                                     # матрица: строка — вариант (шаг записи)
+     - text: Изменение прав одного клиента не даёт отказов другим клиентам
+       bugs: [Kong/kong#7378]                                      # необязательно, из bugs кластера
+   ```
+
+   `extends`/`covered` допустимы только в кластере с `variants`. Такой баг — пруф только новой записи (RWB кластера),
+   отдельным пруфом к записи из `match` не идёт, пока кластер не `reject`; у отклонённого семейства баги
+   `extends`/`covered` возвращаются в «Пруфы к существующим». Шаги записи draft пишутся по `variants`.
+   Семейство из одного бага или целиком покрытое одной записью — обычные пруфы, без кластера.
 2. `python tools/mining/cluster.py --batch <batch>` — проверка review-файла (каждый `new` ровно в одном кластере,
-   ID не занят) и сборка `ideas/mined/<batch>.md`: новые идеи и «Пруфы к существующим» с номерами `RWB-*`.
+   ни один баг не в двух кластерах, ID не занят, формат `variants`/`families`) и сборка `ideas/mined/<batch>.md`: новые идеи и «Пруфы к существующим» с номерами `RWB-*`.
 3. **Ревью (человек)** по `<batch>.md`; правки — в review-файле: `decision`, `check_id`, `file` кластера,
    неверное совпадение пруфа — ID бага в `proofs.exclude`, вариант без нового шага — в `proofs.no_variant`.
    `new`-паттерн, который на ревью оказался вариантом существующей записи, — в `proofs.retarget` (`bug`, `check_id`,

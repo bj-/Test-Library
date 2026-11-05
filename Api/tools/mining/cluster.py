@@ -3,6 +3,11 @@
 
 Usage (from Api/):
   cluster.py --batch pilot          check the review file against batch results, render ideas/mined/pilot.md
+  cluster.py --batch kong --families   list triage families (key, bugs, match) for step 6; no review file needed
+
+Families (ADR 0012, p. 4): a cluster with `variants:` (variant matrix) may also hold `extends`/`covered` bugs,
+which then get no separate proof (unless the cluster is rejected); `families:` lists the triage keys it merges —
+synonyms are merged by Claude in the review file, not guessed here.
 
 The review file holds the clustering of `new` patterns (written by Claude, step 6) and the human decisions
 (step 7). Proofs to existing checks (`extends`/`covered`) are taken from build/mining/<batch>/batches/*.out.jsonl.
@@ -24,6 +29,7 @@ MINING = Path("build/mining")
 MINED = Path("ideas/mined")
 TRACE_FILE = Path("traceability/real-world-bugs.yaml")
 DECISIONS = {"accept", "reject", "pending"}
+MATCH_TYPES = ("new", "extends", "covered")
 PRODUCTS = {
     "nestjs-nest": "NestJS", "express": "Express", "express-session": "express-session",
     "body-parser": "body-parser", "jshttp-cookie": "cookie", "keycloak": "Keycloak", "strapi": "Strapi",
@@ -97,13 +103,24 @@ def build_plan(batch: str, errors: list[str], drafts_written: bool = False) -> d
             errors.append(f"retarget: {b} не new-паттерн партии")
         if not t.get("check_id") or not t.get("variant"):
             errors.append(f"retarget: {b} — нужны check_id и variant")
+    family_keys = {r.get("family") for r in results.values()} - {None, ""}
+    in_family = set()  # extends/covered bugs of a family cluster (not reject): proof via the cluster RWB only
     for c in review.get("clusters") or []:
         key = c.get("key")
         if c.get("decision") not in DECISIONS:
             errors.append(f"кластер {key}: decision должен быть одним из {sorted(DECISIONS)}")
+        family = "variants" in c or "families" in c
+        if family:
+            check_family(c, family_keys, errors)
         for b in c.get("bugs") or []:
-            if b not in results or results[b]["match"]["type"] != "new":
+            mtype = results[b]["match"]["type"] if b in results else None
+            if mtype not in MATCH_TYPES:
                 errors.append(f"кластер {key}: {b} не new-паттерн партии")
+            elif mtype != "new" and not family:
+                errors.append(f"кластер {key}: {b} не new-паттерн партии ({mtype} — только в кластере-семействе"
+                              " с variants)")
+            elif mtype != "new" and c.get("decision") != "reject":
+                in_family.add(b)
             if b in seen:
                 errors.append(f"кластер {key}: {b} уже в другом кластере")
             seen.add(b)
@@ -128,7 +145,7 @@ def build_plan(batch: str, errors: list[str], drafts_written: bool = False) -> d
             t = retarget[bug_id]
             m = {"type": "extends", "check_id": t["check_id"], "variant": t["variant"],
                  "note": t.get("note") or "Перенесено на ревью из new"}
-        if m["type"] == "new" or bug_id in exclude:
+        if m["type"] == "new" or bug_id in exclude or bug_id in in_family:
             continue
         if m["check_id"] not in checks:
             errors.append(f"{bug_id}: запись {m['check_id']} не найдена в библиотеке")
@@ -148,8 +165,62 @@ def build_plan(batch: str, errors: list[str], drafts_written: bool = False) -> d
             "trace": trace}
 
 
+def check_family(c: dict, family_keys: set, errors: list[str]) -> None:
+    """Family cluster: `variants` — non-empty list of {text, bugs?}; `families` — triage keys of the batch."""
+    key = c.get("key")
+    variants = c.get("variants")
+    if not isinstance(variants, list) or not variants:
+        errors.append(f"кластер {key}: у семейства нужен непустой список variants")
+        variants = []
+    for i, v in enumerate(variants, 1):
+        if not isinstance(v, dict) or not str(v.get("text") or "").strip():
+            errors.append(f"кластер {key}: variants[{i}] — нужен text")
+            continue
+        if extra := set(v) - {"text", "bugs"}:
+            errors.append(f"кластер {key}: variants[{i}] — лишние поля {sorted(extra)}")
+        for b in v.get("bugs") or []:
+            if b not in (c.get("bugs") or []):
+                errors.append(f"кластер {key}: variants[{i}] — {b} не в bugs кластера")
+    for f in c.get("families") or []:
+        if f not in family_keys:
+            errors.append(f"кластер {key}: семейства {f} нет в результатах партии")
+
+
+def families(batch: str) -> dict[str, list[dict]]:
+    """Triage family key -> its api bugs of all match types, in batch order; larger families first."""
+    out = defaultdict(list)
+    for r in load_results(batch):
+        if r["verdict"] == "api" and r.get("family"):
+            out[r["family"]].append(r)
+    return dict(sorted(out.items(), key=lambda kv: (-len(kv[1]), kv[0])))
+
+
+def render_families(batch: str) -> str:
+    fams = families(batch)
+    out = [f"Семейства триажа партии {batch}: {len(fams)}, багов {sum(len(v) for v in fams.values())}.",
+           "Синонимы ключей сводятся в review.yaml (clusters[].families); семейство — кластер с variants,",
+           "в нём и extends/covered (ADR 0012, п. 4)."]
+    for key, rs in fams.items():
+        counts = defaultdict(int)
+        for r in rs:
+            counts[r["match"]["type"]] += 1
+        out += ["", f"## {key} — багов {len(rs)} ("
+                + ", ".join(f"{t} {counts[t]}" for t in MATCH_TYPES if counts[t]) + ")"]
+        for r in rs:
+            m = r["match"]
+            where = f" {m['check_id']}" if m.get("check_id") else ""
+            text = m.get("variant") or (r.get("pattern") or {}).get("title") or r["reason"]
+            out.append(f"- {r['id']} | {m['type']}{where} | {text}")
+    return "\n".join(out)
+
+
 def link(bug_id: str, bugs: dict) -> str:
     return f"[{bug_id}]({bugs[bug_id]['url']})"
+
+
+def cluster_bug(bug_id: str, plan: dict) -> str:
+    m = plan["results"][bug_id]["match"]
+    return link(bug_id, plan["bugs"]) + ("" if m["type"] == "new" else f" ({m['type']} `{m['check_id']}`)")
 
 
 def render(plan: dict) -> str:
@@ -158,6 +229,13 @@ def render(plan: dict) -> str:
     rejected = [c for c in clusters if c["decision"] == "reject"]
     n_items = sum(len(p["items"]) for p in proofs.values())
     n_var = sum(1 for p in proofs.values() for i in p["items"] if i["variant"])
+    is_new = {b: plan["results"][b]["match"]["type"] == "new" for c in clusters for b in c["bugs"]}
+    fam = [c for c in clusters if "variants" in c]
+    fam_line = [
+        f"- Семейства (одна запись с матрицей вариантов): {len(fam)}, вариантов "
+        f"{sum(len(c['variants']) for c in fam)}, багов extends/covered в них: "
+        f"{sum(1 for c in fam for b in c['bugs'] if not is_new[b])} (у отклонённых они остаются пруфами "
+        "к существующим)."] if fam else []
     out = [
         f"# Кандидаты из баг-трекеров: партия `{plan['batch']}`",
         "",
@@ -167,9 +245,10 @@ def render(plan: dict) -> str:
         "",
         "## Сводка",
         "",
-        f"- Новых паттернов: {sum(len(c['bugs']) for c in clusters)} → идей: {len(clusters)} "
+        f"- Новых паттернов: {sum(is_new.values())} → идей: {len(clusters)} "
         f"(принять: {len(accepted)}, отклонить: {len(rejected)}, "
         f"не решено: {len(clusters) - len(accepted) - len(rejected)}).",
+        *fam_line,
         f"- Пруфы к существующим: {n_items} багов → {len(proofs)} записей; новых шагов-вариантов: {n_var}.",
         "",
         "## Новые идеи",
@@ -180,14 +259,20 @@ def render(plan: dict) -> str:
         "|---|---|---|---|---|",
     ]
     for i, c in enumerate(clusters, 1):
-        refs = ", ".join(link(b, bugs) for b in c["bugs"])
+        refs = ", ".join(cluster_bug(b, plan) for b in c["bugs"])
         if c["decision"] == "accept":
             where = f"`{c['check_id']}` ({c['rwb']})<br>`{c['file']}`"
         elif c["decision"] == "reject":
             where = f"отклонено: {c['reason']}"
         else:
             where = "не решено"
-        out.append(f"| {i} | {c['decision']} | {where} | {c['idea']} | {refs} |")
+        idea = c["idea"]
+        if "variants" in c:
+            fams = f" (семейства триажа: {', '.join(c['families'])})" if c.get("families") else ""
+            rows = [v["text"] + (f" — {', '.join(v['bugs'])}" if v.get("bugs") else "") for v in c["variants"]]
+            idea += f"<br>**Варианты**{fams}:" + "".join(f"<br>{n}. {t.replace('|', '/')}"
+                                                         for n, t in enumerate(rows, 1))
+        out.append(f"| {i} | {c['decision']} | {where} | {idea} | {refs} |")
     out += [
         "",
         "## Пруфы к существующим",
@@ -211,7 +296,11 @@ def main() -> int:
     setup_console()
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--batch", default="pilot")
+    ap.add_argument("--families", action="store_true", help="список семейств триажа (шаг 6), без review-файла")
     args = ap.parse_args()
+    if args.families:
+        print(render_families(args.batch))
+        return 0
     errors: list[str] = []
     plan = build_plan(args.batch, errors)
     for e in errors:
