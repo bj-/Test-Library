@@ -45,7 +45,15 @@ def main() -> int:
                 m = PR_URL.search(url)
                 if not m or url in cache:
                     continue
-                files = list(gh.paginate(f"/repos/{m.group(1)}/pulls/{m.group(2)}/files?per_page=100"))
+                try:
+                    files = list(gh.paginate(f"/repos/{m.group(1)}/pulls/{m.group(2)}/files?per_page=100"))
+                except RuntimeError as e:
+                    # PR удалён, репозиторий закрыт или ссылка ведёт не на PR: без тестов, но не падаем
+                    # 422 «Sorry, there was a problem generating this diff» — диф у PR недоступен насовсем
+                    if not str(e).startswith(("HTTP 404", "HTTP 410", "HTTP 422")):
+                        raise
+                    cache[url] = {"files": 0, "tests": [], "error": str(e)[:8]}
+                    continue
                 tests, budget = [], PATCH_LIMIT
                 for fl in files:
                     if not TEST_FILE.search(fl["filename"]):

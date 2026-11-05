@@ -121,7 +121,7 @@ class GitHub:
                     time.sleep(pause)
                     continue
                 raise RuntimeError(f"HTTP {e.code} {url}: {e.read()[:300]!r}") from None
-            except (urllib.error.URLError, TimeoutError) as e:
+            except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
                 if backoff:
                     pause = backoff.pop(0)
                     print(f"  [сеть: {e}] пауза {pause} с и повтор", file=sys.stderr)
