@@ -5,7 +5,7 @@
     python tools/library_diff.py compact <baseline> --track functional|security   # без решения (pending и новые): id, title, category, tags, protocols, applicability
     python tools/library_diff.py needed <baseline> [--track T] [--group G]   # записи needed: что осталось сгенерировать
     python tools/library_diff.py full ID,ID                             # полный текст записей (закрытые отказывает)
-    python tools/library_diff.py apply <baseline> <decisions.yaml>      # {ID: {decision, reason}}; removed - окончательное удаление записи из базы
+    python tools/library_diff.py apply <baseline> <decisions.yaml> [--override-human]  # {ID: {decision, reason}}; human - только с ключом (ADR 0019); removed - окончательное удаление записи из базы
     python tools/library_diff.py sync <каталог-проекта-тестов> <модуль>   # после генерации: needed с тестами -> applied (вызывает генератор)
 
 База: module, library_version, selected_at, records: {ID: {decision, track, status, hash, steps, reason}}.
@@ -245,7 +245,7 @@ def cmd_full(ids):
     return rc
 
 
-def cmd_apply(baseline: Path, decisions_file: Path):
+def cmd_apply(baseline: Path, decisions_file: Path, override_human: bool = False):
     base = load_baseline(baseline)
     decisions = yaml.safe_load(decisions_file.read_text(encoding="utf-8")) or {}
     pairs, _ = load_checks()
@@ -276,7 +276,7 @@ def cmd_apply(baseline: Path, decisions_file: Path):
                        "status": e["status"], "hash": e["hash"], "steps": e["steps"]}
     for i, d in decisions.items():
         cur, e = recs[i], lib.get(i)
-        if cur["decision"] == "human":
+        if cur["decision"] == "human" and not override_human:   # --override-human: проба ADR 0019
             skipped.append(i)
             continue
         if d["decision"] == "removed":
@@ -319,6 +319,8 @@ def main():
     p = sub.add_parser("apply")
     p.add_argument("baseline", type=Path)
     p.add_argument("decisions", type=Path)
+    p.add_argument("--override-human", action="store_true",
+                   help="перезаписать решения human (записи sg-restricted) - только по ADR 0019")
     a = ap.parse_args()
     if a.cmd == "init":
         cmd_init(a.project, a.module)
@@ -333,7 +335,7 @@ def main():
     elif a.cmd == "full":
         return cmd_full(a.ids)
     else:
-        return cmd_apply(a.baseline, a.decisions)
+        return cmd_apply(a.baseline, a.decisions, a.override_human)
     return 0
 
 
