@@ -132,7 +132,8 @@ powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-se
    - Файл пачки читать кусками по ~1300 строк. Ответы по каждому куску писать в отдельный файл в scratchpad,
      затем склеить в `batches/b-NN.out.jsonl`: UTF-8 без BOM, одна строка на баг, порядок как в пачке.
    - Идеи UI и БД/SQL — в поле `ideas` ответа (промпт, п. 5). Прочие идеи вне паттернов — в
-     `build/mining/<id>/ideas.md` с ID бага.
+     `build/mining/<id>/ideas.md` с ID бага. Идея выглядит здравой, но непонятно, что и как проверять (механизм
+     не ясен, данных мало) — туда же с пометкой `?` и одной строкой «в чём сомнение», а не отказ.
 6. `python tools/mining/batch.py check --batch <id> --name b-NN` — должно быть N/N и 0 ошибок; ошибки исправить.
    Затем `python tools/mining/batch.py stats --batch <id>`.
 7. Промпт не менять. Если триаж кажется неверным для целого класса багов, написать человеку.
@@ -171,7 +172,8 @@ powershell -ExecutionPolicy Bypass -File C:\git\Test-Library\Api\mining\start-se
    - Промпт триажа меняется только при остановленных сессиях сбора.
 3. **Шаги 6–7 по готовым источникам.** Источник готов, когда все пачки обработаны.
    - Сначала собрать в inbox идеи из `build/mining/<id>/ideas.md` и поля `ideas` (UI, DB) всех багов источника,
-     с пометкой из `mark` и ссылкой на баг.
+     с пометкой из `mark` и ссылкой на баг. Идеи с пометкой `?` — не в inbox, а в `ideas/unclear.md` (коллективный
+     разбор другими LLM, порядок — в шапке файла).
    - Затем кластеры: `ideas/mined/<id>.review.yaml` → `cluster.py --batch <id>` → `ideas/mined/<id>.md`.
    - Ревью решений делает человек (ADR 0005, п. 5) — показать ему таблицу и дождаться ответа.
    - Затем записи draft, `apply_proofs.py --batch <id>`, `validate_library.py`, `build_catalog.py`.
