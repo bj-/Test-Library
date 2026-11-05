@@ -320,7 +320,7 @@ def main():
     p.add_argument("baseline", type=Path)
     p.add_argument("decisions", type=Path)
     p.add_argument("--override-human", action="store_true",
-                   help="перезаписать решения human (записи sg-restricted) - только по ADR 0019")
+                   help="перезаписать решения human (записи sg-restricted) - только по ADR 0019/0020")
     a = ap.parse_args()
     if a.cmd == "init":
         cmd_init(a.project, a.module)
