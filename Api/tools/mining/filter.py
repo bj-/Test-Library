@@ -21,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from batch import processed_ids  # noqa: E402
 from library import load_yaml, setup_console  # noqa: E402
 
+STALE = re.compile(r"(?i)stale")
 TITLE_DROP = re.compile(r"(?i)^\s*(\[(feature|feat|question|docs?|rfc|proposal)\b|feature request|question\b|"
                         r"\[?enhancement|docs?:|chore|ci:|build:)")
 HTML_COMMENT = re.compile(r"<!--.*?-->", re.S)
@@ -78,7 +79,11 @@ def main() -> int:
             elif (r["kind"] == "issue" and not (r["fix"]["prs"] or r["fix"]["commits"])
                   and not (args.allow_no_fix or src.get("allow_no_fix", defaults.get("allow_no_fix")))):
                 reason = "нет PR/коммита с исправлением"
-            elif any(e.search(lb) for e in exc for lb in r["labels"]):
+            elif any(e.search(lb) for e in exc for lb in r["labels"]
+                     # stale - bot mark of inactivity, not a verdict; without a fix it cut mostly valuable bugs
+                     # (kong calibration, mining/nofix-calibration-kong.md, decision bj 2026-11-05)
+                     if not (STALE.search(lb) and r["kind"] == "issue"
+                             and not (r["fix"]["prs"] or r["fix"]["commits"]))):
                 reason = "исключающая метка"
             elif TITLE_DROP.search(r["title"]):
                 reason = "заголовок: фича/вопрос/доки"
